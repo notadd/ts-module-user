@@ -1,5 +1,10 @@
+import { Module ,Global} from '@nestjs/common';
 
-
-export class UserPMModule{
-    
-}
+@Global()
+@Module({
+  modules: [],
+  controllers: [],
+  components: [],
+  exports: []
+})
+export class UserPMModule{}
