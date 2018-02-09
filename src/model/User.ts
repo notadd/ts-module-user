@@ -80,7 +80,7 @@ export class User {
     })
     status: boolean
 
-    @ManyToMany(type => Permission, permission => permission.user, {
+    @ManyToMany(type => Permission, {
         cascadeInsert: true,
         cascadeUpdate: false,
         lazy: false
@@ -99,7 +99,7 @@ export class User {
     })
     adds: Permission[]
 
-    @ManyToMany(type => Permission, permission => permission.user, {
+    @ManyToMany(type => Permission, {
         cascadeInsert: true,
         cascadeUpdate: false,
         lazy: false
@@ -119,7 +119,7 @@ export class User {
     reduces: Permission[]
 
 
-    @ManyToMany(type => Role, role => role.user, {
+    @ManyToMany(type => Role, {
         cascadeInsert: true,
         cascadeUpdate: false,
         lazy: false
@@ -138,7 +138,7 @@ export class User {
     })
     roles: Role[]
 
-    @ManyToMany(type => Organization, organization => organization.user, {
+    @ManyToMany(type => Organization, organization => organization.users, {
         cascadeInsert: true,
         cascadeUpdate: false,
         lazy: false
