@@ -1,3 +1,10 @@
+import { Organization } from '../model/Organization';
+import { Permission } from '../model/Permission';
+import { Module } from '../model/Module';
+import { User } from '../model/User';
+import { Role } from '../model/Role';
+import { Func } from '../model/Func';
+
 import { createConnection } from 'typeorm';
 
 export const ConnectionProvider = {
@@ -15,6 +22,12 @@ export const ConnectionProvider = {
             dropSchema:true,
             charset:'UTF8',
             entities: [
+                Organization,
+                Permission,
+                Module,
+                User,
+                Func,
+                Role
             ]
         })
     }

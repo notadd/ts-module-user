@@ -28,6 +28,9 @@ export class Permission{
     })
     description:string;
 
+    @Column()
+    module_id:number
+
     @ManyToOne(type=>Module,module=>module.permissions,{
         cascadeInsert: true,
         cascadeUpdate: false,

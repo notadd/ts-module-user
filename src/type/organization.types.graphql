@@ -1,0 +1,25 @@
+type Query{
+    #get all of organization 
+    organizations:OrganizationsData
+
+}
+
+type Mutation{
+
+}
+
+#return data
+type OrganizationsData{
+    #error code
+    code:Int
+    #error message
+    message:String
+    #array of organization 
+    organizations:[Organization]
+}
+
+#Organization type 
+type Organization{
+    id:Int
+    name:String
+}
