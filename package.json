@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "start:watch": "nodemon",
-    "start:prod": "node dist/server.js"
+    "start:watch": "nodemon"
   },
   "repository": {
     "type": "git",
@@ -30,7 +29,8 @@
     "mysql": "^2.15.0",
     "reflect-metadata": "^0.1.10",
     "rxjs": "^5.4.0",
-    "typeorm": "^0.1.9"
+    "typeorm": "^0.1.9",
+    "typescript": "^2.7.1"
   },
   "devDependencies": {
     "@types/node": "^8.0.28",
