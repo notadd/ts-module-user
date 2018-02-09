@@ -1,4 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable ,Index, ManyToOne, JoinColumn} from 'typeorm';
+import { Module } from './Module';
+
 
 @Entity({
     name:'permission'
