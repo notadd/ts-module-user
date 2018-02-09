@@ -26,7 +26,7 @@ export class Organization {
     users: User[];
 
     @ManyToOne(type=>Organization,orientation=>orientation.children,{
-        cascadeInsert: true,
+        cascadeInsert: false,
         cascadeUpdate: false,
         cascadeRemove: false,
         lazy: false

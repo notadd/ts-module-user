@@ -38,13 +38,14 @@ export class ApplicationModule implements NestModule {
   }
 
   async onModuleInit() {
-    /* 验证TreeEntity可以一次保存
+    /* 当OneToMany中cascadeInsert为true时，可以设置children，然后一次保存实体与父子关系，与ManyToOne中级联无关
     let jituan  = this.organizationRepository.create({name:'集团'})
     let renli  = this.organizationRepository.create({name:'人力'})
     let bangongshi  = this.organizationRepository.create({name:'办公室'})
     jituan.children = [renli,bangongshi]
     await this.organizationRepository.save(jituan) 
     */
+    
     /* 移除children只移除关联关系，而不删除children实体
     let jituan  = this.organizationRepository.create({name:'集团'})
     let renli  = this.organizationRepository.create({name:'人力'})
