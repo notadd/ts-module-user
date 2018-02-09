@@ -1,0 +1,40 @@
+{
+  "name": "user-pm",
+  "version": "1.0.0",
+  "description": "notadd 用户中心模块，向商城、微信、cms等模块提供了权限服务",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "start:watch": "nodemon",
+    "start:prod": "node dist/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@gitee.com:ibenchu/user-pm.git"
+  },
+  "keywords": [
+    "notadd"
+  ],
+  "author": "czy12345",
+  "license": "ISC",
+  "dependencies": {
+    "@nestjs/common": "^4.5.9",
+    "@nestjs/core": "^4.5.10",
+    "@nestjs/graphql": "^2.0.0",
+    "@nestjs/microservices": "^4.4.0",
+    "@nestjs/testing": "^4.4.0",
+    "@nestjs/websockets": "^4.4.0",
+    "apollo-server-express": "^1.3.2",
+    "graphql": "^0.11.7",
+    "graphql-tools": "^2.18.0",
+    "mysql": "^2.15.0",
+    "reflect-metadata": "^0.1.10",
+    "rxjs": "^5.4.0",
+    "typeorm": "^0.1.9"
+  },
+  "devDependencies": {
+    "@types/node": "^8.0.28",
+    "nodemon": "^1.12.1",
+    "ts-node": "^3.3.0"
+  }
+}
