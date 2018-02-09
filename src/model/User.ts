@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, Index, OneToOne, JoinColumn, OneToMany, ManyToOne, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable } from 'typeorm';
 import { Organization } from './Organization';
 import { Permission } from './Permission';
 import { Role } from './Role';
@@ -21,7 +21,7 @@ export class User {
         name: 'user_name',
         type: 'varchar',
         length: '20',
-        unique:true
+        unique: true
     })
     userName: string;
 
@@ -43,7 +43,7 @@ export class User {
         name: 'email',
         type: 'varchar',
         length: 30,
-        unique:true
+        unique: true
     })
     email: string;
 
@@ -86,18 +86,18 @@ export class User {
         lazy: false
     })
     @JoinTable({
-        name:'user_add_permission',
-        joinColumn:{
-            name:'user_id',
-            referencedColumnName:'id'
+        name: 'user_add_permission',
+        joinColumn: {
+            name: 'user_id',
+            referencedColumnName: 'id'
         },
-        inverseJoinColumn:{
-            name:'permission_id',
-            referencedColumnName:'id'
+        inverseJoinColumn: {
+            name: 'permission_id',
+            referencedColumnName: 'id'
         },
-        database:'user_pm'
+        database: 'user_pm'
     })
-    adds:Permission[]
+    adds: Permission[]
 
     @ManyToMany(type => Permission, permission => permission.user, {
         cascadeInsert: true,
@@ -105,18 +105,18 @@ export class User {
         lazy: false
     })
     @JoinTable({
-        name:'user_reduce_permission',
-        joinColumn:{
-            name:'user_id',
-            referencedColumnName:'id'
+        name: 'user_reduce_permission',
+        joinColumn: {
+            name: 'user_id',
+            referencedColumnName: 'id'
         },
-        inverseJoinColumn:{
-            name:'permission_id',
-            referencedColumnName:'id'
+        inverseJoinColumn: {
+            name: 'permission_id',
+            referencedColumnName: 'id'
         },
-        database:'user_pm'
+        database: 'user_pm'
     })
-    reduces:Permission[]
+    reduces: Permission[]
 
 
     @ManyToMany(type => Role, role => role.user, {
@@ -125,18 +125,18 @@ export class User {
         lazy: false
     })
     @JoinTable({
-        name:'user_role',
-        joinColumn:{
-            name:'user_id',
-            referencedColumnName:'id'
+        name: 'user_role',
+        joinColumn: {
+            name: 'user_id',
+            referencedColumnName: 'id'
         },
-        inverseJoinColumn:{
-            name:'role_id',
-            referencedColumnName:'id'
+        inverseJoinColumn: {
+            name: 'role_id',
+            referencedColumnName: 'id'
         },
-        database:'user_pm'
+        database: 'user_pm'
     })
-    roles:Role[]
+    roles: Role[]
 
     @ManyToMany(type => Organization, organization => organization.user, {
         cascadeInsert: true,
@@ -144,16 +144,16 @@ export class User {
         lazy: false
     })
     @JoinTable({
-        name:'organization_user',
-        joinColumn:{
-            name:'user_id',
-            referencedColumnName:'id'
+        name: 'organization_user',
+        joinColumn: {
+            name: 'user_id',
+            referencedColumnName: 'id'
         },
-        inverseJoinColumn:{
-            name:'organization_id',
-            referencedColumnName:'id'
+        inverseJoinColumn: {
+            name: 'organization_id',
+            referencedColumnName: 'id'
         },
-        database:'user_pm'
+        database: 'user_pm'
     })
-    organizations:Organization[]
+    organizations: Organization[]
 }
