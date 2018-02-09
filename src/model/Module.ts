@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, Index, OneToMany } from 'typeorm';
 import { Permission } from './Permission';
-
+import { Func } from './Func';
 
 @Entity({
     name: 'module'
@@ -27,4 +27,11 @@ export class Module {
         lazy: false
     })
     permissions: Permission[];
+
+    @OneToMany(type => Func, func => func.module, {
+        cascadeInsert: true,
+        cascadeUpdate: false,
+        lazy: false
+    })
+    funcs: Func[];
 }
