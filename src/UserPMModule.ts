@@ -1,11 +1,12 @@
 import { ConnectionProvider } from './database/ConnectionProvider';
+import { RepositorysProvider } from './database/RepositorysProvider';
 import { Module ,Global} from '@nestjs/common';
 
 @Global()
 @Module({
   modules: [],
   controllers: [],
-  components: [ConnectionProvider],
+  components: [ConnectionProvider,...RepositorysProvider],
   exports: []
 })
 export class UserPMModule{}
