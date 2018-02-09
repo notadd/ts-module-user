@@ -54,5 +54,11 @@ export class ApplicationModule implements NestModule {
     jituan.children = []
     await this.organizationRepository.save(jituan)  
     */
+   /*  let jituan = this.organizationRepository.create({ name: '集团' })
+    let renli = this.organizationRepository.create({ name: '人力' })
+    let bangongshi = this.organizationRepository.create({ name: '办公室' })
+    jituan.children = [renli, bangongshi]
+    await this.organizationRepository.save(jituan)
+     */
   }
 }

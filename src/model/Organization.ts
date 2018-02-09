@@ -1,8 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, ClosureEntity, TreeChildren, TreeLevelColumn, TreeParent } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, ManyToOne , OneToMany} from 'typeorm';
 import { User } from './User';
 
 
-@ClosureEntity('organization')
+@Entity('organization')
 export class Organization {
 
     @PrimaryGeneratedColumn({
@@ -25,16 +25,17 @@ export class Organization {
     })
     users: User[];
 
-    @TreeParent({
+    @ManyToOne(type=>Organization,orientation=>orientation.children,{
         cascadeInsert: true,
         cascadeUpdate: false,
+        cascadeRemove: false,
         lazy: false
     })
     parent:Organization;
 
-    @TreeChildren({
+    @OneToMany(type=>Organization,orientation=>orientation.parent,{
         cascadeInsert: true,
-        cascadeUpdate: false,
+        cascadeUpdate: true,
         lazy: false
     })
     children:Organization[];
