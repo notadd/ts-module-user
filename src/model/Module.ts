@@ -1,30 +1,30 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable ,Index, ManyToOne, JoinColumn, OneToMany} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, Index, OneToMany } from 'typeorm';
 import { Permission } from './Permission';
 
 
 @Entity({
-    name:'module'
+    name: 'module'
 })
-@Index('name_module_id',['name','module_id'])
-export class Module{
+@Index('name_module_id', ['name', 'module_id'])
+export class Module {
 
     @PrimaryGeneratedColumn({
-        name:'id',
-        type:'int'
+        name: 'id',
+        type: 'int'
     })
-    id:number;
+    id: number;
 
     @Column({
-        name:'name',
-        type:'varchar',
-        length:20
+        name: 'name',
+        type: 'varchar',
+        length: 20
     })
-    name:string;
+    name: string;
 
-    @OneToMany(type=>Permission,permission=>permission.module,{
+    @OneToMany(type => Permission, permission => permission.module, {
         cascadeInsert: true,
         cascadeUpdate: false,
-        lazy:false
+        lazy: false
     })
-    permissions:Permission[];
+    permissions: Permission[];
 }
