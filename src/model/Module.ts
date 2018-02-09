@@ -5,7 +5,6 @@ import { Permission } from './Permission';
 @Entity({
     name: 'module'
 })
-@Index('name_module_id', ['name', 'module_id'])
 export class Module {
 
     @PrimaryGeneratedColumn({
@@ -17,7 +16,8 @@ export class Module {
     @Column({
         name: 'name',
         type: 'varchar',
-        length: 20
+        length: 20,
+        unique:true
     })
     name: string;
 
