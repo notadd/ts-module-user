@@ -3,7 +3,9 @@ import { Organization } from './Organization';
 import { Permission } from './Permission';
 import { Role } from './Role';
 
-
+/* 用户实体类，id自动生成、用户名、邮箱必须唯一
+   用户拥有角色、增加权限、减少权限、属于组织，都是多对多关系
+*/
 @Entity({
     name: 'user'
 })
@@ -18,7 +20,8 @@ export class User {
     @Column({
         name: 'user_name',
         type: 'varchar',
-        length: '20'
+        length: '20',
+        unique:true
     })
     userName: string;
 
@@ -39,7 +42,8 @@ export class User {
     @Column({
         name: 'email',
         type: 'varchar',
-        length: 30
+        length: 30,
+        unique:true
     })
     email: string;
 
