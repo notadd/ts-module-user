@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, Index, OneToMany } from 'typeorm';
 import { Permission } from './Permission';
 import { Func } from './Func';
-
+import { Role } from './Role';
 @Entity({
     name: 'module'
 })
@@ -34,4 +34,12 @@ export class Module {
         lazy: false
     })
     funcs: Func[];
+
+    @OneToMany(type => Role, role => role.module, {
+        cascadeInsert: true,
+        cascadeUpdate: false,
+        lazy: false
+    })
+    roles: Role[];
+
 }

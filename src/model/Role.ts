@@ -1,11 +1,11 @@
 import { Entity, Column, PrimaryGeneratedColumn, Index, ManyToOne , ManyToMany ,JoinTable, JoinColumn} from 'typeorm';
-import { Permission } from './Permission';
+import { Func } from './Func';
 import { Module } from './Module';
 
 @Entity({
-    name:'function'
+    name:'role'
 })
-export class Func{
+export class Role{
 
     @PrimaryGeneratedColumn({
         name:'id',
@@ -20,26 +20,26 @@ export class Func{
     })
     name:string;
 
-    @ManyToMany(type=>Permission,{
+    @ManyToMany(type=>Func,{
         cascadeInsert: true,
         cascadeUpdate: false,
         lazy:false
     })
     @JoinTable({
-        name: 'function_permission',
+        name: 'role_function',
         joinColumn: {
-            name: 'function_id',
+            name: 'role_id',
             referencedColumnName: 'id'
         },
         inverseJoinColumn: {
-            name: 'permission_id',
+            name: 'function_id',
             referencedColumnName: 'id'
         },
         database: 'user_pm'
     })
-    permissions:Permission[];
+    funcs:Func[];
 
-    @ManyToOne(type=>Module,module=>module.funcs,{
+    @ManyToOne(type=>Module,module=>module.roles,{
         cascadeInsert:true,
         cascadeUpdate: false,
         cascadeRemove: false,
@@ -51,5 +51,4 @@ export class Func{
         referencedColumnName:'id'
     })
     module:Module;
-
 }
