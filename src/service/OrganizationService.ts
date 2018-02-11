@@ -13,8 +13,11 @@ export class OrganizationService {
     }
 
     async getChildren(id: number): Promise<Organization[]> {
-        let { children } = await this.organizationRepository.findOneById(id, { relations: ['children'] })
-        return children
+        let o:Organization = await this.organizationRepository.findOneById(id, { relations: ['children'] })
+        if(!o){
+            throw new HttpException('指定父组织不存在', 402)
+        }
+        return o.children
     }
     async getAll(): Promise<Organization[]> {
         return await this.organizationRepository.find()

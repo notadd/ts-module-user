@@ -39,7 +39,7 @@ export class OrganizationResolver {
     async children(req: IncomingMessage, body: { id: number }): Promise<ChildrenData> {
         let data: ChildrenData = {
             code: 200,
-            message: '获取所有根组织成功',
+            message: '获取子组织成功',
             children: []
         }
         try {

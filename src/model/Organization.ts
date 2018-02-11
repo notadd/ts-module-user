@@ -36,9 +36,9 @@ export class Organization {
     parentId: number
 
     @ManyToOne(type => Organization, orientation => orientation.children, {
-        cascadeInsert: false,
-        cascadeUpdate: false,
-        cascadeRemove: true,
+        cascadeInsert: true,
+        cascadeUpdate: true,
+        cascadeRemove: false,
         eager: false
     })
     @JoinColumn({
