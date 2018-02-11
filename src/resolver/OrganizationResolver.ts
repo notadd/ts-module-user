@@ -82,4 +82,32 @@ export class OrganizationResolver {
         }
         return data
     }
+
+    @Mutation('updateOrganization')
+    async updateOrganization(req: IncomingMessage, body: { name: string, parentId: number }): Promise<Data> {
+        let data: Data = {
+            code: 200,
+            message: '更新组织成功'
+        }
+        try {
+            let { name, parentId } = body
+            if (!name) {
+                throw new HttpException('缺少参数', 400)
+            }
+            if (parentId && !Number.isInteger(parentId)) {
+                throw new HttpException('父组织Id不是整数', 401)
+            }
+            await this.organizationService.updateOrganization(name, parentId)
+        } catch (err) {
+            if (err instanceof HttpException) {
+                data.code = err.getStatus()
+                data.message = err.getResponse() + ''
+            } else {
+                console.log(err)
+                data.code = 500
+                data.message = '出现了意外错误' + err.toString()
+            }
+        }
+        return data
+    }
 }
