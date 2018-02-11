@@ -51,9 +51,23 @@ export class OrganizationService {
         }
         try {
             //parent必须为null才有效，如果为undefined则不改动
+            //这一步与级联没有关系，不管级联如何设置
             exist.name = name
             exist.parent = parent
             await this.organizationRepository.save(exist)
+        } catch (err) {
+            throw new HttpException('数据库错误' + err.toString(), 401)
+        }
+    }
+
+
+    async deleteOrganization(id:number):Promise<void>{
+        let exist: Organization = await this.organizationRepository.findOneById(id)
+        if (!exist) {
+            throw new HttpException('指定id组织不存在', 404)
+        }
+        try {
+            await this.organizationRepository.removeById(id)
         } catch (err) {
             throw new HttpException('数据库错误' + err.toString(), 401)
         }
