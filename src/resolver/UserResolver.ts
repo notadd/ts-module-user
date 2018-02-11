@@ -1,13 +1,41 @@
-import { Resolver,Query,Mutation } from '@nestjs/graphql';
+import { Resolver, Query, Mutation } from '@nestjs/graphql';
+import { Inject, HttpException } from '@nestjs/common';
 import { UserService } from '../service/UserService';
-
+import { Data } from '../interface/Data';
+import { IncomingMessage } from 'http';
 
 @Resolver('User')
-export class UserResolver{
+export class UserResolver {
 
     constructor(
-        @Inject(UserService) private readonly userService:UserService
-    ){}
+        @Inject(UserService) private readonly userService: UserService
+    ) { }
 
-    
+    /* 后台创建用户接口，只包含通用信息项，不包含特殊信息项 */
+    @Mutation('createUser')
+    async createUser(req: IncomingMessage, body: { parentId: number, userName: string, password: string, nickname: string, realName: string, sex: string, birthday: string, email: string, cellPhoneNumber: string, status: boolean }): Promise<Data> {
+        let data: Data = {
+            code: 200,
+            message: '创建用户成功'
+        }
+        try {
+            let { parentId, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber, status } = body
+            if (!parentId || !userName || !password || !nickname || !realName || !sex || !birthday || !email || !cellPhoneNumber || !status) {
+                throw new HttpException('缺少参数', 400)
+            }
+            await this.userService.createUser(parentId, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber, status)
+        } catch (err) {
+            if (err instanceof HttpException) {
+                data.code = err.getStatus()
+                data.message = err.getResponse() + ''
+            } else {
+                console.log(err)
+                data.code = 500
+                data.message = '出现了意外错误' + err.toString()
+            }
+        }
+        return data
+    }
+
+
 }
