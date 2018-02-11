@@ -1,0 +1,10 @@
+query organizations{
+  organizations{
+    code
+    message
+    organizations{
+	  id
+      name
+    }
+  }
+}
