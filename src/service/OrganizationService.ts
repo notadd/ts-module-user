@@ -8,6 +8,10 @@ export class OrganizationService {
         @Inject('UserPMModule.OrganizationRepository') private readonly organizationRepository: Repository<Organization>
     ) { }
 
+    async getRoots(): Promise<Organization[]> {
+        return await this.organizationRepository.find({root:true})
+    }
+
     async getAll(): Promise<Organization[]> {
         return await this.organizationRepository.find()
     }
