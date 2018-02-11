@@ -10,7 +10,7 @@ export class OrganizationResolver {
     ) { }
 
     @Query('organizations')
-    async organizations(): OrganizationsData {
+    async organizations(): Promise<OrganizationsData> {
         let data: OrganizationsData = {
             code: 200,
             message: '获取所有组织成功',
