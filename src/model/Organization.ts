@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, ManyToOne , OneToMany, JoinColumn} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 import { User } from './User';
 
 
@@ -15,11 +15,11 @@ export class Organization {
         name: 'name',
         type: 'varchar',
         length: 20,
-        unique:true
+        unique: true
     })
     name: string;
 
-    @ManyToMany(type => User,user=>user.organizations,{
+    @ManyToMany(type => User, user => user.organizations, {
         cascadeInsert: true,
         cascadeUpdate: false,
         lazy: false
@@ -28,28 +28,29 @@ export class Organization {
 
 
     @Column({
-        name:'parentId',
-        type:'int',
-        nullable:true
+        name: 'parentId',
+        type: 'int',
+        nullable: true
     })
-    parentId:number
+    parentId: number
 
-    @ManyToOne(type=>Organization,orientation=>orientation.children,{
+    @ManyToOne(type => Organization, orientation => orientation.children, {
         cascadeInsert: false,
         cascadeUpdate: false,
-        cascadeRemove: false,
-        lazy: false
+        cascadeRemove: true,
+        eager: false
     })
     @JoinColumn({
-        name:'parentId',
-        referencedColumnName:'id'
+        name: 'parentId',
+        referencedColumnName: 'id'
     })
-    parent:Organization;
+    parent: Organization;
 
-    @OneToMany(type=>Organization,orientation=>orientation.parent,{
+    @OneToMany(type => Organization, orientation => orientation.parent, {
         cascadeInsert: true,
         cascadeUpdate: true,
-        lazy: false
+        lazy: false,
+        eager: false
     })
-    children:Organization[];
+    children: Organization[];
 }

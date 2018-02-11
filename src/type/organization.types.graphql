@@ -11,7 +11,7 @@ type Mutation{
     #update organization with name , the parentId is optional
     updateOrganization(id:Int,name:String,parentId:Int):Data
     #delete  specify id organization
-    deleteOrganization(id:Int):Data
+    deleteOrganization(id:Int,force:Boolean):Data
 }
 
 #return data

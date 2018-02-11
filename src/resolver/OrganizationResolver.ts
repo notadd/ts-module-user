@@ -112,17 +112,20 @@ export class OrganizationResolver {
     }
 
     @Mutation('deleteOrganization')
-    async deleteOrganization(req: IncomingMessage, body: { id: number }): Promise<Data> {
+    async deleteOrganization(req: IncomingMessage, body: { id: number ,force:boolean}): Promise<Data> {
         let data: Data = {
             code: 200,
             message: '删除组织成功'
         }
         try {
-            let { id } = body
+            let { id ,force} = body
             if (!id) {
                 throw new HttpException('缺少参数', 400)
             }
-            await this.organizationService.deleteOrganization(id)
+            if(force!==undefined&&force!==true&&force!==false){
+                throw new HttpException('参数错误', 400)
+            }
+            await this.organizationService.deleteOrganization(id,force)
         } catch (err) {
             if (err instanceof HttpException) {
                 data.code = err.getStatus()
