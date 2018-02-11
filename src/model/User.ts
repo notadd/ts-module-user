@@ -35,7 +35,7 @@ export class User {
     @Column({
         name: 'salt',
         type: 'varchar',
-        length: 20
+        length: 10
     })
     salt: string;
 
@@ -147,7 +147,7 @@ export class User {
 
     @ManyToMany(type => Organization, organization => organization.users, {
         cascadeInsert: true,
-        cascadeUpdate: false,
+        cascadeUpdate: true,
         lazy: false
     })
     @JoinTable({
