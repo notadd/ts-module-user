@@ -1,0 +1,20 @@
+type Mutation{
+    #create user , specify organization
+    createUser(
+        organizationId: Int, 
+        userName: String, 
+        password: String, 
+        nickname: String, 
+        realName: String, 
+        sex: Sex, 
+        birthday: String, 
+        email: String, 
+        cellPhoneNumber: String, 
+        status: Boolean 
+    ):Data
+}
+
+enum Sex{
+    men 
+    women
+}

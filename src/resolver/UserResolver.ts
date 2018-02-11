@@ -13,17 +13,17 @@ export class UserResolver {
 
     /* 后台创建用户接口，只包含通用信息项，不包含特殊信息项 */
     @Mutation('createUser')
-    async createUser(req: IncomingMessage, body: { parentId: number, userName: string, password: string, nickname: string, realName: string, sex: string, birthday: string, email: string, cellPhoneNumber: string, status: boolean }): Promise<Data> {
+    async createUser(req: IncomingMessage, body: { organizationId: number, userName: string, password: string, nickname: string, realName: string, sex: string, birthday: string, email: string, cellPhoneNumber: string, status: boolean }): Promise<Data> {
         let data: Data = {
             code: 200,
             message: '创建用户成功'
         }
         try {
-            let { parentId, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber, status } = body
-            if (!parentId || !userName || !password || !nickname || !realName || !sex || !birthday || !email || !cellPhoneNumber || !status) {
+            let { organizationId, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber, status } = body
+            if (!userName || !password || !nickname || !realName || !sex || !birthday || !email || !cellPhoneNumber || !status) {
                 throw new HttpException('缺少参数', 400)
             }
-            await this.userService.createUser(parentId, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber, status)
+            await this.userService.createUser(organizationId, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber, status)
         } catch (err) {
             if (err instanceof HttpException) {
                 data.code = err.getStatus()
