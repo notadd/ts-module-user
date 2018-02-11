@@ -24,7 +24,7 @@ export class OrganizationService {
         return await this.organizationRepository.find()
     }
 
-    async getUsers(id:number):Promise<User[]> {
+    async getUsersInOrganization(id:number):Promise<User[]> {
         let o:Organization = await this.organizationRepository.findOneById(id, { relations: ['users'] })
         if(!o){
             throw new HttpException('指定父组织不存在', 402)

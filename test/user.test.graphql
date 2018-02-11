@@ -1,3 +1,22 @@
+query users{
+  users{
+    code
+    message
+    users{
+			id
+      userName
+      nickname
+      realName
+      sex
+      birthday
+      email
+      cellPhoneNumber
+      status
+    }
+  }
+}
+
+
 mutation createUser{
   createUser(
     organizationId:1,

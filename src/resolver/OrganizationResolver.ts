@@ -98,7 +98,7 @@ export class OrganizationResolver {
             if (!id) {
                 throw new HttpException('缺少参数', 400)
             }
-            data.users = await this.organizationService.getUsers(id)
+            data.users = await this.organizationService.getUsersInOrganization(id)
         } catch (err) {
             if (err instanceof HttpException) {
                 data.code = err.getStatus()

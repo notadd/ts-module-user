@@ -11,6 +11,11 @@ export class UserService {
         @Inject('UserPMModule.OrganizationRepository') private readonly organizationRepository: Repository<Organization>
     ) { }
 
+
+    async getAll():Promise<User[]>{
+        return await this.userRepository.find()
+    }
+
     async createUser(organizationId: number, userName: string, password: string, nickname: string, realName: string, sex: string, birthday: string, email: string, cellPhoneNumber: string, status: boolean): Promise<void> {
         let organization: Organization
         if (organizationId) {

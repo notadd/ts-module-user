@@ -6,7 +6,7 @@ type Query{
     #get all of organization 
     organizations:OrganizationsData
     #get users of specify organization 
-    users(id:Int):UsersData
+    usersInOrganization(id:Int):UsersInOrganizationData
 }
 
 type Mutation{
@@ -56,7 +56,7 @@ type Organization{
 }
 
 #return data
-type UsersData{
+type UsersInOrganizationData{
     #error code
     code:Int
     #error message

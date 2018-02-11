@@ -1,3 +1,9 @@
+type Query{
+    #get all of user 
+    users:UsersData
+}
+
+
 type Mutation{
     #create user , specify organization
     createUser(
@@ -17,4 +23,14 @@ type Mutation{
 enum Sex{
     men 
     women
+}
+
+#users return Data
+type UsersData{
+    #error code
+    code:Int
+    #error message
+    message:String
+    #array of user
+    users:[User]
 }
