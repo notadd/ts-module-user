@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, ManyToOne , OneToMany} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, ManyToOne , OneToMany, JoinColumn} from 'typeorm';
 import { User } from './User';
 
 
@@ -19,6 +19,12 @@ export class Organization {
     })
     name: string;
 
+    @Column({
+        name: 'root',
+        type: 'tinyint'
+    })
+    root: boolean;
+
     @ManyToMany(type => User,user=>user.organizations,{
         cascadeInsert: true,
         cascadeUpdate: false,
@@ -31,6 +37,10 @@ export class Organization {
         cascadeUpdate: false,
         cascadeRemove: false,
         lazy: false
+    })
+    @JoinColumn({
+        name:'parentId',
+        referencedColumnName:'id'
     })
     parent:Organization;
 
