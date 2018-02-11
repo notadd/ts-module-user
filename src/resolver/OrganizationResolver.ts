@@ -9,7 +9,7 @@ export class OrganizationResolver {
 
     constructor(
         @Inject(OrganizationService) private readonly organizationService: OrganizationService
-    ) {}
+    ) { }
 
     @Query('roots')
     async roots(): Promise<OrganizationsData> {
@@ -84,20 +84,20 @@ export class OrganizationResolver {
     }
 
     @Mutation('updateOrganization')
-    async updateOrganization(req: IncomingMessage, body: { name: string, parentId: number }): Promise<Data> {
+    async updateOrganization(req: IncomingMessage, body: { id: number, name: string, parentId: number }): Promise<Data> {
         let data: Data = {
             code: 200,
             message: '更新组织成功'
         }
         try {
-            let { name, parentId } = body
-            if (!name) {
+            let { id, name, parentId } = body
+            if (!id || !name) {
                 throw new HttpException('缺少参数', 400)
             }
             if (parentId && !Number.isInteger(parentId)) {
                 throw new HttpException('父组织Id不是整数', 401)
             }
-            await this.organizationService.updateOrganization(name, parentId)
+            await this.organizationService.updateOrganization(id,name, parentId)
         } catch (err) {
             if (err instanceof HttpException) {
                 data.code = err.getStatus()

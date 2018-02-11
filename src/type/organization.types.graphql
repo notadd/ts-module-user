@@ -9,7 +9,7 @@ type Mutation{
     #create organization with name , the parentId is optional
     createOrganization(name:String,parentId:Int):Data
     #update organization with name , the parentId is optional
-    updateOrganization(name:String,parentId:Int):Data
+    updateOrganization(id:Int,name:String,parentId:Int):Data
 }
 
 #return data

@@ -9,7 +9,7 @@ export class OrganizationService {
     ) { }
 
     async getRoots(): Promise<Organization[]> {
-        return await this.organizationRepository.find({parentId:null})
+        return await this.organizationRepository.find({ parentId: null })
     }
 
     async getAll(): Promise<Organization[]> {
@@ -21,16 +21,39 @@ export class OrganizationService {
         if (parentId !== undefined && parentId !== null) {
             parent = await this.organizationRepository.findOneById(parentId)
             if (!parent) {
-                throw new HttpException('父组织不存在', 402)
+                throw new HttpException('指定父组织不存在', 402)
             }
         }
         let exist: Organization = await this.organizationRepository.findOne({ name })
         if (exist) {
-            throw new HttpException('指定组织名已存在', 403)
+            throw new HttpException('要创建的组织名已存在', 403)
         }
+        //如果parent为undefined，则parentId为null
         let organization: Organization = this.organizationRepository.create({ name, parent })
         try {
             await this.organizationRepository.save(organization)
+        } catch (err) {
+            throw new HttpException('数据库错误' + err.toString(), 401)
+        }
+    }
+
+    async updateOrganization(id: number, name: string, parentId: number): Promise<void> {
+        let parent: Organization = null
+        if (parentId !== undefined && parentId !== null) {
+            parent = await this.organizationRepository.findOneById(parentId)
+            if (!parent) {
+                throw new HttpException('指定父组织不存在', 402)
+            }
+        }
+        let exist: Organization = await this.organizationRepository.findOneById(id)
+        if (!exist) {
+            throw new HttpException('指定id组织不存在', 404)
+        }
+        try {
+            //parent必须为null才有效，如果为undefined则不改动
+            exist.name = name
+            exist.parent = parent
+            await this.organizationRepository.save(exist)
         } catch (err) {
             throw new HttpException('数据库错误' + err.toString(), 401)
         }
