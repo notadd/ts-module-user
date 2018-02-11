@@ -1,0 +1,17 @@
+mutation createUser{
+  createUser(
+    organizationId:1,
+    userName:"码云",
+    password:"123456",
+    nickname:"jackma",
+    realName:"马云",
+    sex:women,
+    birthday:"1999-06-01",
+    email:"111111@aaa.com",
+    cellPhoneNumber:"100861111111",
+    status:true
+  ){
+	code 
+    message
+  }
+}
