@@ -10,6 +10,8 @@ type Mutation{
     createOrganization(name:String,parentId:Int):Data
     #update organization with name , the parentId is optional
     updateOrganization(id:Int,name:String,parentId:Int):Data
+    #delete  specify id organization
+    deleteOrganization(id:Int):Data
 }
 
 #return data
