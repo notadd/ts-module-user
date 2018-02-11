@@ -2,6 +2,7 @@ import { OrganizationsData } from '../interface/organization/OrganizationsData';
 import { ChildrenData } from '../interface/organization/ChildrenData';
 import { OrganizationService } from '../service/OrganizationService';
 import { RootsData } from '../interface/organization/RootsData';
+import { UsersData } from '../interface/organization/UsersData';
 import { Resolver, Query, Mutation } from '@nestjs/graphql';
 import { HttpException, Inject } from '@nestjs/common';
 import { Data } from '../interface/Data';
@@ -72,6 +73,32 @@ export class OrganizationResolver {
         }
         try {
             data.organizations = await this.organizationService.getAll()
+        } catch (err) {
+            if (err instanceof HttpException) {
+                data.code = err.getStatus()
+                data.message = err.getResponse() + ''
+            } else {
+                console.log(err)
+                data.code = 500
+                data.message = '出现了意外错误' + err.toString()
+            }
+        }
+        return data
+    }
+
+    @Query('users')
+    async users(req:IncomingMessage,body:{id:number}): Promise<UsersData> {
+        let data: UsersData = {
+            code: 200,
+            message: '获取组织用户成功',
+            users: []
+        }
+        try {
+            let { id } = body
+            if (!id) {
+                throw new HttpException('缺少参数', 400)
+            }
+            data.users = await this.organizationService.getUsers(id)
         } catch (err) {
             if (err instanceof HttpException) {
                 data.code = err.getStatus()

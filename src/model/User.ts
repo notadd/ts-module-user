@@ -48,6 +48,13 @@ export class User {
     email: string;
 
     @Column({
+        name: 'cell_phone_number',
+        type: 'varchar',
+        length: 20
+    })
+    cellPhoneNumber :string
+
+    @Column({
         name: 'nickname',
         type: 'varchar',
         length: 20
@@ -72,7 +79,7 @@ export class User {
         name: 'birthday',
         type: 'date'
     })
-    data: Date
+    birthday: Date
 
     @Column({
         name: 'status',
