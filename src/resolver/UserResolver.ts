@@ -1,3 +1,4 @@
+import { FreedomUsersData } from '../interface/user/FreedomUsersData';
 import { Resolver, Query, Mutation } from '@nestjs/graphql';
 import { UsersData } from '../interface/user/UsersData';
 import { Inject, HttpException } from '@nestjs/common';
@@ -31,7 +32,28 @@ export class UserResolver {
                 data.message = '出现了意外错误' + err.toString()
             }
         }
+        return data
+    }
 
+    @Query('freedomUsers')
+    async freedomUsers():Promise<FreedomUsersData>{
+        let data:FreedomUsersData={
+            code:200,
+            message:'获取所有用户成功',
+            freedomUsers:[]
+        }
+        try{
+            data.freedomUsers = await this.userService.getFreedomUsers()
+        }catch (err) {
+            if (err instanceof HttpException) {
+                data.code = err.getStatus()
+                data.message = err.getResponse() + ''
+            } else {
+                console.log(err)
+                data.code = 500
+                data.message = '出现了意外错误' + err.toString()
+            }
+        }
         return data
     }
 

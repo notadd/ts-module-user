@@ -1,6 +1,8 @@
 type Query{
     #get all of user 
     users:UsersData
+    #get all of freedom users
+    freedomUsers:FreedomUsersData
 }
 
 
@@ -33,4 +35,14 @@ type UsersData{
     message:String
     #array of user
     users:[User]
+}
+
+#freeUsers return Data
+type FreedomUsersData{
+    #error code
+    code:Int
+    #error message
+    message:String
+    #array of user
+    freedomUsers:[User]
 }
