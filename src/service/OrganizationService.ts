@@ -12,6 +12,10 @@ export class OrganizationService {
         return await this.organizationRepository.find({ parentId: null })
     }
 
+    async getChildren(id: number): Promise<Organization[]> {
+        let { children } = await this.organizationRepository.findOneById(id, { relations: ['children'] })
+        return children
+    }
     async getAll(): Promise<Organization[]> {
         return await this.organizationRepository.find()
     }
@@ -84,7 +88,7 @@ export class OrganizationService {
         }
     }
 
-    async recursionDelete(id:number): Promise<void> {
+    async recursionDelete(id: number): Promise<void> {
         let { children } = await this.organizationRepository.findOneById(id, { relations: ['children'] })
         if (children && children.length > 0) {
             for (let i = 0; i < children.length; i++) {
