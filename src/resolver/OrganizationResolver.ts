@@ -6,6 +6,8 @@ import { Resolver, Query, Mutation } from '@nestjs/graphql';
 import { HttpException, Inject } from '@nestjs/common';
 import { Data } from '../interface/Data';
 import { IncomingMessage } from 'http';
+
+
 @Resolver('Organization')
 export class OrganizationResolver {
 
