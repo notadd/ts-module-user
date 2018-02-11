@@ -5,6 +5,8 @@ type Query{
     roots:RootsData
     #get all of organization 
     organizations:OrganizationsData
+    #get users of specify organization 
+    users(id:Int):UsersData
 }
 
 type Mutation{
@@ -47,9 +49,30 @@ type ChildrenData{
     children:[Organization]
 }
 
-
 #Organization type 
 type Organization{
     id:Int
     name:String
+}
+
+#return data
+type UsersData{
+    #error code
+    code:Int
+    #error message
+    message:String
+    #array of users
+    users:[User]
+}
+
+type User{
+    id:Int
+    userName:String
+    nickname:String
+    realName:String
+    sex:String
+    birthday:String
+    email:String
+    cellPhoneNumber:String
+    status:Boolean
 }

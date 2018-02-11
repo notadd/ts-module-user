@@ -8,4 +8,6 @@ export class UserResolver{
     constructor(
         @Inject(UserService) private readonly userService:UserService
     ){}
+
+    
 }

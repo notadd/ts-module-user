@@ -1,6 +1,7 @@
 import { HttpException, Inject, Component } from '@nestjs/common';
 import { Organization } from '../model/Organization';
 import { Repository } from 'typeorm';
+import { User } from '../model/User';
 @Component()
 export class OrganizationService {
 
@@ -23,6 +24,13 @@ export class OrganizationService {
         return await this.organizationRepository.find()
     }
 
+    async getUsers(id:number):Promise<User[]> {
+        let o:Organization = await this.organizationRepository.findOneById(id, { relations: ['users'] })
+        if(!o){
+            throw new HttpException('指定父组织不存在', 402)
+        }
+        return o.users
+    }
     async createOrganization(name: string, parentId: number): Promise<void> {
         let parent: Organization
         if (parentId !== undefined && parentId !== null) {
