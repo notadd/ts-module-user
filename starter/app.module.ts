@@ -45,7 +45,6 @@ export class ApplicationModule implements NestModule {
     jituan.children = [renli,bangongshi]
     await this.organizationRepository.save(jituan) 
     */
-    
     /* 移除children只移除关联关系，而不删除children实体
     let jituan  = this.organizationRepository.create({name:'集团'})
     let renli  = this.organizationRepository.create({name:'人力'})
