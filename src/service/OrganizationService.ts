@@ -13,9 +13,11 @@ export class OrganizationService {
     }
 
     async createOrganization(name: string, parentId: number): Promise<void> {
-        let parent: Organization = await this.organizationRepository.findOneById(parentId)
-        if (!parent) {
-            throw new HttpException('父组织不存在', 402)
+        if (parentId !== undefined && parentId !== null) {
+            let parent: Organization = await this.organizationRepository.findOneById(parentId)
+            if (!parent) {
+                throw new HttpException('父组织不存在', 402)
+            }
         }
         let exist: Organization = await this.organizationRepository.findOne({ name })
         if (exist) {
@@ -25,7 +27,7 @@ export class OrganizationService {
         try {
             await this.organizationRepository.save(organization)
         } catch (err) {
-            throw new HttpException('数据库错误'+err.toString(),401)
+            throw new HttpException('数据库错误' + err.toString(), 401)
         }
     }
 }
