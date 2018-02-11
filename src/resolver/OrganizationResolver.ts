@@ -11,6 +11,29 @@ export class OrganizationResolver {
         @Inject(OrganizationService) private readonly organizationService: OrganizationService
     ) { }
 
+    @Query('roots')
+    async roots(): Promise<OrganizationsData> {
+        let data: OrganizationsData = {
+            code: 200,
+            message: '获取所有根组织成功',
+            organizations: []
+        }
+        try {
+            data.organizations = await this.organizationService.getRoots()
+        } catch (err) {
+            if (err instanceof HttpException) {
+                data.code = err.getStatus()
+                data.message = err.getResponse() + ''
+            } else {
+                console.log(err)
+                data.code = 500
+                data.message = '出现了意外错误' + err.toString()
+            }
+        }
+        return data
+    }
+
+
     @Query('organizations')
     async organizations(): Promise<OrganizationsData> {
         let data: OrganizationsData = {

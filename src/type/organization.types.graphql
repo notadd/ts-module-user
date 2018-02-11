@@ -1,7 +1,8 @@
 type Query{
+    #get all of root organization 
+    roots():OrganizationsData
     #get all of organization 
     organizations:OrganizationsData
-
 }
 
 type Mutation{
