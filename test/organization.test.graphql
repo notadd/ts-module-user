@@ -60,3 +60,23 @@ mutation create{
     message
   }
 }	
+
+
+mutation update{
+  shanghairenli:updateOrganization(id:6,name:"上海分公司人力资源部",parentId:5){
+    code
+    message
+  }
+  shanghaibangon:updateOrganization(id:7,name:"上海分公司党政办公室",parentId:5){
+    code
+    message
+  }
+  guangdongrenli:updateOrganization(id:8,name:"广东分公司人力资源部",parentId:null){
+    code
+    message
+  }
+  guangdongbangongshi:updateOrganization(id:9,name:"广东分公司党政办公室",parentId:null){
+    code
+    message
+  }
+}
