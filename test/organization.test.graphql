@@ -2,25 +2,34 @@ query roots{
   roots{
     code
     message
-    organizations{
+    roots{
 			id
       name
     }
   }
 }
 
+query children{
+	children(id:1){
+		code
+    message
+    children{
+			id
+      name
+    }
+  }
+}
 
 query organizations{
   organizations{
     code
     message
     organizations{
-	  id
+			id
       name
     }
   }
 }
-
 
 mutation create{
 	gongsi:createOrganization(name:"集团公司"){
@@ -60,7 +69,6 @@ mutation create{
     message
   }
 }	
-
 
 mutation update{
   shanghairenli:updateOrganization(id:6,name:"上海分公司人力资源部",parentId:5){
