@@ -13,8 +13,9 @@ export class OrganizationService {
     }
 
     async createOrganization(name: string, parentId: number): Promise<void> {
+        let parent: Organization
         if (parentId !== undefined && parentId !== null) {
-            let parent: Organization = await this.organizationRepository.findOneById(parentId)
+            parent = await this.organizationRepository.findOneById(parentId)
             if (!parent) {
                 throw new HttpException('父组织不存在', 402)
             }

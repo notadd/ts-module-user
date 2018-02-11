@@ -8,3 +8,43 @@ query organizations{
     }
   }
 }
+
+
+mutation create{
+	gongsi:createOrganization(name:"集团公司"){
+		code
+    message
+  }
+  reli:createOrganization(name:"人力",parentId:1){
+		code
+    message
+  }
+  bangongshi:createOrganization(name:"办公室",parentId:1){
+		code
+    message
+  }
+  shanghai:createOrganization(name:"上海分公司",parentId:1){
+		code
+    message
+  }
+  guangzhou:createOrganization(name:"广州分公司",parentId:1){
+		code
+    message
+  }
+  shanghairenli:createOrganization(name:"上海分公司人力",parentId:4){
+		code
+    message
+  }
+  shanghaibangongshi:createOrganization(name:"上海分公司办公室",parentId:4){
+		code
+    message
+  }
+  guangzhoureli:createOrganization(name:"广州分公司人力",parentId:5){
+		code
+    message
+  }
+  guangzhoubangongshi:createOrganization(name:"广州分公司办公室",parentId:5){
+		code
+    message
+  }
+}	
