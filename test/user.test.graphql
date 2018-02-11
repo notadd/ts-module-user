@@ -16,9 +16,26 @@ query users{
   }
 }
 
+query freedom{
+  freedomUsers{
+    code
+    message
+    freedomUsers{
+			id
+      userName
+      nickname
+      realName
+      sex
+      birthday
+      email
+      cellPhoneNumber
+      status
+    }
+  }
+}
 
 mutation createUser{
-  createUser(
+  mayun:createUser(
     organizationId:1,
     userName:"码云",
     password:"123456",
@@ -30,7 +47,52 @@ mutation createUser{
     cellPhoneNumber:"100861111111",
     status:true
   ){
-	code 
+		code 
+    message
+  }
+  mayun:createUser(
+    organizationId:1,
+    userName:"码云",
+    password:"123456",
+    nickname:"jackma",
+    realName:"马云",
+    sex:women,
+    birthday:"1999-06-01",
+    email:"111111@aaa.com",
+    cellPhoneNumber:"100861111111",
+    status:true
+  ){
+		code 
+    message
+  }
+  zhangsan:createUser(
+    organizationId:null,
+    userName:"zhangsan",
+    password:"123456",
+    nickname:"三儿",
+    realName:"张三",
+    sex:women,
+    birthday:"1999-06-01",
+    email:"2222222@aaa.com",
+    cellPhoneNumber:"100861111111",
+    status:true
+  ){
+		code 
+    message
+  }
+  lisi:createUser(
+    organizationId:null,
+    userName:"lisi",
+    password:"123456",
+    nickname:"四儿",
+    realName:"李四",
+    sex:women,
+    birthday:"1999-06-01",
+    email:"333333@aaa.com",
+    cellPhoneNumber:"100861111111",
+    status:true
+  ){
+		code 
     message
   }
 }

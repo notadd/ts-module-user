@@ -17,16 +17,20 @@ export class UserService {
     }
 
     async getFreedomUsers():Promise<User[]>{
-        return await this.userRepository.find({organizations:[]})
+        let users:User[] = await this.userRepository.find({relations:['organizations']})
+        return users.filter(user=>{
+            return user.organizations===null||user.organizations===undefined||user.organizations.length===0
+        })
     }
 
     async createUser(organizationId: number, userName: string, password: string, nickname: string, realName: string, sex: string, birthday: string, email: string, cellPhoneNumber: string, status: boolean): Promise<void> {
-        let organization: Organization
+        let organizations: Organization[] = []
         if (organizationId) {
-            organization = await this.organizationRepository.findOneById(organizationId, { relations: ['users'] })
+            let organization = await this.organizationRepository.findOneById(organizationId)
             if (!organization) {
                 throw new HttpException('指定组织不存在', 402)
             }
+            organizations.push(organization)
         }
         let exist: User = await this.userRepository.findOne({ userName })
         if (exist) {
@@ -35,7 +39,7 @@ export class UserService {
         try {
             let salt = crypto.createHash('md5').update(new Date().toString()).digest('hex').slice(0, 10)
             let passwordWithSalt = crypto.createHash('md5').update(password + salt).digest('hex')
-            let user: User = this.userRepository.create({ userName, password: passwordWithSalt, salt, nickname, realName, sex, birthday: new Date(birthday), email, cellPhoneNumber, status, organizations: [organization] })
+            let user: User = this.userRepository.create({ userName, password: passwordWithSalt, salt, nickname, realName, sex, birthday: new Date(birthday), email, cellPhoneNumber, status, organizations})
             await this.userRepository.save(user)
         } catch (err) {
             throw new HttpException('数据库错误' + err.toString(), 405)
