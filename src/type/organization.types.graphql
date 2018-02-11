@@ -1,6 +1,8 @@
 type Query{
+    #get children organization of specify organization 
+    children(id:Int):ChildrenData
     #get all of root organization 
-    roots:OrganizationsData
+    roots:RootsData
     #get all of organization 
     organizations:OrganizationsData
 }
@@ -23,6 +25,28 @@ type OrganizationsData{
     #array of organization 
     organizations:[Organization]
 }
+
+
+#return data
+type RootsData{
+    #error code
+    code:Int
+    #error message
+    message:String
+    #array of organization 
+    roots:[Organization]
+}
+
+#return data
+type ChildrenData{
+    #error code
+    code:Int
+    #error message
+    message:String
+    #array of organization 
+    children:[Organization]
+}
+
 
 #Organization type 
 type Organization{

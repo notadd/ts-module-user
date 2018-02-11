@@ -1,5 +1,7 @@
 import { OrganizationsData } from '../interface/organization/OrganizationsData';
+import { ChildrenData } from '../interface/organization/ChildrenData';
 import { OrganizationService } from '../service/OrganizationService';
+import { RootsData } from '../interface/organization/RootsData';
 import { Resolver, Query, Mutation } from '@nestjs/graphql';
 import { HttpException, Inject } from '@nestjs/common';
 import { Data } from '../interface/Data';
@@ -12,14 +14,40 @@ export class OrganizationResolver {
     ) { }
 
     @Query('roots')
-    async roots(): Promise<OrganizationsData> {
-        let data: OrganizationsData = {
+    async roots(): Promise<RootsData> {
+        let data: RootsData = {
             code: 200,
             message: '获取所有根组织成功',
-            organizations: []
+            roots: []
         }
         try {
-            data.organizations = await this.organizationService.getRoots()
+            data.roots = await this.organizationService.getRoots()
+        } catch (err) {
+            if (err instanceof HttpException) {
+                data.code = err.getStatus()
+                data.message = err.getResponse() + ''
+            } else {
+                console.log(err)
+                data.code = 500
+                data.message = '出现了意外错误' + err.toString()
+            }
+        }
+        return data
+    }
+
+    @Query('children')
+    async children(req: IncomingMessage, body: { id: number }): Promise<ChildrenData> {
+        let data: ChildrenData = {
+            code: 200,
+            message: '获取所有根组织成功',
+            children: []
+        }
+        try {
+            let { id } = body
+            if (!id) {
+                throw new HttpException('缺少参数', 400)
+            }
+            data.children = await this.organizationService.getChildren(id)
         } catch (err) {
             if (err instanceof HttpException) {
                 data.code = err.getStatus()
@@ -112,20 +140,20 @@ export class OrganizationResolver {
     }
 
     @Mutation('deleteOrganization')
-    async deleteOrganization(req: IncomingMessage, body: { id: number ,force:boolean}): Promise<Data> {
+    async deleteOrganization(req: IncomingMessage, body: { id: number, force: boolean }): Promise<Data> {
         let data: Data = {
             code: 200,
             message: '删除组织成功'
         }
         try {
-            let { id ,force} = body
+            let { id, force } = body
             if (!id) {
                 throw new HttpException('缺少参数', 400)
             }
-            if(force!==undefined&&force!==true&&force!==false){
+            if (force !== undefined && force !== true && force !== false) {
                 throw new HttpException('参数错误', 400)
             }
-            await this.organizationService.deleteOrganization(id,force)
+            await this.organizationService.deleteOrganization(id, force)
         } catch (err) {
             if (err instanceof HttpException) {
                 data.code = err.getStatus()

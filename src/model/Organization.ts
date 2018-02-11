@@ -22,7 +22,8 @@ export class Organization {
     @ManyToMany(type => User, user => user.organizations, {
         cascadeInsert: true,
         cascadeUpdate: false,
-        lazy: false
+        lazy: false,
+        eager:false
     })
     users: User[];
 

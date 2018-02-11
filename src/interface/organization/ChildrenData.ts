@@ -1,7 +1,7 @@
-export interface OrganizationsData{
+export interface ChildrenData{
     code:number
     message:string
-    organizations:{
+    children:{
         id:number
         name:string
     }[]
