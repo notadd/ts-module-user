@@ -4,7 +4,7 @@ import { GraphQLModule, GraphQLFactory } from '@nestjs/graphql';
 import { Organization } from '../src/model/Organization';
 import { Module as Module1 } from '../src/model/Module';
 import { Permission } from '../src/model/Permission';
-import { UserPMModule } from '../src/UserPMModule'
+import { UserPMModule } from '../src/UserPMModule';
 import { Connection, Repository } from 'typeorm';
 import { User } from '../src/model/User';
 import { Role } from '../src/model/Role';

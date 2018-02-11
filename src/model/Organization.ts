@@ -19,18 +19,20 @@ export class Organization {
     })
     name: string;
 
-    @Column({
-        name: 'root',
-        type: 'tinyint'
-    })
-    root: boolean;
-
     @ManyToMany(type => User,user=>user.organizations,{
         cascadeInsert: true,
         cascadeUpdate: false,
         lazy: false
     })
     users: User[];
+
+
+    @Column({
+        name:'parentId',
+        type:'int',
+        nullable:true
+    })
+    parentId:number
 
     @ManyToOne(type=>Organization,orientation=>orientation.children,{
         cascadeInsert: false,

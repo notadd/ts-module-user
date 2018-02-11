@@ -9,7 +9,7 @@ export class OrganizationResolver {
 
     constructor(
         @Inject(OrganizationService) private readonly organizationService: OrganizationService
-    ) { }
+    ) {}
 
     @Query('roots')
     async roots(): Promise<OrganizationsData> {
@@ -32,7 +32,6 @@ export class OrganizationResolver {
         }
         return data
     }
-
 
     @Query('organizations')
     async organizations(): Promise<OrganizationsData> {

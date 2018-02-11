@@ -9,7 +9,7 @@ export class OrganizationService {
     ) { }
 
     async getRoots(): Promise<Organization[]> {
-        return await this.organizationRepository.find({root:true})
+        return await this.organizationRepository.find({parentId:null})
     }
 
     async getAll(): Promise<Organization[]> {
@@ -17,10 +17,9 @@ export class OrganizationService {
     }
 
     async createOrganization(name: string, parentId: number): Promise<void> {
-        let parent: Organization, root: boolean = true
+        let parent: Organization
         if (parentId !== undefined && parentId !== null) {
             parent = await this.organizationRepository.findOneById(parentId)
-            root = false
             if (!parent) {
                 throw new HttpException('父组织不存在', 402)
             }
@@ -29,7 +28,7 @@ export class OrganizationService {
         if (exist) {
             throw new HttpException('指定组织名已存在', 403)
         }
-        let organization: Organization = this.organizationRepository.create({ name, root, parent })
+        let organization: Organization = this.organizationRepository.create({ name, parent })
         try {
             await this.organizationRepository.save(organization)
         } catch (err) {
