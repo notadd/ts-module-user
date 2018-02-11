@@ -1,8 +1,8 @@
+import { UsersInOrganizationData } from '../interface/organization/UsersInOrganizationData';
 import { OrganizationsData } from '../interface/organization/OrganizationsData';
 import { ChildrenData } from '../interface/organization/ChildrenData';
 import { OrganizationService } from '../service/OrganizationService';
 import { RootsData } from '../interface/organization/RootsData';
-import { UsersData } from '../interface/organization/UsersData';
 import { Resolver, Query, Mutation } from '@nestjs/graphql';
 import { HttpException, Inject } from '@nestjs/common';
 import { Data } from '../interface/Data';
@@ -86,9 +86,9 @@ export class OrganizationResolver {
         return data
     }
 
-    @Query('users')
-    async users(req:IncomingMessage,body:{id:number}): Promise<UsersData> {
-        let data: UsersData = {
+    @Query('usersInOrganization')
+    async usersInOrganization(req: IncomingMessage, body: { id: number }): Promise<UsersInOrganizationData> {
+        let data: UsersInOrganizationData = {
             code: 200,
             message: '获取组织用户成功',
             users: []
