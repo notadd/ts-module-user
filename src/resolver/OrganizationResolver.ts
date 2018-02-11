@@ -40,14 +40,14 @@ export class OrganizationResolver {
             message: '创建组织成功'
         }
         try {
-            let { name , parentId } = body
-            if(!name || parentId === null || parentId === undefined){
-                throw new HttpException('缺少参数',400)
+            let { name, parentId } = body
+            if (!name) {
+                throw new HttpException('缺少参数', 400)
             }
-            if(!Number.isInteger(parentId)){
-                throw new HttpException('父组织Id不是整数',401)
+            if (parentId && !Number.isInteger(parentId)) {
+                throw new HttpException('父组织Id不是整数', 401)
             }
-            await this.organizationService.createOrganization(name,parentId)
+            await this.organizationService.createOrganization(name, parentId)
         } catch (err) {
             if (err instanceof HttpException) {
                 data.code = err.getStatus()

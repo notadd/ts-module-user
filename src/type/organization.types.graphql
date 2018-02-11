@@ -5,7 +5,7 @@ type Query{
 }
 
 type Mutation{
-    createOrganizations(name:String,parentId:Int):Data
+    createOrganization(name:String,parentId:Int):Data
 }
 
 #return data

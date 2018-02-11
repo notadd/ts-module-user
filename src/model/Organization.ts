@@ -14,7 +14,8 @@ export class Organization {
     @Column({
         name: 'name',
         type: 'varchar',
-        length: 20
+        length: 20,
+        unique:true
     })
     name: string;
 
