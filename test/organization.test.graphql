@@ -80,3 +80,10 @@ mutation update{
     message
   }
 }
+
+mutation delete{
+  jituan:deleteOrganization(id:1,force:true){
+    code
+    message
+  }
+}
