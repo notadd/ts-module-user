@@ -33,7 +33,14 @@ export class InfoItem {
     })
     description: string
 
-    /* 信息项类型，即前端的表单类型 */
+    /* 信息项类型，即前端的表单类型 
+       根据不同的信息项，在UserInfo中存储时存储方式不同，key为信息项名称，value为值，统一为字符串
+       文本框，都是存储为字符串
+       单选框存储为值，多选框、复选框存储为逗号分割的值
+       日期存储为字符串
+       下拉菜单是神码
+       图片、文件都先存储到云存储或者本地，然后存储其url
+    */
     @Column({
         name: 'type',
         type: 'enum',
@@ -41,7 +48,7 @@ export class InfoItem {
     })
     type: string
 
-    /* 是否必填信息项 */
+    /* 是否必填信息项，非必填信息项，如果未填写就不返回 */
     @Column({
         name: 'necessary',
         type: 'tinyint'
@@ -55,7 +62,7 @@ export class InfoItem {
     })
     order: number
 
-    /* 所属信息组 */
+    /* 所属信息组，一个信息项可能属于多个信息组 */
     @ManyToMany(type => InfoGroup, infoGroup => infoGroup.items, {
         cascadeInsert: true,
         cascadeUpdate: false,

@@ -19,6 +19,7 @@ export class InfoGroup {
     })
     id: number;
 
+    /* 组名不能重复 */
     @Column({
         name: 'name',
         type: 'varchar',
