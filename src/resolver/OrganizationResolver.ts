@@ -16,6 +16,7 @@ export class OrganizationResolver {
         @Inject(OrganizationService) private readonly organizationService: OrganizationService
     ) { }
 
+    /* 查找所有根组织 */
     @Query('roots')
     async roots(): Promise<RootsData> {
         let data: RootsData = {
@@ -38,6 +39,7 @@ export class OrganizationResolver {
         return data
     }
 
+    /* 查找指定组织的所有子组织 */
     @Query('children')
     async children(req: IncomingMessage, body: { id: number }): Promise<ChildrenData> {
         let data: ChildrenData = {
@@ -64,6 +66,7 @@ export class OrganizationResolver {
         return data
     }
 
+    /* 查找所有现存组织 */
     @Query('organizations')
     async organizations(): Promise<OrganizationsData> {
         let data: OrganizationsData = {
@@ -86,6 +89,7 @@ export class OrganizationResolver {
         return data
     }
 
+    /* 查找指定组织下所有用户 */
     @Query('usersInOrganization')
     async usersInOrganization(req: IncomingMessage, body: { id: number }): Promise<UsersInOrganizationData> {
         let data: UsersInOrganizationData = {
@@ -112,6 +116,7 @@ export class OrganizationResolver {
         return data
     }
 
+    /* 创建指定名称组织，可选是否指定父组织id */
     @Mutation('createOrganization')
     async createOrganization(req: IncomingMessage, body: { name: string, parentId: number }): Promise<Data> {
         let data: Data = {
@@ -140,6 +145,7 @@ export class OrganizationResolver {
         return data
     }
 
+    /* 更新指定id组织，可更新组织名、父组织 */
     @Mutation('updateOrganization')
     async updateOrganization(req: IncomingMessage, body: { id: number, name: string, parentId: number }): Promise<Data> {
         let data: Data = {
@@ -168,6 +174,9 @@ export class OrganizationResolver {
         return data
     }
 
+    /* 删除指定id组织，默认情况下有子组织会报错，不能删除
+       可以指定force=true，强制删除组织及其子孙组织
+    */
     @Mutation('deleteOrganization')
     async deleteOrganization(req: IncomingMessage, body: { id: number, force: boolean }): Promise<Data> {
         let data: Data = {
