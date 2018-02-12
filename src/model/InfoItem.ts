@@ -1,10 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinTable } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable } from 'typeorm';
 import { InfoGroup } from './InfoGroup';
 
 /* 信息项实体，代表了用户需要额外填写的信息项
 */
 @Entity({
-    name: 'info_group'
+    name: 'info_item'
 })
 export class InfoItem {
 
@@ -20,7 +20,8 @@ export class InfoItem {
     @Column({
         name: 'name',
         type: 'varchar',
-        length: '20'
+        length: '20',
+        unique:true
     })
     name: string
 
@@ -52,16 +53,14 @@ export class InfoItem {
         name: 'order',
         type: 'int'
     })
-    order: int
+    order: number
 
     /* 所属信息组 */
-    @ManyToOne(type => InfoGroup, infoGroup => infoGroup.items, {
+    @ManyToMany(type => InfoGroup, infoGroup => infoGroup.items, {
         cascadeInsert: true,
         cascadeUpdate: false,
-        cascadeRemove: false,
-        nullable: false,
         lazy: false,
         eager: false
     })
-    infoGroup: InfoGroup
+    groups: InfoGroup[]
 }

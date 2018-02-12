@@ -13,6 +13,7 @@ export class UserResolver {
         @Inject(UserService) private readonly userService: UserService
     ) { }
 
+    /* 获取当前所有用户 */
     @Query('users')
     async users():Promise<UsersData>{
         let data:UsersData={
@@ -35,6 +36,7 @@ export class UserResolver {
         return data
     }
 
+    /* 获取当前所有自由用户，即不属于任何组织的用户 */
     @Query('freedomUsers')
     async freedomUsers():Promise<FreedomUsersData>{
         let data:FreedomUsersData={
@@ -57,7 +59,9 @@ export class UserResolver {
         return data
     }
 
-    /* 后台创建用户接口，只包含通用信息项，不包含特殊信息项 */
+    /* 后台创建用户接口，只包含通用信息项，不包含特殊信息项
+       模块创建用户不使用这个接口，因为模块创建用户需要添加特殊信息项
+    */
     @Mutation('createUser')
     async createUser(req: IncomingMessage, body: { organizationId: number, userName: string, password: string, nickname: string, realName: string, sex: string, birthday: string, email: string, cellPhoneNumber: string, status: boolean }): Promise<Data> {
         let data: Data = {
