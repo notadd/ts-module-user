@@ -1,5 +1,6 @@
 import { FreedomUsersData } from '../interface/user/FreedomUsersData';
 import { CreateUserBody } from '../interface/user/CreateUserBody';
+import { UnionUserInfo } from '../interface/user/UnionUserInfo';
 import { Resolver, Query, Mutation } from '@nestjs/graphql';
 import { UsersData } from '../interface/user/UsersData';
 import { Inject, HttpException } from '@nestjs/common';
@@ -89,9 +90,10 @@ export class UserResolver {
     }
 
     /* 模块创建用户接口，会传递用户基本信息，与这个模块调用的信息组的信息，不同类型信息组处理方式不同
+       传递信息的方式为groups对象数组，每个对象包含了信息组id，以及信息数组，信息组id用来验证信息是否正确
     */
     @Mutation('createUserWithUserInfo')
-    async createUserWithUserInfo(req: IncomingMessage, body: { organizationId: number, userName: string, password: string, nickname: string, realName: string, sex: string, birthday: string, email: string, cellPhoneNumber: string, status: boolean }): Promise<Data> {
+    async createUserWithUserInfo(req: IncomingMessage, body: CreateUserBody&{groups:{groupId:number,infos:UnionUserInfo[]}}): Promise<Data> {
         let data: Data = {
             code: 200,
             message: '创建用户成功'
@@ -101,7 +103,7 @@ export class UserResolver {
             if (!userName || !password || !nickname || !realName || !sex || !birthday || !email || !cellPhoneNumber || !status) {
                 throw new HttpException('缺少参数', 400)
             }
-            await this.userService.createUser(organizationId, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber, status)
+            await this.userService.createUserWithUserInfo(organizationId, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber, status,groups)
         } catch (err) {
             if (err instanceof HttpException) {
                 data.code = err.getStatus()
