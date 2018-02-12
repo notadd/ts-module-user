@@ -2,16 +2,11 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable ,Index, M
 import { Module } from './Module';
 
 
-@Entity({
-    name:'permission'
-})
+@Entity('permission')
 @Index('name_module_id',['name','module_id'])
 export class Permission{
 
-    @PrimaryGeneratedColumn({
-        name:'id',
-        type:'int'
-    })
+    @PrimaryGeneratedColumn()
     id:number;
 
     @Column({

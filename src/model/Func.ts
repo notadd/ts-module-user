@@ -6,15 +6,10 @@ import { Module } from './Module';
    功能与权限是多对多关系，但是功能是属于某个模块的，一个功能所包含的权限也都是同一个模块的
    模块删除时，其下包含的功能将会一起删除
 */
-@Entity({
-    name:'function'
-})
+@Entity('function')
 export class Func{
 
-    @PrimaryGeneratedColumn({
-        name:'id',
-        type:'int'
-    })
+    @PrimaryGeneratedColumn()
     id:number;
 
     /* 名称不能重复 */

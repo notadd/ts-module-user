@@ -3,15 +3,10 @@ import { User } from './User';
 
 /* 用户信息实体类，这里填的信息是用户现有信息之外的信息
 */
-@Entity({
-    name: 'user_info'
-})
+@Entity('user_info')
 export class UserInfo {
 
-    @PrimaryGeneratedColumn({
-        name: 'id',
-        type: 'int'
-    })
+    @PrimaryGeneratedColumn()
     id: number;
 
     @Column({

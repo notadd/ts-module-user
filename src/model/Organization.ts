@@ -1,14 +1,11 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 import { User } from './User';
 
-
+/*  */
 @Entity('organization')
 export class Organization {
 
-    @PrimaryGeneratedColumn({
-        name: 'id',
-        type: 'int'
-    })
+    @PrimaryGeneratedColumn()
     id: number;
 
     @Column({

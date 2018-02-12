@@ -3,15 +3,10 @@ import { InfoGroup } from './InfoGroup';
 
 /* 信息项实体，代表了用户需要额外填写的信息项
 */
-@Entity({
-    name: 'info_item'
-})
+@Entity('info_item')
 export class InfoItem {
 
-    @PrimaryGeneratedColumn({
-        name: 'id',
-        type: 'int'
-    })
+    @PrimaryGeneratedColumn()
     id: number;
 
     /* 信息项名称，如用户名、密码等 

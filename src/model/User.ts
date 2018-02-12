@@ -7,15 +7,10 @@ import { Role } from './Role';
 /* 用户实体类，id自动生成、用户名、邮箱必须唯一
    用户拥有角色、增加权限、减少权限、属于组织，都是多对多关系
 */
-@Entity({
-    name: 'user'
-})
+@Entity('user')
 export class User {
 
-    @PrimaryGeneratedColumn({
-        name: 'id',
-        type: 'int'
-    })
+    @PrimaryGeneratedColumn()
     id: number;
 
     @Column({

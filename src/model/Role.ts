@@ -2,15 +2,10 @@ import { Entity, Column, PrimaryGeneratedColumn, Index, ManyToOne , ManyToMany ,
 import { Func } from './Func';
 import { Module } from './Module';
 
-@Entity({
-    name:'role'
-})
+@Entity('role')
 export class Role{
 
-    @PrimaryGeneratedColumn({
-        name:'id',
-        type:'int'
-    })
+    @PrimaryGeneratedColumn()
     id:number;
 
     @Column({

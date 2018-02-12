@@ -7,9 +7,7 @@ import { InfoItem } from './InfoItem';
    对于一个用户来说，一个信息组是否填写会与用户关联起来，如果一个信息组填写了，会在关联表中保存这个信息组与用户的一个关联记录
    前端可以查询某个用户的某个信息组是否填写，如果未填写可以调用信息组，并且为用户补充信息
 */
-@Entity({
-    name: 'user_group'
-})
+@Entity('user_group')
 export class InfoGroup {
 
     /* 信息组id不能自动生成，因为前面几个id的信息组都是约定好的，信息组id由方法内根据当前最大id生成 */
