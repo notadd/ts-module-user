@@ -20,6 +20,20 @@ type Mutation{
         cellPhoneNumber: String, 
         status: Boolean 
     ):Data
+    #create user with UserInfo, specify organization
+    createUserWithUserInfo(
+        organizationId: Int, 
+        userName: String, 
+        password: String, 
+        nickname: String, 
+        realName: String, 
+        sex: Sex, 
+        birthday: String, 
+        email: String, 
+        cellPhoneNumber: String, 
+        status: Boolean,
+        groups: [UserInfoGroup]
+    ):Data
 }
 
 enum Sex{
@@ -45,4 +59,56 @@ type FreedomUsersData{
     message:String
     #array of user
     freedomUsers:[User]
+}
+
+#input user info group
+input UserInfoGroup{
+    #id of InfoGroup
+    id:Int
+    #array of union info type
+    infos:[SingleRowText | MultiRowText | Radio | CheckBox | Date | PulldownMenu | File]
+}
+
+#single row text info
+type SingleRowText = {
+    name: string
+    value: string
+}
+
+#multi row info
+type MultiRowText = {
+    name: string
+    value: string
+}
+
+#radio
+type Radio = {
+    name: string
+    value: string
+}
+
+#check
+type CheckBox = {
+    name: string
+    value: string[]
+}
+
+#date
+type Date = {
+    name: string
+    value: string
+}
+
+#pulldown menu,return single value
+type PulldownMenu = {
+    name: string
+    value: string
+}
+
+#image or file 
+type File = {
+    name: string
+    value: string
+    #raw name of file
+    rawName: string
 }
