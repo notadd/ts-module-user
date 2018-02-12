@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable, OneToMany } from 'typeorm';
 import { Organization } from './Organization';
 import { Permission } from './Permission';
+import { InfoGroup } from './InfoGroup';
 import { UserInfo } from './UserInfo';
 import { Role } from './Role';
 
@@ -102,6 +103,16 @@ export class User {
         eager: false
     })
     userInfos: UserInfo[]
+
+    /* 用户已经填写的信息组 */
+    @ManyToMany(type => InfoGroup,{
+        cascadeInsert: true,
+        cascadeUpdate: false,
+        lazy: false,
+        eager: false
+    })
+    @JoinTable()
+    infoGroups: InfoGroup[]
 
     /* 用户添加的权限 */
     @ManyToMany(type => Permission, permission=>permission.addUsers,{
