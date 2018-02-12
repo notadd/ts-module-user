@@ -1,6 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable, OneToMany } from 'typeorm';
 import { Organization } from './Organization';
 import { Permission } from './Permission';
+import { UserInfo } from './UserInfo';
 import { Role } from './Role';
 
 /* 用户实体类，id自动生成、用户名、邮箱必须唯一
@@ -52,7 +53,7 @@ export class User {
         type: 'varchar',
         length: 20
     })
-    cellPhoneNumber :string
+    cellPhoneNumber: string
 
     @Column({
         name: 'nickname',
@@ -86,6 +87,14 @@ export class User {
         type: 'tinyint'
     })
     status: boolean
+
+    @OneToMany(type => UserInfo, userInfo => userInfo.user, {
+        cascadeInsert: true,
+        cascadeUpdate: false,
+        lazy: false,
+        eager: false
+    })
+    userInfos: UserInfo[]
 
     @ManyToMany(type => Permission, {
         cascadeInsert: true,
