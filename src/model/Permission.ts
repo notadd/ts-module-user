@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable ,Index, ManyToOne, JoinColumn} from 'typeorm';
 import { Module } from './Module';
-
+import { User } from './User'
 /* 权限实体，代表了执行某种操作的权限，属于某个模块
    目前所有权限由模块中使用装饰器提供，找到权限之后保存它
    不能在后台添加权限，因为添加也没用，权限的使用是写死在代码里的
@@ -47,5 +47,14 @@ export class Permission{
         referencedColumnName:'id'
     })
     module:Module;
+
+    /* 单独添加了这个权限的用户，这个关联关系需要在删除权限时删除 */
+    @ManyToMany(type => User, user=>user.adds,{
+        cascadeInsert: true,
+        cascadeUpdate: false,
+        lazy: false,
+        eager:false
+    })
+    addUsers:User[]
 }
 

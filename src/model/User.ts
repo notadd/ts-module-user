@@ -4,8 +4,10 @@ import { Permission } from './Permission';
 import { UserInfo } from './UserInfo';
 import { Role } from './Role';
 
-/* 用户实体类，id自动生成、用户名、邮箱必须唯一
-   用户拥有角色、增加权限、减少权限、属于组织，都是多对多关系
+/* 用户实体类，id自动生成、用户名必须唯一
+   用户可以属于多个组织，也可以不属于组织，为自由用户
+   用户拥有多个角色、进而拥有其下的权限
+   用户还可以单独指定增加、减少的权限，用来对角色权限做补充
 */
 @Entity('user')
 export class User {
@@ -13,6 +15,7 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
+    /* 用户名，不能重复 */
     @Column({
         name: 'user_name',
         type: 'varchar',
@@ -21,6 +24,7 @@ export class User {
     })
     userName: string;
 
+    /* 用户密码，为加盐密码 */
     @Column({
         name: 'password',
         type: 'varchar',
@@ -28,6 +32,7 @@ export class User {
     })
     password: string
 
+    /* 密码的盐，10位随机字符串 */
     @Column({
         name: 'salt',
         type: 'varchar',
@@ -35,14 +40,15 @@ export class User {
     })
     salt: string;
 
+    /* 邮箱 */
     @Column({
         name: 'email',
         type: 'varchar',
-        length: 30,
-        unique: true
+        length: 30
     })
     email: string;
 
+    /* 手机号 */
     @Column({
         name: 'cell_phone_number',
         type: 'varchar',
@@ -50,6 +56,7 @@ export class User {
     })
     cellPhoneNumber: string
 
+    /* 昵称 */
     @Column({
         name: 'nickname',
         type: 'varchar',
@@ -57,6 +64,7 @@ export class User {
     })
     nickname: string;
 
+    /* 真实姓名 */
     @Column({
         name: 'real_name',
         type: 'varchar',
@@ -64,6 +72,7 @@ export class User {
     })
     realName: string;
 
+    /* 性别，只能为men、women */
     @Column({
         name: 'sex',
         type: 'enum',
@@ -71,18 +80,21 @@ export class User {
     })
     sex: string
 
+    /* 生日 */
     @Column({
         name: 'birthday',
         type: 'date'
     })
     birthday: Date
 
+    /* 状态，是否封禁 */
     @Column({
         name: 'status',
         type: 'tinyint'
     })
     status: boolean
 
+    /* 用户所包含信息，为调用信息组生成的信息 */
     @OneToMany(type => UserInfo, userInfo => userInfo.user, {
         cascadeInsert: true,
         cascadeUpdate: false,
@@ -91,10 +103,12 @@ export class User {
     })
     userInfos: UserInfo[]
 
-    @ManyToMany(type => Permission, {
+    /* 用户添加的权限 */
+    @ManyToMany(type => Permission, permission=>permission.addUsers,{
         cascadeInsert: true,
         cascadeUpdate: false,
-        lazy: false
+        lazy: false,
+        eager:false
     })
     @JoinTable({
         name: 'user_add_permission',
@@ -110,10 +124,12 @@ export class User {
     })
     adds: Permission[]
 
+    /* 用户减少的权限 */
     @ManyToMany(type => Permission, {
         cascadeInsert: true,
         cascadeUpdate: false,
-        lazy: false
+        lazy: false,
+        eager:false
     })
     @JoinTable({
         name: 'user_reduce_permission',
@@ -130,10 +146,12 @@ export class User {
     reduces: Permission[]
 
 
+    /* 用户拥有的角色 */
     @ManyToMany(type => Role, {
         cascadeInsert: true,
         cascadeUpdate: false,
-        lazy: false
+        lazy: false,
+        eager:false
     })
     @JoinTable({
         name: 'user_role',
@@ -149,10 +167,12 @@ export class User {
     })
     roles: Role[]
 
+    /* 用户所属组织 */
     @ManyToMany(type => Organization, organization => organization.users, {
         cascadeInsert: true,
         cascadeUpdate: true,
-        lazy: false
+        lazy: false,
+        eager:false
     })
     @JoinTable({
         name: 'organization_user',
