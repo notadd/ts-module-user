@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, Index, ManyToOne, ManyToMany, JoinTable, JoinColumn } from 'typeorm';
-import { Func } from './Func';
 import { Module } from './Module';
+import { Func } from './Func';
+import { User } from './User';
 
 /* 角色，一般由后台创建，一个角色包含多个功能，进而包含了功能下的权限，具有指定特定操作的权限
    角色不能跨模块，所以它只能包含属于同一个模块下的功能，当删除模块时，其所属角色也会删除
@@ -57,4 +58,13 @@ export class Role {
         referencedColumnName: 'id'
     })
     module: Module;
+
+    /* 拥有这个角色的用户，删除角色时，需要删除关联关系 */
+    @ManyToMany(type => User,user=>user.roles, {
+        cascadeInsert: true,
+        cascadeUpdate: false,
+        lazy: false,
+        eager:false
+    })
+    users:User[]
 }

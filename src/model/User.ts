@@ -125,7 +125,7 @@ export class User {
     adds: Permission[]
 
     /* 用户减少的权限 */
-    @ManyToMany(type => Permission, {
+    @ManyToMany(type => Permission,Permission=>Permission.reduceUsers, {
         cascadeInsert: true,
         cascadeUpdate: false,
         lazy: false,
@@ -147,7 +147,7 @@ export class User {
 
 
     /* 用户拥有的角色 */
-    @ManyToMany(type => Role, {
+    @ManyToMany(type => Role,role=>role.users,{
         cascadeInsert: true,
         cascadeUpdate: false,
         lazy: false,
