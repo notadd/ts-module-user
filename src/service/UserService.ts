@@ -1,25 +1,29 @@
 import { HttpException, Inject, Component } from '@nestjs/common';
+import { UnionUserInfo } from '../interface/user/UnionUserInfo';
+import { Repository, Connection, EntityManager } from 'typeorm';
 import { Organization } from '../model/Organization';
-import { Repository } from 'typeorm';
+import { InfoGroup } from '../model/InfoGroup';
+import { InfoItem } from '../model/InfoItem';
 import { User } from '../model/User';
 import * as crypto from 'crypto';
 @Component()
 export class UserService {
 
     constructor(
+        @Inject('UserPMModule.Connection') private readonly connection: Connection,
         @Inject('UserPMModule.UserRepository') private readonly userRepository: Repository<User>,
         @Inject('UserPMModule.OrganizationRepository') private readonly organizationRepository: Repository<Organization>
     ) { }
 
 
-    async getAll():Promise<User[]>{
+    async getAll(): Promise<User[]> {
         return await this.userRepository.find()
     }
 
-    async getFreedomUsers():Promise<User[]>{
-        let users:User[] = await this.userRepository.find({relations:['organizations']})
-        return users.filter(user=>{
-            return user.organizations===null||user.organizations===undefined||user.organizations.length===0
+    async getFreedomUsers(): Promise<User[]> {
+        let users: User[] = await this.userRepository.find({ relations: ['organizations'] })
+        return users.filter(user => {
+            return user.organizations === null || user.organizations === undefined || user.organizations.length === 0
         })
     }
 
@@ -39,12 +43,104 @@ export class UserService {
         try {
             let salt = crypto.createHash('md5').update(new Date().toString()).digest('hex').slice(0, 10)
             let passwordWithSalt = crypto.createHash('md5').update(password + salt).digest('hex')
-            let user: User = this.userRepository.create({ userName, password: passwordWithSalt, salt, nickname, realName, sex, birthday: new Date(birthday), email, cellPhoneNumber, status, organizations})
+            let user: User = this.userRepository.create({ userName, password: passwordWithSalt, salt, nickname, realName, sex, birthday: new Date(birthday), email, cellPhoneNumber, status, organizations })
             await this.userRepository.save(user)
         } catch (err) {
-            throw new HttpException('数据库错误' + err.toString(), 405)
+            throw new HttpException('数据库错误' + err.toString(), 401)
         }
     }
 
+    async createUserWithUserInfo(organizationId: number, userName: string, password: string, nickname: string, realName: string, sex: string, birthday: string, email: string, cellPhoneNumber: string, status: boolean, groups: { groupId: number, infos: UnionUserInfo[] }[]): Promise<void> {
+        let organizations: Organization[] = []
+        if (organizationId) {
+            let organization = await this.organizationRepository.findOneById(organizationId)
+            if (!organization) {
+                throw new HttpException('指定组织不存在', 402)
+            }
+            organizations.push(organization)
+        }
+        let exist: User = await this.userRepository.findOne({ userName })
+        if (exist) {
+            throw new HttpException('指定用户名已存在', 406)
+        }
+        const queryRunner = this.connection.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+        try {
+            let salt = crypto.createHash('md5').update(new Date().toString()).digest('hex').slice(0, 10)
+            let passwordWithSalt = crypto.createHash('md5').update(password + salt).digest('hex')
+            let user: User = this.userRepository.create({ userName, password: passwordWithSalt, salt, nickname, realName, sex, birthday: new Date(birthday), email, cellPhoneNumber, status, organizations })
+            await queryRunner.manager.save(user)
+            await this.addUserInfoGroups(queryRunner.manager, user, groups)
+            await queryRunner.commitTransaction();
+        } catch (err) {
+            await queryRunner.rollbackTransaction();
+            if (err instanceof HttpException) {
+                throw err
+            } else {
+                throw new HttpException('出现了数据库错误' + err.toString(), 401)
+            }
+        }
+    }
 
+    /* 为指定用户添加信息组方法，注意添加时这些信息组还未存在于用户信息中
+       添加与更新信息组是两个方法
+    */
+    async addUserInfoGroups(manager: EntityManager, user: User, groups: { groupId: number, infos: UnionUserInfo[] }[]): Promise<void> {
+        let existAddGroups: InfoGroup[]
+        //用户上已经添加过的信息组
+        if (user.infoGroups) {
+            existAddGroups = user.infoGroups
+        }
+        //遍历信息组
+        for (let i = 0; i < groups.length; i++) {
+            let { groupId, infos } = groups[i]
+            //如果这个信息组已经添加到用户，抛出异常
+            if (existAddGroups.find(group => {
+                return group.id === groupId
+            })) {
+                throw new HttpException('指定信息组id=' + groupId + '已经添加到用户id=' + user.id, 407)
+            }
+            //查找信息组，关联它下面的信息项
+            let group: InfoGroup = await manager.findOneById(InfoGroup, groupId, { relations: ['items'] })
+            //指定信息组不存在，也要异常
+            if (!group) {
+                throw new HttpException('指定信息组id=' + groupId + '不存在', 408)
+            }
+            //获取所有信息项
+            let items: InfoItem[] = group.items
+            //所有必填信息项
+            let necessary:InfoItem[] = items.filter(item=>{
+                return item.necessary === true
+            })
+            //遍历得到的信息
+            for (let j = 0; j < infos.length; j++) {
+                let { name, value }: UnionUserInfo = infos[j]
+                //查找名称匹配的信息项
+                let match: InfoItem = items.find(item => {
+                    return item.name === name
+                })
+                //如果接收到的信息项名称不存在，抛出异常
+                if (!match) {
+                    throw new HttpException('指定名称信息项:' + name + '不存在于信息组id=' + groupId + '中', 409)
+                }
+                //根据不同类型信息项校验信息类型
+                //'单行文本框', '多行文本框', '单选框', '多选框', '复选框', '日期时间选择', '日期时间范围选择', '下拉菜单', '上传图片', '上传文件'
+                if(match.type==='单行文本框'||match.type==='多行文本框'||match.type==='单选框'||match.type==='日期时间选择'||match.type==='日期时间范围选择'||match.type==='下拉菜单'){
+                    if(!(typeof value === 'string')){
+                        throw new HttpException('指定类型信息项:'+match.type+'必须为字符串',410)
+                    }
+                }else if(match.type==='多选框'||match.type==='复选框'){
+                    if(!(value instanceof Array)){
+                        throw new HttpException('指定类型信息项:'+match.type+'必须为数组',410)
+                    }
+                }else if(match.type==='上传图片'||match.type==='上传文件'){
+                    if(!(infos[j] as any).rawName){
+                        throw new HttpException('指定类型信息项:'+match.type+'必须必须具有文件原名',410)
+                    }
+                }
+            }
+
+        }
+    }
 }

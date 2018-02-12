@@ -70,45 +70,45 @@ input UserInfoGroup{
 }
 
 #single row text info
-type SingleRowText = {
-    name: string
-    value: string
+type SingleRowText{
+    name: String
+    value: String
 }
 
 #multi row info
-type MultiRowText = {
-    name: string
-    value: string
+type MultiRowText{
+    name: String
+    value: String
 }
 
 #radio
-type Radio = {
-    name: string
-    value: string
+type Radio{
+    name: String
+    value: String
 }
 
 #check
-type CheckBox = {
-    name: string
-    value: string[]
+type CheckBox{
+    name: String
+    value: [String]
 }
 
 #date
-type Date = {
-    name: string
-    value: string
+type Date{
+    name: String
+    value: String
 }
 
 #pulldown menu,return single value
-type PulldownMenu = {
-    name: string
-    value: string
+type PulldownMenu{
+    name: String
+    value: String
 }
 
 #image or file 
-type File = {
-    name: string
-    value: string
+type File{
+    name: String
+    value: String
     #raw name of file
-    rawName: string
+    rawName: String
 }

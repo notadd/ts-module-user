@@ -45,5 +45,5 @@ export class InfoGroup {
         eager: false
     })
     @JoinTable()
-    items:InfoItem
+    items:InfoItem[]
 }
