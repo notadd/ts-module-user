@@ -103,7 +103,7 @@ export class UserResolver {
             if (!userName || !password || !nickname || !realName || !sex || !birthday || !email || !cellPhoneNumber || !status) {
                 throw new HttpException('缺少参数', 400)
             }
-            await this.userService.createUserWithUserInfo(organizationId, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber, status,groups)
+            await this.userService.createUserWithUserInfo(req,organizationId, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber, status,groups)
         } catch (err) {
             if (err instanceof HttpException) {
                 data.code = err.getStatus()

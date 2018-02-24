@@ -1,17 +1,23 @@
+import { UnionUserInfo, TextInfo, ArrayInfo, FileInfo } from '../interface/user/UnionUserInfo';
 import { HttpException, Inject, Component } from '@nestjs/common';
-import { UnionUserInfo } from '../interface/user/UnionUserInfo';
 import { Repository, Connection, EntityManager } from 'typeorm';
+import { StoreComponent } from '../interface/StoreComponent';
 import { Organization } from '../model/Organization';
 import { InfoGroup } from '../model/InfoGroup';
 import { InfoItem } from '../model/InfoItem';
+import { UserInfo } from '../model/UserInfo';
 import { User } from '../model/User';
 import * as crypto from 'crypto';
+import { IncomingMessage } from 'http';
+
 @Component()
 export class UserService {
 
     constructor(
+        @Inject('StoreComponentToken') private readonly storeComponent: StoreComponent,
         @Inject('UserPMModule.Connection') private readonly connection: Connection,
         @Inject('UserPMModule.UserRepository') private readonly userRepository: Repository<User>,
+        @Inject('UserPMModule.UserInfoRepository') private readonly userInfoRepository: Repository<UserInfo>,
         @Inject('UserPMModule.OrganizationRepository') private readonly organizationRepository: Repository<Organization>
     ) { }
 
@@ -50,7 +56,7 @@ export class UserService {
         }
     }
 
-    async createUserWithUserInfo(organizationId: number, userName: string, password: string, nickname: string, realName: string, sex: string, birthday: string, email: string, cellPhoneNumber: string, status: boolean, groups: { groupId: number, infos: UnionUserInfo[] }[]): Promise<void> {
+    async createUserWithUserInfo(req: IncomingMessage, organizationId: number, userName: string, password: string, nickname: string, realName: string, sex: string, birthday: string, email: string, cellPhoneNumber: string, status: boolean, groups: { groupId: number, infos: UnionUserInfo[] }[]): Promise<void> {
         let organizations: Organization[] = []
         if (organizationId) {
             let organization = await this.organizationRepository.findOneById(organizationId)
@@ -84,9 +90,10 @@ export class UserService {
     }
 
     /* 为指定用户添加信息组方法，注意添加时这些信息组还未存在于用户信息中
+       可以在初始注册时添加多个信息组，也可以为一个已存在用户添加多个信息组
        添加与更新信息组是两个方法
     */
-    async addUserInfoGroups(manager: EntityManager, user: User, groups: { groupId: number, infos: UnionUserInfo[] }[]): Promise<void> {
+    async addUserInfoGroups(req: IncomingMessage, manager: EntityManager, user: User, groups: { groupId: number, infos: UnionUserInfo[] }[]): Promise<void> {
         let existAddGroups: InfoGroup[]
         //用户上已经添加过的信息组
         if (user.infoGroups) {
@@ -110,12 +117,13 @@ export class UserService {
             //获取所有信息项
             let items: InfoItem[] = group.items
             //所有必填信息项
-            let necessary:InfoItem[] = items.filter(item=>{
+            let necessary: InfoItem[] = items.filter(item => {
                 return item.necessary === true
             })
             //遍历得到的信息
             for (let j = 0; j < infos.length; j++) {
-                let { name, value }: UnionUserInfo = infos[j]
+                let { name }: UnionUserInfo = infos[j]
+                let result: string
                 //查找名称匹配的信息项
                 let match: InfoItem = items.find(item => {
                     return item.name === name
@@ -124,22 +132,42 @@ export class UserService {
                 if (!match) {
                     throw new HttpException('指定名称信息项:' + name + '不存在于信息组id=' + groupId + '中', 409)
                 }
-                //根据不同类型信息项校验信息类型
+                //根据不同类型信息项校验信息类型，顺便转换信息值
                 //'单行文本框', '多行文本框', '单选框', '多选框', '复选框', '日期时间选择', '日期时间范围选择', '下拉菜单', '上传图片', '上传文件'
-                if(match.type==='单行文本框'||match.type==='多行文本框'||match.type==='单选框'||match.type==='日期时间选择'||match.type==='日期时间范围选择'||match.type==='下拉菜单'){
-                    if(!(typeof value === 'string')){
-                        throw new HttpException('指定类型信息项:'+match.type+'必须为字符串',410)
+                if (match.type === '单行文本框' || match.type === '多行文本框' || match.type === '单选框' || match.type === '日期时间选择' || match.type === '日期时间范围选择' || match.type === '下拉菜单') {
+                    if (!(infos[j] as TextInfo).value) {
+                        throw new HttpException('指定名称信息值:' + match.name + '不存在', 410)
                     }
-                }else if(match.type==='多选框'||match.type==='复选框'){
-                    if(!(value instanceof Array)){
-                        throw new HttpException('指定类型信息项:'+match.type+'必须为数组',410)
+                    if (!(typeof (infos[j] as TextInfo).value === 'string')) {
+                        throw new HttpException('指定类型信息项:' + match.type + '必须为字符串', 410)
                     }
-                }else if(match.type==='上传图片'||match.type==='上传文件'){
-                    if(!(infos[j] as any).rawName){
-                        throw new HttpException('指定类型信息项:'+match.type+'必须必须具有文件原名',410)
+                    //普字符串类型值只需要删除前后空白
+                    result = (infos[j] as TextInfo).value.trim()
+                } else if (match.type === '多选框' || match.type === '复选框') {
+                    if (!(infos[j] as ArrayInfo).array || (infos[j] as ArrayInfo).array.length === 0) {
+                        throw new HttpException('指定名称信息值:' + match.name + '不存在', 410)
                     }
+                    if (!((infos[j] as ArrayInfo).array instanceof Array)) {
+                        throw new HttpException('指定类型信息项:' + match.type + '必须为数组', 410)
+                    }
+                    //数组类型以，连接各个元素为字符串
+                    result = (infos[j] as ArrayInfo).array.join(',')
+                } else if (match.type === '上传图片' || match.type === '上传文件') {
+                    if (!(infos[j] as FileInfo).base64) {
+                        throw new HttpException('指定类型信息项:' + match.type + '必须必须具有文件base64编码', 410)
+                    }
+                    if (!(infos[j] as FileInfo).rawName) {
+                        throw new HttpException('指定类型信息项:' + match.type + '必须必须具有文件原名', 410)
+                    }
+                    if (!(infos[j] as FileInfo).bucketName) {
+                        throw new HttpException('指定类型信息项:' + match.type + '必须必须具有文件存储空间名', 410)
+                    }
+                    //文件类型，上传到存储插件，并保存访问url
+                    let { bucketName, name, type } = await this.storeComponent.upload((infos[j] as FileInfo).bucketName, (infos[j] as FileInfo).base64, (infos[j] as FileInfo).rawName, null)
+                    result = await this.storeComponent.getUrl(req, bucketName, name, type, null)
                 }
-                
+                let userInfo:UserInfo = this.userInfoRepository.create({key:name,value:result,user})
+                await this.userInfoRepository.save(userInfo)
             }
 
         }

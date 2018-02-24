@@ -104,7 +104,7 @@ export class User {
     })
     userInfos: UserInfo[]
 
-    /* 用户已经填写的信息组 */
+    /* 用户已经填写的信息组*/
     @ManyToMany(type => InfoGroup,{
         cascadeInsert: true,
         cascadeUpdate: false,

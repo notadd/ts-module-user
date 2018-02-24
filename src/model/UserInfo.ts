@@ -35,6 +35,7 @@ export class UserInfo {
         cascadeUpdate: false,
         cascadeRemove: false,
         nullable: false,
+        onDelete: 'CASCADE',
         lazy: false,
         eager: false
     })

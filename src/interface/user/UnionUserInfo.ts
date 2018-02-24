@@ -1,37 +1,17 @@
-export type UnionUserInfo = SingleRowText | MultiRowText | Radio | CheckBox | Date | PulldownMenu | File
-
-type SingleRowText = {
+export type UnionUserInfo = TextInfo|ArrayInfo|FileInfo
+export type TextInfo = {
     name: string
     value: string
 }
 
-type MultiRowText = {
+export type ArrayInfo = {
     name: string
-    value: string
+    array: string[]
 }
 
-type Radio = {
+export type FileInfo = {
     name: string
-    value: string
-}
-
-type CheckBox = {
-    name: string
-    value: string[]
-}
-
-type Date = {
-    name: string
-    value: string
-}
-
-type PulldownMenu = {
-    name: string
-    value: string
-}
-
-type File = {
-    name: string
-    value: string
+    base64: string
     rawName: string
+    bucketName: string
 }

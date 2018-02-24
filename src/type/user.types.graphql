@@ -10,28 +10,28 @@ type Mutation{
     #create user , specify organization
     createUser(
         organizationId: Int, 
-        userName: String, 
-        password: String, 
-        nickname: String, 
-        realName: String, 
-        sex: Sex, 
-        birthday: String, 
-        email: String, 
-        cellPhoneNumber: String, 
-        status: Boolean 
+        userName: String!, 
+        password: String!, 
+        nickname: String!, 
+        realName: String!, 
+        sex: Sex!, 
+        birthday: String!, 
+        email: String!, 
+        cellPhoneNumber: String!, 
+        status: Boolean! 
     ):Data
     #create user with UserInfo, specify organization
     createUserWithUserInfo(
         organizationId: Int, 
-        userName: String, 
-        password: String, 
-        nickname: String, 
-        realName: String, 
-        sex: Sex, 
-        birthday: String, 
-        email: String, 
-        cellPhoneNumber: String, 
-        status: Boolean,
+        userName: String!, 
+        password: String!, 
+        nickname: String!, 
+        realName: String!, 
+        sex: Sex!, 
+        birthday: String!, 
+        email: String!, 
+        cellPhoneNumber: String!, 
+        status: Boolean!,
         groups: [UserInfoGroup]
     ):Data
 }
@@ -69,8 +69,15 @@ input UserInfoGroup{
     infos:[UnionUserInfo]
 }
 
+#userinfo union type , name is required 
+#when text ,value is required
+#when checkbox , array is required
+#when file , base64、rawName、bucketName is required
 input  UnionUserInfo{
-    name:String
+    name:String!
     value:String
+    array:[String]
+    base64:String
     rawName:String
+    bucketName:String
 }
