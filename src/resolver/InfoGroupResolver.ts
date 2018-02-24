@@ -6,6 +6,8 @@ import { Inject, HttpException } from '@nestjs/common';
 import { Data } from '../interface/Data';
 import { IncomingMessage } from 'http';
 
+
+/* 这个几个接口只是写在这，使用上还有很多问题 */
 @Resolver('InfoGroup')
 export class InfoGroupResolver {
 
@@ -147,7 +149,32 @@ export class InfoGroupResolver {
             if (!id || !infoItemId) {
                 throw new HttpException('缺少参数', 400)
             }
-            await this.infoGroupService.addInfoItem(id,infoItemId)
+            await this.infoGroupService.addInfoItem(id, infoItemId)
+        } catch (err) {
+            if (err instanceof HttpException) {
+                data.code = err.getStatus()
+                data.message = err.getResponse() + ''
+            } else {
+                console.log(err)
+                data.code = 500
+                data.message = '出现了意外错误' + err.toString()
+            }
+        }
+        return data
+    }
+
+    @Mutation('removeInfoItem')
+    async removeInfoItem(req: IncomingMessage, body: { id: number, infoItemId: number }): Promise<Data> {
+        let data: Data = {
+            code: 200,
+            message: '移除信息项成功'
+        }
+        try {
+            let { id, infoItemId } = body
+            if (!id || !infoItemId) {
+                throw new HttpException('缺少参数', 400)
+            }
+            await this.infoGroupService.removeInfoItem(id, infoItemId)
         } catch (err) {
             if (err instanceof HttpException) {
                 data.code = err.getStatus()

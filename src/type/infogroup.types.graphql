@@ -12,6 +12,10 @@ typr Mutation{
     updateInfoGroup(name:String!):Data
     #delete InfoGroup
     deleteInfoGroup(id:Int!):Data
+    #add info item to group
+    addInfoItem(id:Int!,infoItemId:Int!):Data
+    #remove info item from group
+    removeInfoItem(id:Int!,infoItemId:Int!):Data
 }
 
 

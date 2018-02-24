@@ -71,8 +71,39 @@ export class InfoGroupService {
         if (!item) {
             throw new HttpException('指定信息项不存在', 409)
         }
+        //查找是否信息项已经存在于指定信息组中
+        let find: InfoItem = group.items.find(item => {
+            return item.id === id
+        })
+        if (find) {
+            throw new HttpException('指定信息项id=' + infoItemId + '已经存在于指定信息组id=' + id + '中', 410)
+        }
         try {
             group.items.push(item)
+            await this.infoGroupRepository.save(group)
+        } catch (err) {
+            throw new HttpException('数据库错误' + err.toString(), 401)
+        }
+    }
+
+    async removeInfoItem(id: number, infoItemId: number): Promise<void> {
+        let group: InfoGroup = await this.infoGroupRepository.findOneById(id, { relations: ['items'] })
+        if (!group) {
+            throw new HttpException('给定名称id信息组不存在', 408)
+        }
+        let item: InfoItem = await this.infoItemRepository.findOneById(infoItemId)
+        if (!item) {
+            throw new HttpException('指定信息项不存在', 409)
+        }
+        //查找是否信息项已经存在于指定信息组中
+        let index = group.items.findIndex(item => {
+            return item.id === id
+        })
+        if (index < 0) {
+            throw new HttpException('指定信息项id=' + infoItemId + '不存在于指定信息组id=' + id + '中', 411)
+        }
+        try {
+            group.items.splice(index, 1)
             await this.infoGroupRepository.save(group)
         } catch (err) {
             throw new HttpException('数据库错误' + err.toString(), 401)
