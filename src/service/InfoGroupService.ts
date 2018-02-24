@@ -1,4 +1,4 @@
-import { Component, Inject } from '@nestjs/common';
+import { Component, Inject, HttpException } from '@nestjs/common';
 import { InfoGroup } from '../model/InfoGroup';
 import { InfoItem } from '../model/InfoItem'
 import { IncomingMessage } from 'http';
@@ -22,6 +22,19 @@ export class InfoGroupService {
     async getInfoItems(id: number): Promise<InfoItem[]> {
         let infoGroup: InfoGroup = await this.infoGroupRepository.findOneById(id, { relations: ['items'] })
         return infoGroup.items
+    }
+
+    async createInfoGroup(name: string): Promise<void> {
+        let exist: InfoGroup = await this.infoGroupRepository.findOne({ name })
+        if (exist) {
+            throw new HttpException('给定名称信息组已存在', 407)
+        }
+        let infoGroup: InfoGroup = this.infoGroupRepository.create({ name, status: true })
+        try {
+            await this.infoGroupRepository.save(infoGroup)
+        } catch (err) {
+            throw new HttpException('数据库错误' + err.toString(), 401)
+        }
     }
 }
 

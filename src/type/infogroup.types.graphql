@@ -5,6 +5,13 @@ type Query{
     infoItems(id:Int!):InfoItemsData
 }
 
+typr Mutation{
+    #create InfoGroup
+   createInfoGroup(name:String!):Data 
+}
+
+
+
 #infoGroups return data
 type InfoGroupsData{
     code:Int
