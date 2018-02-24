@@ -37,6 +37,13 @@ export class UserService {
         return await this.userRepository.find({ recycle: true })
     }
 
+    async userInfos(id:number):Promise<UserInfo[]>{
+        let user:User = await this.userRepository.findOneById(id,{relations:['userInfos']})
+        if(!user){
+            throw new HttpException('指定用户不存在', 406)
+        }
+        return  user.userInfos
+    }
     async createUser(organizationId: number, userName: string, password: string, nickname: string, realName: string, sex: string, birthday: string, email: string, cellPhoneNumber: string): Promise<void> {
         let organizations: Organization[] = []
         if (organizationId) {

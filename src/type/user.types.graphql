@@ -5,6 +5,8 @@ type Query{
     freedomUsers:FreedomUsersData
     #get users in recycle bin 
     recycleUsers:RecycleUsersData
+    #get user info 
+    userInfos(id:Int!):UserInfosData
 }
 
 
@@ -132,4 +134,19 @@ input  UnionUserInfo{
     base64:String
     rawName:String
     bucketName:String
+}
+
+#userInfos return Data
+type UserInfosData{
+    #error code
+    code:Int
+    #error message
+    message:String
+    #array of user
+    userInfos:[UserInfo]
+}
+
+type UserInfo{
+    key:String
+    value:String
 }

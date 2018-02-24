@@ -2,6 +2,7 @@ import { FreedomUsersData } from '../interface/user/FreedomUsersData';
 import { RecycleUsersData } from '../interface/user/RecycleUsersData';
 import { CreateUserBody } from '../interface/user/CreateUserBody';
 import { UpdateUserBody } from '../interface/user/UpdateUserBody';
+import { UserInfosData } from '../interface/user/UserInfosData';
 import { UnionUserInfo } from '../interface/user/UnionUserInfo';
 import { Resolver, Query, Mutation } from '@nestjs/graphql';
 import { UsersData } from '../interface/user/UsersData';
@@ -84,6 +85,34 @@ export class UserResolver {
             }
         }
         return data
+    }
+
+
+    @Query('userInfos')
+    async userInfos(req: IncomingMessage, body: { id: number }): Promise<UserInfosData> {
+        let data: UserInfosData = {
+            code: 200,
+            message: '获取指定用户信息成功',
+            userInfos: []
+        }
+        try {
+            let { id } = body
+            if (!id) {
+                throw new HttpException('缺少参数', 400)
+            }
+            data.userInfos = await this.userService.userInfos(id)
+        } catch (err) {
+            if (err instanceof HttpException) {
+                data.code = err.getStatus()
+                data.message = err.getResponse() + ''
+            } else {
+                console.log(err)
+                data.code = 500
+                data.message = '出现了意外错误' + err.toString()
+            }
+        }
+        return data
+
     }
 
     /* 后台创建用户接口，只包含通用信息项，不包含特殊信息项
@@ -250,7 +279,7 @@ export class UserResolver {
         }
         try {
             let { ids } = body
-            if (!ids || ids.length===0) {
+            if (!ids || ids.length === 0) {
                 throw new HttpException('缺少参数', 400)
             }
             await this.userService.restoreUsers(ids)
