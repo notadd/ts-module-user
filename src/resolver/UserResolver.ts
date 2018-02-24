@@ -72,11 +72,11 @@ export class UserResolver {
             message: '创建用户成功'
         }
         try {
-            let { organizationId, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber, status } = body
-            if (!userName || !password || !nickname || !realName || !sex || !birthday || !email || !cellPhoneNumber || !status) {
+            let { organizationId, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber} = body
+            if (!userName || !password || !nickname || !realName || !sex || !birthday || !email || !cellPhoneNumber) {
                 throw new HttpException('缺少参数', 400)
             }
-            await this.userService.createUser(organizationId, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber, status)
+            await this.userService.createUser(organizationId, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber)
         } catch (err) {
             if (err instanceof HttpException) {
                 data.code = err.getStatus()
@@ -97,11 +97,11 @@ export class UserResolver {
             message: '更新用户成功'
         }
         try {
-            let { id, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber, status } = body
+            let { id, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber} = body
             if (!id) {
                 throw new HttpException('缺少参数', 400)
             }
-            await this.userService.updateUser(id, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber, status)
+            await this.userService.updateUser(id, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber)
         } catch (err) {
             if (err instanceof HttpException) {
                 data.code = err.getStatus()
@@ -175,11 +175,11 @@ export class UserResolver {
             message: '创建用户成功'
         }
         try {
-            let { organizationId, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber, status, groups } = body
+            let { organizationId, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber, groups } = body
             if (!userName || !password || !nickname || !realName || !sex || !birthday || !email || !cellPhoneNumber || !status) {
                 throw new HttpException('缺少参数', 400)
             }
-            await this.userService.createUserWithUserInfo(req, organizationId, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber, status, groups)
+            await this.userService.createUserWithUserInfo(req, organizationId, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber,groups)
         } catch (err) {
             if (err instanceof HttpException) {
                 data.code = err.getStatus()

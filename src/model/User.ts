@@ -95,6 +95,13 @@ export class User {
     })
     status: boolean
 
+    /* 状态，是否处于回收站 */
+    @Column({
+        name: 'recycle',
+        type: 'tinyint'
+    })
+    recycle: boolean
+
     /* 用户所包含信息，为调用信息组生成的信息 */
     @OneToMany(type => UserInfo, userInfo => userInfo.user, {
         cascadeInsert: true,

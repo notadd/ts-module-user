@@ -8,5 +8,4 @@ export interface CreateUserBody{
     birthday: string, 
     email: string, 
     cellPhoneNumber: string, 
-    status: boolean 
 }

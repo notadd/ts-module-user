@@ -19,7 +19,6 @@ type Mutation{
         birthday: String!, 
         email: String!, 
         cellPhoneNumber: String!, 
-        status: Boolean! 
     ):Data
 
     #update user , specify organization
@@ -33,7 +32,6 @@ type Mutation{
         birthday: String, 
         email: String, 
         cellPhoneNumber: String, 
-        status: Boolean 
     ):Data
 
     #create user with UserInfo, specify organization
@@ -47,7 +45,6 @@ type Mutation{
         birthday: String!, 
         email: String!, 
         cellPhoneNumber: String!, 
-        status: Boolean!,
         groups: [UserInfoGroup]
     ):Data
 
@@ -57,10 +54,13 @@ type Mutation{
         groups: [UserInfoGroup]
     ):Data
 
-    #delete user and it's user info
+    #soft delete user and move it to recycle bin
+    softDeleteUser(id:Int!)
+
+    #delete user and it's user info,hard delete
     deleteUser(id:Int!):Data
 
-    #delete in batches
+    #delete in batches,hard delete
     deleteUsers(ids:[id:Int]):Data
 }
 

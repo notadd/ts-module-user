@@ -7,6 +7,5 @@ export interface UpdateUserBody {
     sex: string,
     birthday: string,
     email: string,
-    cellPhoneNumber: string,
-    status: boolean
+    cellPhoneNumber: string
 }

@@ -33,7 +33,7 @@ export class UserService {
         })
     }
 
-    async createUser(organizationId: number, userName: string, password: string, nickname: string, realName: string, sex: string, birthday: string, email: string, cellPhoneNumber: string, status: boolean): Promise<void> {
+    async createUser(organizationId: number, userName: string, password: string, nickname: string, realName: string, sex: string, birthday: string, email: string, cellPhoneNumber: string): Promise<void> {
         let organizations: Organization[] = []
         if (organizationId) {
             let organization = await this.organizationRepository.findOneById(organizationId)
@@ -49,38 +49,37 @@ export class UserService {
         try {
             let salt = crypto.createHash('md5').update(new Date().toString()).digest('hex').slice(0, 10)
             let passwordWithSalt = crypto.createHash('md5').update(password + salt).digest('hex')
-            let user: User = this.userRepository.create({ userName, password: passwordWithSalt, salt, nickname, realName, sex, birthday: new Date(birthday), email, cellPhoneNumber, status, organizations })
+            let user: User = this.userRepository.create({ userName, password: passwordWithSalt, salt, nickname, realName, sex, birthday: new Date(birthday), email, cellPhoneNumber, status: true, recycle: false, organizations })
             await this.userRepository.save(user)
         } catch (err) {
             throw new HttpException('数据库错误' + err.toString(), 401)
         }
     }
 
-    async updateUser(id: number, userName: string, password: string, nickname: string, realName: string, sex: string, birthday: string, email: string, cellPhoneNumber: string, status: boolean): Promise<void> {
+    async updateUser(id: number, userName: string, password: string, nickname: string, realName: string, sex: string, birthday: string, email: string, cellPhoneNumber: string): Promise<void> {
         let exist: User = await this.userRepository.findOneById(id)
         if (!exist) {
             throw new HttpException('指定用户不存在', 406)
         }
         try {
-            if(userName) exist.userName = userName
-            if(password){
+            if (userName) exist.userName = userName
+            if (password) {
                 let salt = crypto.createHash('md5').update(new Date().toString()).digest('hex').slice(0, 10)
                 exist.password = crypto.createHash('md5').update(password + salt).digest('hex')
             }
-            if(nickname) exist.nickname = nickname
-            if(realName) exist.realName = realName
-            if(sex) exist.sex = sex
-            if(birthday) exist.birthday = new Date(birthday)
-            if(email) exist.email = email
-            if(cellPhoneNumber) exist.cellPhoneNumber = cellPhoneNumber
-            if(status) exist.status = status
+            if (nickname) exist.nickname = nickname
+            if (realName) exist.realName = realName
+            if (sex) exist.sex = sex
+            if (birthday) exist.birthday = new Date(birthday)
+            if (email) exist.email = email
+            if (cellPhoneNumber) exist.cellPhoneNumber = cellPhoneNumber
             await this.userRepository.save(exist)
         } catch (err) {
             throw new HttpException('数据库错误' + err.toString(), 401)
         }
     }
 
-    async deleteUser(id:number):Promise<void>{
+    async deleteUser(id: number): Promise<void> {
         try {
             await this.userRepository.removeById(id)
         } catch (err) {
@@ -88,7 +87,7 @@ export class UserService {
         }
     }
 
-    async deleteUsers(ids:number[]):Promise<void>{
+    async deleteUsers(ids: number[]): Promise<void> {
         try {
             await this.userRepository.removeByIds(ids)
         } catch (err) {
@@ -96,7 +95,7 @@ export class UserService {
         }
     }
 
-    async createUserWithUserInfo(req: IncomingMessage, organizationId: number, userName: string, password: string, nickname: string, realName: string, sex: string, birthday: string, email: string, cellPhoneNumber: string, status: boolean, groups: { groupId: number, infos: UnionUserInfo[] }[]): Promise<void> {
+    async createUserWithUserInfo(req: IncomingMessage, organizationId: number, userName: string, password: string, nickname: string, realName: string, sex: string, birthday: string, email: string, cellPhoneNumber: string, groups: { groupId: number, infos: UnionUserInfo[] }[]): Promise<void> {
         let organizations: Organization[] = []
         if (organizationId) {
             let organization = await this.organizationRepository.findOneById(organizationId)
@@ -115,7 +114,7 @@ export class UserService {
         try {
             let salt = crypto.createHash('md5').update(new Date().toString()).digest('hex').slice(0, 10)
             let passwordWithSalt = crypto.createHash('md5').update(password + salt).digest('hex')
-            let user: User = this.userRepository.create({ userName, password: passwordWithSalt, salt, nickname, realName, sex, birthday: new Date(birthday), email, cellPhoneNumber, status, organizations })
+            let user: User = this.userRepository.create({ userName, password: passwordWithSalt, salt, nickname, realName, sex, birthday: new Date(birthday), email, cellPhoneNumber, status: true, recycle: false, organizations })
             await queryRunner.manager.save(user)
             await this.addUserInfoGroups(req, queryRunner.manager, user, groups)
             await queryRunner.commitTransaction();
@@ -233,8 +232,8 @@ export class UserService {
                 let index = necessary.findIndex(item => {
                     return item.id === match.id
                 })
-                if(index>=0){
-                    necessary.slice(index,1)
+                if (index >= 0) {
+                    necessary.slice(index, 1)
                 }
             }
             //如果必填项没有填写，抛出异常

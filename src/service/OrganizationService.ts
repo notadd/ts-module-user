@@ -90,7 +90,10 @@ export class OrganizationService {
         if (!o) {
             throw new HttpException('指定父组织不存在', 402)
         }
-        return o.users
+        //只获取不再回收站中的用户
+        return o.users.filter(user=>{
+            return user.recycle === false
+        })
     }
 
     async addUserToOrganization(id: number, userId: number): Promise<void> {
