@@ -228,4 +228,30 @@ export class OrganizationResolver {
         return data
     }
 
+     /* 向指定组织添加一个指定用户 */
+     @Mutation('addUsersToOrganization')
+     async addUsersToOrganization(req: IncomingMessage, body: { id: number,userIds:number[] }): Promise<Data> {
+         let data: Data = {
+             code: 200,
+             message: '向组织添加用户成功',
+         }
+         try {
+             let { id,userIds} = body
+             if (!id || !userIds || userIds.length===0) {
+                 throw new HttpException('缺少参数', 400)
+             }
+             await this.organizationService.addUsersToOrganization(id,userIds)
+         } catch (err) {
+             if (err instanceof HttpException) {
+                 data.code = err.getStatus()
+                 data.message = err.getResponse() + ''
+             } else {
+                 console.log(err)
+                 data.code = 500
+                 data.message = '出现了意外错误' + err.toString()
+             }
+         }
+         return data
+     }
+
 }

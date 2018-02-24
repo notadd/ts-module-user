@@ -19,11 +19,11 @@ type Mutation{
     #add user to organization
     addUserToOrganization(id:Int!,userId:Int!):Data
     #add users to organization
-    addUsersToOrganization(id:Int!,usersId:[Int!]!):Data
+    addUsersToOrganization(id:Int!,userIds:[Int!]!):Data
     #remove user from organization
     removeUserFromOrganization(id:Int!,userId:Int!):Data
     #remove users from organization
-    removeUsersFromOrganization(id:Int!,usersId:[Int!]!):Data
+    removeUsersFromOrganization(id:Int!,userIds:[Int!]!):Data
 }
 
 #return data
