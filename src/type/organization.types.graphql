@@ -16,6 +16,14 @@ type Mutation{
     updateOrganization(id:Int!,name:String!,parentId:Int):Data
     #delete  specify id organization
     deleteOrganization(id:Int!):Data
+    #add user to organization
+    addUserToOrganization(id:Int!,userId:Int!):Data
+    #add users to organization
+    addUsersToOrganization(id:Int!,usersId:[Int!]!):Data
+    #remove user from organization
+    removeUserFromOrganization(id:Int!,userId:Int!):Data
+    #remove users from organization
+    removeUsersFromOrganization(id:Int!,usersId:[Int!]!):Data
 }
 
 #return data

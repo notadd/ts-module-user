@@ -89,33 +89,6 @@ export class OrganizationResolver {
         return data
     }
 
-    /* 查找指定组织下所有用户 */
-    @Query('usersInOrganization')
-    async usersInOrganization(req: IncomingMessage, body: { id: number }): Promise<UsersInOrganizationData> {
-        let data: UsersInOrganizationData = {
-            code: 200,
-            message: '获取组织用户成功',
-            users: []
-        }
-        try {
-            let { id } = body
-            if (!id) {
-                throw new HttpException('缺少参数', 400)
-            }
-            data.users = await this.organizationService.getUsersInOrganization(id)
-        } catch (err) {
-            if (err instanceof HttpException) {
-                data.code = err.getStatus()
-                data.message = err.getResponse() + ''
-            } else {
-                console.log(err)
-                data.code = 500
-                data.message = '出现了意外错误' + err.toString()
-            }
-        }
-        return data
-    }
-
     /* 创建指定名称组织，可选是否指定父组织id */
     @Mutation('createOrganization')
     async createOrganization(req: IncomingMessage, body: { name: string, parentId: number }): Promise<Data> {
@@ -201,4 +174,58 @@ export class OrganizationResolver {
         }
         return data
     }
+
+    /* 查找指定组织下所有用户 */
+    @Query('usersInOrganization')
+    async usersInOrganization(req: IncomingMessage, body: { id: number }): Promise<UsersInOrganizationData> {
+        let data: UsersInOrganizationData = {
+            code: 200,
+            message: '获取组织用户成功',
+            users: []
+        }
+        try {
+            let { id } = body
+            if (!id) {
+                throw new HttpException('缺少参数', 400)
+            }
+            data.users = await this.organizationService.getUsersInOrganization(id)
+        } catch (err) {
+            if (err instanceof HttpException) {
+                data.code = err.getStatus()
+                data.message = err.getResponse() + ''
+            } else {
+                console.log(err)
+                data.code = 500
+                data.message = '出现了意外错误' + err.toString()
+            }
+        }
+        return data
+    }
+
+    /* 向指定组织添加一个指定用户 */
+    @Mutation('addUserToOrganization')
+    async addUserToOrganization(req: IncomingMessage, body: { id: number,userId:number }): Promise<Data> {
+        let data: Data = {
+            code: 200,
+            message: '向组织添加用户成功',
+        }
+        try {
+            let { id,userId} = body
+            if (!id || !userId) {
+                throw new HttpException('缺少参数', 400)
+            }
+            await this.organizationService.addUserToOrganization(id,userId)
+        } catch (err) {
+            if (err instanceof HttpException) {
+                data.code = err.getStatus()
+                data.message = err.getResponse() + ''
+            } else {
+                console.log(err)
+                data.code = 500
+                data.message = '出现了意外错误' + err.toString()
+            }
+        }
+        return data
+    }
+
 }

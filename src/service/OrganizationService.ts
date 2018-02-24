@@ -6,6 +6,7 @@ import { User } from '../model/User';
 export class OrganizationService {
 
     constructor(
+        @Inject('UserPMModule.UserRepository') private readonly userRepository: Repository<User>,
         @Inject('UserPMModule.OrganizationRepository') private readonly organizationRepository: Repository<Organization>
     ) { }
 
@@ -24,13 +25,6 @@ export class OrganizationService {
         return await this.organizationRepository.find()
     }
 
-    async getUsersInOrganization(id: number): Promise<User[]> {
-        let o: Organization = await this.organizationRepository.findOneById(id, { relations: ['users'] })
-        if (!o) {
-            throw new HttpException('指定父组织不存在', 402)
-        }
-        return o.users
-    }
     async createOrganization(name: string, parentId: number): Promise<void> {
         let parent: Organization
         if (parentId !== undefined && parentId !== null) {
@@ -88,4 +82,29 @@ export class OrganizationService {
         }
     }
 
+    async getUsersInOrganization(id: number): Promise<User[]> {
+        let o: Organization = await this.organizationRepository.findOneById(id, { relations: ['users'] })
+        if (!o) {
+            throw new HttpException('指定父组织不存在', 402)
+        }
+        return o.users
+    }
+
+    async addUserToOrganization(id: number, userId: number): Promise<void> {
+        let o: Organization = await this.organizationRepository.findOneById(id, { relations: ['users'] })
+        if (!o) {
+            throw new HttpException('指定组织不存在', 402)
+        }
+        let user: User = await this.userRepository.findOneById(userId)
+        if (!user) {
+            throw new HttpException('指定用户不存在', 402)
+        }
+        let exist:User = o.users.find(user => {
+            return user.id === userId
+        })
+        if(exist){
+            throw new HttpException('指定用户id='+userId+'已存在于指定组织id='+id+'中', 402)
+        }
+        o.users.push(user)
+        await this.organizationRepository.save(o)
 }
