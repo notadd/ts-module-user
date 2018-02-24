@@ -41,7 +41,7 @@ type Mutation{
 
     #update user , specify organization
     updateUser(
-        id：Int,
+        id:Int,
         userName: String, 
         password: String, 
         nickname: String, 
@@ -77,7 +77,7 @@ type Mutation{
     deleteUser(id:Int!):Data
 
     #delete in batches,hard delete
-    deleteUsers(ids:[id:Int]):Data
+    deleteUsers(ids:[Int!]!):Data
 }
 
 enum Sex{
