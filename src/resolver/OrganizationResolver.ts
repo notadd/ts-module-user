@@ -254,7 +254,7 @@ export class OrganizationResolver {
          return data
      }
 
-     /* 将指定用户从组织中移除 */
+    /* 将指定用户从组织中移除 */
     @Mutation('removeUserFromOrganization')
     async removeUserFromOrganization(req: IncomingMessage, body: { id: number,userId:number }): Promise<Data> {
         let data: Data = {
@@ -267,6 +267,32 @@ export class OrganizationResolver {
                 throw new HttpException('缺少参数', 400)
             }
             await this.organizationService.removeUserFromOrganization(id,userId)
+        } catch (err) {
+            if (err instanceof HttpException) {
+                data.code = err.getStatus()
+                data.message = err.getResponse() + ''
+            } else {
+                console.log(err)
+                data.code = 500
+                data.message = '出现了意外错误' + err.toString()
+            }
+        }
+        return data
+    }
+
+    /* 将指定多个用户从组织中移除 */
+    @Mutation('removeUsersFromOrganization')
+    async removeUsersFromOrganization(req: IncomingMessage, body: { id: number,userIds:number[] }): Promise<Data> {
+        let data: Data = {
+            code: 200,
+            message: '从组织移除多个用户成功',
+        }
+        try {
+            let { id,userIds} = body
+            if (!id || !userIds || userIds.length===0) {
+                throw new HttpException('缺少参数', 400)
+            }
+            await this.organizationService.removeUsersFromOrganization(id,userIds)
         } catch (err) {
             if (err instanceof HttpException) {
                 data.code = err.getStatus()
