@@ -23,13 +23,13 @@ export class UserService {
 
 
     async getAll(): Promise<User[]> {
-        return await this.userRepository.find()
+        return await this.userRepository.find({recycle:false})
     }
 
     async getFreedomUsers(): Promise<User[]> {
         let users: User[] = await this.userRepository.find({ relations: ['organizations'] })
         return users.filter(user => {
-            return user.organizations === null || user.organizations === undefined || user.organizations.length === 0
+            return (user.organizations === null || user.organizations === undefined || user.organizations.length === 0)&&user.recycle===false
         })
     }
 
