@@ -115,6 +115,32 @@ export class UserResolver {
         return data
     }
 
+    /* 软删除指定用户，即将其加入回收站 */
+    @Mutation('softDeleteUser')
+    async softDeleteUser(req: IncomingMessage, body: { id: number }): Promise<Data> {
+        let data: Data = {
+            code: 200,
+            message: '删除用户到回收站成功'
+        }
+        try {
+            let { id } = body
+            if (!id) {
+                throw new HttpException('缺少参数', 400)
+            }
+            await this.userService.softDeleteUser(id)
+        } catch (err) {
+            if (err instanceof HttpException) {
+                data.code = err.getStatus()
+                data.message = err.getResponse() + ''
+            } else {
+                console.log(err)
+                data.code = 500
+                data.message = '出现了意外错误' + err.toString()
+            }
+        }
+        return data
+    }
+
     @Mutation('deleteUser')
     async deleteUser(req: IncomingMessage, body: { id: number }): Promise<Data> {
         let data: Data = {

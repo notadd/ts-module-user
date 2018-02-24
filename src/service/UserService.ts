@@ -79,6 +79,19 @@ export class UserService {
         }
     }
 
+    async softDeleteUser(id: number): Promise<void> {
+        let exist: User = await this.userRepository.findOneById(id)
+        if (!exist) {
+            throw new HttpException('指定用户不存在', 406)
+        }
+        try {
+            exist.recycle = true
+            await this.userRepository.save(exist)
+        } catch (err) {
+            throw new HttpException('数据库错误' + err.toString(), 401)
+        }
+    }
+
     async deleteUser(id: number): Promise<void> {
         try {
             await this.userRepository.removeById(id)

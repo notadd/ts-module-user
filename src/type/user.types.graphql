@@ -55,7 +55,7 @@ type Mutation{
     ):Data
 
     #soft delete user and move it to recycle bin
-    softDeleteUser(id:Int!)
+    softDeleteUser(id:Int!):Data
 
     #delete user and it's user info,hard delete
     deleteUser(id:Int!):Data
