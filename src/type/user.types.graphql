@@ -57,10 +57,16 @@ type Mutation{
     ):Data
 
     #banned user,set status false
-    bannerUser(id:Int!):Data
-    
-    #soft delete user and move it to recycle bin
+    bannedUser(id:Int!):Data
+
+    #unbanned user,set status true
+    unBannedUser(id:Int!):Data
+
+    #soft delete user and move it to recycle bin,set recycle true
     softDeleteUser(id:Int!):Data
+
+    #restore user from recycle bin
+    restoreUser(id:Int!):Data
 
     #delete user and it's user info,hard delete
     deleteUser(id:Int!):Data

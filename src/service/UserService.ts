@@ -250,6 +250,25 @@ export class UserService {
         }
     }
 
+    async unBannedUser(id: number): Promise<void> {
+        let exist: User = await this.userRepository.findOneById(id)
+        if (!exist) {
+            throw new HttpException('指定用户不存在', 406)
+        }
+        if (exist.recycle === true) {
+            throw new HttpException('指定用户已存在回收站中', 406)
+        }
+        if(exist.status===true){
+            throw new HttpException('指定用户不需要解封', 406)
+        }
+        try {
+            exist.status = true
+            await this.userRepository.save(exist)
+        } catch (err) {
+            throw new HttpException('数据库错误' + err.toString(), 401)
+        }
+    }
+
     async softDeleteUser(id: number): Promise<void> {
         let exist: User = await this.userRepository.findOneById(id)
         if (!exist) {
@@ -260,6 +279,22 @@ export class UserService {
         }
         try {
             exist.recycle = true
+            await this.userRepository.save(exist)
+        } catch (err) {
+            throw new HttpException('数据库错误' + err.toString(), 401)
+        }
+    }
+
+    async restoreUser(id: number): Promise<void> {
+        let exist: User = await this.userRepository.findOneById(id)
+        if (!exist) {
+            throw new HttpException('指定用户不存在', 406)
+        }
+        if (exist.recycle === false) {
+            throw new HttpException('指定用户不存在回收站中', 406)
+        }
+        try {
+            exist.recycle = false
             await this.userRepository.save(exist)
         } catch (err) {
             throw new HttpException('数据库错误' + err.toString(), 401)
