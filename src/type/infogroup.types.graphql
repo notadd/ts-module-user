@@ -1,0 +1,17 @@
+type Query{
+    #get all info group
+    infoGroups:InfoGroupsData
+}
+
+#infoGroups return data
+type InfoGroupsData{
+    code:Int
+    message:String
+    infoGroups:[InfoGroup]
+}
+
+type InfoGroup{
+    id:Int
+    name:String
+    status:Boolean
+}

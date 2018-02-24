@@ -112,7 +112,6 @@ export class UserResolver {
             }
         }
         return data
-
     }
 
     /* 后台创建用户接口，只包含通用信息项，不包含特殊信息项
