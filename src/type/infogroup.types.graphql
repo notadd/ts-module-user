@@ -1,6 +1,8 @@
 type Query{
     #get all info group
     infoGroups:InfoGroupsData
+    #get info item
+    infoItems(id:Int!):InfoItemsData
 }
 
 #infoGroups return data
@@ -14,4 +16,20 @@ type InfoGroup{
     id:Int
     name:String
     status:Boolean
+}
+
+#infoItems return data
+type InfoItemsData{
+    code:Int
+    message:String
+    infoItems:[InfoItem]
+}
+
+type InfoItem{
+    id:Int
+    name:String
+    description:String
+    type:String
+    necessary:Boolean
+    order:Int
 }

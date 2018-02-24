@@ -15,10 +15,13 @@ export class InfoGroupService {
         @Inject('UserPMModule.InfoIGroupRepository') private readonly infoGroupRepository: Repository<InfoGroup>
     ) { }
 
-    async getAll():Promise<InfoGroup[]>{
+    async getAll(): Promise<InfoGroup[]> {
         return await this.infoGroupRepository.find()
     }
 
-
+    async getInfoItems(id: number): Promise<InfoItem[]> {
+        let infoGroup: InfoGroup = await this.infoGroupRepository.findOneById(id, { relations: ['items'] })
+        return infoGroup.items
+    }
 }
 
