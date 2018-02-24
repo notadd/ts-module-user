@@ -1,5 +1,8 @@
 import { Organization } from '../model/Organization';
 import { Permission } from '../model/Permission';
+import { InfoGroup } from '../model/InfoGroup';
+import { InfoItem } from '../model/InfoItem';
+import { UserInfo } from '../model/UserInfo';
 import { Module } from '../model/Module';
 import { User } from '../model/User';
 import { Role } from '../model/Role';
@@ -24,6 +27,9 @@ export const ConnectionProvider = {
             entities: [
                 Organization,
                 Permission,
+                InfoGroup,
+                InfoItem,
+                UserInfo,
                 Module,
                 User,
                 Func,

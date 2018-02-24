@@ -4,7 +4,7 @@ import { User } from './User';
 /* 用户信息实体类，这里填的信息是用户现有信息之外的信息
 */
 @Entity('user_info')
-@Index('key_userId',['key','userId'])
+@Index('key_userId', ['key', 'userId'])
 export class UserInfo {
 
     @PrimaryGeneratedColumn()
@@ -27,10 +27,10 @@ export class UserInfo {
     value: string
 
     @Column()
-    userId:SVGNumber
+    userId: Number
 
     /* 信息项所属用户 */
-    @ManyToOne(type=>User,user=>user.userInfos,{
+    @ManyToOne(type => User, user => user.userInfos, {
         cascadeInsert: true,
         cascadeUpdate: false,
         cascadeRemove: false,
@@ -39,8 +39,8 @@ export class UserInfo {
         eager: false
     })
     @JoinColumn({
-        name:'userId',
-        referencedColumnName:'id'
+        name: 'userId',
+        referencedColumnName: 'id'
     })
-    user:User
+    user: User
 }

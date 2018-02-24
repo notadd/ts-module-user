@@ -93,13 +93,13 @@ export class UserResolver {
        传递信息的方式为groups对象数组，每个对象包含了信息组id，以及信息数组，信息组id用来验证信息是否正确
     */
     @Mutation('createUserWithUserInfo')
-    async createUserWithUserInfo(req: IncomingMessage, body: CreateUserBody&{groups:{groupId:number,infos:UnionUserInfo[]}}): Promise<Data> {
+    async createUserWithUserInfo(req: IncomingMessage, body: CreateUserBody&{groups:{groupId:number,infos:UnionUserInfo[]}[]}): Promise<Data> {
         let data: Data = {
             code: 200,
             message: '创建用户成功'
         }
         try {
-            let { organizationId, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber, status } = body
+            let { organizationId, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber, status ,groups} = body
             if (!userName || !password || !nickname || !realName || !sex || !birthday || !email || !cellPhoneNumber || !status) {
                 throw new HttpException('缺少参数', 400)
             }

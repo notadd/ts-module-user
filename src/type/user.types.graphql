@@ -66,49 +66,11 @@ input UserInfoGroup{
     #id of InfoGroup
     id:Int
     #array of union info type
-    infos:[SingleRowText | MultiRowText | Radio | CheckBox | Date | PulldownMenu | File]
+    infos:[UnionUserInfo]
 }
 
-#single row text info
-type SingleRowText{
-    name: String
-    value: String
-}
-
-#multi row info
-type MultiRowText{
-    name: String
-    value: String
-}
-
-#radio
-type Radio{
-    name: String
-    value: String
-}
-
-#check
-type CheckBox{
-    name: String
-    value: [String]
-}
-
-#date
-type Date{
-    name: String
-    value: String
-}
-
-#pulldown menu,return single value
-type PulldownMenu{
-    name: String
-    value: String
-}
-
-#image or file 
-type File{
-    name: String
-    value: String
-    #raw name of file
-    rawName: String
+input  UnionUserInfo{
+    name:String
+    value:String
+    rawName:String
 }

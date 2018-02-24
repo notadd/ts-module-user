@@ -139,6 +139,7 @@ export class UserService {
                         throw new HttpException('指定类型信息项:'+match.type+'必须必须具有文件原名',410)
                     }
                 }
+                
             }
 
         }
