@@ -1,3 +1,4 @@
+import { OrganizationSubscriber } from '../subscriber/OriganizationSubscriber';
 import { Organization } from '../model/Organization';
 import { Permission } from '../model/Permission';
 import { InfoGroup } from '../model/InfoGroup';
@@ -34,7 +35,8 @@ export const ConnectionProvider = {
                 User,
                 Func,
                 Role
-            ]
+            ],
+            subscribers:[OrganizationSubscriber]
         })
     }
 }
