@@ -20,6 +20,19 @@ type Mutation{
         cellPhoneNumber: String!, 
         status: Boolean! 
     ):Data
+    #update user , specify organization
+    updateUser(
+        id：Int,
+        userName: String, 
+        password: String, 
+        nickname: String, 
+        realName: String, 
+        sex: Sex, 
+        birthday: String, 
+        email: String, 
+        cellPhoneNumber: String, 
+        status: Boolean 
+    ):Data
     #create user with UserInfo, specify organization
     createUserWithUserInfo(
         organizationId: Int, 

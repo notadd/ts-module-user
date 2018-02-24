@@ -1,5 +1,6 @@
 import { FreedomUsersData } from '../interface/user/FreedomUsersData';
 import { CreateUserBody } from '../interface/user/CreateUserBody';
+import { UpdateUserBody } from '../interface/user/UpdateUserBody';
 import { UnionUserInfo } from '../interface/user/UnionUserInfo';
 import { Resolver, Query, Mutation } from '@nestjs/graphql';
 import { UsersData } from '../interface/user/UsersData';
@@ -76,6 +77,31 @@ export class UserResolver {
                 throw new HttpException('缺少参数', 400)
             }
             await this.userService.createUser(organizationId, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber, status)
+        } catch (err) {
+            if (err instanceof HttpException) {
+                data.code = err.getStatus()
+                data.message = err.getResponse() + ''
+            } else {
+                console.log(err)
+                data.code = 500
+                data.message = '出现了意外错误' + err.toString()
+            }
+        }
+        return data
+    }
+
+    @Mutation('updateUser')
+    async updateUser(req: IncomingMessage, body: UpdateUserBody): Promise<Data> {
+        let data: Data = {
+            code: 200,
+            message: '更新用户成功'
+        }
+        try {
+            let { id, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber, status } = body
+            if (!id) {
+                throw new HttpException('缺少参数', 400)
+            }
+            await this.userService.updateUser(id,userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber, status)
         } catch (err) {
             if (err instanceof HttpException) {
                 data.code = err.getStatus()
