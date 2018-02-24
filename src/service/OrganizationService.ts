@@ -112,7 +112,11 @@ export class OrganizationService {
             throw new HttpException('指定用户id=' + userId + '已存在于指定组织id=' + id + '中', 402)
         }
         o.users.push(user)
-        await this.organizationRepository.save(o)
+        try {
+            await this.organizationRepository.save(o)
+        } catch (err) {
+            throw new HttpException('数据库错误' + err.toString(), 401)
+        }
     }
 
     async addUsersToOrganization(id: number, userIds: number[]): Promise<void> {
@@ -143,7 +147,11 @@ export class OrganizationService {
             }
         })
         o.users.push(...users)
-        await this.organizationRepository.save(o)
+        try {
+            await this.organizationRepository.save(o)
+        } catch (err) {
+            throw new HttpException('数据库错误' + err.toString(), 401)
+        }
     }
 
     async removeUserFromOrganization(id: number, userId: number): Promise<void> {
@@ -162,7 +170,11 @@ export class OrganizationService {
             throw new HttpException('指定用户id=' + userId + '不存在于指定组织id=' + id + '中', 402)
         }
         o.users.splice(index, 1)
-        await this.organizationRepository.save(o)
+        try {
+            await this.organizationRepository.save(o)
+        } catch (err) {
+            throw new HttpException('数据库错误' + err.toString(), 401)
+        }
     }
 
     async removeUsersFromOrganization(id: number, userIds: number[]): Promise<void> {
@@ -190,6 +202,10 @@ export class OrganizationService {
             }
             o.users.splice(index,1)
         })
-        await this.organizationRepository.save(o)
+        try {
+            await this.organizationRepository.save(o)
+        } catch (err) {
+            throw new HttpException('数据库错误' + err.toString(), 401)
+        }
     }
 }
