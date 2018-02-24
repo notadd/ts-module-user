@@ -1,7 +1,7 @@
-export interface FreedomUsersData{
+export interface RecycleUsersData{
     code:number
     message:string
-    freedomUsers:{
+    recycleUsers:{
         id:number
         userName:string
         nickname:string

@@ -23,14 +23,18 @@ export class UserService {
 
 
     async getAll(): Promise<User[]> {
-        return await this.userRepository.find({recycle:false})
+        return await this.userRepository.find({ recycle: false })
     }
 
     async getFreedomUsers(): Promise<User[]> {
         let users: User[] = await this.userRepository.find({ relations: ['organizations'] })
         return users.filter(user => {
-            return (user.organizations === null || user.organizations === undefined || user.organizations.length === 0)&&user.recycle===false
+            return (user.organizations === null || user.organizations === undefined || user.organizations.length === 0) && user.recycle === false
         })
+    }
+
+    async getRecycleUsers(): Promise<User[]> {
+        return await this.userRepository.find({ recycle: true })
     }
 
     async createUser(organizationId: number, userName: string, password: string, nickname: string, realName: string, sex: string, birthday: string, email: string, cellPhoneNumber: string): Promise<void> {
@@ -84,6 +88,9 @@ export class UserService {
         if (!exist) {
             throw new HttpException('指定用户不存在', 406)
         }
+        if (exist.recycle === true) {
+            throw new HttpException('指定用户已存在回收站中', 406)
+        }
         try {
             exist.recycle = true
             await this.userRepository.save(exist)
@@ -93,6 +100,13 @@ export class UserService {
     }
 
     async deleteUser(id: number): Promise<void> {
+        let exist: User = await this.userRepository.findOneById(id)
+        if (!exist) {
+            throw new HttpException('指定用户不存在', 406)
+        }
+        if (exist.recycle === false) {
+            throw new HttpException('指定用户不存在回收站中', 406)
+        }
         try {
             await this.userRepository.removeById(id)
         } catch (err) {
@@ -101,6 +115,18 @@ export class UserService {
     }
 
     async deleteUsers(ids: number[]): Promise<void> {
+        let users: User[] = await this.userRepository.findByIds(ids)
+        ids.forEach(id => {
+            let find = users.find(user => {
+                return user.id === id
+            })
+            if (!find) {
+                throw new HttpException('指定id=' + id + '的用户不存在', 406)
+            }
+            if (find.recycle == false) {
+                throw new HttpException('指定用户id='+id+'不存在于回收站中', 406)
+            }
+        })
         try {
             await this.userRepository.removeByIds(ids)
         } catch (err) {

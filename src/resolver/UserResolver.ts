@@ -1,4 +1,5 @@
 import { FreedomUsersData } from '../interface/user/FreedomUsersData';
+import { RecycleUsersData } from '../interface/user/RecycleUsersData';
 import { CreateUserBody } from '../interface/user/CreateUserBody';
 import { UpdateUserBody } from '../interface/user/UpdateUserBody';
 import { UnionUserInfo } from '../interface/user/UnionUserInfo';
@@ -44,11 +45,34 @@ export class UserResolver {
     async freedomUsers(): Promise<FreedomUsersData> {
         let data: FreedomUsersData = {
             code: 200,
-            message: '获取所有用户成功',
+            message: '获取所有自由用户成功',
             freedomUsers: []
         }
         try {
             data.freedomUsers = await this.userService.getFreedomUsers()
+        } catch (err) {
+            if (err instanceof HttpException) {
+                data.code = err.getStatus()
+                data.message = err.getResponse() + ''
+            } else {
+                console.log(err)
+                data.code = 500
+                data.message = '出现了意外错误' + err.toString()
+            }
+        }
+        return data
+    }
+
+    /* 获取当前所有回收站用户，即被软删除的用户 */
+    @Query('recycleUsers')
+    async recycleUsers(): Promise<RecycleUsersData> {
+        let data: RecycleUsersData = {
+            code: 200,
+            message: '获取所有回收站用户成功',
+            recycleUsers: []
+        }
+        try {
+            data.recycleUsers = await this.userService.getRecycleUsers()
         } catch (err) {
             if (err instanceof HttpException) {
                 data.code = err.getStatus()
