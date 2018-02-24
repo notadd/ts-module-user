@@ -18,6 +18,6 @@ import { Module, Global } from '@nestjs/common';
     InfoGroupResolver, InfoGroupService,
     UserResolver, UserService
   ],
-  exports: [...RepositorysProvider]
+  exports: []
 })
 export class UserPMModule { }

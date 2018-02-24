@@ -5,7 +5,7 @@ type Query{
     infoItems(id:Int!):InfoItemsData
 }
 
-typr Mutation{
+type Mutation{
     #create InfoGroup
     createInfoGroup(name:String!):Data 
     #update  InfoGroup
