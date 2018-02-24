@@ -50,13 +50,30 @@ export class InfoGroupService {
         }
     }
 
-    async deleteInfoGroup(id:number): Promise<void> {
+    async deleteInfoGroup(id: number): Promise<void> {
         let exist: InfoGroup = await this.infoGroupRepository.findOne({ name })
         if (!exist) {
             throw new HttpException('给定名称id信息组不存在', 408)
         }
         try {
             await this.infoGroupRepository.remove(exist)
+        } catch (err) {
+            throw new HttpException('数据库错误' + err.toString(), 401)
+        }
+    }
+
+    async addInfoItem(id: number, infoItemId: number): Promise<void> {
+        let group: InfoGroup = await this.infoGroupRepository.findOneById(id, { relations: ['items'] })
+        if (!group) {
+            throw new HttpException('给定名称id信息组不存在', 408)
+        }
+        let item: InfoItem = await this.infoItemRepository.findOneById(infoItemId)
+        if (!item) {
+            throw new HttpException('指定信息项不存在', 409)
+        }
+        try {
+            group.items.push(item)
+            await this.infoGroupRepository.save(group)
         } catch (err) {
             throw new HttpException('数据库错误' + err.toString(), 401)
         }

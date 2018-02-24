@@ -112,7 +112,7 @@ export class InfoGroupResolver {
     }
 
     @Mutation('deleteInfoGroup')
-    async deleteInfoGroup(req: IncomingMessage, body: { id:number }): Promise<Data> {
+    async deleteInfoGroup(req: IncomingMessage, body: { id: number }): Promise<Data> {
         let data: Data = {
             code: 200,
             message: '删除信息组成功'
@@ -136,4 +136,28 @@ export class InfoGroupResolver {
         return data
     }
 
+    @Mutation('addInfoItem')
+    async addInfoItem(req: IncomingMessage, body: { id: number, infoItemId: number }): Promise<Data> {
+        let data: Data = {
+            code: 200,
+            message: '添加信息项成功'
+        }
+        try {
+            let { id, infoItemId } = body
+            if (!id || !infoItemId) {
+                throw new HttpException('缺少参数', 400)
+            }
+            await this.infoGroupService.addInfoItem(id,infoItemId)
+        } catch (err) {
+            if (err instanceof HttpException) {
+                data.code = err.getStatus()
+                data.message = err.getResponse() + ''
+            } else {
+                console.log(err)
+                data.code = 500
+                data.message = '出现了意外错误' + err.toString()
+            }
+        }
+        return data
+    }
 }
