@@ -96,7 +96,7 @@ export class UserResolver {
             message: '创建用户成功'
         }
         try {
-            let { organizationId, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber} = body
+            let { organizationId, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber } = body
             if (!userName || !password || !nickname || !realName || !sex || !birthday || !email || !cellPhoneNumber) {
                 throw new HttpException('缺少参数', 400)
             }
@@ -121,7 +121,7 @@ export class UserResolver {
             message: '更新用户成功'
         }
         try {
-            let { id, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber} = body
+            let { id, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber } = body
             if (!id) {
                 throw new HttpException('缺少参数', 400)
             }
@@ -139,6 +139,30 @@ export class UserResolver {
         return data
     }
 
+    @Mutation('bannedUser')
+    async bannedUser(req: IncomingMessage, body: { id: number }): Promise<Data> {
+        let data: Data = {
+            code: 200,
+            message: '封禁用户成功'
+        }
+        try {
+            let { id } = body
+            if (!id) {
+                throw new HttpException('缺少参数', 400)
+            }
+            await this.userService.bannedUser(id)
+        } catch (err) {
+            if (err instanceof HttpException) {
+                data.code = err.getStatus()
+                data.message = err.getResponse() + ''
+            } else {
+                console.log(err)
+                data.code = 500
+                data.message = '出现了意外错误' + err.toString()
+            }
+        }
+        return data
+    }
     /* 软删除指定用户，即将其加入回收站 */
     @Mutation('softDeleteUser')
     async softDeleteUser(req: IncomingMessage, body: { id: number }): Promise<Data> {
@@ -229,7 +253,7 @@ export class UserResolver {
             if (!userName || !password || !nickname || !realName || !sex || !birthday || !email || !cellPhoneNumber || !status) {
                 throw new HttpException('缺少参数', 400)
             }
-            await this.userService.createUserWithUserInfo(req, organizationId, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber,groups)
+            await this.userService.createUserWithUserInfo(req, organizationId, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber, groups)
         } catch (err) {
             if (err instanceof HttpException) {
                 data.code = err.getStatus()

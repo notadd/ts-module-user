@@ -44,7 +44,7 @@ export class Organization {
         nullable:true,
         lazy:false,
         eager: false,
-        onDelete:'CASCADE'
+        onDelete:'RESTRICT'
     })
     @JoinColumn({
         name: 'parentId',

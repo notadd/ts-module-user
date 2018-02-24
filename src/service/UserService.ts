@@ -60,80 +60,6 @@ export class UserService {
         }
     }
 
-    async updateUser(id: number, userName: string, password: string, nickname: string, realName: string, sex: string, birthday: string, email: string, cellPhoneNumber: string): Promise<void> {
-        let exist: User = await this.userRepository.findOneById(id)
-        if (!exist) {
-            throw new HttpException('指定用户不存在', 406)
-        }
-        try {
-            if (userName) exist.userName = userName
-            if (password) {
-                let salt = crypto.createHash('md5').update(new Date().toString()).digest('hex').slice(0, 10)
-                exist.password = crypto.createHash('md5').update(password + salt).digest('hex')
-            }
-            if (nickname) exist.nickname = nickname
-            if (realName) exist.realName = realName
-            if (sex) exist.sex = sex
-            if (birthday) exist.birthday = new Date(birthday)
-            if (email) exist.email = email
-            if (cellPhoneNumber) exist.cellPhoneNumber = cellPhoneNumber
-            await this.userRepository.save(exist)
-        } catch (err) {
-            throw new HttpException('数据库错误' + err.toString(), 401)
-        }
-    }
-
-    async softDeleteUser(id: number): Promise<void> {
-        let exist: User = await this.userRepository.findOneById(id)
-        if (!exist) {
-            throw new HttpException('指定用户不存在', 406)
-        }
-        if (exist.recycle === true) {
-            throw new HttpException('指定用户已存在回收站中', 406)
-        }
-        try {
-            exist.recycle = true
-            await this.userRepository.save(exist)
-        } catch (err) {
-            throw new HttpException('数据库错误' + err.toString(), 401)
-        }
-    }
-
-    async deleteUser(id: number): Promise<void> {
-        let exist: User = await this.userRepository.findOneById(id)
-        if (!exist) {
-            throw new HttpException('指定用户不存在', 406)
-        }
-        if (exist.recycle === false) {
-            throw new HttpException('指定用户不存在回收站中', 406)
-        }
-        try {
-            await this.userRepository.removeById(id)
-        } catch (err) {
-            throw new HttpException('数据库错误' + err.toString(), 401)
-        }
-    }
-
-    async deleteUsers(ids: number[]): Promise<void> {
-        let users: User[] = await this.userRepository.findByIds(ids)
-        ids.forEach(id => {
-            let find = users.find(user => {
-                return user.id === id
-            })
-            if (!find) {
-                throw new HttpException('指定id=' + id + '的用户不存在', 406)
-            }
-            if (find.recycle == false) {
-                throw new HttpException('指定用户id='+id+'不存在于回收站中', 406)
-            }
-        })
-        try {
-            await this.userRepository.removeByIds(ids)
-        } catch (err) {
-            throw new HttpException('数据库错误' + err.toString(), 401)
-        }
-    }
-
     async createUserWithUserInfo(req: IncomingMessage, organizationId: number, userName: string, password: string, nickname: string, realName: string, sex: string, birthday: string, email: string, cellPhoneNumber: string, groups: { groupId: number, infos: UnionUserInfo[] }[]): Promise<void> {
         let organizations: Organization[] = []
         if (organizationId) {
@@ -281,4 +207,99 @@ export class UserService {
             }
         }
     }
+
+    async updateUser(id: number, userName: string, password: string, nickname: string, realName: string, sex: string, birthday: string, email: string, cellPhoneNumber: string): Promise<void> {
+        let exist: User = await this.userRepository.findOneById(id)
+        if (!exist) {
+            throw new HttpException('指定用户不存在', 406)
+        }
+        try {
+            if (userName) exist.userName = userName
+            if (password) {
+                let salt = crypto.createHash('md5').update(new Date().toString()).digest('hex').slice(0, 10)
+                exist.password = crypto.createHash('md5').update(password + salt).digest('hex')
+            }
+            if (nickname) exist.nickname = nickname
+            if (realName) exist.realName = realName
+            if (sex) exist.sex = sex
+            if (birthday) exist.birthday = new Date(birthday)
+            if (email) exist.email = email
+            if (cellPhoneNumber) exist.cellPhoneNumber = cellPhoneNumber
+            await this.userRepository.save(exist)
+        } catch (err) {
+            throw new HttpException('数据库错误' + err.toString(), 401)
+        }
+    }
+
+    async bannedUser(id: number): Promise<void> {
+        let exist: User = await this.userRepository.findOneById(id)
+        if (!exist) {
+            throw new HttpException('指定用户不存在', 406)
+        }
+        if (exist.recycle === true) {
+            throw new HttpException('指定用户已存在回收站中', 406)
+        }
+        if(exist.status===false){
+            throw new HttpException('指定用户已经封禁', 406)
+        }
+        try {
+            exist.status = false
+            await this.userRepository.save(exist)
+        } catch (err) {
+            throw new HttpException('数据库错误' + err.toString(), 401)
+        }
+    }
+
+    async softDeleteUser(id: number): Promise<void> {
+        let exist: User = await this.userRepository.findOneById(id)
+        if (!exist) {
+            throw new HttpException('指定用户不存在', 406)
+        }
+        if (exist.recycle === true) {
+            throw new HttpException('指定用户已存在回收站中', 406)
+        }
+        try {
+            exist.recycle = true
+            await this.userRepository.save(exist)
+        } catch (err) {
+            throw new HttpException('数据库错误' + err.toString(), 401)
+        }
+    }
+
+    async deleteUser(id: number): Promise<void> {
+        let exist: User = await this.userRepository.findOneById(id)
+        if (!exist) {
+            throw new HttpException('指定用户不存在', 406)
+        }
+        if (exist.recycle === false) {
+            throw new HttpException('指定用户不存在回收站中', 406)
+        }
+        try {
+            await this.userRepository.removeById(id)
+        } catch (err) {
+            throw new HttpException('数据库错误' + err.toString(), 401)
+        }
+    }
+
+    async deleteUsers(ids: number[]): Promise<void> {
+        let users: User[] = await this.userRepository.findByIds(ids)
+        ids.forEach(id => {
+            let find = users.find(user => {
+                return user.id === id
+            })
+            if (!find) {
+                throw new HttpException('指定id=' + id + '的用户不存在', 406)
+            }
+            if (find.recycle == false) {
+                throw new HttpException('指定用户id=' + id + '不存在于回收站中', 406)
+            }
+        })
+        try {
+            await this.userRepository.removeByIds(ids)
+        } catch (err) {
+            throw new HttpException('数据库错误' + err.toString(), 401)
+        }
+    }
+
+
 }

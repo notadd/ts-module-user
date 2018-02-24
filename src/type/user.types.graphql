@@ -23,19 +23,6 @@ type Mutation{
         cellPhoneNumber: String!, 
     ):Data
 
-    #update user , specify organization
-    updateUser(
-        id：Int,
-        userName: String, 
-        password: String, 
-        nickname: String, 
-        realName: String, 
-        sex: Sex, 
-        birthday: String, 
-        email: String, 
-        cellPhoneNumber: String, 
-    ):Data
-
     #create user with UserInfo, specify organization
     createUserWithUserInfo(
         organizationId: Int, 
@@ -50,12 +37,28 @@ type Mutation{
         groups: [UserInfoGroup]
     ):Data
 
+    #update user , specify organization
+    updateUser(
+        id：Int,
+        userName: String, 
+        password: String, 
+        nickname: String, 
+        realName: String, 
+        sex: Sex, 
+        birthday: String, 
+        email: String, 
+        cellPhoneNumber: String, 
+    ):Data
+
     #add userinfo to user , user must exist
     addUserInfoToUser(
         id:Int!,
         groups: [UserInfoGroup]
     ):Data
 
+    #banned user,set status false
+    bannerUser(id:Int!):Data
+    
     #soft delete user and move it to recycle bin
     softDeleteUser(id:Int!):Data
 
