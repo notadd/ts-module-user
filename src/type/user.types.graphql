@@ -3,6 +3,8 @@ type Query{
     users:UsersData
     #get all of freedom users
     freedomUsers:FreedomUsersData
+    #get users in recycle bin 
+    recycleUsers:RecycleUsersData
 }
 
 
@@ -87,6 +89,16 @@ type FreedomUsersData{
     message:String
     #array of user
     freedomUsers:[User]
+}
+
+#recycleUsers return Data
+type RecycleUsersData{
+    #error code
+    code:Int
+    #error message
+    message:String
+    #array of user
+    recycleUsers:[User]
 }
 
 #input user info group
