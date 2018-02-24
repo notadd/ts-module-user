@@ -7,9 +7,12 @@ type Query{
 
 typr Mutation{
     #create InfoGroup
-   createInfoGroup(name:String!):Data 
+    createInfoGroup(name:String!):Data 
+    #update  InfoGroup
+    updateInfoGroup(name:String!):Data
+    #delete InfoGroup
+    deleteInfoGroup(id:Int!):Data
 }
-
 
 
 #infoGroups return data
