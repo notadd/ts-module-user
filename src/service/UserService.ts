@@ -301,6 +301,32 @@ export class UserService {
         }
     }
 
+    async restoreUsers(ids: number[]): Promise<void> {
+        let users: User[] = await this.userRepository.findByIds(ids)
+        if (!users||users.length===0) {
+            throw new HttpException('指定用户不存在', 406)
+        }
+        ids.forEach(id=>{
+            let find:User  = users.find(user=>{
+                return user.id === id
+            })
+            if(!find){
+                throw new HttpException('指定id='+id+'用户未找到',406)
+            }
+            if(find.recycle===false){
+                throw new HttpException('指定用户id='+id+'不在回收站中',406)
+            }
+            find.recycle === true
+        })
+        try {
+            await Promise.all(users.map(async user=>{
+                return this.userRepository.save(user)
+            },this))
+        } catch (err) {
+            throw new HttpException('数据库错误' + err.toString(), 401)
+        }
+    }
+
     async deleteUser(id: number): Promise<void> {
         let exist: User = await this.userRepository.findOneById(id)
         if (!exist) {

@@ -68,6 +68,9 @@ type Mutation{
     #restore user from recycle bin
     restoreUser(id:Int!):Data
 
+    #restore users from recycle bin
+    restoreUsers(ids:[Int!]!):Data
+
     #delete user and it's user info,hard delete
     deleteUser(id:Int!):Data
 

@@ -241,6 +241,32 @@ export class UserResolver {
         return data
     }
 
+    /* 将指定多个用户从回收站还原 */
+    @Mutation('restoreUsers')
+    async restoreUsers(req: IncomingMessage, body: { ids: number[] }): Promise<Data> {
+        let data: Data = {
+            code: 200,
+            message: '还原多个用户成功'
+        }
+        try {
+            let { ids } = body
+            if (!ids || ids.length===0) {
+                throw new HttpException('缺少参数', 400)
+            }
+            await this.userService.restoreUsers(ids)
+        } catch (err) {
+            if (err instanceof HttpException) {
+                data.code = err.getStatus()
+                data.message = err.getResponse() + ''
+            } else {
+                console.log(err)
+                data.code = 500
+                data.message = '出现了意外错误' + err.toString()
+            }
+        }
+        return data
+    }
+
     @Mutation('deleteUser')
     async deleteUser(req: IncomingMessage, body: { id: number }): Promise<Data> {
         let data: Data = {
