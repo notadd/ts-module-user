@@ -34,6 +34,11 @@ type Mutation{
         status: Boolean!,
         groups: [UserInfoGroup]
     ):Data
+    #add userinfo to user , user must exist
+    addUserInfoToUser(
+        id:Int!,
+        groups: [UserInfoGroup]
+    ):Data
 }
 
 enum Sex{

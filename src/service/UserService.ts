@@ -77,7 +77,7 @@ export class UserService {
             let passwordWithSalt = crypto.createHash('md5').update(password + salt).digest('hex')
             let user: User = this.userRepository.create({ userName, password: passwordWithSalt, salt, nickname, realName, sex, birthday: new Date(birthday), email, cellPhoneNumber, status, organizations })
             await queryRunner.manager.save(user)
-            await this.addUserInfoGroups(req,queryRunner.manager, user, groups)
+            await this.addUserInfoGroups(req, queryRunner.manager, user, groups)
             await queryRunner.commitTransaction();
         } catch (err) {
             await queryRunner.rollbackTransaction();
@@ -87,6 +87,28 @@ export class UserService {
                 throw new HttpException('出现了数据库错误' + err.toString(), 401)
             }
         }
+    }
+
+    async addUserInfoToUser(req: IncomingMessage, id: number, groups: { groupId: number, infos: UnionUserInfo[] }[]): Promise<void> {
+        let user: User = await this.userRepository.findOneById(id)
+        if (!user) {
+            throw new HttpException('指定用户不存在', 406)
+        }
+        const queryRunner = this.connection.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+        try {
+            await this.addUserInfoGroups(req, queryRunner.manager, user, groups)
+            await queryRunner.commitTransaction();
+        } catch (err) {
+            await queryRunner.rollbackTransaction();
+            if (err instanceof HttpException) {
+                throw err
+            } else {
+                throw new HttpException('出现了数据库错误' + err.toString(), 401)
+            }
+        }
+
     }
 
     /* 为指定用户添加信息组方法，注意添加时这些信息组还未存在于用户信息中
@@ -166,15 +188,15 @@ export class UserService {
                     let { bucketName, name, type } = await this.storeComponent.upload((infos[j] as FileInfo).bucketName, (infos[j] as FileInfo).base64, (infos[j] as FileInfo).rawName, null)
                     result = await this.storeComponent.getUrl(req, bucketName, name, type, null)
                 }
-                let userInfo:UserInfo = this.userInfoRepository.create({key:name,value:result,user})
+                let userInfo: UserInfo = this.userInfoRepository.create({ key: name, value: result, user })
                 await this.userInfoRepository.save(userInfo)
-                let index = necessary.findIndex(item =>{
+                let index = necessary.findIndex(item => {
                     return item.id === match.id
                 })
-                necessary = necessary.slice(0,index).concat(necessary.slice(index+1))
+                necessary = necessary.slice(0, index).concat(necessary.slice(index + 1))
             }
             //如果必填项没有填写，抛出异常
-            if(necessary.length!==0){
+            if (necessary.length !== 0) {
                 throw new HttpException('指定信息项:' + necessary + '为必填项', 410)
             }
         }

@@ -17,15 +17,15 @@ export class UserResolver {
 
     /* 获取当前所有用户 */
     @Query('users')
-    async users():Promise<UsersData>{
-        let data:UsersData={
-            code:200,
-            message:'获取所有用户成功',
-            users:[]
+    async users(): Promise<UsersData> {
+        let data: UsersData = {
+            code: 200,
+            message: '获取所有用户成功',
+            users: []
         }
-        try{
+        try {
             data.users = await this.userService.getAll()
-        }catch (err) {
+        } catch (err) {
             if (err instanceof HttpException) {
                 data.code = err.getStatus()
                 data.message = err.getResponse() + ''
@@ -40,15 +40,15 @@ export class UserResolver {
 
     /* 获取当前所有自由用户，即不属于任何组织的用户 */
     @Query('freedomUsers')
-    async freedomUsers():Promise<FreedomUsersData>{
-        let data:FreedomUsersData={
-            code:200,
-            message:'获取所有用户成功',
-            freedomUsers:[]
+    async freedomUsers(): Promise<FreedomUsersData> {
+        let data: FreedomUsersData = {
+            code: 200,
+            message: '获取所有用户成功',
+            freedomUsers: []
         }
-        try{
+        try {
             data.freedomUsers = await this.userService.getFreedomUsers()
-        }catch (err) {
+        } catch (err) {
             if (err instanceof HttpException) {
                 data.code = err.getStatus()
                 data.message = err.getResponse() + ''
@@ -65,7 +65,7 @@ export class UserResolver {
        模块创建用户不使用这个接口，因为模块创建用户需要添加特殊信息项
     */
     @Mutation('createUser')
-    async createUser(req: IncomingMessage, body:CreateUserBody): Promise<Data> {
+    async createUser(req: IncomingMessage, body: CreateUserBody): Promise<Data> {
         let data: Data = {
             code: 200,
             message: '创建用户成功'
@@ -93,17 +93,17 @@ export class UserResolver {
        传递信息的方式为groups对象数组，每个对象包含了信息组id，以及信息数组，信息组id用来验证信息是否正确
     */
     @Mutation('createUserWithUserInfo')
-    async createUserWithUserInfo(req: IncomingMessage, body: CreateUserBody&{groups:{groupId:number,infos:UnionUserInfo[]}[]}): Promise<Data> {
+    async createUserWithUserInfo(req: IncomingMessage, body: CreateUserBody & { groups: { groupId: number, infos: UnionUserInfo[] }[] }): Promise<Data> {
         let data: Data = {
             code: 200,
             message: '创建用户成功'
         }
         try {
-            let { organizationId, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber, status ,groups} = body
+            let { organizationId, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber, status, groups } = body
             if (!userName || !password || !nickname || !realName || !sex || !birthday || !email || !cellPhoneNumber || !status) {
                 throw new HttpException('缺少参数', 400)
             }
-            await this.userService.createUserWithUserInfo(req,organizationId, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber, status,groups)
+            await this.userService.createUserWithUserInfo(req, organizationId, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber, status, groups)
         } catch (err) {
             if (err instanceof HttpException) {
                 data.code = err.getStatus()
@@ -117,5 +117,30 @@ export class UserResolver {
         return data
     }
 
+
+    @Mutation('addUserInfoToUser')
+    async addUserInfoToUser(req: IncomingMessage, body: { id: number, groups: { groupId: number, infos: UnionUserInfo[] }[] }): Promise<Data> {
+        let data: Data = {
+            code: 200,
+            message: '创建用户成功'
+        }
+        try {
+            let { id, groups } = body
+            if (!id) {
+                throw new HttpException('缺少参数', 400)
+            }
+            await this.userService.addUserInfoToUser(req, id, groups)
+        } catch (err) {
+            if (err instanceof HttpException) {
+                data.code = err.getStatus()
+                data.message = err.getResponse() + ''
+            } else {
+                console.log(err)
+                data.code = 500
+                data.message = '出现了意外错误' + err.toString()
+            }
+        }
+        return data
+    }
 
 }
