@@ -7,6 +7,7 @@ type Query{
 
 
 type Mutation{
+
     #create user , specify organization
     createUser(
         organizationId: Int, 
@@ -20,6 +21,7 @@ type Mutation{
         cellPhoneNumber: String!, 
         status: Boolean! 
     ):Data
+
     #update user , specify organization
     updateUser(
         id：Int,
@@ -33,6 +35,7 @@ type Mutation{
         cellPhoneNumber: String, 
         status: Boolean 
     ):Data
+
     #create user with UserInfo, specify organization
     createUserWithUserInfo(
         organizationId: Int, 
@@ -47,11 +50,18 @@ type Mutation{
         status: Boolean!,
         groups: [UserInfoGroup]
     ):Data
+
     #add userinfo to user , user must exist
     addUserInfoToUser(
         id:Int!,
         groups: [UserInfoGroup]
     ):Data
+
+    #delete user and it's user info
+    deleteUser(id:Int!):Data
+
+    #delete in batches
+    deleteUsers(ids:[id:Int]):Data
 }
 
 enum Sex{

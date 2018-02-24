@@ -80,6 +80,14 @@ export class UserService {
         }
     }
 
+    async deleteUser(id:number):Promise<void>{
+        try {
+            await this.userRepository.deleteById(id)
+        } catch (err) {
+            throw new HttpException('数据库错误' + err.toString(), 401)
+        }
+    }
+
     async createUserWithUserInfo(req: IncomingMessage, organizationId: number, userName: string, password: string, nickname: string, realName: string, sex: string, birthday: string, email: string, cellPhoneNumber: string, status: boolean, groups: { groupId: number, infos: UnionUserInfo[] }[]): Promise<void> {
         let organizations: Organization[] = []
         if (organizationId) {
