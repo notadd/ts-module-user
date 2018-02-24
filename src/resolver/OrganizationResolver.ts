@@ -178,20 +178,17 @@ export class OrganizationResolver {
        可以指定force=true，强制删除组织及其子孙组织
     */
     @Mutation('deleteOrganization')
-    async deleteOrganization(req: IncomingMessage, body: { id: number, force: boolean }): Promise<Data> {
+    async deleteOrganization(req: IncomingMessage, body: { id: number }): Promise<Data> {
         let data: Data = {
             code: 200,
             message: '删除组织成功'
         }
         try {
-            let { id, force } = body
+            let { id } = body
             if (!id) {
                 throw new HttpException('缺少参数', 400)
             }
-            if (force !== undefined && force !== true && force !== false) {
-                throw new HttpException('参数错误', 400)
-            }
-            await this.organizationService.deleteOrganization(id, force)
+            await this.organizationService.deleteOrganization(id)
         } catch (err) {
             if (err instanceof HttpException) {
                 data.code = err.getStatus()

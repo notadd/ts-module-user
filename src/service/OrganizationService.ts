@@ -14,8 +14,8 @@ export class OrganizationService {
     }
 
     async getChildren(id: number): Promise<Organization[]> {
-        let o:Organization = await this.organizationRepository.findOneById(id, { relations: ['children'] })
-        if(!o){
+        let o: Organization = await this.organizationRepository.findOneById(id, { relations: ['children'] })
+        if (!o) {
             throw new HttpException('指定父组织不存在', 402)
         }
         return o.children
@@ -24,9 +24,9 @@ export class OrganizationService {
         return await this.organizationRepository.find()
     }
 
-    async getUsersInOrganization(id:number):Promise<User[]> {
-        let o:Organization = await this.organizationRepository.findOneById(id, { relations: ['users'] })
-        if(!o){
+    async getUsersInOrganization(id: number): Promise<User[]> {
+        let o: Organization = await this.organizationRepository.findOneById(id, { relations: ['users'] })
+        if (!o) {
             throw new HttpException('指定父组织不存在', 402)
         }
         return o.users
@@ -76,36 +76,16 @@ export class OrganizationService {
     }
 
 
-    async deleteOrganization(id: number, force): Promise<void> {
+    async deleteOrganization(id: number): Promise<void> {
         let exist: Organization = await this.organizationRepository.findOneById(id, { relations: ['children'] })
         if (!exist) {
             throw new HttpException('指定id组织不存在', 404)
         }
-        if (force === true) {
-            try {
-                await this.recursionDelete(id)
-            } catch (err) {
-                throw new HttpException('数据库错误' + err.toString(), 401)
-            }
-        } else {
-            if (exist.children && exist.children.length > 0) {
-                throw new HttpException('指定组织存在子组织，需要强制删除', 405)
-            }
-            try {
-                await this.organizationRepository.removeById(id)
-            } catch (err) {
-                throw new HttpException('数据库错误' + err.toString(), 401)
-            }
+        try {
+            await this.organizationRepository.removeById(id)
+        } catch (err) {
+            throw new HttpException('数据库错误' + err.toString(), 401)
         }
     }
 
-    async recursionDelete(id: number): Promise<void> {
-        let { children } = await this.organizationRepository.findOneById(id, { relations: ['children'] })
-        if (children && children.length > 0) {
-            for (let i = 0; i < children.length; i++) {
-                await this.recursionDelete(children[i].id)
-            }
-        }
-        await this.organizationRepository.removeById(id)
-    }
 }

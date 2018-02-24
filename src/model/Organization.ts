@@ -24,7 +24,7 @@ export class Organization {
         cascadeInsert: true,
         cascadeUpdate: true,
         lazy: false,
-        eager:false
+        eager: false
     })
     users: User[];
 
@@ -41,7 +41,10 @@ export class Organization {
         cascadeInsert: true,
         cascadeUpdate: true,
         cascadeRemove: false,
-        eager: false
+        nullable:true,
+        lazy:false,
+        eager: false,
+        onDelete:'CASCADE'
     })
     @JoinColumn({
         name: 'parentId',

@@ -1,21 +1,21 @@
 type Query{
-    #get children organization of specify organization 
-    children(id:Int):ChildrenData
     #get all of root organization 
     roots:RootsData
     #get all of organization 
     organizations:OrganizationsData
+    #get children organization of specify organization 
+    children(id:Int!):ChildrenData
     #get users of specify organization 
-    usersInOrganization(id:Int):UsersInOrganizationData
+    usersInOrganization(id:Int!):UsersInOrganizationData
 }
 
 type Mutation{
     #create organization with name , the parentId is optional
-    createOrganization(name:String,parentId:Int):Data
+    createOrganization(name:String!,parentId:Int):Data
     #update organization with name , the parentId is optional
-    updateOrganization(id:Int,name:String,parentId:Int):Data
+    updateOrganization(id:Int!,name:String!,parentId:Int):Data
     #delete  specify id organization
-    deleteOrganization(id:Int,force:Boolean):Data
+    deleteOrganization(id:Int!):Data
 }
 
 #return data
