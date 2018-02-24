@@ -146,13 +146,13 @@ export class OrganizationService {
         if (!user) {
             throw new HttpException('指定用户不存在', 402)
         }
-        let exist:User = o.users.find(user => {
+        let index = o.users.findIndex(user => {
             return user.id === userId
         })
-        if(!exist){
+        if(index<0){
             throw new HttpException('指定用户id='+userId+'不存在于指定组织id='+id+'中', 402)
         }
-        o.users.push(user)
+        o.users.splice(index,1)
         await this.organizationRepository.save(o)
     }
 }
