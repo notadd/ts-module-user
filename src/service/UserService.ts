@@ -77,7 +77,7 @@ export class UserService {
             let passwordWithSalt = crypto.createHash('md5').update(password + salt).digest('hex')
             let user: User = this.userRepository.create({ userName, password: passwordWithSalt, salt, nickname, realName, sex, birthday: new Date(birthday), email, cellPhoneNumber, status, organizations })
             await queryRunner.manager.save(user)
-            await this.addUserInfoGroups(queryRunner.manager, user, groups)
+            await this.addUserInfoGroups(req,queryRunner.manager, user, groups)
             await queryRunner.commitTransaction();
         } catch (err) {
             await queryRunner.rollbackTransaction();
@@ -154,13 +154,13 @@ export class UserService {
                     result = (infos[j] as ArrayInfo).array.join(',')
                 } else if (match.type === '上传图片' || match.type === '上传文件') {
                     if (!(infos[j] as FileInfo).base64) {
-                        throw new HttpException('指定类型信息项:' + match.type + '必须必须具有文件base64编码', 410)
+                        throw new HttpException('指定类型信息项:' + match.type + '必须具有文件base64编码', 410)
                     }
                     if (!(infos[j] as FileInfo).rawName) {
-                        throw new HttpException('指定类型信息项:' + match.type + '必须必须具有文件原名', 410)
+                        throw new HttpException('指定类型信息项:' + match.type + '必须具有文件原名', 410)
                     }
                     if (!(infos[j] as FileInfo).bucketName) {
-                        throw new HttpException('指定类型信息项:' + match.type + '必须必须具有文件存储空间名', 410)
+                        throw new HttpException('指定类型信息项:' + match.type + '必须具有文件存储空间名', 410)
                     }
                     //文件类型，上传到存储插件，并保存访问url
                     let { bucketName, name, type } = await this.storeComponent.upload((infos[j] as FileInfo).bucketName, (infos[j] as FileInfo).base64, (infos[j] as FileInfo).rawName, null)
@@ -168,8 +168,15 @@ export class UserService {
                 }
                 let userInfo:UserInfo = this.userInfoRepository.create({key:name,value:result,user})
                 await this.userInfoRepository.save(userInfo)
+                let index = necessary.findIndex(item =>{
+                    return item.id === match.id
+                })
+                necessary = necessary.slice(0,index).concat(necessary.slice(index+1))
             }
-
+            //如果必填项没有填写，抛出异常
+            if(necessary.length!==0){
+                throw new HttpException('指定信息项:' + necessary + '为必填项', 410)
+            }
         }
     }
 }
