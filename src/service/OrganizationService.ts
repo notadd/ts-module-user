@@ -75,6 +75,9 @@ export class OrganizationService {
         if (!exist) {
             throw new HttpException('指定id组织不存在', 404)
         }
+        if (exist.children&&exist.children.length>0) {
+            throw new HttpException('指定组织存在子组织，无法删除', 404)
+        }
         try {
             await this.organizationRepository.removeById(id)
         } catch (err) {
