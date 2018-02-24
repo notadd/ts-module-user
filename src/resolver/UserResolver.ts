@@ -140,6 +140,31 @@ export class UserResolver {
         return data
     }
 
+    @Mutation('deleteUsers')
+    async deleteUsers(req: IncomingMessage, body: { ids: number[] }): Promise<Data> {
+        let data: Data = {
+            code: 200,
+            message: '删除用户成功'
+        }
+        try {
+            let { ids } = body
+            if (!ids || ids.length === 0) {
+                throw new HttpException('缺少参数', 400)
+            }
+            await this.userService.deleteUsers(ids)
+        } catch (err) {
+            if (err instanceof HttpException) {
+                data.code = err.getStatus()
+                data.message = err.getResponse() + ''
+            } else {
+                console.log(err)
+                data.code = 500
+                data.message = '出现了意外错误' + err.toString()
+            }
+        }
+        return data
+    }
+
     /* 模块创建用户接口，会传递用户基本信息，与这个模块调用的信息组的信息，不同类型信息组处理方式不同
        传递信息的方式为groups对象数组，每个对象包含了信息组id，以及信息数组，信息组id用来验证信息是否正确
     */

@@ -82,7 +82,15 @@ export class UserService {
 
     async deleteUser(id:number):Promise<void>{
         try {
-            await this.userRepository.deleteById(id)
+            await this.userRepository.removeById(id)
+        } catch (err) {
+            throw new HttpException('数据库错误' + err.toString(), 401)
+        }
+    }
+
+    async deleteUsers(ids:number[]):Promise<void>{
+        try {
+            await this.userRepository.removeByIds(ids)
         } catch (err) {
             throw new HttpException('数据库错误' + err.toString(), 401)
         }
