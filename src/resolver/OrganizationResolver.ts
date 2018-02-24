@@ -228,12 +228,12 @@ export class OrganizationResolver {
         return data
     }
 
-     /* 向指定组织添加一个指定用户 */
+     /* 向指定组织添加多个指定用户 */
      @Mutation('addUsersToOrganization')
      async addUsersToOrganization(req: IncomingMessage, body: { id: number,userIds:number[] }): Promise<Data> {
          let data: Data = {
              code: 200,
-             message: '向组织添加用户成功',
+             message: '向组织添加多个用户成功',
          }
          try {
              let { id,userIds} = body
@@ -253,5 +253,31 @@ export class OrganizationResolver {
          }
          return data
      }
+
+     /* 将指定用户从组织中移除 */
+    @Mutation('removeUserFromOrganization')
+    async removeUserFromOrganization(req: IncomingMessage, body: { id: number,userId:number }): Promise<Data> {
+        let data: Data = {
+            code: 200,
+            message: '从组织移除用户成功',
+        }
+        try {
+            let { id,userId} = body
+            if (!id || !userId) {
+                throw new HttpException('缺少参数', 400)
+            }
+            await this.organizationService.removeUserFromOrganization(id,userId)
+        } catch (err) {
+            if (err instanceof HttpException) {
+                data.code = err.getStatus()
+                data.message = err.getResponse() + ''
+            } else {
+                console.log(err)
+                data.code = 500
+                data.message = '出现了意外错误' + err.toString()
+            }
+        }
+        return data
+    }
 
 }

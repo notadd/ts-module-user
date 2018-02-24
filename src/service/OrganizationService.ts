@@ -136,4 +136,23 @@ export class OrganizationService {
         o.users.push(...users)
         await this.organizationRepository.save(o)
     }
+
+    async removeUserFromOrganization(id: number, userId: number): Promise<void> {
+        let o: Organization = await this.organizationRepository.findOneById(id, { relations: ['users'] })
+        if (!o) {
+            throw new HttpException('指定组织不存在', 402)
+        }
+        let user: User = await this.userRepository.findOneById(userId)
+        if (!user) {
+            throw new HttpException('指定用户不存在', 402)
+        }
+        let exist:User = o.users.find(user => {
+            return user.id === userId
+        })
+        if(!exist){
+            throw new HttpException('指定用户id='+userId+'不存在于指定组织id='+id+'中', 402)
+        }
+        o.users.push(user)
+        await this.organizationRepository.save(o)
+    }
 }

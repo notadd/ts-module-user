@@ -233,7 +233,9 @@ export class UserService {
                 let index = necessary.findIndex(item => {
                     return item.id === match.id
                 })
-                necessary = necessary.slice(0, index).concat(necessary.slice(index + 1))
+                if(index>=0){
+                    necessary.slice(index,1)
+                }
             }
             //如果必填项没有填写，抛出异常
             if (necessary.length !== 0) {
