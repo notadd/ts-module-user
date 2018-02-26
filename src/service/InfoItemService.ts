@@ -47,4 +47,16 @@ export class InfoItemService {
         }
     }
 
+    async deleteInfoItem(id:number):Promise<void>{
+        let exist: InfoItem = await this.infoItemRepository.findOneById(id)
+        if (!exist) {
+            throw new HttpException('指定id信息项不存在：' + name, 413)
+        }
+        try {
+            await this.infoItemRepository.removeById(id)
+        } catch (err) {
+            throw new HttpException('数据库错误' + err.toString(), 401)
+        }
+    }
+
 }
