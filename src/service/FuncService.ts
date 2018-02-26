@@ -38,15 +38,17 @@ export class FuncService {
         if (!func) {
             throw new HttpException('指定id=' + id + '功能不存在', 417)
         }
-        let exist: Func = await this.funcRepository.findOne({ name,moduleToken:func.moduleToken })
-        if (exist) {
-            throw new HttpException('指定模块token='+func.moduleToken+'下，指定名称name=' + name + '功能已经存在', 416)
-        }
-        try {
-            func.name = name
-            await this.funcRepository.save(func)
-        } catch (err) {
-            throw new HttpException('数据库错误' + err.toString(), 401)
+        if(name!==func.name){
+            let exist: Func = await this.funcRepository.findOne({ name,moduleToken:func.moduleToken })
+            if (exist) {
+                throw new HttpException('指定模块token='+func.moduleToken+'下，指定名称name=' + name + '功能已经存在', 416)
+            }
+            try {
+                func.name = name
+                await this.funcRepository.save(func)
+            } catch (err) {
+                throw new HttpException('数据库错误' + err.toString(), 401)
+            }
         }
     }
 

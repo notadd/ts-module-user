@@ -22,11 +22,36 @@ export class RoleResolver {
             message: '创建角色成功'
         }
         try {
-            let { moduleToken,name, score } = body
-            if (!name || !score) {
+            let { moduleToken, name, score } = body
+            if (!moduleToken || !name || !score) {
                 throw new HttpException('缺少参数', 400)
             }
-            await this.roleService.createRole(moduleToken,name, score)
+            await this.roleService.createRole(moduleToken, name, score)
+        } catch (err) {
+            if (err instanceof HttpException) {
+                data.code = err.getStatus()
+                data.message = err.getResponse() + ''
+            } else {
+                console.log(err)
+                data.code = 500
+                data.message = '出现了意外错误' + err.toString()
+            }
+        }
+        return data
+    }
+
+    @Mutation('updateRole')
+    async updateRole(req: IncomingMessage, body: { id: number, name: string, score: number }): Promise<Data> {
+        let data: Data = {
+            code: 200,
+            message: '更新角色成功'
+        }
+        try {
+            let { id, name, score } = body
+            if (!id || !name || !score) {
+                throw new HttpException('缺少参数', 400)
+            }
+            await this.roleService.updateRole(id, name, score)
         } catch (err) {
             if (err instanceof HttpException) {
                 data.code = err.getStatus()

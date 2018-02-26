@@ -17,15 +17,32 @@ export class RoleService {
     ) { }
 
     async createRole(moduleToken: string, name: string, score: number): Promise<void> {
-        let module:Module = await this.moduleRepository.findOneById(moduleToken)
-        if(!module){
-            throw new HttpException('指定模块token='+moduleToken+'不存在',415)
+        let module: Module = await this.moduleRepository.findOneById(moduleToken)
+        if (!module) {
+            throw new HttpException('指定模块token=' + moduleToken + '不存在', 415)
         }
-        let exist: Role = await this.roleRepository.findOne({ name,moduleToken })
+        let exist: Role = await this.roleRepository.findOne({ name, moduleToken })
         if (exist) {
-            throw new HttpException('指定模块token='+moduleToken+'下，指定名称name=' + name + '角色已经存在', 420)
+            throw new HttpException('指定模块token=' + moduleToken + '下，指定名称name=' + name + '角色已经存在', 420)
         }
-        let role: Role = this.roleRepository.create({ name, score,module })
+        let role: Role = this.roleRepository.create({ name, score, module })
+        try {
+            await this.roleRepository.save(role)
+        } catch (err) {
+            throw new HttpException('数据库错误' + err.toString(), 401)
+        }
+    }
+
+    async updateRole(id: number, name: string, score: number): Promise<void> {
+        let module: Module = await this.moduleRepository.findOneById(moduleToken)
+        if (!module) {
+            throw new HttpException('指定模块token=' + moduleToken + '不存在', 415)
+        }
+        let exist: Role = await this.roleRepository.findOne({ name, moduleToken })
+        if (exist) {
+            throw new HttpException('指定模块token=' + moduleToken + '下，指定名称name=' + name + '角色已经存在', 420)
+        }
+        let role: Role = this.roleRepository.create({ name, score, module })
         try {
             await this.roleRepository.save(role)
         } catch (err) {
