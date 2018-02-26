@@ -1,0 +1,5 @@
+type Mutation{
+    createInfoItem(name:String!,desceiption:String,type:InfoItemType!,necessary:Boolean!,order:Int):Data
+    updateInfoItem(id:Int!,name:String,desceiption:String,type:InfoItemType,necessary:Boolean,order:Int):Data
+    deleteInfoItem(id:Int!):Data
+}
