@@ -38,5 +38,30 @@ export class InfoItemResolver {
         return data
     }
 
+    @Mutation('updateInfoItem')
+    async updateInfoItem(req: IncomingMessage, body: { id:number,name: string, description: string, type: string, necessary: boolean, order: number }): Promise<Data> {
+        let data: Data = {
+            code: 200,
+            message: '更新信息项成功'
+        }
+        try {
+            let { id ,name, description, type, necessary, order } = body
+            if (!id) {
+                throw new HttpException('缺少参数', 400)
+            }
+            await this.infoItemService.updateInfoItem(id,name, description, type, necessary, order)
+        } catch (err) {
+            if (err instanceof HttpException) {
+                data.code = err.getStatus()
+                data.message = err.getResponse() + ''
+            } else {
+                console.log(err)
+                data.code = 500
+                data.message = '出现了意外错误' + err.toString()
+            }
+        }
+        return data
+    }
+
 
 }

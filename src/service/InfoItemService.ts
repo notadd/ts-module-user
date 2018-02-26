@@ -26,4 +26,25 @@ export class InfoItemService {
         }
     }
 
+    async updateInfoItem(id:number,name: string, description: string, type: string, necessary: boolean, order: number): Promise<void> {
+        let exist: InfoItem = await this.infoItemRepository.findOneById(id)
+        if (!exist) {
+            throw new HttpException('指定id信息项不存在：' + name, 413)
+        }
+        let exist1: InfoItem = await this.infoItemRepository.findOne({ name })
+        if (exist1) {
+            throw new HttpException('指定名称信息项已存在：' + name, 412)
+        }
+        exist.name = name 
+        exist.description = description
+        exist.type = type
+        exist.necessary = necessary
+        exist.order = order
+        try {
+            await this.infoItemRepository.save(exist)
+        } catch (err) {
+            throw new HttpException('数据库错误' + err.toString(), 401)
+        }
+    }
+
 }
