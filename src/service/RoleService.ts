@@ -65,5 +65,30 @@ export class RoleService {
         }
     }
 
+    async setFuncs(id: number, funcIds: number[]): Promise<void> {
+        let role: Role = await this.roleRepository.findOneById(id)
+        if (!role) {
+            throw new HttpException('指定id=' + id + '角色不存在', 421)
+        }
+        let funcs: Func[] = await this.funcRepository.findByIds(funcIds)
+        funcIds.forEach(funcId => {
+            let find: Func = funcs.find(func => {
+                return func.id === funcId
+            })
+            if (!find) {
+                throw new HttpException('指定id=' + funcId + '功能不存在', 422)
+            }
+            if (find.moduleToken !== role.moduleToken) {
+                throw new HttpException('指定角色、功能必须属于同一个模块', 423)
+            }
+        })
+        try {
+            role.funcs = funcs
+            await this.roleRepository.removeById(id)
+        } catch (err) {
+            throw new HttpException('数据库错误' + err.toString(), 401)
+        }
+    }
+
 
 }
