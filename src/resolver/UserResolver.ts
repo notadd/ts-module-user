@@ -374,8 +374,8 @@ export class UserResolver {
     }
 
 
-    @Mutation('addUserInfoToUser')
-    async addUserInfoToUser(req: IncomingMessage, body: { id: number, groups: { groupId: number, infos: UnionUserInfo[] }[] }): Promise<Data> {
+    @Mutation('addUserInfo')
+    async addUserInfo(req: IncomingMessage, body: { id: number, groups: { groupId: number, infos: UnionUserInfo[] }[] }): Promise<Data> {
         let data: Data = {
             code: 200,
             message: '创建用户成功'
@@ -385,7 +385,7 @@ export class UserResolver {
             if (!id) {
                 throw new HttpException('缺少参数', 400)
             }
-            await this.userService.addUserInfoToUser(req, id, groups)
+            await this.userService.addUserInfo(req, id, groups)
         } catch (err) {
             if (err instanceof HttpException) {
                 data.code = err.getStatus()

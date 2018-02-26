@@ -53,7 +53,7 @@ type Mutation{
     ):Data
 
     #add userinfo to user , user must exist
-    addUserInfoToUser(
+    addUserInfo(
         id:Int!,
         groups: [UserInfoGroup]
     ):Data
@@ -78,6 +78,11 @@ type Mutation{
 
     #delete in batches,hard delete
     deleteUsers(ids:[Int!]!):Data
+
+    #set roles
+    setRoles(id:Int!,roleIds:[Int!]!):Data
+
+    #set permission
 }
 
 enum Sex{

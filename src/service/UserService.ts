@@ -100,7 +100,7 @@ export class UserService {
         }
     }
 
-    async addUserInfoToUser(req: IncomingMessage, id: number, groups: { groupId: number, infos: UnionUserInfo[] }[]): Promise<void> {
+    async addUserInfo(req: IncomingMessage, id: number, groups: { groupId: number, infos: UnionUserInfo[] }[]): Promise<void> {
         let user: User = await this.userRepository.findOneById(id)
         if (!user) {
             throw new HttpException('指定用户不存在', 406)
