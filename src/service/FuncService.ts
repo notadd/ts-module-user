@@ -57,54 +57,37 @@ export class FuncService {
     }
 
 
-    async addPermission(id: number, permissionId: number): Promise<void> {
+    async setPermissions(id: number, permissionIds: number[]): Promise<void> {
         let func: Func = await this.funcRepository.findOneById(id, { relations: ['permissions'] })
         if (!func) {
             throw new HttpException('指定id=' + id + '功能不存在', 416)
         }
-        let per: Permission = await this.permissionRepository.findOneById(permissionId, { relations: ['module'] })
-        if (!per) {
-            throw new HttpException('指定id=' + permissionId + '权限不存在', 416)
-        }
-        if (func.permissions.length > 0) {
-            func.permissions.forEach(permission => {
-                if (permission.id === permissionId) {
-                    throw new HttpException('指定id=' + permissionId + '权限已经存在于指定id=' + id + '功能当中', 417)
-                }
-                if (permission.moduleId !== per.moduleId) {
-                    throw new HttpException('指定id=' + id + '的功能只能添加指定id=' + permission.moduleId + '模块中的权限', 418)
-                }
+        let pers: Permission[] = await this.permissionRepository.findByIds(permissionIds, { relations: ['module'] })
+        //检查是否所有指定权限都存在
+        permissionIds.forEach(permissionId => {
+            let find: Permission = pers.find(per => {
+                return per.id === permissionId
             })
-        }
-        try {
-            func.permissions.push(per)
-            await this.funcRepository.save(func)
-        } catch (err) {
-            throw new HttpException('数据库错误' + err.toString(), 401)
-        }
-    }
-
-    async removePermission(id: number, permissionId: number): Promise<void> {
-        let func: Func = await this.funcRepository.findOneById(id, { relations: ['permissions'] })
-        if (!func) {
-            throw new HttpException('指定id=' + id + '功能不存在', 416)
-        }
-        let per: Permission = await this.permissionRepository.findOneById(permissionId, { relations: ['module'] })
-        if (!per) {
-            throw new HttpException('指定id=' + permissionId + '权限不存在', 416)
-        }
-        let index = func.permissions.findIndex(permission => {
-            return permission.id === permissionId
+            if (!find) {
+                throw new HttpException('指定id=' + permissionId + '权限不存在', 417)
+            }
         })
-        if (index < 0) {
-            throw new HttpException('指定id=' + permissionId + '权限不存在于指定id=' + id + '功能当中', 419)
+        //检查给定权限是否属于同一个模块
+        pers.reduce((pre, next) => {
+            if (pre.moduleId !== next.moduleId) {
+                throw new HttpException('指定权限只能属于同一个模块', 418)
+            }
+            return next
+        })
+        //功能与权限要属于同一个模块
+        if (func.moduleId && pers !== undefined && pers !== null && pers.length !== 0 && func.moduleId !== pers[0].moduleId) {
+            throw new HttpException('指定权限与指定功能只能属于同一个模块', 419)
         }
         try {
-            func.permissions.splice(index, 1)
+            func.permissions = pers
             await this.funcRepository.save(func)
         } catch (err) {
             throw new HttpException('数据库错误' + err.toString(), 401)
         }
     }
-
 }

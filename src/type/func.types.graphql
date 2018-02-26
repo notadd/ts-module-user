@@ -5,8 +5,6 @@ type Mutation{
     updateFunc(id:Int!,name:String!):Data
     #delete func with id
     deleteFunc(id:Int!):Data
-    #add permission to func
-    addPermission(id:Int!,permissionId:Int!):Data
-    #remove permission from func
-    removePermission(id:Int!,permissionId:Int!):Data
+    #set func'permissions
+    setPermissions(id:Int!,permissionIds:[Int!]!):Data
 }
