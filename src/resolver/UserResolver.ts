@@ -5,6 +5,7 @@ import { UpdateUserBody } from '../interface/user/UpdateUserBody';
 import { UserInfosData } from '../interface/user/UserInfosData';
 import { UnionUserInfo } from '../interface/user/UnionUserInfo';
 import { Resolver, Query, Mutation } from '@nestjs/graphql';
+import { RolesData } from '../interface/user/RolesData';
 import { UsersData } from '../interface/user/UsersData';
 import { Inject, HttpException } from '@nestjs/common';
 import { UserService } from '../service/UserService';
@@ -87,7 +88,6 @@ export class UserResolver {
         return data
     }
 
-
     @Query('userInfos')
     async userInfos(req: IncomingMessage, body: { id: number }): Promise<UserInfosData> {
         let data: UserInfosData = {
@@ -101,6 +101,32 @@ export class UserResolver {
                 throw new HttpException('缺少参数', 400)
             }
             data.userInfos = await this.userService.userInfos(id)
+        } catch (err) {
+            if (err instanceof HttpException) {
+                data.code = err.getStatus()
+                data.message = err.getResponse() + ''
+            } else {
+                console.log(err)
+                data.code = 500
+                data.message = '出现了意外错误' + err.toString()
+            }
+        }
+        return data
+    }
+
+    @Query('rolesInUser')
+    async rolesInUser(req: IncomingMessage, body: { id: number }): Promise<RolesData> {
+        let data: RolesData = {
+            code: 200,
+            message: '获取指定用户角色成功',
+            roles: []
+        }
+        try {
+            let { id } = body
+            if (!id) {
+                throw new HttpException('缺少参数', 400)
+            }
+            data.roles = await this.userService.roles(id)
         } catch (err) {
             if (err instanceof HttpException) {
                 data.code = err.getStatus()

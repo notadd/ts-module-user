@@ -48,23 +48,5 @@ export class Permission{
         referencedColumnName:'token'
     })
     module:Module;
-
-    /* 单独添加了这个权限的用户，这个关联关系需要在删除权限时删除 */
-    @ManyToMany(type => User, user=>user.adds,{
-        cascadeInsert: true,
-        cascadeUpdate: false,
-        lazy: false,
-        eager:false
-    })
-    addUsers:User[]
-
-    /* 单独禁止了这个权限的用户，这个关联关系需要在删除权限时删除 */
-    @ManyToMany(type => User, user=>user.reduces,{
-        cascadeInsert: true,
-        cascadeUpdate: false,
-        lazy: false,
-        eager:false
-    })
-    reduceUsers:User[]
 }
 

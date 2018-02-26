@@ -7,11 +7,14 @@ type Query{
     recycleUsers:RecycleUsersData
     #get user info 
     userInfos(id:Int!):UserInfosData
+    #get user roles
+    rolesInUser(id:Int!):RolesData
+    #get user permission
+    permissionsInUser(id:Int!):PermissionsData
 }
 
 
 type Mutation{
-
     #create user , specify organization
     createUser(
         organizationId: Int, 
@@ -154,4 +157,32 @@ type UserInfosData{
 type UserInfo{
     key:String
     value:String
+}
+
+type RolesData{
+    #error code
+    code:Int
+    #error message
+    message:String
+    roles:[Role]
+}
+
+type Role{
+    id:Int
+    name:String
+    score:Int
+}
+
+type PermissionsData{
+    #error code
+    code:Int
+    #error message
+    message:Int
+    permissions:[Permission]
+}
+
+type Permission{
+    id:Int
+    name:String
+    description:String
 }

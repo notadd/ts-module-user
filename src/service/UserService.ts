@@ -6,6 +6,7 @@ import { Organization } from '../model/Organization';
 import { InfoGroup } from '../model/InfoGroup';
 import { InfoItem } from '../model/InfoItem';
 import { UserInfo } from '../model/UserInfo';
+import { Role } from '../model/Role';
 import { User } from '../model/User';
 import * as crypto from 'crypto';
 import { IncomingMessage } from 'http';
@@ -44,6 +45,16 @@ export class UserService {
         }
         return user.userInfos
     }
+
+    async roles(id: number): Promise<Role[]> {
+        let user: User = await this.userRepository.findOneById(id, { relations: ['roles'] })
+        if (!user) {
+            throw new HttpException('指定用户不存在', 406)
+        }
+        return user.roles
+    }
+
+
     async createUser(organizationId: number, userName: string, password: string, nickname: string, realName: string, sex: string, birthday: string, email: string, cellPhoneNumber: string): Promise<void> {
         let organizations: Organization[] = []
         if (organizationId) {

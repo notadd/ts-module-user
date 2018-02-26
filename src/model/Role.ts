@@ -34,18 +34,7 @@ export class Role {
         cascadeUpdate: false,
         lazy: false
     })
-    @JoinTable({
-        name: 'role_function',
-        joinColumn: {
-            name: 'role_id',
-            referencedColumnName: 'id'
-        },
-        inverseJoinColumn: {
-            name: 'function_id',
-            referencedColumnName: 'id'
-        },
-        database: 'user_pm'
-    })
+    @JoinTable()
     funcs: Func[];
 
     /* 所属模块id */

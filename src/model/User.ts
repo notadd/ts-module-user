@@ -112,7 +112,7 @@ export class User {
     userInfos: UserInfo[]
 
     /* 用户已经填写的信息组*/
-    @ManyToMany(type => InfoGroup,{
+    @ManyToMany(type => InfoGroup, {
         cascadeInsert: true,
         cascadeUpdate: false,
         lazy: false,
@@ -122,67 +122,37 @@ export class User {
     infoGroups: InfoGroup[]
 
     /* 用户添加的权限 */
-    @ManyToMany(type => Permission, permission=>permission.addUsers,{
+    @ManyToMany(type => Permission, {
         cascadeInsert: true,
         cascadeUpdate: false,
         lazy: false,
-        eager:false
+        eager: false
     })
     @JoinTable({
-        name: 'user_add_permission',
-        joinColumn: {
-            name: 'user_id',
-            referencedColumnName: 'id'
-        },
-        inverseJoinColumn: {
-            name: 'permission_id',
-            referencedColumnName: 'id'
-        },
-        database: 'user_pm'
+        name: 'adds_permission'
     })
     adds: Permission[]
 
     /* 用户减少的权限 */
-    @ManyToMany(type => Permission,Permission=>Permission.reduceUsers, {
+    @ManyToMany(type => Permission, {
         cascadeInsert: true,
         cascadeUpdate: false,
         lazy: false,
-        eager:false
+        eager: false
     })
     @JoinTable({
-        name: 'user_reduce_permission',
-        joinColumn: {
-            name: 'user_id',
-            referencedColumnName: 'id'
-        },
-        inverseJoinColumn: {
-            name: 'permission_id',
-            referencedColumnName: 'id'
-        },
-        database: 'user_pm'
+        name: 'reduce_permission'
     })
     reduces: Permission[]
 
-
     /* 用户拥有的角色 */
-    @ManyToMany(type => Role,role=>role.users,{
+    @ManyToMany(type => Role, role => role.users, {
         cascadeInsert: true,
         cascadeUpdate: false,
         lazy: false,
-        eager:false
+        eager: false
     })
-    @JoinTable({
-        name: 'user_role',
-        joinColumn: {
-            name: 'user_id',
-            referencedColumnName: 'id'
-        },
-        inverseJoinColumn: {
-            name: 'role_id',
-            referencedColumnName: 'id'
-        },
-        database: 'user_pm'
-    })
+    @JoinTable()
     roles: Role[]
 
     /* 用户所属组织 */
@@ -190,19 +160,8 @@ export class User {
         cascadeInsert: true,
         cascadeUpdate: true,
         lazy: false,
-        eager:false
+        eager: false
     })
-    @JoinTable({
-        name: 'organization_user',
-        joinColumn: {
-            name: 'user_id',
-            referencedColumnName: 'id'
-        },
-        inverseJoinColumn: {
-            name: 'organization_id',
-            referencedColumnName: 'id'
-        },
-        database: 'user_pm'
-    })
+    @JoinTable()
     organizations: Organization[]
 }
