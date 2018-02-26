@@ -32,7 +32,7 @@ export class Permission{
 
     /* 所属模块id */
     @Column()
-    module_id:number
+    moduleId:number
 
     /* 所属模块 */
     @ManyToOne(type=>Module,module=>module.permissions,{
@@ -43,7 +43,7 @@ export class Permission{
         lazy:false
     })
     @JoinColumn({
-        name:'module_id',
+        name:'moduleId',
         referencedColumnName:'id'
     })
     module:Module;
