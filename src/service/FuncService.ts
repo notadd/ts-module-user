@@ -84,4 +84,27 @@ export class FuncService {
         }
     }
 
+    async removePermission(id: number, permissionId: number): Promise<void> {
+        let func: Func = await this.funcRepository.findOneById(id, { relations: ['permissions'] })
+        if (!func) {
+            throw new HttpException('指定id=' + id + '功能不存在', 416)
+        }
+        let per: Permission = await this.permissionRepository.findOneById(permissionId, { relations: ['module'] })
+        if (!per) {
+            throw new HttpException('指定id=' + permissionId + '权限不存在', 416)
+        }
+        let index = func.permissions.findIndex(permission => {
+            return permission.id === permissionId
+        })
+        if (index < 0) {
+            throw new HttpException('指定id=' + permissionId + '权限不存在于指定id=' + id + '功能当中', 419)
+        }
+        try {
+            func.permissions.splice(index, 1)
+            await this.funcRepository.save(func)
+        } catch (err) {
+            throw new HttpException('数据库错误' + err.toString(), 401)
+        }
+    }
+
 }

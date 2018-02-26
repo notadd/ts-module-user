@@ -113,4 +113,29 @@ export class FuncResolver {
         }
         return data
     }
+
+    @Mutation('removePermission')
+    async removePermission(req: IncomingMessage, body: { id: number, permissionId: number }): Promise<Data> {
+        let data: Data = {
+            code: 200,
+            message: '移除权限成功'
+        }
+        try {
+            let { id, permissionId } = body
+            if (!id || !permissionId) {
+                throw new HttpException('缺少参数', 400)
+            }
+            await this.funcService.removePermission(id, permissionId)
+        } catch (err) {
+            if (err instanceof HttpException) {
+                data.code = err.getStatus()
+                data.message = err.getResponse() + ''
+            } else {
+                console.log(err)
+                data.code = 500
+                data.message = '出现了意外错误' + err.toString()
+            }
+        }
+        return data
+    }
 }
