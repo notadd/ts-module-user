@@ -21,11 +21,16 @@ export class RoleService {
         if(!module){
             throw new HttpException('指定模块token='+moduleToken+'不存在',415)
         }
-        let exist: Role = await this.roleRepository.findOne({ name })
+        let exist: Role = await this.roleRepository.findOne({ name,moduleToken })
         if (exist) {
-            throw new HttpException('指定名称name=' + name + '角色已经存在', 420)
+            throw new HttpException('指定模块token='+moduleToken+'下，指定名称name=' + name + '角色已经存在', 420)
         }
-        let role: Role = this.roleRepository.create({ name, score })
+        let role: Role = this.roleRepository.create({ name, score,module })
+        try {
+            await this.roleRepository.save(role)
+        } catch (err) {
+            throw new HttpException('数据库错误' + err.toString(), 401)
+        }
     }
 
 }
