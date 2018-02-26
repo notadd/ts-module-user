@@ -88,4 +88,29 @@ export class InfoItemResolver {
         return data
     }
 
+    @Mutation('deleteInfoItems')
+    async deleteInfoItems(req: IncomingMessage, body: { ids: number[] }): Promise<Data> {
+        let data: Data = {
+            code: 200,
+            message: '删除多个信息项成功'
+        }
+        try {
+            let { ids } = body
+            if (!ids || ids.length===0) {
+                throw new HttpException('缺少参数', 400)
+            }
+            await this.infoItemService.deleteInfoItems(ids)
+        } catch (err) {
+            if (err instanceof HttpException) {
+                data.code = err.getStatus()
+                data.message = err.getResponse() + ''
+            } else {
+                console.log(err)
+                data.code = 500
+                data.message = '出现了意外错误' + err.toString()
+            }
+        }
+        return data
+    }
+
 }
