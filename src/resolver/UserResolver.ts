@@ -452,4 +452,30 @@ export class UserResolver {
         return data
     }
 
+    /* 设置用户权限，设置的权限是最终结果，也就是说按照role、adds、reduces等生成的最终结果，由后端来进行差分运算，计算adds、reduces */
+    @Mutation('setPermissions')
+    async setPermissions(req: IncomingMessage, body: { id: number, permissionIds: number[] }): Promise<Data> {
+        let data: Data = {
+            code: 200,
+            message: '设置用户权限成功'
+        }
+        try {
+            let { id, permissionIds } = body
+            if (!id) {
+                throw new HttpException('缺少参数', 400)
+            }
+            await this.userService.setPermissions(id, permissionIds)
+        } catch (err) {
+            if (err instanceof HttpException) {
+                data.code = err.getStatus()
+                data.message = err.getResponse() + ''
+            } else {
+                console.log(err)
+                data.code = 500
+                data.message = '出现了意外错误' + err.toString()
+            }
+        }
+        return data
+    }
+
 }

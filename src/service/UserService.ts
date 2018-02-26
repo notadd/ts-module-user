@@ -23,6 +23,7 @@ export class UserService {
         @Inject('UserPMModule.RoleRepository') private readonly roleRepository: Repository<Role>,
         @Inject('UserPMModule.UserRepository') private readonly userRepository: Repository<User>,
         @Inject('UserPMModule.UserInfoRepository') private readonly userInfoRepository: Repository<UserInfo>,
+        @Inject('UserPMModule.PermissionRepository') private readonly permissionRepository: Repository<Permission>,
         @Inject('UserPMModule.OrganizationRepository') private readonly organizationRepository: Repository<Organization>
     ) { }
 
@@ -78,7 +79,7 @@ export class UserService {
             }
         }
         //生成去重的集合
-        result.forEach(per => {
+        temp.forEach(per => {
             if (!ids.has(per.id)) {
                 ids.add(per.id)
                 result.push(per)
@@ -429,5 +430,65 @@ export class UserService {
         }
     }
 
+    async setPermissions(id: number, permissionIds: number[]): Promise<void> {
+        let user: User = await this.userRepository.findOneById(id, { relations: ['roles', 'adds', 'reduces'] })
+        if (!user) {
+            throw new HttpException('指定用户不存在', 406)
+        }
+        //声明从role获取的权限集合
+        let result: Permission[] = []
+        //声明临时结果，未去重
+        let temp: Permission[] = []
+        //用来去重的集合
+        let ids: Set<number> = new Set()
+        //遍历获取所有角色拥有的权限
+        for (let i = 0; i < user.roles.length; i++) {
+            let role: Role = await this.roleRepository.findOneById(user.roles[i].id, { relations: ['funcs'] })
+            for (let j = 0; j < role.funcs.length; j++) {
+                let func: Func = await this.funcRepository.findOneById(role.funcs[i].id, { relations: ['permissions'] })
+                temp.concat(func.permissions)
+            }
+        }
+        //生成去重的集合
+        temp.forEach(per => {
+            if (!ids.has(per.id)) {
+                ids.add(per.id)
+                result.push(per)
+            }
+        })
+        //对参数进行去重
+        permissionIds = [].concat(...new Set(permissionIds))
+        //声明计算出来的添加权限、减少权限、以及参数指定的权限
+        let adds: Permission[] = []
+        let reduces: Permission[] = []
+        let permissions: Permission[] = await this.permissionRepository.findByIds(permissionIds)
+        //遍历获取添加的权限
+        permissions.forEach(per => {
+            let find = result.find(p => {
+                return p.id === per.id
+            })
+            //如果参数设置的权限在角色拥有权限中未找到，则为添加的权限
+            if (!find) {
+                adds.push(per)
+            }
+        })
+        //遍历获取减少的权限
+        result.forEach(per => {
+            let find = permissions.find(p => {
+                return p.id === per.id
+            })
+            //如果角色拥有权限在参数指定的结果中未找到，那么说吗这个权限被减去了
+            if (!find) {
+                reduces.push(per)
+            }
+        })
+        try {
+            user.adds = adds
+            user.reduces = reduces
+            await this.userRepository.save(user)
+        } catch (err) {
+            throw new HttpException('数据库错误' + err.toString(), 401)
+        }
+    }
 
 }

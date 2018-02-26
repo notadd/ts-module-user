@@ -85,7 +85,8 @@ type Mutation{
     #set roles
     setRoles(id:Int!,roleIds:[Int!]!):Data
 
-    #set permission
+    #set permission ,that is final result ,generate by role adds reduces
+    setPermissions(id:Int!,permissionIds:[Int!]!):Data
 }
 
 enum Sex{
