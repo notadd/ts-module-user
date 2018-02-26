@@ -13,5 +13,30 @@ export class InfoItemResolver {
         @Inject(InfoItemService) private readonly infoItemService: InfoItemService
     ) { }
 
+    @Mutation('createInfoItem')
+    async createInfoItem(req: IncomingMessage, body: { name: string, description: string, type: string, necessary: boolean, order: number }): Promise<Data> {
+        let data: Data = {
+            code: 200,
+            message: '创建信息项成功'
+        }
+        try {
+            let { name, description, type, necessary, order } = body
+            if (!name || !type || necessary === undefined || necessary === null) {
+                throw new HttpException('缺少参数', 400)
+            }
+            await this.infoItemService.createInfoItem(name, description, type, necessary, order)
+        } catch (err) {
+            if (err instanceof HttpException) {
+                data.code = err.getStatus()
+                data.message = err.getResponse() + ''
+            } else {
+                console.log(err)
+                data.code = 500
+                data.message = '出现了意外错误' + err.toString()
+            }
+        }
+        return data
+    }
+
 
 }

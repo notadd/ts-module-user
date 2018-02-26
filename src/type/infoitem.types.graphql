@@ -1,5 +1,19 @@
 type Mutation{
-    createInfoItem(name:String!,desceiption:String,type:InfoItemType!,necessary:Boolean!,order:Int):Data
-    updateInfoItem(id:Int!,name:String,desceiption:String,type:InfoItemType,necessary:Boolean,order:Int):Data
+    createInfoItem(name:String!,description:String,type:InfoItemType!,necessary:Boolean!,order:Int):Data
+    updateInfoItem(id:Int!,name:String,description:String,type:InfoItemType,necessary:Boolean,order:Int):Data
     deleteInfoItem(id:Int!):Data
+}
+
+
+enum InfoItemType{
+    单行文本框
+    多行文本框
+    单选框
+    多选框
+    复选框
+    日期时间选择
+    日期时间范围选择
+    下拉菜单
+    上传图片
+    上传文件
 }
