@@ -12,4 +12,17 @@ export class FuncService {
         @Inject('UserPMModule.FuncRepository') private readonly funcRepository: Repository<Func>
     ) { }
 
+    async createFunc(name:string):Promise<void>{
+        let exist:Func = await this.funcRepository.findOne({name})
+        if(exist){
+            throw new HttpException('指定名称name='+name+'功能已经存在',415)
+        }
+        let func:Func = this.funcRepository.create({name})
+        try {
+            await this.funcRepository.save(func)
+        } catch (err) {
+            throw new HttpException('数据库错误' + err.toString(), 401)
+        }
+    }
+
 }
