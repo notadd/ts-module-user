@@ -83,4 +83,5 @@ type User{
     email:String
     cellPhoneNumber:String
     status:Boolean
+    recycle:Boolean
 }
