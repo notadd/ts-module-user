@@ -75,11 +75,11 @@ export class OrganizationService {
         if (!exist) {
             throw new HttpException('指定id组织不存在', 404)
         }
-        if (exist.children&&exist.children.length>0) {
+        if (exist.children && exist.children.length > 0) {
             throw new HttpException('指定组织存在子组织，无法删除', 404)
         }
         try {
-            await this.organizationRepository.removeById(id)
+            await this.organizationRepository.remove(exist)
         } catch (err) {
             throw new HttpException('数据库错误' + err.toString(), 401)
         }
@@ -91,7 +91,7 @@ export class OrganizationService {
             throw new HttpException('指定父组织不存在', 402)
         }
         //只获取不再回收站中的用户
-        return o.users.filter(user=>{
+        return o.users.filter(user => {
             return user.recycle === false
         })
     }
@@ -187,20 +187,20 @@ export class OrganizationService {
             throw new HttpException('指定用户不存在', 402)
         }
         //从组织的用户中循环移除指定用户，要求用户存在于数据库中，且用户必须已经存在于指定组织中
-        userIds.forEach(userId=>{
-            let find:User = users.find(user=>{
+        userIds.forEach(userId => {
+            let find: User = users.find(user => {
                 return user.id === userId
             })
-            if(!find){
-                throw new HttpException('指定用户id='+userId+'不存在于数据库中', 402)
+            if (!find) {
+                throw new HttpException('指定用户id=' + userId + '不存在于数据库中', 402)
             }
-            let index = o.users.findIndex(user=>{
-                return user.id===userId
+            let index = o.users.findIndex(user => {
+                return user.id === userId
             })
-            if(index<0){
-                throw new HttpException('指定用户id='+userId+'不存在于指定组织id='+id+'中', 402)
+            if (index < 0) {
+                throw new HttpException('指定用户id=' + userId + '不存在于指定组织id=' + id + '中', 402)
             }
-            o.users.splice(index,1)
+            o.users.splice(index, 1)
         })
         try {
             await this.organizationRepository.save(o)
