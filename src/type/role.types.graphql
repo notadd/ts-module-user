@@ -1,6 +1,6 @@
 type Mutation{
     #create role with name and score
-    createRole(name:String!,score:Int!):Data
+    createRole(moduleToken:String!,name:String!,score:Int!):Data
     #update role with name and score
     updateRole(name:String!,score:Int!):Data
     #delete role with id

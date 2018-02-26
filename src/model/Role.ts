@@ -7,7 +7,7 @@ import { User } from './User';
    角色不能跨模块，所以它只能包含属于同一个模块下的功能，当删除模块时，其所属角色也会删除
 */
 @Entity('role')
-@Index('name_module_id',['name','module_id'])
+@Index('role_name_module_token',['name','moduleToken'])
 export class Role {
 
     @PrimaryGeneratedColumn()
@@ -20,6 +20,13 @@ export class Role {
         length: 20
     })
     name: string;
+
+    /* 角色权限值，前端使用*/
+    @Column({
+        name: 'score',
+        type: 'int'
+    })
+    score:number
 
     /* 角色包含功能，只能包含同一个模块下功能 */
     @ManyToMany(type => Func, {

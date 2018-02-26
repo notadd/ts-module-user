@@ -15,17 +15,17 @@ export class FuncResolver {
     ) { }
 
     @Mutation('createFunc')
-    async createFunc(req: IncomingMessage, body: { name: string }): Promise<Data> {
+    async createFunc(req: IncomingMessage, body: { moduleToken: string, name: string }): Promise<Data> {
         let data: Data = {
             code: 200,
             message: '创建功能成功'
         }
         try {
-            let { name } = body
-            if (!name) {
+            let { moduleToken, name } = body
+            if (!moduleToken || !name) {
                 throw new HttpException('缺少参数', 400)
             }
-            await this.funcService.createFunc(name)
+            await this.funcService.createFunc(moduleToken,name)
         } catch (err) {
             if (err instanceof HttpException) {
                 data.code = err.getStatus()

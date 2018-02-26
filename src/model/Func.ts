@@ -7,6 +7,7 @@ import { Module } from './Module';
    模块删除时，其下包含的功能将会一起删除
 */
 @Entity('function')
+@Index('func_name_module_token',['name','moduleToken'])
 export class Func {
 
     @PrimaryGeneratedColumn()
@@ -16,8 +17,7 @@ export class Func {
     @Column({
         name: 'name',
         type: 'varchar',
-        length: 20,
-        unique: true
+        length: 20
     })
     name: string;
 

@@ -1,6 +1,6 @@
 type Mutation{
     #create func with name
-    createFunc(name:String!):Data
+    createFunc(moduleToken:String!,name:String!):Data
     #update func with name
     updateFunc(id:Int!,name:String!):Data
     #delete func with id

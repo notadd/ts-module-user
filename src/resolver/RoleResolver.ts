@@ -16,17 +16,17 @@ export class RoleResolver {
     ) { }
 
     @Mutation('createRole')
-    async createRole(req: IncomingMessage, body: { name: string, score: number }): Promise<Data> {
+    async createRole(req: IncomingMessage, body: { moduleToken: string, name: string, score: number }): Promise<Data> {
         let data: Data = {
             code: 200,
             message: '创建角色成功'
         }
         try {
-            let { name, score } = body
+            let { moduleToken,name, score } = body
             if (!name || !score) {
                 throw new HttpException('缺少参数', 400)
             }
-            await this.roleService.createRole(name, score)
+            await this.roleService.createRole(moduleToken,name, score)
         } catch (err) {
             if (err instanceof HttpException) {
                 data.code = err.getStatus()

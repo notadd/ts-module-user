@@ -8,7 +8,7 @@ import { User } from './User'
    当删除模块时，所有权限也会删除
 */
 @Entity('permission')
-@Index('name_module_id',['name','module_id'])
+@Index('name_module_token',['name','moduleToken'])
 export class Permission{
 
     @PrimaryGeneratedColumn()
