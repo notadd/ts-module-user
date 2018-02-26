@@ -37,12 +37,12 @@ export class UserService {
         return await this.userRepository.find({ recycle: true })
     }
 
-    async userInfos(id:number):Promise<UserInfo[]>{
-        let user:User = await this.userRepository.findOneById(id,{relations:['userInfos']})
-        if(!user){
+    async userInfos(id: number): Promise<UserInfo[]> {
+        let user: User = await this.userRepository.findOneById(id, { relations: ['userInfos'] })
+        if (!user) {
             throw new HttpException('指定用户不存在', 406)
         }
-        return  user.userInfos
+        return user.userInfos
     }
     async createUser(organizationId: number, userName: string, password: string, nickname: string, realName: string, sex: string, birthday: string, email: string, cellPhoneNumber: string): Promise<void> {
         let organizations: Organization[] = []
@@ -221,17 +221,16 @@ export class UserService {
             throw new HttpException('指定用户不存在', 406)
         }
         try {
-            if (userName) exist.userName = userName
-            if (password) {
-                let salt = crypto.createHash('md5').update(new Date().toString()).digest('hex').slice(0, 10)
-                exist.password = crypto.createHash('md5').update(password + salt).digest('hex')
-            }
-            if (nickname) exist.nickname = nickname
-            if (realName) exist.realName = realName
-            if (sex) exist.sex = sex
-            if (birthday) exist.birthday = new Date(birthday)
-            if (email) exist.email = email
-            if (cellPhoneNumber) exist.cellPhoneNumber = cellPhoneNumber
+            exist.userName = userName
+            let salt = crypto.createHash('md5').update(new Date().toString()).digest('hex').slice(0, 10)
+            exist.salt = salt
+            exist.password = crypto.createHash('md5').update(password + salt).digest('hex')
+            exist.nickname = nickname
+            exist.realName = realName
+            exist.sex = sex
+            exist.birthday = new Date(birthday)
+            exist.email = email
+            exist.cellPhoneNumber = cellPhoneNumber
             await this.userRepository.save(exist)
         } catch (err) {
             throw new HttpException('数据库错误' + err.toString(), 401)
@@ -246,7 +245,7 @@ export class UserService {
         if (exist.recycle === true) {
             throw new HttpException('指定用户已存在回收站中', 406)
         }
-        if(exist.status===false){
+        if (exist.status === false) {
             throw new HttpException('指定用户已经封禁', 406)
         }
         try {
@@ -265,7 +264,7 @@ export class UserService {
         if (exist.recycle === true) {
             throw new HttpException('指定用户已存在回收站中', 406)
         }
-        if(exist.status===true){
+        if (exist.status === true) {
             throw new HttpException('指定用户不需要解封', 406)
         }
         try {
@@ -310,25 +309,25 @@ export class UserService {
 
     async restoreUsers(ids: number[]): Promise<void> {
         let users: User[] = await this.userRepository.findByIds(ids)
-        if (!users||users.length===0) {
+        if (!users || users.length === 0) {
             throw new HttpException('指定用户不存在', 406)
         }
-        ids.forEach(id=>{
-            let find:User  = users.find(user=>{
+        ids.forEach(id => {
+            let find: User = users.find(user => {
                 return user.id === id
             })
-            if(!find){
-                throw new HttpException('指定id='+id+'用户未找到',406)
+            if (!find) {
+                throw new HttpException('指定id=' + id + '用户未找到', 406)
             }
-            if(find.recycle===false){
-                throw new HttpException('指定用户id='+id+'不在回收站中',406)
+            if (find.recycle === false) {
+                throw new HttpException('指定用户id=' + id + '不在回收站中', 406)
             }
             find.recycle === true
         })
         try {
-            await Promise.all(users.map(async user=>{
+            await Promise.all(users.map(async user => {
                 return this.userRepository.save(user)
-            },this))
+            }, this))
         } catch (err) {
             throw new HttpException('数据库错误' + err.toString(), 401)
         }
