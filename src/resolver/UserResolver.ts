@@ -1,5 +1,6 @@
 import { FreedomUsersData } from '../interface/user/FreedomUsersData';
 import { RecycleUsersData } from '../interface/user/RecycleUsersData';
+import { PermissionsData } from '../interface/user/PermissionsData';
 import { CreateUserBody } from '../interface/user/CreateUserBody';
 import { UpdateUserBody } from '../interface/user/UpdateUserBody';
 import { UserInfosData } from '../interface/user/UserInfosData';
@@ -127,6 +128,32 @@ export class UserResolver {
                 throw new HttpException('缺少参数', 400)
             }
             data.roles = await this.userService.roles(id)
+        } catch (err) {
+            if (err instanceof HttpException) {
+                data.code = err.getStatus()
+                data.message = err.getResponse() + ''
+            } else {
+                console.log(err)
+                data.code = 500
+                data.message = '出现了意外错误' + err.toString()
+            }
+        }
+        return data
+    }
+
+    @Query('permissionsInUser')
+    async permissionsInUser(req: IncomingMessage, body: { id: number }): Promise<PermissionsData> {
+        let data: PermissionsData = {
+            code: 200,
+            message: '获取指定用户角色成功',
+            permissions: []
+        }
+        try {
+            let { id } = body
+            if (!id) {
+                throw new HttpException('缺少参数', 400)
+            }
+            data.permissions = await this.userService.permissions(id)
         } catch (err) {
             if (err instanceof HttpException) {
                 data.code = err.getStatus()
