@@ -16,7 +16,7 @@ export class InfoItem {
         name: 'name',
         type: 'varchar',
         length: '20',
-        unique:true
+        unique: true
     })
     name: string
 
@@ -39,7 +39,7 @@ export class InfoItem {
     @Column({
         name: 'type',
         type: 'enum',
-        enum: ['单行文本框', '多行文本框', '单选框', '多选框', '复选框', '日期时间选择', '日期时间范围选择', '下拉菜单', '上传图片', '上传文件']
+        enum: ['text', 'textarea', 'radio', 'checkbox', 'datetime', 'datetimescope', 'pulldownmenu', 'uploadimage', 'uploadfile']
     })
     type: string
 
