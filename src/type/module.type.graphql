@@ -1,0 +1,36 @@
+type Query{
+    #get all of modules and roles permissions funcs
+    modules:ModulesData
+}
+
+type ModulesData{
+    #error code
+    code:Int
+    #error message
+    message
+    modules:[Module]
+}
+
+type Module{
+    token:String
+    roles:[Role]
+    funcs:[Func]
+    permissions:[Permission]
+}
+
+type Permission{
+    id:Int
+    name:String
+    description:String
+}
+
+type Func{
+    id:Int
+    name:String
+}
+
+type Role{
+    id:Int
+    name:String
+    score:Int
+}
