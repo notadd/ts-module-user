@@ -43,19 +43,20 @@ export class Role {
 
     /* 所属模块id */
     @Column()
-    module_id: number
+    moduleToken: string
 
     /* 角色所属模块 */
     @ManyToOne(type => Module, module => module.roles, {
         cascadeInsert: true,
         cascadeUpdate: false,
         cascadeRemove: false,
+        onDelete:'CASCADE',
         nullable: false,
         lazy: false
     })
     @JoinColumn({
-        name: 'module_id',
-        referencedColumnName: 'id'
+        name: 'moduleToken',
+        referencedColumnName: 'token'
     })
     module: Module;
 

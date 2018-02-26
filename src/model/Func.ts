@@ -43,19 +43,20 @@ export class Func {
 
     /* 所属模块id */
     @Column()
-    moduleId: number
+    moduleToken: string
 
     /* 功能所属模块  */
     @ManyToOne(type => Module, module => module.funcs, {
         cascadeInsert: true,
         cascadeUpdate: false,
         cascadeRemove: false,
+        onDelete:'CASCADE',
         nullable: false,
         lazy: false
     })
     @JoinColumn({
-        name: 'moduleId',
-        referencedColumnName: 'id'
+        name: 'moduleToken',
+        referencedColumnName: 'token'
     })
     module: Module;
 }

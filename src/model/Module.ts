@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, Index, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryColumn, Index, OneToMany } from 'typeorm';
 import { Permission } from './Permission';
 import { Func } from './Func';
 import { Role } from './Role';
@@ -12,17 +12,12 @@ import { Role } from './Role';
 @Entity('module')
 export class Module {
 
-    @PrimaryGeneratedColumn()
-    id: number;
-
-    /* 模块名称，为container中存储模块的token */
-    @Column({
-        name: 'name',
+    @PrimaryColumn({
+        name: 'token',
         type: 'varchar',
-        length: 20,
-        unique:true
+        length: 20
     })
-    name: string;
+    token: string;
 
     /* 模块下存储的权限 */
     @OneToMany(type => Permission, permission => permission.module, {
