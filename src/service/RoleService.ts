@@ -53,4 +53,17 @@ export class RoleService {
         }
     }
 
+    async deleteRole(id: number): Promise<void> {
+        let role: Role = await this.roleRepository.findOneById(id)
+        if (!role) {
+            throw new HttpException('指定id=' + id + '角色不存在', 421)
+        }
+        try {
+            await this.roleRepository.removeById(id)
+        } catch (err) {
+            throw new HttpException('数据库错误' + err.toString(), 401)
+        }
+    }
+
+
 }
