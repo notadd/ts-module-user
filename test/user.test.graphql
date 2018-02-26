@@ -12,6 +12,7 @@ query users{
       email
       cellPhoneNumber
       status
+      recycle
     }
   }
 }
@@ -34,22 +35,60 @@ query freedom{
   }
 }
 
-mutation createUser{
-  mayun:createUser(
-    organizationId:1,
-    userName:"码云",
-    password:"123456",
-    nickname:"jackma",
-    realName:"马云",
-    sex:women,
-    birthday:"1999-06-01",
-    email:"111111@aaa.com",
-    cellPhoneNumber:"100861111111",
-    status:true
-  ){
-		code 
+query recycle{
+  recycleUsers{
+    code
     message
+    recycleUsers{
+			id
+      userName
+      nickname
+      realName
+      sex
+      birthday
+      email
+      cellPhoneNumber
+      status
+    }
   }
+}
+
+query userInfo{
+  userInfos(id:1){
+    code
+    message
+    userInfos{
+      key
+      value
+    }
+  }
+}
+
+query roles{
+	rolesInUser(id:1){
+    code
+    message
+    roles{
+      id
+      name
+      score
+    }
+  }
+}
+
+query permissions{
+  permissionsInUser(id:!){
+    code
+    message
+    permissions{
+      id
+      name
+      description
+    }
+  }
+}
+
+mutation createUser{
   mayun:createUser(
     organizationId:1,
     userName:"码云",
@@ -90,9 +129,113 @@ mutation createUser{
     birthday:"1999-06-01",
     email:"333333@aaa.com",
     cellPhoneNumber:"100861111111",
-    status:true
   ){
 		code 
+    message
+  }
+}
+
+mutation createUserWithInfo{
+  createUserWithUserInfo(
+    organizationId:null,
+    userName:"lisi",
+    password:"123456",
+    nickname:"四儿",
+    realName:"李四",
+    sex:women,
+    birthday:"1999-06-01",
+    email:"333333@aaa.com",
+    cellPhoneNumber:"100861111111",
+  	groups:[{id:1,infos:[{name:"地址",value:"高薪二路"}]}]
+  ){
+		code
+    message
+  }
+}
+
+mutation addUserInfo{
+  addUserInfo(id:1,groups:[{id:1,infos:[{name:"地址",value:"高薪二路"}]}]){
+    code
+    message
+  }
+}
+
+mutation update{
+  updateUser(
+    id:1,
+    userName:"lisi",
+    password:"123456",
+    nickname:"四儿",
+    realName:"李四",
+    sex:women,
+    birthday:"1999-06-01",
+    email:"333333@aaa.com",
+    cellPhoneNumber:"100861111111"
+  ){
+    code
+    message
+  }
+}
+
+mutation softdelete{
+  softDeleteUser(id:1){
+    code
+    message
+  }
+}
+
+mutation restore{
+  restoreUser(id:1){
+    code
+    message
+  }
+}
+
+mutation restoreUsers{
+  restoreUsers(ids:[1,2,3]){
+    code
+    message
+  }
+}
+
+mutation banned{
+  bannedUser(id:!){
+    code
+    message
+  }
+}
+
+mutation unbanned{
+  unBannedUser(id:1){
+		code
+    message
+  }
+}
+
+mutation delete{
+  deleteUser(id:1){
+    code
+    message
+  }
+}
+
+mutation deleteUsers{
+  deleteUsers(ids:[1,2,3,4]){
+    code
+    message
+  }
+}
+
+mutation setRoles{
+  setRoles(id:1,roleIds:[1,2,3,4]){
+		code
+    message
+  }
+}
+
+mutation setPermissions{
+  setPermissions(id:1,permissionIds:[1,2,3,4,5]){
+    code
     message
   }
 }
