@@ -8,8 +8,10 @@ import { InfoGroupService } from './service/InfoGroupService';
 import { InfoItemService } from './service/InfoItemService';
 import { UserResolver } from './resolver/UserResolver';
 import { FuncResolver } from './resolver/FuncResolver';
+import { RoleResolver } from './resolver/RoleResolver';
 import { UserService } from './service/UserService';
 import { FuncService } from './service/FuncService';
+import { RoleService } from './service/RoleService';
 import { Module, Global } from '@nestjs/common';
 
 @Global()
@@ -22,7 +24,8 @@ import { Module, Global } from '@nestjs/common';
     InfoGroupResolver, InfoGroupService,
     InfoItemResolver, InfoItemService,
     FuncResolver, FuncService,
-    UserResolver, UserService
+    UserResolver, UserService,
+    RoleResolver, RoleService
   ],
   exports: []
 })
