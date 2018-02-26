@@ -42,4 +42,16 @@ export class FuncService {
         }
     }
 
+    async deleteFunc(id: number): Promise<void> {
+        let func: Func = await this.funcRepository.findOneById(id)
+        if (!func) {
+            throw new HttpException('指定id=' + id + '功能不存在', 416)
+        }
+        try {
+            await this.funcRepository.removeById(id)
+        } catch (err) {
+            throw new HttpException('数据库错误' + err.toString(), 401)
+        }
+    }
+
 }
