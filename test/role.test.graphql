@@ -1,0 +1,27 @@
+mutation create{
+  createRole(moduleToken:"",name:"管理员",score:80){
+    code
+    message
+  }
+}
+
+mutation update{
+  updateRole(id:1,name:"老管理员",score:70){
+    code
+    message
+  }
+}
+
+mutation delete{
+  deleteRole(id:1){
+    code
+    message
+  }
+}
+
+mutation set{
+  setFuncs(id:1,funcIds:[1,2,3,4]){
+    code
+    message
+  }
+}
