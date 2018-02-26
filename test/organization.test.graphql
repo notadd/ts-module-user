@@ -9,6 +9,17 @@ query roots{
   }
 }
 
+query organizations{
+  organizations{
+    code
+    message
+    organizations{
+			id
+      name
+    }
+  }
+}
+
 query children{
 	children(id:1){
 		code
@@ -20,13 +31,20 @@ query children{
   }
 }
 
-query organizations{
-  organizations{
+query userInOrganization{
+  usersInOrganization(id:1){
     code
     message
-    organizations{
-			id
-      name
+    users{
+      id
+      userName
+      nickname
+      realName
+      sex
+      birthday
+      email
+      cellPhoneNumber
+      status
     }
   }
 }
@@ -90,7 +108,35 @@ mutation update{
 }
 
 mutation delete{
-  jituan:deleteOrganization(id:1,force:true){
+  jituan:deleteOrganization(id:1){
+    code
+    message
+  }
+}
+
+mutation addUser{
+  addUserToOrganization(id:1,userId:1){
+    code
+    message
+  }
+}
+
+mutation addUsers{
+  addUsersToOrganization(id:1,userIds:[1,2,3,4]){
+    code
+    message
+  }
+}
+
+mutation removeUser{
+  removeUserFromOrganization(id:1,userId:1){
+    code
+    message
+  }
+}
+
+mutation removeUsers{
+  removeUsersFromOrganization(id:1,userIds:[1,2,3,4]){
     code
     message
   }
