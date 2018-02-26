@@ -1,7 +1,12 @@
 type Mutation{
+    #create func with name
     createFunc(name:String!):Data
-    updateFunc(name:String!):Data
+    #update func with name
+    updateFunc(id:Int!,name:String!):Data
+    #delete func with id
     deleteFunc(id:Int!):Data
+    #add permission to func
     addPermission(id:Int!,permissionId:Int!):Data
+    #remove permission from func
     removePermission(id:Int!,permissionId:Int!):Data
 }

@@ -39,4 +39,29 @@ export class FuncResolver {
         return data
     }
 
+    @Mutation('updateFunc')
+    async updateFunc(req: IncomingMessage, body: { id: number, name: string }): Promise<Data> {
+        let data: Data = {
+            code: 200,
+            message: '更新功能成功'
+        }
+        try {
+            let { id, name } = body
+            if (!id || !name) {
+                throw new HttpException('缺少参数', 400)
+            }
+            await this.funcService.updateFunc(id, name)
+        } catch (err) {
+            if (err instanceof HttpException) {
+                data.code = err.getStatus()
+                data.message = err.getResponse() + ''
+            } else {
+                console.log(err)
+                data.code = 500
+                data.message = '出现了意外错误' + err.toString()
+            }
+        }
+        return data
+    }
+
 }
