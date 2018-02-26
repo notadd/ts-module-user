@@ -7,7 +7,9 @@ import { InfoItemResolver } from './resolver/InfoItemResolver';
 import { InfoGroupService } from './service/InfoGroupService';
 import { InfoItemService } from './service/InfoItemService';
 import { UserResolver } from './resolver/UserResolver';
+import { FuncResolver } from './resolver/FuncResolver';
 import { UserService } from './service/UserService';
+import { FuncService } from './service/FuncService';
 import { Module, Global } from '@nestjs/common';
 
 @Global()
@@ -18,7 +20,8 @@ import { Module, Global } from '@nestjs/common';
     ConnectionProvider, ...RepositorysProvider,
     OrganizationService, OrganizationResolver,
     InfoGroupResolver, InfoGroupService,
-    InfoItemResolver,InfoItemService,
+    InfoItemResolver, InfoItemService,
+    FuncResolver, FuncService,
     UserResolver, UserService
   ],
   exports: []

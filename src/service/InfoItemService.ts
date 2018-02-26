@@ -2,7 +2,6 @@ import { Component, Inject, HttpException } from '@nestjs/common';
 import { InfoItem } from '../model/InfoItem';
 import { IncomingMessage } from 'http';
 import { Repository } from 'typeorm';
-import { User } from '../model/User';
 import * as crypto from 'crypto';
 
 

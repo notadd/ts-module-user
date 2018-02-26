@@ -1,0 +1,7 @@
+type Mutation{
+    createFunc(name:String!):Data
+    updateFunc(name:String!):Data
+    deleteFunc(id:Int!):Data
+    addPermission(id:Int!,permissionId:Int!):Data
+    removePermission(id:Int!,permissionId:Int!):Data
+}
