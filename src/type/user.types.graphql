@@ -168,22 +168,10 @@ type RolesData{
     roles:[Role]
 }
 
-type Role{
-    id:Int
-    name:String
-    score:Int
-}
-
 type PermissionsData{
     #error code
     code:Int
     #error message
     message:Int
     permissions:[Permission]
-}
-
-type Permission{
-    id:Int
-    name:String
-    description:String
 }
