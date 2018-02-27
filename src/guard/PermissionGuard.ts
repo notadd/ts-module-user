@@ -30,16 +30,16 @@ export class PermissionGuard implements CanActivate {
         //获取用户此时拥有的权限，已经根据角色、增权限、减权限计算出了最终拥有的权限
         let permissions: Permission[] = await this.userService.permissions(id)
         //获取类上定义权限
-        let class_or: string[] = Reflect.getMetadata(PERMISSION_CONTROLLER_OR, parent)
-        let class_and: string[] = Reflect.getMetadata(PERMISSION_CONTROLLER_AND, parent)
+        let class_or: string[] = Reflect.getMetadata(PERMISSION_CONTROLLER_OR, parent)||[]
+        let class_and: string[] = Reflect.getMetadata(PERMISSION_CONTROLLER_AND, parent)||[]
         //在onModuleInit方法中设置，模块名称，用来判断权限属于哪个模块
         let token = Reflect.getMetadata(MODULE_TOKEN, parent)
         //检查类上控制权限
         let classPass = this.checkPermission(permissions,class_and,class_or,token)
         if(!classPass) return false
         //获取方法上定义权限
-        let method_or: string[] = Reflect.getMetadata(PERMISSION_CONTROLLER_OR, handler)
-        let method_and: string[] = Reflect.getMetadata(PERMISSION_CONTROLLER_AND, handler)
+        let method_or: string[] = Reflect.getMetadata(PERMISSION_CONTROLLER_OR, handler)||[]
+        let method_and: string[] = Reflect.getMetadata(PERMISSION_CONTROLLER_AND, handler)||[]
         //检查方法上控制权限
         let methodPass = this.checkPermission(permissions,method_and,method_or,token)
         return methodPass
