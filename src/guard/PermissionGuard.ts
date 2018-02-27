@@ -4,10 +4,7 @@ import { UserService } from '../service/UserService';
 import { Permission } from '../model/Permission';
 import { IncomingMessage } from 'http';
 
-
 export const MODULE_TOKEN = 'module_token';
-
-
 
 @Guard()
 export class PermissionGuard implements CanActivate {
