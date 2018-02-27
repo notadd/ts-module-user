@@ -2,7 +2,7 @@ import { ModulesContainer } from '@nestjs/core/injector/modules-container';
 import { OrganizationResolver } from './resolver/OrganizationResolver';
 import { RepositorysProvider } from './database/RepositorysProvider';
 import { OrganizationService } from './service/OrganizationService';
-import { Module, Global ,OnModuleInit,Inject} from '@nestjs/common';
+import { Module, Global, OnModuleInit, Inject } from '@nestjs/common';
 import { ConnectionProvider } from './database/ConnectionProvider';
 import { InfoGroupResolver } from './resolver/InfoGroupResolver';
 import { MetadataScanner } from '@nestjs/core/metadata-scanner';
@@ -38,7 +38,7 @@ import { Repository } from 'typeorm';
   ],
   exports: []
 })
-export class UserPMModule implements OnModuleInit{ 
+export class UserPMModule implements OnModuleInit {
 
   private readonly metadataScanner: MetadataScanner
   constructor(
@@ -49,7 +49,7 @@ export class UserPMModule implements OnModuleInit{
     this.metadataScanner = new MetadataScanner()
   }
 
-  
+
   /* 在初始化钩子中遍历所有模块
     获取定义在Controller与Resolver上的权限定义
     权限定义可以定义在类上或者原型方法上，与UseGuard的使用方法相同
@@ -60,7 +60,7 @@ export class UserPMModule implements OnModuleInit{
   */
   async onModuleInit() {
     //获取当前既有模块，关联获取模块具有的权限、功能、角色
-    let modules: Module1[] = await this.moduleRepository.find({ relations: ['permissions','funcs','roles'] })
+    let modules: Module1[] = await this.moduleRepository.find({ relations: ['permissions', 'funcs', 'roles'] })
     //遍历模块token、Module实例
     for (let [key, value] of this.modules.entries()) {
       //模块名称，从token中解析出来
@@ -112,33 +112,33 @@ export class UserPMModule implements OnModuleInit{
           let module = modules[index]
           //对既有权限与本次扫描出权限根据name进行差分
           //遍历本次扫描结果
-          for(let per of pers){
+          for (let per of pers) {
             //在既有权限中进行查找
-            let find:Permission = module.permissions.find(p=>{
-                return p.name === per.name
+            let find: Permission = module.permissions.find(p => {
+              return p.name === per.name
             })
             //如果本次扫描到权限在既有权限中未找到
-            if(!find){
+            if (!find) {
               //说明为新增权限，保存它
               per.module = module
               await this.permissionRepository.save(per)
             }
             //如果找到则需要更新
-            else{
+            else {
               find.description = per.description
               await this.permissionRepository.save(find)
             }
           }
 
           //遍历既有权限
-          for(let p of module.permissions){
+          for (let p of module.permissions) {
             //在本次扫描到的权限中查找既有权限
-            let find:Permission = pers.find(per=>{
+            let find: Permission = pers.find(per => {
               return per.name === p.name
             })
             //如果未找到，说明这个既有权限被删除了
             //因为删除权限而带来的其他变化，暂时不管
-            if(!find){
+            if (!find) {
               await this.permissionRepository.remove(p)
             }
           }
@@ -150,7 +150,7 @@ export class UserPMModule implements OnModuleInit{
           await this.moduleRepository.save(module)
         }
         //如果既有模块没有全部被扫描到，那么剩余模块被删除，连带权限、功能、角色
-        if(modules.length>0){
+        if (modules.length > 0) {
           await this.moduleRepository.remove(modules)
         }
       }
