@@ -23,7 +23,8 @@ export class Module {
     @OneToMany(type => Permission, permission => permission.module, {
         cascadeInsert: true,
         cascadeUpdate: false,
-        lazy: false
+        lazy: false,
+        eager:false
     })
     permissions: Permission[];
 
@@ -31,7 +32,8 @@ export class Module {
     @OneToMany(type => Func, func => func.module, {
         cascadeInsert: true,
         cascadeUpdate: false,
-        lazy: false
+        lazy: false,
+        eager:false
     })
     funcs: Func[];
 
@@ -39,7 +41,8 @@ export class Module {
     @OneToMany(type => Role, role => role.module, {
         cascadeInsert: true,
         cascadeUpdate: false,
-        lazy: false
+        lazy: false,
+        eager:false
     })
     roles: Role[];
 
