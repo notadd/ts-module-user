@@ -45,7 +45,7 @@ export class UserPMModule implements OnModuleInit {
 
   private readonly metadataScanner: MetadataScanner
   constructor(
-    @Inject(ModulesContainer.name) private readonly modules: ModulesContainer,
+    @Inject(ModulesContainer.name) private readonly moduleMap: ModulesContainer,
     @Inject('UserPMModule.ModuleRepository') private readonly moduleRepository: Repository<Module1>,
     @Inject('UserPMModule.PermissionRepository') private readonly permissionRepository: Repository<Permission>
   ) {
