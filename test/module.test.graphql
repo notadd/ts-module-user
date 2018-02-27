@@ -1,0 +1,23 @@
+query modules{
+  modules{
+    code
+    message
+    modules{
+      token
+      roles{
+        id
+        name
+        score
+      }
+      funcs{
+				id
+        name
+      }
+      permissions{
+        id
+        name
+        description
+      }
+    }
+  }
+}
