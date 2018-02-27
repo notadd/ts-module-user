@@ -11,5 +11,6 @@ export interface UsersData{
         email:string
         cellPhoneNumber:string
         status:boolean
+        recycle:boolean
     }[]
 }

@@ -35,7 +35,7 @@ export class UserService {
     async getFreedomUsers(): Promise<User[]> {
         let users: User[] = await this.userRepository.find({ relations: ['organizations'] })
         return users.filter(user => {
-            return (user.organizations === null || user.organizations === undefined || user.organizations.length === 0) && user.recycle === false
+            return (user.organizations === null || user.organizations === undefined || user.organizations.length === 0) && !user.recycle
         })
     }
 
@@ -304,10 +304,10 @@ export class UserService {
         if (!exist) {
             throw new HttpException('指定用户不存在', 406)
         }
-        if (exist.recycle === true) {
+        if (exist.recycle) {
             throw new HttpException('指定用户已存在回收站中', 406)
         }
-        if (exist.status === false) {
+        if (!exist.status) {
             throw new HttpException('指定用户已经封禁', 406)
         }
         try {
@@ -323,10 +323,10 @@ export class UserService {
         if (!exist) {
             throw new HttpException('指定用户不存在', 406)
         }
-        if (exist.recycle === true) {
+        if (exist.recycle) {
             throw new HttpException('指定用户已存在回收站中', 406)
         }
-        if (exist.status === true) {
+        if (exist.status) {
             throw new HttpException('指定用户不需要解封', 406)
         }
         try {
@@ -342,7 +342,7 @@ export class UserService {
         if (!exist) {
             throw new HttpException('指定用户不存在', 406)
         }
-        if (exist.recycle === true) {
+        if (exist.recycle) {
             throw new HttpException('指定用户已存在回收站中', 406)
         }
         try {
@@ -358,7 +358,7 @@ export class UserService {
         if (!exist) {
             throw new HttpException('指定用户不存在', 406)
         }
-        if (exist.recycle === false) {
+        if (!exist.recycle) {
             throw new HttpException('指定用户不存在回收站中', 406)
         }
         try {
@@ -381,7 +381,7 @@ export class UserService {
             if (!find) {
                 throw new HttpException('指定id=' + id + '用户未找到', 406)
             }
-            if (find.recycle === false) {
+            if (!find.recycle) {
                 throw new HttpException('指定用户id=' + id + '不在回收站中', 406)
             }
             find.recycle === true
@@ -400,7 +400,7 @@ export class UserService {
         if (!exist) {
             throw new HttpException('指定用户不存在', 406)
         }
-        if (exist.recycle === false) {
+        if (!exist.recycle) {
             throw new HttpException('指定用户不存在回收站中', 406)
         }
         try {
@@ -419,7 +419,7 @@ export class UserService {
             if (!find) {
                 throw new HttpException('指定id=' + id + '的用户不存在', 406)
             }
-            if (find.recycle == false) {
+            if (!find.recycle) {
                 throw new HttpException('指定用户id=' + id + '不存在于回收站中', 406)
             }
         })
