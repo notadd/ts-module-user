@@ -1,8 +1,9 @@
 import { ModulesContainer } from '@nestjs/core/injector/modules-container';
+import { PERMISSION_DEFINITION } from './decorator/PermissionDefinition';
 import { OrganizationResolver } from './resolver/OrganizationResolver';
+import { Module, Global, OnModuleInit, Inject } from '@nestjs/common';
 import { RepositorysProvider } from './database/RepositorysProvider';
 import { OrganizationService } from './service/OrganizationService';
-import { Module, Global, OnModuleInit, Inject } from '@nestjs/common';
 import { ConnectionProvider } from './database/ConnectionProvider';
 import { InfoGroupResolver } from './resolver/InfoGroupResolver';
 import { MetadataScanner } from '@nestjs/core/metadata-scanner';
@@ -78,7 +79,7 @@ export class UserPMModule implements OnModuleInit {
         let isController = Reflect.getMetadata('path', value.metatype, )
         if (isResolver || isController) {
           //获取组件、控制器类上定义的权限数组
-          let pers: Permission[] = Reflect.getMetadata('userpm:permission_definition', value.metatype)
+          let pers: Permission[] = Reflect.getMetadata(PERMISSION_DEFINITION, value.metatype)
           //这里在同一个模块中重复定义的权限会被覆盖
           //保证了name不重复
           pers && pers.forEach(per => {
@@ -88,7 +89,7 @@ export class UserPMModule implements OnModuleInit {
           let prototype = Object.getPrototypeOf(value.instance)
           this.metadataScanner.scanFromPrototype<any, Permission[]>(value.instance, prototype, name => {
             //获取到方法名，获取方法上定义的权限
-            let pers: Permission[] = Reflect.getMetadata('userpm:permission_definition', value.metatype, name)
+            let pers: Permission[] = Reflect.getMetadata(PERMISSION_DEFINITION, value.metatype, name)
             pers && pers.forEach(per => {
               permissions.set(per.name, per)
             })

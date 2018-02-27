@@ -1,6 +1,6 @@
 
 
-const PERMISSION_DEFINITION = 'userpm:permission_definition'
+export const PERMISSION_DEFINITION = 'userpm:permission_definition'
 
 export function PermissionDefinition(definitions: { name: string, description: string }[]) {
     return (target: object, key?, descriptor?) => {
