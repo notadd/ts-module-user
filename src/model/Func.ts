@@ -29,15 +29,6 @@ export class Func {
     })
     @JoinTable({
         name: 'function_permission',
-        joinColumn: {
-            name: 'function_id',
-            referencedColumnName: 'id'
-        },
-        inverseJoinColumn: {
-            name: 'permission_id',
-            referencedColumnName: 'id'
-        },
-        database: 'user_pm'
     })
     permissions: Permission[];
 

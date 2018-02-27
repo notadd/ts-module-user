@@ -34,7 +34,9 @@ export class Role {
         cascadeUpdate: false,
         lazy: false
     })
-    @JoinTable()
+    @JoinTable({
+        name:'role_func'
+    })
     funcs: Func[];
 
     /* 所属模块id */

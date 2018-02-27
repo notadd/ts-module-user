@@ -129,7 +129,7 @@ export class User {
         eager: false
     })
     @JoinTable({
-        name: 'adds_permission'
+        name: 'user_adds_permission'
     })
     adds: Permission[]
 
@@ -141,7 +141,7 @@ export class User {
         eager: false
     })
     @JoinTable({
-        name: 'reduce_permission'
+        name: 'user_reduces_permission'
     })
     reduces: Permission[]
 
@@ -152,7 +152,9 @@ export class User {
         lazy: false,
         eager: false
     })
-    @JoinTable()
+    @JoinTable({
+        name:'user_role'
+    })
     roles: Role[]
 
     /* 用户所属组织 */
@@ -162,6 +164,8 @@ export class User {
         lazy: false,
         eager: false
     })
-    @JoinTable()
+    @JoinTable({
+        name:'organization_user'
+    })
     organizations: Organization[]
 }

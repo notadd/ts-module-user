@@ -44,6 +44,8 @@ export class InfoGroup {
         lazy: false,
         eager: false
     })
-    @JoinTable()
+    @JoinTable({
+        name:'infogroup_infoitem'
+    })
     items:InfoItem[]
 }
