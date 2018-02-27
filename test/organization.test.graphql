@@ -45,6 +45,7 @@ query userInOrganization{
       email
       cellPhoneNumber
       status
+      recycle
     }
   }
 }
@@ -122,7 +123,7 @@ mutation addUser{
 }
 
 mutation addUsers{
-  addUsersToOrganization(id:1,userIds:[1,2,3,4]){
+  addUsersToOrganization(id:1,userIds:[1,2,3]){
     code
     message
   }
@@ -136,7 +137,7 @@ mutation removeUser{
 }
 
 mutation removeUsers{
-  removeUsersFromOrganization(id:1,userIds:[1,2,3,4]){
+  removeUsersFromOrganization(id:1,userIds:[1,2,3]){
     code
     message
   }
