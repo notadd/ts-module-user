@@ -10,8 +10,8 @@ export class UserSubscriber implements EntitySubscriberInterface<User> {
     }  
   
     async beforeRemove(event: RemoveEvent<User>): Promise<void>{  
-        let user:User = await getRepository(User).findOneById(event.entityId,{relations:['organizations']})
+        let user:User = await getRepository(User,'user_pm').findOneById(event.entityId,{relations:['organizations']})
         user.organizations = []
-        await getRepository(User).save(user) 
+        await getRepository(User,'user_pm').save(user) 
     }  
 }  
