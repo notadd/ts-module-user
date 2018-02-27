@@ -45,7 +45,7 @@ export class PermissionGuard implements CanActivate {
         return methodPass
     }
 
-    /*  对拥有的权限进行检查，返回是否通过*/
+    /*  对拥有的权限进行检查，返回是否通过,类检查一次，方法检查一次*/
     checkPermission(permissions: Permission[], and: string[], or: string[], token: string): boolean {
         //遍历类上and权限，如果不存在，则不进入循环
         for (let i = 0; i < and.length; i++) {
