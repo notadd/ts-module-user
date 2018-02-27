@@ -1,0 +1,24 @@
+mutation createFunc{
+  createFunc(moduleToken:"",name:""){
+    code
+    message
+  }
+}
+
+mutation updateFunc{
+  updateFunc(id:1,name:""){
+    code
+    message
+  }
+}
+
+mutation deleteFunc{
+  deleteFunc(id:1){
+    code
+    message
+  }
+}
+
+mutation set{
+	setPermissions(id:1,permissionIds:[1,2,3,4,5])
+}
