@@ -1,7 +1,6 @@
 import 'reflect-metadata'
 export const PERMISSION_CONTROLLER_OR = 'userpm:permission_controller_or'
 export const PERMISSION_CONTROLLER_AND = 'userpm:permission_controller_and'
-export const MODULE_TOKEN = 'module_token'
 export function PermissionController(names: string[], mode: 'or' | 'and' = 'and') {
     return (target: object, key?, descriptor?) => {
         if (descriptor) {

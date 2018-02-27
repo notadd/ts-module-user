@@ -15,12 +15,14 @@ import { ModuleService } from './service/ModuleService';
 import { UserResolver } from './resolver/UserResolver';
 import { FuncResolver } from './resolver/FuncResolver';
 import { RoleResolver } from './resolver/RoleResolver';
+import { MODULE_TOKEN } from './guard/PermissionGuard';
 import { UserService } from './service/UserService';
 import { FuncService } from './service/FuncService';
 import { RoleService } from './service/RoleService';
 import { Module as Module1 } from './model/Module';
 import { Permission } from './model/Permission';
 import { Repository } from 'typeorm';
+
 
 
 @Global()
@@ -78,6 +80,8 @@ export class UserPMModule implements OnModuleInit {
         let isResolver = Reflect.getMetadata('graphql:resolver_type', value.metatype)
         let isController = Reflect.getMetadata('path', value.metatype, )
         if (isResolver || isController) {
+          //在需要进行权限判断的组件类上定义模块token，用来在guard中判断权限属于哪个模块
+          Reflect.defineMetadata(MODULE_TOKEN, token, value.metatype)
           //获取组件、控制器类上定义的权限数组
           let pers: Permission[] = Reflect.getMetadata(PERMISSION_DEFINITION, value.metatype)
           //这里在同一个模块中重复定义的权限会被覆盖
