@@ -172,6 +172,6 @@ type PermissionsData{
     #error code
     code:Int
     #error message
-    message:Int
+    message:String
     permissions:[Permission]
 }
