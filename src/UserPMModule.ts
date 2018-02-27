@@ -149,10 +149,12 @@ export class UserPMModule implements OnModuleInit {
           }
           //将已经扫描到的模块从既有模块数组中移除
           modules.splice(index, 1)
-        } else {
+        } else if (pers.length > 0) {
           //模块不存在，直接保存它与相应权限
           let module: Module1 = this.moduleRepository.create({ token, permissions: pers })
           await this.moduleRepository.save(module)
+        } else {
+          //模块不存在且没有权限，则不管它
         }
         //如果既有模块没有全部被扫描到，那么剩余模块被删除，连带权限、功能、角色
         if (modules.length > 0) {
