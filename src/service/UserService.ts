@@ -404,7 +404,7 @@ export class UserService {
             throw new HttpException('指定用户不存在回收站中', 406)
         }
         try {
-            await this.userRepository.removeById(id)
+            await this.userRepository.remove(exist)
         } catch (err) {
             throw new HttpException('数据库错误' + err.toString(), 401)
         }
@@ -424,7 +424,7 @@ export class UserService {
             }
         })
         try {
-            await this.userRepository.removeByIds(ids)
+            await this.userRepository.remove(users)
         } catch (err) {
             throw new HttpException('数据库错误' + err.toString(), 401)
         }

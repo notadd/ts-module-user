@@ -59,7 +59,7 @@ export class RoleService {
             throw new HttpException('指定id=' + id + '角色不存在', 421)
         }
         try {
-            await this.roleRepository.removeById(id)
+            await this.roleRepository.remove(role)
         } catch (err) {
             throw new HttpException('数据库错误' + err.toString(), 401)
         }
@@ -84,7 +84,7 @@ export class RoleService {
         })
         try {
             role.funcs = funcs
-            await this.roleRepository.removeById(id)
+            await this.roleRepository.save(role)
         } catch (err) {
             throw new HttpException('数据库错误' + err.toString(), 401)
         }

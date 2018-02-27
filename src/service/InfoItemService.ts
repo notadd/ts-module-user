@@ -52,20 +52,20 @@ export class InfoItemService {
             throw new HttpException('指定id信息项不存在：' + name, 413)
         }
         try {
-            await this.infoItemRepository.removeById(id)
+            await this.infoItemRepository.remove(exist)
         } catch (err) {
             throw new HttpException('数据库错误' + err.toString(), 401)
         }
     }
 
     async deleteInfoItems(ids:number[]):Promise<void>{
-        let exists: InfoItem[] = await this.infoItemRepository.findByIds(ids)
-        if (!exists) {
+        let infoItems: InfoItem[] = await this.infoItemRepository.findByIds(ids)
+        if (!infoItems) {
             throw new HttpException('指定id信息项不存在：' + name, 413)
         }
         //检查是否所有id的信息项都存在
         ids.forEach(id=>{
-            let find:InfoItem = exists.find(item=>{
+            let find:InfoItem = infoItems.find(item=>{
                 return item.id === id
             })
             if(!find){
@@ -73,7 +73,7 @@ export class InfoItemService {
             }
         })
         try {
-            await this.infoItemRepository.removeByIds(ids)
+            await this.infoItemRepository.remove(infoItems)
         } catch (err) {
             throw new HttpException('数据库错误' + err.toString(), 401)
         }

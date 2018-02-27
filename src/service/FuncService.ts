@@ -58,7 +58,7 @@ export class FuncService {
             throw new HttpException('指定id=' + id + '功能不存在', 417)
         }
         try {
-            await this.funcRepository.removeById(id)
+            await this.funcRepository.remove(func)
         } catch (err) {
             throw new HttpException('数据库错误' + err.toString(), 401)
         }
