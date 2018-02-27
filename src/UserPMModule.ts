@@ -39,7 +39,7 @@ import { Repository } from 'typeorm';
     UserResolver, UserService,
     RoleResolver, RoleService
   ],
-  exports: []
+  exports: [UserService]
 })
 export class UserPMModule implements OnModuleInit {
 
