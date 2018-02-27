@@ -7,9 +7,9 @@ export function PermissionController(names: string[], mode: 'or' | 'and' = 'and'
             let or_exist: string[] = Reflect.getMetadata(PERMISSION_CONTROLLER_OR, target, key) || []
             let and_exist: string[] = Reflect.getMetadata(PERMISSION_CONTROLLER_AND, target, key) || []
             if (mode === 'or') {
-                Reflect.defineMetadata(PERMISSION_CONTROLLER_OR, names.concat(or_exist), descriptor.value)
+                Reflect.defineMetadata(PERMISSION_CONTROLLER_OR, names.concat(or_exist), target,key)
             } else if (mode === 'and') {
-                Reflect.defineMetadata(PERMISSION_CONTROLLER_AND, names.concat(and_exist), descriptor.value)
+                Reflect.defineMetadata(PERMISSION_CONTROLLER_AND, names.concat(and_exist), target,key)
             } else {
                 throw new Error('mode参数不正确')
             }
