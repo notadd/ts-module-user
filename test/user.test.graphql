@@ -31,6 +31,7 @@ query freedom{
       email
       cellPhoneNumber
       status
+      recycle
     }
   }
 }
@@ -49,6 +50,7 @@ query recycle{
       email
       cellPhoneNumber
       status
+      recycle
     }
   }
 }
@@ -77,7 +79,7 @@ query roles{
 }
 
 query permissions{
-  permissionsInUser(id:!){
+  permissionsInUser(id:1){
     code
     message
     permissions{
@@ -98,8 +100,7 @@ mutation createUser{
     sex:women,
     birthday:"1999-06-01",
     email:"111111@aaa.com",
-    cellPhoneNumber:"100861111111",
-    status:true
+    cellPhoneNumber:"100861111111"
   ){
 		code 
     message
@@ -113,8 +114,7 @@ mutation createUser{
     sex:women,
     birthday:"1999-06-01",
     email:"2222222@aaa.com",
-    cellPhoneNumber:"100861111111",
-    status:true
+    cellPhoneNumber:"100861111111"
   ){
 		code 
     message
@@ -199,7 +199,7 @@ mutation restoreUsers{
 }
 
 mutation banned{
-  bannedUser(id:!){
+  bannedUser(id:1){
     code
     message
   }
