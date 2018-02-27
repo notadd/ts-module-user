@@ -22,8 +22,6 @@ export const ConnectionProvider = {
             username: 'root',
             password: '123456',
             database: "user_pm",
-            synchronize:false,
-            dropSchema:false,
             charset:'UTF8',
             dateStrings:false,
             entities: [
@@ -37,7 +35,11 @@ export const ConnectionProvider = {
                 Func,
                 Role
             ],
-            subscribers:[UserSubscriber]
+            subscribers:[UserSubscriber],
+            logger:'simple-console',
+            logging:'all',
+            synchronize:false,
+            dropSchema:false
         })
     }
 }
