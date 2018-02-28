@@ -189,13 +189,9 @@ export class UserPMModule implements OnModuleInit {
       console.log('以下模块未找到，将要删除')
       console.dir(modules)
       for (let i = 0; i < modules.length; i++) {
-        if (modules[i].roles && modules[i].roles.length > 0) {
-          await this.roleRepository.remove(modules[i].roles)
-        }
-        if (modules[i].funcs && modules[i].funcs.length > 0) {
-          await this.funcRepository.remove(modules[i].funcs)
-        }
-        await this.moduleRepository.remove(module[i])
+        await this.roleRepository.remove(modules[i].roles)
+        await this.funcRepository.remove(modules[i].funcs)
+        await this.moduleRepository.remove(modules[i])
       }
     }
   }
