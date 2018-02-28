@@ -41,53 +41,6 @@ export class User {
     })
     salt: string;
 
-    /* 邮箱 */
-    @Column({
-        name: 'email',
-        type: 'varchar',
-        length: 30
-    })
-    email: string;
-
-    /* 手机号 */
-    @Column({
-        name: 'cell_phone_number',
-        type: 'varchar',
-        length: 20
-    })
-    cellPhoneNumber: string
-
-    /* 昵称 */
-    @Column({
-        name: 'nickname',
-        type: 'varchar',
-        length: 20
-    })
-    nickname: string;
-
-    /* 真实姓名 */
-    @Column({
-        name: 'real_name',
-        type: 'varchar',
-        length: '20'
-    })
-    realName: string;
-
-    /* 性别，只能为men、women */
-    @Column({
-        name: 'sex',
-        type: 'enum',
-        enum: ['men', 'women']
-    })
-    sex: string
-
-    /* 生日 */
-    @Column({
-        name: 'birthday',
-        type: 'date'
-    })
-    birthday: Date
-
     /* 状态，是否封禁 */
     @Column({
         name: 'status',
