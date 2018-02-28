@@ -26,7 +26,9 @@ export class UserInfo {
     })
     value: string
 
-    @Column()
+    @Column({
+        nullable:true
+    })
     userId: Number
 
     /* 信息项所属用户 */
@@ -34,7 +36,7 @@ export class UserInfo {
         cascadeInsert: false,
         cascadeUpdate: false,
         cascadeRemove: false,
-        nullable: false,
+        nullable: true,
         onDelete: 'CASCADE',
         lazy: false,
         eager: false
