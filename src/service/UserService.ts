@@ -102,6 +102,9 @@ export class UserService {
                 result.splice(index, 1)
             }
         })
+        result.sort((a,b)=>{
+            return a.id-b.id
+        })
         return result
     }
 
