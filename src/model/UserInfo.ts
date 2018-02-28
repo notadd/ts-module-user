@@ -31,7 +31,7 @@ export class UserInfo {
 
     /* 信息项所属用户 */
     @ManyToOne(type => User, user => user.userInfos, {
-        cascadeInsert: true,
+        cascadeInsert: false,
         cascadeUpdate: false,
         cascadeRemove: false,
         nullable: false,

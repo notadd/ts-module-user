@@ -148,9 +148,9 @@ export class UserService {
         try {
             let salt = crypto.createHash('md5').update(new Date().toString()).digest('hex').slice(0, 10)
             let passwordWithSalt = crypto.createHash('md5').update(password + salt).digest('hex')
-            let user: User = this.userRepository.create({ userName, password: passwordWithSalt, salt, status: true, recycle: false, organizations })
+            let user: User = this.userRepository.create({ userName, password: passwordWithSalt, salt, status: true, recycle: false, organizations, userInfos: [] })
+            await this.addUserInfosAndInfoGroups(req, queryRunner.manager, user, groups)
             await queryRunner.manager.save(user)
-            await this.addUserInfoGroups(req, queryRunner.manager, user, groups)
             await queryRunner.commitTransaction();
         } catch (err) {
             await queryRunner.rollbackTransaction();
@@ -163,7 +163,7 @@ export class UserService {
     }
 
     async addUserInfo(req: IncomingMessage, id: number, groups: { groupId: number, infos: UnionUserInfo[] }[]): Promise<void> {
-        let user: User = await this.userRepository.findOneById(id)
+        let user: User = await this.userRepository.findOneById(id, { relations: ['userInfos', 'infoGroups'] })
         if (!user) {
             throw new HttpException('指定用户不存在', 406)
         }
@@ -171,7 +171,8 @@ export class UserService {
         await queryRunner.connect();
         await queryRunner.startTransaction();
         try {
-            await this.addUserInfoGroups(req, queryRunner.manager, user, groups)
+            await this.addUserInfosAndInfoGroups(req, queryRunner.manager, user, groups)
+            await this.userRepository.save(user)
             await queryRunner.commitTransaction();
         } catch (err) {
             await queryRunner.rollbackTransaction();
@@ -188,8 +189,8 @@ export class UserService {
        可以在初始注册时添加多个信息组，也可以为一个已存在用户添加多个信息组
        添加与更新信息组是两个方法
     */
-    async addUserInfoGroups(req: IncomingMessage, manager: EntityManager, user: User, groups: { groupId: number, infos: UnionUserInfo[] }[]): Promise<void> {
-        let existAddGroups: InfoGroup[] = user.infoGroups||[]
+    async addUserInfosAndInfoGroups(req: IncomingMessage, manager: EntityManager, user: User, groups: { groupId: number, infos: UnionUserInfo[] }[]): Promise<void> {
+        let existAddGroups: InfoGroup[] = user.infoGroups || []
         //遍历信息组
         for (let i = 0; i < groups.length; i++) {
             let { groupId, infos } = groups[i]
@@ -206,7 +207,7 @@ export class UserService {
                 throw new HttpException('指定信息组id=' + groupId + '不存在', 408)
             }
             //获取所有信息项
-            let items: InfoItem[] = group.items||[]
+            let items: InfoItem[] = group.items || []
             //所有必填信息项
             let necessary: InfoItem[] = items.filter(item => {
                 return item.necessary === true
@@ -257,8 +258,9 @@ export class UserService {
                     let { bucketName, name, type } = await this.storeComponent.upload((infos[j] as FileInfo).bucketName, (infos[j] as FileInfo).base64, (infos[j] as FileInfo).rawName, null)
                     result = await this.storeComponent.getUrl(req, bucketName, name, type, null)
                 }
-                let userInfo: UserInfo = this.userInfoRepository.create({ key: name, value: result, user })
-                await this.userInfoRepository.save(userInfo)
+                //
+                let userInfo: UserInfo = this.userInfoRepository.create({ key: name, value: result })
+                user.userInfos.push(userInfo)
                 let index = necessary.findIndex(item => {
                     return item.id === match.id
                 })
@@ -266,6 +268,7 @@ export class UserService {
                     necessary.slice(index, 1)
                 }
             }
+            user.infoGroups.push(group)
             //如果必填项没有填写，抛出异常
             if (necessary.length !== 0) {
                 throw new HttpException('指定信息项:' + necessary + '为必填项', 410)
