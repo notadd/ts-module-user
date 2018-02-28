@@ -189,11 +189,7 @@ export class UserService {
        添加与更新信息组是两个方法
     */
     async addUserInfoGroups(req: IncomingMessage, manager: EntityManager, user: User, groups: { groupId: number, infos: UnionUserInfo[] }[]): Promise<void> {
-        let existAddGroups: InfoGroup[]
-        //用户上已经添加过的信息组
-        if (user.infoGroups) {
-            existAddGroups = user.infoGroups
-        }
+        let existAddGroups: InfoGroup[] = user.infoGroups||[]
         //遍历信息组
         for (let i = 0; i < groups.length; i++) {
             let { groupId, infos } = groups[i]
@@ -210,7 +206,7 @@ export class UserService {
                 throw new HttpException('指定信息组id=' + groupId + '不存在', 408)
             }
             //获取所有信息项
-            let items: InfoItem[] = group.items
+            let items: InfoItem[] = group.items||[]
             //所有必填信息项
             let necessary: InfoItem[] = items.filter(item => {
                 return item.necessary === true
