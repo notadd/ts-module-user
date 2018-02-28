@@ -282,6 +282,12 @@ export class UserService {
         if (!exist) {
             throw new HttpException('指定用户不存在', 406)
         }
+        if(userName!==exist.userName){
+            let sameUser:User = await this.userRepository.findOne({userName})
+            if(sameUser){
+                throw new HttpException('指定的新用户名已存在', 406)
+            }
+        }
         try {
             exist.userName = userName
             let salt = crypto.createHash('md5').update(new Date().toString()).digest('hex').slice(0, 10)
