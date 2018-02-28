@@ -255,7 +255,7 @@ export class UserService {
                         throw new HttpException('指定类型信息项:' + match.type + '必须具有文件存储空间名', 410)
                     }
                     //文件类型，上传到存储插件，并保存访问url
-                    let { bucketName, name, type } = await this.storeComponent.upload((infos[j] as FileInfo).bucketName, (infos[j] as FileInfo).base64, (infos[j] as FileInfo).rawName, null)
+                    let { bucketName, name, type } = await this.storeComponent.upload((infos[j] as FileInfo).bucketName, (infos[j] as FileInfo).rawName, (infos[j] as FileInfo).base64, null)
                     result = await this.storeComponent.getUrl(req, bucketName, name, type, null)
                 }
                 //
