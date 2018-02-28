@@ -38,14 +38,7 @@ query userInOrganization{
     users{
       id
       userName
-      nickname
-      realName
-      sex
-      birthday
-      email
-      cellPhoneNumber
       status
-      recycle
     }
   }
 }
@@ -109,21 +102,21 @@ mutation update{
 }
 
 mutation delete{
-  jituan:deleteOrganization(id:1){
+  jituan:deleteOrganization(id:9){
     code
     message
   }
 }
 
 mutation addUser{
-  addUserToOrganization(id:1,userId:1){
+  addUserToOrganization(id:1,userId:3){
     code
     message
   }
 }
 
 mutation addUsers{
-  addUsersToOrganization(id:1,userIds:[1,2,3]){
+  addUsersToOrganization(id:1,userIds:[1,2]){
     code
     message
   }
@@ -137,7 +130,7 @@ mutation removeUser{
 }
 
 mutation removeUsers{
-  removeUsersFromOrganization(id:1,userIds:[1,2,3]){
+  removeUsersFromOrganization(id:1,userIds:[2,3]){
     code
     message
   }

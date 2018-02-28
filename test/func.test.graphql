@@ -1,12 +1,12 @@
 mutation createFunc{
-  createFunc(moduleToken:"",name:""){
+  createFunc(moduleToken:"TestModule",name:"dada"){
     code
     message
   }
 }
 
 mutation updateFunc{
-  updateFunc(id:1,name:""){
+  updateFunc(id:1,name:"sasa"){
     code
     message
   }
@@ -20,5 +20,8 @@ mutation deleteFunc{
 }
 
 mutation set{
-	setPermissions(id:1,permissionIds:[1,2,3,4,5])
+	setPermissions(id:1,permissionIds:[2,3,4]) {
+	  code
+	  message
+	}
 }

@@ -1,5 +1,5 @@
 mutation create{
-  createRole(moduleToken:"",name:"管理员",score:80){
+  createRole(moduleToken:"TestModule",name:"管理员",score:80){
     code
     message
   }
@@ -20,7 +20,7 @@ mutation delete{
 }
 
 mutation set{
-  setFuncs(id:1,funcIds:[1,2,3,4]){
+  setFuncs(id:1,funcIds:[1]){
     code
     message
   }
