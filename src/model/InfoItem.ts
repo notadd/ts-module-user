@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryColumn, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable } from 'typeorm';
 import { InfoGroup } from './InfoGroup';
 
 /* 信息项实体，代表了用户需要额外填写的信息项
@@ -6,7 +6,7 @@ import { InfoGroup } from './InfoGroup';
 @Entity('info_item')
 export class InfoItem {
 
-    @PrimaryColumn({
+    @PrimaryGeneratedColumn({
         name: 'id',
         type: 'int'
     })

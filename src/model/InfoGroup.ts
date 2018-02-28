@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryColumn, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable } from 'typeorm';
 import { InfoItem } from './InfoItem';
 
 /* 信息组，包含多个信息项
@@ -11,7 +11,7 @@ import { InfoItem } from './InfoItem';
 export class InfoGroup {
 
     /* 信息组id不能自动生成，因为前面几个id的信息组都是约定好的，信息组id由方法内根据当前最大id生成 */
-    @PrimaryColumn({
+    @PrimaryGeneratedColumn({
         name: 'id',
         type: 'int'
     })

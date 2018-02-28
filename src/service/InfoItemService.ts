@@ -12,6 +12,7 @@ export class InfoItemService {
         @Inject('UserPMModule.InfoItemRepository') private readonly infoItemRepository: Repository<InfoItem>
     ) { }
 
+    /* 创建信息项 */
     async createInfoItem(name: string, label: string, description: string, type: string, necessary: boolean, order: number): Promise<void> {
         let exist: InfoItem = await this.infoItemRepository.findOne({ name })
         if (exist) {
@@ -25,11 +26,13 @@ export class InfoItemService {
         }
     }
 
+    /* 更新信息项 */
     async updateInfoItem(id: number, name: string, label: string, description: string, type: string, necessary: boolean, order: number): Promise<void> {
         let exist: InfoItem = await this.infoItemRepository.findOneById(id)
         if (!exist) {
             throw new HttpException('指定id信息项不存在：' + name, 413)
         }
+        //默认信息项无法更新
         if(exist.default){
             throw new HttpException('默认信息项不允许更新', 413)
         }
@@ -52,11 +55,13 @@ export class InfoItemService {
         }
     }
 
+    /* 删除信息项，这里默认的行为是删除信息项时，由它生成的用户信息UserInfo不会删除*/
     async deleteInfoItem(id: number): Promise<void> {
         let exist: InfoItem = await this.infoItemRepository.findOneById(id)
         if (!exist) {
             throw new HttpException('指定id信息项不存在：' + name, 413)
         }
+        //默认信息项无法删除
         if(exist.default){
             throw new HttpException('默认信息项不允许删除', 413)
         }
@@ -67,6 +72,7 @@ export class InfoItemService {
         }
     }
 
+    /* 一次删除多个信息项，还是不会删除UserInfo */
     async deleteInfoItems(ids: number[]): Promise<void> {
         let infoItems: InfoItem[] = await this.infoItemRepository.findByIds(ids)
         if (!infoItems) {
@@ -80,6 +86,7 @@ export class InfoItemService {
             if (!find) {
                 throw new HttpException('指定id=' + id + '的信息项不存在', 414)
             }
+            //默认信息项无法删除
             if(find.default){
                 throw new HttpException('默认信息项不允许删除', 413)
             }

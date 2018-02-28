@@ -188,6 +188,10 @@ export class UserPMModule implements OnModuleInit {
     if (modules.length > 0) {
       console.log('以下模块未找到，将要删除')
       console.dir(modules)
+      /* 这里如果直接删除模块，会引起数据库内部的外键级联删除，即外键的onDelete属性为CASCADE，角色、功能、权限
+        这种情况下，角色-功能、功能-权限、角色-用户、权限-用户等关系都不会被自动解除
+        只能单独删除角色、功能、权限，其相应关系也会删除，最后删除模块
+      */
       for (let i = 0; i < modules.length; i++) {
         await this.roleRepository.remove(modules[i].roles)
         await this.funcRepository.remove(modules[i].funcs)
@@ -197,7 +201,9 @@ export class UserPMModule implements OnModuleInit {
     }
   }
 
-  /* 添加默认信息组，包含基本信息组、认证信息组 */
+  /* 添加默认信息组，包含基本信息组、认证信息组 
+    虽然信息组、信息项的id为自动生成，但是如果save方法保存的对象指定了id，在保存时会使用指定的id，如果指定id已存在，则会更新
+  */
   async addDefaultInfoGroup() {
     let base: InfoGroup = this.infoGroupRepository.create({ id: 1, name: 'Base', default: true, status: true })
     let nickname: InfoItem = this.infoItemRepository.create({ id: 1, name: 'nickname', label: '昵称', default: true, description: '用户昵称', type: 'text', necessary: true, order: 1 })
