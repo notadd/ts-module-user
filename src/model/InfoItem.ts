@@ -20,6 +20,16 @@ export class InfoItem {
     })
     name: string
 
+    /* 信息项标签，即前端显示中文名
+    */
+    @Column({
+        name: 'label',
+        type: 'varchar',
+        length: '20',
+        unique: true
+    })
+    label: string
+
     /* 信息项描述 */
     @Column({
         name: 'description',
@@ -39,7 +49,7 @@ export class InfoItem {
     @Column({
         name: 'type',
         type: 'enum',
-        enum: ['text', 'textarea', 'radio', 'checkbox', 'datetime', 'datetimescope', 'pulldownmenu', 'uploadimage', 'uploadfile']
+        enum: ['text', 'number', 'textarea', 'radio', 'checkbox', 'date', 'pulldown_menu', 'upload_image_with_perview', 'upload_file']
     })
     type: string
 

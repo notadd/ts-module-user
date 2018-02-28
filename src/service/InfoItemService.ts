@@ -12,12 +12,12 @@ export class InfoItemService {
         @Inject('UserPMModule.InfoItemRepository') private readonly infoItemRepository: Repository<InfoItem>
     ) { }
 
-    async createInfoItem(name: string, description: string, type: string, necessary: boolean, order: number): Promise<void> {
+    async createInfoItem(name: string, label: string, description: string, type: string, necessary: boolean, order: number): Promise<void> {
         let exist: InfoItem = await this.infoItemRepository.findOne({ name })
         if (exist) {
             throw new HttpException('指定名称信息项已存在：' + name, 412)
         }
-        let item: InfoItem = this.infoItemRepository.create({ name, description, type, necessary, order })
+        let item: InfoItem = this.infoItemRepository.create({ name, label, description, type, necessary, order })
         try {
             await this.infoItemRepository.save(item)
         } catch (err) {
@@ -25,7 +25,7 @@ export class InfoItemService {
         }
     }
 
-    async updateInfoItem(id:number,name: string, description: string, type: string, necessary: boolean, order: number): Promise<void> {
+    async updateInfoItem(id: number, name: string, label: string, description: string, type: string, necessary: boolean, order: number): Promise<void> {
         let exist: InfoItem = await this.infoItemRepository.findOneById(id)
         if (!exist) {
             throw new HttpException('指定id信息项不存在：' + name, 413)
@@ -34,7 +34,8 @@ export class InfoItemService {
         if (exist1) {
             throw new HttpException('指定名称信息项已存在：' + name, 412)
         }
-        exist.name = name 
+        exist.name = name
+        exist.label = label
         exist.description = description
         exist.type = type
         exist.necessary = necessary
@@ -46,7 +47,7 @@ export class InfoItemService {
         }
     }
 
-    async deleteInfoItem(id:number):Promise<void>{
+    async deleteInfoItem(id: number): Promise<void> {
         let exist: InfoItem = await this.infoItemRepository.findOneById(id)
         if (!exist) {
             throw new HttpException('指定id信息项不存在：' + name, 413)
@@ -58,18 +59,18 @@ export class InfoItemService {
         }
     }
 
-    async deleteInfoItems(ids:number[]):Promise<void>{
+    async deleteInfoItems(ids: number[]): Promise<void> {
         let infoItems: InfoItem[] = await this.infoItemRepository.findByIds(ids)
         if (!infoItems) {
             throw new HttpException('指定id信息项不存在：' + name, 413)
         }
         //检查是否所有id的信息项都存在
-        ids.forEach(id=>{
-            let find:InfoItem = infoItems.find(item=>{
+        ids.forEach(id => {
+            let find: InfoItem = infoItems.find(item => {
                 return item.id === id
             })
-            if(!find){
-                throw new HttpException('指定id='+id+'的信息项不存在',414)
+            if (!find) {
+                throw new HttpException('指定id=' + id + '的信息项不存在', 414)
             }
         })
         try {
