@@ -24,8 +24,8 @@ import { Permission } from './model/Permission';
 import { InfoGroup } from './model/InfoGroup';
 import { InfoItem } from './model/InfoItem';
 import { Repository } from 'typeorm';
-
-
+import { Func } from './model/Func';
+import { Role } from './model/Role';
 
 @Global()
 @Module({
@@ -48,6 +48,8 @@ export class UserPMModule implements OnModuleInit {
   private readonly metadataScanner: MetadataScanner
   constructor(
     @Inject(ModulesContainer.name) private readonly moduleMap: ModulesContainer,
+    @Inject('UserPMModule.RoleRepository') private readonly roleRepository: Repository<Role>,
+    @Inject('UserPMModule.FuncRepository') private readonly funcRepository: Repository<Func>,
     @Inject('UserPMModule.ModuleRepository') private readonly moduleRepository: Repository<Module1>,
     @Inject('UserPMModule.InfoItemRepository') private readonly infoItemRepository: Repository<InfoItem>,
     @Inject('UserPMModule.InfoGroupRepository') private readonly infoGroupRepository: Repository<InfoGroup>,
@@ -186,7 +188,15 @@ export class UserPMModule implements OnModuleInit {
     if (modules.length > 0) {
       console.log('以下模块未找到，将要删除')
       console.dir(modules)
-      await this.moduleRepository.remove(modules)
+      for (let i = 0; i < modules.length; i++) {
+        if (modules[i].roles && modules[i].roles.length > 0) {
+          await this.roleRepository.remove(modules[i].roles)
+        }
+        if (modules[i].funcs && modules[i].funcs.length > 0) {
+          await this.funcRepository.remove(modules[i].funcs)
+        }
+        await this.moduleRepository.remove(module[i])
+      }
     }
   }
 
