@@ -191,6 +191,7 @@ export class UserPMModule implements OnModuleInit {
       for (let i = 0; i < modules.length; i++) {
         await this.roleRepository.remove(modules[i].roles)
         await this.funcRepository.remove(modules[i].funcs)
+        await this.permissionRepository.remove(modules[i].permissions)
         await this.moduleRepository.remove(modules[i])
       }
     }

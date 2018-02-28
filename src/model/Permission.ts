@@ -30,6 +30,24 @@ export class Permission{
     })
     description:string;
 
+    /*添加了权限的用户 */
+    @ManyToMany(type => User,user=>user.adds,{
+        cascadeInsert: true,
+        cascadeUpdate: false,
+        lazy: false,
+        eager: false
+    })
+    addUsers: User[]
+
+    /*减去了权限的用户 */
+    @ManyToMany(type => User,user=>user.reduces,{
+        cascadeInsert: true,
+        cascadeUpdate: false,
+        lazy: false,
+        eager: false
+    })
+    reduceUsers: User[]
+
     /* 所属模块id */
     @Column()
     moduleToken:string

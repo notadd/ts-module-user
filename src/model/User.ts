@@ -75,7 +75,7 @@ export class User {
     infoGroups: InfoGroup[]
 
     /* 用户添加的权限 */
-    @ManyToMany(type => Permission, {
+    @ManyToMany(type => Permission, permission => permission.addUsers, {
         cascadeInsert: true,
         cascadeUpdate: false,
         lazy: false,
@@ -87,7 +87,7 @@ export class User {
     adds: Permission[]
 
     /* 用户减少的权限 */
-    @ManyToMany(type => Permission, {
+    @ManyToMany(type => Permission, permission => permission.reduceUsers, {
         cascadeInsert: true,
         cascadeUpdate: false,
         lazy: false,
@@ -106,7 +106,7 @@ export class User {
         eager: false
     })
     @JoinTable({
-        name:'user_role'
+        name: 'user_role'
     })
     roles: Role[]
 
@@ -118,7 +118,7 @@ export class User {
         eager: false
     })
     @JoinTable({
-        name:'organization_user'
+        name: 'organization_user'
     })
     organizations: Organization[]
 }
