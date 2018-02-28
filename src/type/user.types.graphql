@@ -68,7 +68,7 @@ type Mutation{
     setRoles(id:Int!,roleIds:[Int!]!):Data
 
     #set permission ,that is final result ,generate by role adds reduces
-    setPermissions(id:Int!,permissionIds:[Int!]!):Data
+    setUserOwnPermissions(id:Int!,permissionIds:[Int!]!):Data
 }
 
 

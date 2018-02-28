@@ -429,6 +429,28 @@ export class UserService {
         }
     }
 
+    async setRoles(id:number, roleIds:number[]):Promise<void>{
+        let user: User = await this.userRepository.findOneById(id, { relations: ['roles'] })
+        if (!user) {
+            throw new HttpException('指定用户不存在', 406)
+        }
+        let roles:Role[] = await this.roleRepository.findByIds(roleIds)
+        roleIds.forEach(roleId=>{
+            let find = roles.find(role=>{
+                return role.id === roleId
+            })
+            if(!find){
+                throw new HttpException('指定id='+roleId+'角色不存在', 406)
+            }
+        })
+        user.roles = roles
+        try {
+            await this.userRepository.save(user)
+        } catch (err) {
+            throw new HttpException('数据库错误' + err.toString(), 401)
+        }
+    }
+
     async setPermissions(id: number, permissionIds: number[]): Promise<void> {
         let user: User = await this.userRepository.findOneById(id, { relations: ['roles', 'adds', 'reduces'] })
         if (!user) {
