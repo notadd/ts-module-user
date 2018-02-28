@@ -75,7 +75,7 @@ export class UserService {
             let role: Role = await this.roleRepository.findOneById(user.roles[i].id, { relations: ['funcs'] })
             for (let j = 0; j < role.funcs.length; j++) {
                 let func: Func = await this.funcRepository.findOneById(role.funcs[i].id, { relations: ['permissions'] })
-                temp.concat(func.permissions)
+                temp = temp.concat(func.permissions)
             }
         }
         //生成去重的集合
@@ -467,7 +467,7 @@ export class UserService {
             let role: Role = await this.roleRepository.findOneById(user.roles[i].id, { relations: ['funcs'] })
             for (let j = 0; j < role.funcs.length; j++) {
                 let func: Func = await this.funcRepository.findOneById(role.funcs[i].id, { relations: ['permissions'] })
-                temp.concat(func.permissions)
+                temp = temp.concat(func.permissions)
             }
         }
         //生成去重的集合
