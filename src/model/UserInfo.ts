@@ -22,7 +22,7 @@ export class UserInfo {
     @Column({
         name: 'value',
         type: 'varchar',
-        length: '20'
+        length: '120'
     })
     value: string
 
