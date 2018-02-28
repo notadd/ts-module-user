@@ -193,20 +193,20 @@ export class UserPMModule implements OnModuleInit {
   /* 添加默认信息组，包含基本信息组、认证信息组 */
   async addDefaultInfoGroup() {
     let base: InfoGroup = this.infoGroupRepository.create({ id: 1, name: 'Base', default: true, status: true })
-    let nickname: InfoItem = this.infoItemRepository.create({ id: 1, name: 'nickname', label: '昵称', description: '用户昵称', type: 'text', necessary: true, order: 1 })
-    let sex: InfoItem = this.infoItemRepository.create({ id: 2, name: 'sex', label: '性别', description: '用户性别，只能为男或女', type: 'radio', necessary: true, order: 2 })
-    let age: InfoItem = this.infoItemRepository.create({ id: 3, name: 'age', label: '年龄', description: '用户年龄，只能为数字', type: 'number', necessary: true, order: 3 })
-    let birthday: InfoItem = this.infoItemRepository.create({ id: 4, name: 'birthday', label: '生日', description: '用户生日', type: 'date', necessary: true, order: 4 })
-    let headPortrait: InfoItem = this.infoItemRepository.create({ id: 5, name: 'headPortrait', label: '头像', description: '用户头像，必须为上传图片，需要预览', type: 'uploadimagewithpreview', necessary: true, order: 5 })
-    let sign: InfoItem = this.infoItemRepository.create({ id: 6, name: 'sign', label: '签名', description: '用户签名，为多行文本', type: 'textarea', necessary: true, order: 6 })
+    let nickname: InfoItem = this.infoItemRepository.create({ id: 1, name: 'nickname', label: '昵称', default: true, description: '用户昵称', type: 'text', necessary: true, order: 1 })
+    let sex: InfoItem = this.infoItemRepository.create({ id: 2, name: 'sex', label: '性别', default: true, description: '用户性别，只能为男或女', type: 'radio', necessary: true, order: 2 })
+    let age: InfoItem = this.infoItemRepository.create({ id: 3, name: 'age', label: '年龄', default: true, description: '用户年龄，只能为数字', type: 'number', necessary: true, order: 3 })
+    let birthday: InfoItem = this.infoItemRepository.create({ id: 4, name: 'birthday', label: '生日', default: true, description: '用户生日', type: 'date', necessary: true, order: 4 })
+    let headPortrait: InfoItem = this.infoItemRepository.create({ id: 5, name: 'headPortrait', label: '头像', default: true, description: '用户头像，必须为上传图片，需要预览', type: 'uploadimagewithpreview', necessary: true, order: 5 })
+    let sign: InfoItem = this.infoItemRepository.create({ id: 6, name: 'sign', label: '签名', default: true, description: '用户签名，为多行文本', type: 'textarea', necessary: true, order: 6 })
     base.items = [nickname, sex, age, birthday, headPortrait, sign]
     await this.infoGroupRepository.save(base)
     let authentication: InfoGroup = this.infoGroupRepository.create({ id: 2, name: 'authentication', default: true, status: true })
-    let email: InfoItem = this.infoItemRepository.create({ id: 7, name: 'email', label: '邮箱', description: '用户邮箱', type: 'text', necessary: true, order: 1 })
-    let realName: InfoItem = this.infoItemRepository.create({ id: 8, name: 'realName', label: '姓名', description: '用户真实姓名', type: 'text', necessary: true, order: 2 })
-    let idNumber: InfoItem = this.infoItemRepository.create({ id: 9, name: 'idNumber', label: '身份证号', description: '用户身份证号', type: 'text', necessary: true, order: 3 })
-    let idImage: InfoItem = this.infoItemRepository.create({ id: 10, name: 'idImage', label: '身份证图片', description: '用户身份证图片，正反面在同一页', type: 'uploadfile', necessary: true, order: 4 })
-    let cellPhoneNumber: InfoItem = this.infoItemRepository.create({ id: 11, name: 'cellPhoneNumber', label: '手机号', description: '用户手机号', type: 'text', necessary: true, order: 5 })
+    let email: InfoItem = this.infoItemRepository.create({ id: 7, name: 'email', label: '邮箱', default: true, description: '用户邮箱', type: 'text', necessary: true, order: 1 })
+    let realName: InfoItem = this.infoItemRepository.create({ id: 8, name: 'realName', label: '姓名', default: true, description: '用户真实姓名', type: 'text', necessary: true, order: 2 })
+    let idNumber: InfoItem = this.infoItemRepository.create({ id: 9, name: 'idNumber', label: '身份证号', default: true, description: '用户身份证号', type: 'text', necessary: true, order: 3 })
+    let idImage: InfoItem = this.infoItemRepository.create({ id: 10, name: 'idImage', label: '身份证图片', default: true, description: '用户身份证图片，正反面在同一页', type: 'uploadfile', necessary: true, order: 4 })
+    let cellPhoneNumber: InfoItem = this.infoItemRepository.create({ id: 11, name: 'cellPhoneNumber', label: '手机号', default: true, description: '用户手机号', type: 'text', necessary: true, order: 5 })
     authentication.items = [email, realName, idNumber, idImage, cellPhoneNumber]
     await this.infoGroupRepository.save(authentication)
   }
