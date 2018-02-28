@@ -148,7 +148,7 @@ export class UserService {
         try {
             let salt = crypto.createHash('md5').update(new Date().toString()).digest('hex').slice(0, 10)
             let passwordWithSalt = crypto.createHash('md5').update(password + salt).digest('hex')
-            let user: User = this.userRepository.create({ userName, password: passwordWithSalt, salt, status: true, recycle: false, organizations, userInfos: [] })
+            let user: User = this.userRepository.create({ userName, password: passwordWithSalt, salt, status: true, recycle: false, organizations, userInfos: [],infoGroups:[] })
             await this.addUserInfosAndInfoGroups(req, queryRunner.manager, user, groups)
             await queryRunner.manager.save(user)
             await queryRunner.commitTransaction();
