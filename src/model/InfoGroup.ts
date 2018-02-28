@@ -26,7 +26,7 @@ export class InfoGroup {
     })
     name: string
 
-    /* 是否为默认信息组，默认信息组不可删除 */
+    /* 是否为默认信息组，默认信息组不可删除、更改 */
     @Column({
         name: 'default',
         type: 'tinyint'

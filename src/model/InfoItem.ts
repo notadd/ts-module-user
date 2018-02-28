@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, Column, PrimaryColumn, ManyToMany, JoinTable } from 'typeorm';
 import { InfoGroup } from './InfoGroup';
 
 /* 信息项实体，代表了用户需要额外填写的信息项
@@ -6,7 +6,10 @@ import { InfoGroup } from './InfoGroup';
 @Entity('info_item')
 export class InfoItem {
 
-    @PrimaryGeneratedColumn()
+    @PrimaryColumn({
+        name: 'id',
+        type: 'int'
+    })
     id: number;
 
     /* 信息项名称，如用户名、密码等 
@@ -51,7 +54,7 @@ export class InfoItem {
         type: 'enum',
         enum: ['text', 'number', 'textarea', 'radio', 'checkbox', 'date', 'pulldownmenu', 'uploadimagewithpreview', 'uploadfile']
     })
-    type: string
+    type: 'text' | 'number' | 'textarea' | 'radio' | 'checkbox' | 'date' | 'pulldownmenu' | 'uploadimagewithpreview' | 'uploadfile'
 
     /* 是否必填信息项，非必填信息项，如果未填写就不返回 */
     @Column({
