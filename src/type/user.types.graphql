@@ -71,10 +71,6 @@ type Mutation{
     setPermissions(id:Int!,permissionIds:[Int!]!):Data
 }
 
-enum Sex{
-    men 
-    women
-}
 
 #users return Data
 type UsersData{
