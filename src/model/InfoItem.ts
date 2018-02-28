@@ -33,6 +33,13 @@ export class InfoItem {
     })
     label: string
 
+    /* 是否为默认信息项，默认信息项不可删除、更改 */
+    @Column({
+        name: 'default',
+        type: 'tinyint'
+    })
+    default: boolean
+
     /* 信息项描述 */
     @Column({
         name: 'description',
@@ -54,7 +61,7 @@ export class InfoItem {
         type: 'enum',
         enum: ['text', 'number', 'textarea', 'radio', 'checkbox', 'date', 'pulldownmenu', 'uploadimagewithpreview', 'uploadfile']
     })
-    type: 'text' | 'number' | 'textarea' | 'radio' | 'checkbox' | 'date' | 'pulldownmenu' | 'uploadimagewithpreview' | 'uploadfile'
+    type: string
 
     /* 是否必填信息项，非必填信息项，如果未填写就不返回 */
     @Column({

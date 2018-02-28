@@ -45,6 +45,12 @@ export class InfoGroupService {
         if(exist.default){
             throw new HttpException('默认信息组不可更改', 408)
         }
+        if(name!==exist.name){
+            let exist1: InfoGroup = await this.infoGroupRepository.findOne({ name })
+            if (exist1) {
+                throw new HttpException('指定名称信息组已存在：' + name, 408)
+            }
+        }
         try {
             exist.name = name
             await this.infoGroupRepository.save(exist)
@@ -73,6 +79,9 @@ export class InfoGroupService {
         if (!group) {
             throw new HttpException('给定名称id信息组不存在', 408)
         }
+        if(group.default){
+            throw new HttpException('默认信息组不可更改', 408)
+        }
         let item: InfoItem = await this.infoItemRepository.findOneById(infoItemId)
         if (!item) {
             throw new HttpException('指定信息项不存在', 409)
@@ -96,6 +105,9 @@ export class InfoGroupService {
         let group: InfoGroup = await this.infoGroupRepository.findOneById(id, { relations: ['items'] })
         if (!group) {
             throw new HttpException('给定名称id信息组不存在', 408)
+        }
+        if(group.default){
+            throw new HttpException('默认信息组不可更改', 408)
         }
         let item: InfoItem = await this.infoItemRepository.findOneById(infoItemId)
         if (!item) {

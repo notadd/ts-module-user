@@ -43,6 +43,7 @@ type InfoItemsData{
 type InfoItem{
     id:Int
     name:String
+    default:Boolean
     description:String
     type:String
     necessary:Boolean

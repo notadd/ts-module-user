@@ -17,7 +17,7 @@ export class InfoItemService {
         if (exist) {
             throw new HttpException('指定名称信息项已存在：' + name, 412)
         }
-        let item: InfoItem = this.infoItemRepository.create({ name, label, description, type, necessary, order })
+        let item: InfoItem = this.infoItemRepository.create({ name, label, default:false,description, type, necessary, order })
         try {
             await this.infoItemRepository.save(item)
         } catch (err) {
@@ -30,9 +30,14 @@ export class InfoItemService {
         if (!exist) {
             throw new HttpException('指定id信息项不存在：' + name, 413)
         }
-        let exist1: InfoItem = await this.infoItemRepository.findOne({ name })
-        if (exist1) {
-            throw new HttpException('指定名称信息项已存在：' + name, 412)
+        if(exist.default){
+            throw new HttpException('默认信息项不允许更新', 413)
+        }
+        if(name!==exist.name){
+            let exist1: InfoItem = await this.infoItemRepository.findOne({ name })
+            if (exist1) {
+                throw new HttpException('指定名称信息项已存在：' + name, 412)
+            }
         }
         exist.name = name
         exist.label = label
@@ -51,6 +56,9 @@ export class InfoItemService {
         let exist: InfoItem = await this.infoItemRepository.findOneById(id)
         if (!exist) {
             throw new HttpException('指定id信息项不存在：' + name, 413)
+        }
+        if(exist.default){
+            throw new HttpException('默认信息项不允许删除', 413)
         }
         try {
             await this.infoItemRepository.remove(exist)
@@ -71,6 +79,9 @@ export class InfoItemService {
             })
             if (!find) {
                 throw new HttpException('指定id=' + id + '的信息项不存在', 414)
+            }
+            if(find.default){
+                throw new HttpException('默认信息项不允许删除', 413)
             }
         })
         try {
