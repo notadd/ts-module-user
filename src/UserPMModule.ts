@@ -53,15 +53,20 @@ export class UserPMModule implements OnModuleInit {
   }
 
 
+
+  async onModuleInit(): Promise<void> {
+    await this.checkPermissionDefinition()
+  }
+
   /* 在初始化钩子中遍历所有模块
-    获取定义在Controller与Resolver上的权限定义
-    权限定义可以定义在类上或者原型方法上，与UseGuard的使用方法相同
-    一个位置可以定义多个权限，作为数组存储在元数据userpm:permission_definition中
-    一个模块中定义的重复权限，会被覆盖，不会报错
-    新增模块直接保存，既有模块对原有权限与本次扫描出权限进行差分，相同名称权限id不变，保证既有权限与功能关联不变
-    如果原有模块没有在这次遍历中被发现权限，则模块连带权限、功能、角色一起删除
-  */
-  async onModuleInit() {
+     获取定义在Controller与Resolver上的权限定义
+     权限定义可以定义在类上或者原型方法上，与UseGuard的使用方法相同
+     一个位置可以定义多个权限，作为数组存储在元数据userpm:permission_definition中
+     一个模块中定义的重复权限，会被覆盖，不会报错
+     新增模块直接保存，既有模块对原有权限与本次扫描出权限进行差分，相同名称权限id不变，保证既有权限与功能关联不变
+     如果原有模块没有在这次遍历中被发现权限，则模块连带权限、功能、角色一起删除
+   */
+  async checkPermissionDefinition(): Promise<void> {
     //获取当前既有模块，关联获取模块具有的权限、功能、角色
     console.log('获取当前所有模块')
     let modules: Module1[] = await this.moduleRepository.find({ relations: ['permissions', 'funcs', 'roles'] })
@@ -76,7 +81,7 @@ export class UserPMModule implements OnModuleInit {
       //获取到的权限定义，使用map为了name不重复
       let permissions: Map<string, Permission> = new Map()
       //遍历组件、路由
-      console.log('开始遍历模块token='+token+'的组件')
+      console.log('开始遍历模块token=' + token + '的组件')
       for (let component of components) {
         //名称、实例包装器
         let [key, value] = component
@@ -84,7 +89,7 @@ export class UserPMModule implements OnModuleInit {
         let isResolver = Reflect.getMetadata('graphql:resolver_type', value.metatype)
         let isController = Reflect.getMetadata('path', value.metatype, )
         if (isResolver || isController) {
-          console.log('处理组件：'+key)
+          console.log('处理组件：' + key)
           //在需要进行权限判断的组件类上定义模块token，用来在guard中判断权限属于哪个模块
           Reflect.defineMetadata(MODULE_TOKEN, token, value.metatype)
           //获取组件、控制器类上定义的权限数组
@@ -121,7 +126,7 @@ export class UserPMModule implements OnModuleInit {
         })
         //如果模块已经存在
         if (index >= 0) {
-          console.log('模块'+token+'已经存在')
+          console.log('模块' + token + '已经存在')
           let module = modules[index]
           //对既有权限与本次扫描出权限根据name进行差分
           //遍历本次扫描结果
@@ -156,18 +161,18 @@ export class UserPMModule implements OnModuleInit {
             //如果未找到，说明这个既有权限被删除了
             //因为删除权限而带来的其他变化，暂时不管
             if (!find) {
-              console.log('权限'+p.name+'未找到,将要被删除')
+              console.log('权限' + p.name + '未找到,将要被删除')
               await this.permissionRepository.remove(p)
             }
           }
           //将已经扫描到的模块从既有模块数组中移除
           modules.splice(index, 1)
-        } else if(pers.length>0) {
-          console.log('模块'+token+'不存在，即将保存')
+        } else if (pers.length > 0) {
+          console.log('模块' + token + '不存在，即将保存')
           //模块不存在，直接保存它与相应权限
           let module: Module1 = this.moduleRepository.create({ token, permissions: pers })
           await this.moduleRepository.save(module)
-        }else{
+        } else {
           //模块不存在且没有权限，则不管它
         }
       }
