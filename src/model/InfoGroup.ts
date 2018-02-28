@@ -26,6 +26,13 @@ export class InfoGroup {
     })
     name: string
 
+    /* 是否为默认信息组，默认信息组不可删除 */
+    @Column({
+        name: 'default',
+        type: 'tinyint'
+    })
+    default: boolean
+
     /* 信息组状态，是否可用 */
     @Column({
         name: 'status',

@@ -29,7 +29,7 @@ export class InfoGroupService {
         if (exist) {
             throw new HttpException('给定名称信息组已存在', 407)
         }
-        let infoGroup: InfoGroup = this.infoGroupRepository.create({ name, status: true })
+        let infoGroup: InfoGroup = this.infoGroupRepository.create({ name, default: false, status: true })
         try {
             await this.infoGroupRepository.save(infoGroup)
         } catch (err) {
@@ -41,6 +41,9 @@ export class InfoGroupService {
         let exist: InfoGroup = await this.infoGroupRepository.findOne({ name })
         if (!exist) {
             throw new HttpException('给定名称信息组不存在', 408)
+        }
+        if(exist.default){
+            throw new HttpException('默认信息组不可更改', 408)
         }
         try {
             exist.name = name
@@ -54,6 +57,9 @@ export class InfoGroupService {
         let exist: InfoGroup = await this.infoGroupRepository.findOne({ name })
         if (!exist) {
             throw new HttpException('给定名称id信息组不存在', 408)
+        }
+        if(exist.default){
+            throw new HttpException('默认信息组不可删除', 408)
         }
         try {
             await this.infoGroupRepository.remove(exist)
