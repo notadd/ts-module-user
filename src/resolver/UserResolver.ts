@@ -177,11 +177,65 @@ export class UserResolver {
             message: '创建用户成功'
         }
         try {
-            let { organizationId, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber } = body
-            if (!userName || !password || !nickname || !realName || !sex || !birthday || !email || !cellPhoneNumber) {
+            let { organizationId, userName, password } = body
+            if (!userName || !password) {
                 throw new HttpException('缺少参数', 400)
             }
-            await this.userService.createUser(organizationId, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber)
+            await this.userService.createUser(organizationId, userName, password)
+        } catch (err) {
+            if (err instanceof HttpException) {
+                data.code = err.getStatus()
+                data.message = err.getResponse() + ''
+            } else {
+                console.log(err)
+                data.code = 500
+                data.message = '出现了意外错误' + err.toString()
+            }
+        }
+        return data
+    }
+
+    /* 模块创建用户接口，会传递用户基本信息，与这个模块调用的信息组的信息，不同类型信息组处理方式不同
+       传递信息的方式为groups对象数组，每个对象包含了信息组id，以及信息数组，信息组id用来验证信息是否正确
+    */
+    @Mutation('createUserWithUserInfo')
+    async createUserWithUserInfo(req: IncomingMessage, body: CreateUserBody & { groups: { groupId: number, infos: UnionUserInfo[] }[] }): Promise<Data> {
+        let data: Data = {
+            code: 200,
+            message: '创建用户成功'
+        }
+        try {
+            let { organizationId, userName, password, groups } = body
+            if (!userName || !password) {
+                throw new HttpException('缺少参数', 400)
+            }
+            await this.userService.createUserWithUserInfo(req, organizationId, userName, password, groups)
+        } catch (err) {
+            if (err instanceof HttpException) {
+                data.code = err.getStatus()
+                data.message = err.getResponse() + ''
+            } else {
+                console.log(err)
+                data.code = 500
+                data.message = '出现了意外错误' + err.toString()
+            }
+        }
+        return data
+    }
+
+
+    @Mutation('addUserInfo')
+    async addUserInfo(req: IncomingMessage, body: { id: number, groups: { groupId: number, infos: UnionUserInfo[] }[] }): Promise<Data> {
+        let data: Data = {
+            code: 200,
+            message: '创建用户成功'
+        }
+        try {
+            let { id, groups } = body
+            if (!id) {
+                throw new HttpException('缺少参数', 400)
+            }
+            await this.userService.addUserInfo(req, id, groups)
         } catch (err) {
             if (err instanceof HttpException) {
                 data.code = err.getStatus()
@@ -202,11 +256,11 @@ export class UserResolver {
             message: '更新用户成功'
         }
         try {
-            let { id, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber } = body
+            let { id, userName, password } = body
             if (!id) {
                 throw new HttpException('缺少参数', 400)
             }
-            await this.userService.updateUser(id, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber)
+            await this.userService.updateUser(id, userName, password)
         } catch (err) {
             if (err instanceof HttpException) {
                 data.code = err.getStatus()
@@ -385,60 +439,6 @@ export class UserResolver {
                 throw new HttpException('缺少参数', 400)
             }
             await this.userService.deleteUsers(ids)
-        } catch (err) {
-            if (err instanceof HttpException) {
-                data.code = err.getStatus()
-                data.message = err.getResponse() + ''
-            } else {
-                console.log(err)
-                data.code = 500
-                data.message = '出现了意外错误' + err.toString()
-            }
-        }
-        return data
-    }
-
-    /* 模块创建用户接口，会传递用户基本信息，与这个模块调用的信息组的信息，不同类型信息组处理方式不同
-       传递信息的方式为groups对象数组，每个对象包含了信息组id，以及信息数组，信息组id用来验证信息是否正确
-    */
-    @Mutation('createUserWithUserInfo')
-    async createUserWithUserInfo(req: IncomingMessage, body: CreateUserBody & { groups: { groupId: number, infos: UnionUserInfo[] }[] }): Promise<Data> {
-        let data: Data = {
-            code: 200,
-            message: '创建用户成功'
-        }
-        try {
-            let { organizationId, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber, groups } = body
-            if (!userName || !password || !nickname || !realName || !sex || !birthday || !email || !cellPhoneNumber || !status) {
-                throw new HttpException('缺少参数', 400)
-            }
-            await this.userService.createUserWithUserInfo(req, organizationId, userName, password, nickname, realName, sex, birthday, email, cellPhoneNumber, groups)
-        } catch (err) {
-            if (err instanceof HttpException) {
-                data.code = err.getStatus()
-                data.message = err.getResponse() + ''
-            } else {
-                console.log(err)
-                data.code = 500
-                data.message = '出现了意外错误' + err.toString()
-            }
-        }
-        return data
-    }
-
-
-    @Mutation('addUserInfo')
-    async addUserInfo(req: IncomingMessage, body: { id: number, groups: { groupId: number, infos: UnionUserInfo[] }[] }): Promise<Data> {
-        let data: Data = {
-            code: 200,
-            message: '创建用户成功'
-        }
-        try {
-            let { id, groups } = body
-            if (!id) {
-                throw new HttpException('缺少参数', 400)
-            }
-            await this.userService.addUserInfo(req, id, groups)
         } catch (err) {
             if (err instanceof HttpException) {
                 data.code = err.getStatus()
