@@ -122,7 +122,7 @@ export class UserService {
         try {
             let salt = crypto.createHash('md5').update(new Date().toString()).digest('hex').slice(0, 10)
             let passwordWithSalt = crypto.createHash('md5').update(password + salt).digest('hex')
-            let user: User = this.userRepository.create({ userName, password: passwordWithSalt, salt, status: true, recycle: false })
+            let user: User = this.userRepository.create({ userName, password: passwordWithSalt, salt, status: true, recycle: false, organizations })
             await this.userRepository.save(user)
         } catch (err) {
             throw new HttpException('数据库错误' + err.toString(), 401)
