@@ -49,7 +49,7 @@ export class InfoItem {
     @Column({
         name: 'type',
         type: 'enum',
-        enum: ['text', 'number', 'textarea', 'radio', 'checkbox', 'date', 'pulldown_menu', 'upload_image_with_perview', 'upload_file']
+        enum: ['text', 'number', 'textarea', 'radio', 'checkbox', 'date', 'pulldownmenu', 'uploadimagewithpreview', 'uploadfile']
     })
     type: string
 

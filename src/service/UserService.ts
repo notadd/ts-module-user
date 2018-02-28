@@ -229,7 +229,7 @@ export class UserService {
                 }
                 //根据不同类型信息项校验信息类型，顺便转换信息值
                 //'单行文本框', '多行文本框', '单选框', '多选框', '复选框', '日期时间选择', '日期时间范围选择', '下拉菜单', '上传图片', '上传文件'
-                if (match.type === 'text' || match.type === 'textarea' || match.type === 'radio' || match.type === 'datetime' || match.type === 'datetimescope' || match.type === 'pulldownmenu') {
+                if (match.type === 'text' || match.type === 'textarea' || match.type === 'radio' || match.type === 'date' || match.type === 'number' || match.type === 'pulldownmenu') {
                     if (!(infos[j] as TextInfo).value) {
                         throw new HttpException('指定名称信息值:' + match.name + '不存在', 410)
                     }
@@ -247,7 +247,7 @@ export class UserService {
                     }
                     //数组类型以，连接各个元素为字符串
                     result = (infos[j] as ArrayInfo).array.join(',')
-                } else if (match.type === 'uploadimage' || match.type === 'uploadfile') {
+                } else if (match.type === 'uploadimagewithpreview' || match.type === 'uploadfile') {
                     if (!(infos[j] as FileInfo).base64) {
                         throw new HttpException('指定类型信息项:' + match.type + '必须具有文件base64编码', 410)
                     }

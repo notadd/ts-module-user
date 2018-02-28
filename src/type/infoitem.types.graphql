@@ -8,12 +8,12 @@ type Mutation{
 
 enum InfoItemType{
     text
+    number
     textarea
     radio
-    checkbox
-    datetime
-    datetimescope
+    date
     pulldownmenu
-    uploadimage
+    checkbox
     uploadfile
+    uploadimagewithpreview
 }

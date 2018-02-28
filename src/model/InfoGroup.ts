@@ -3,7 +3,7 @@ import { InfoItem } from './InfoItem';
 
 /* 信息组，包含多个信息项
    目前信息组不属于任何模块，会写入一些默认信息组，由不同模块根据id调用信息组，一个模块可能会调用多个信息组
-   目前认为每个模块调用信息组只有在注册用户时会调用属于它的所有信息组
+   模块在什么时候调用信息组，还是未知
    对于一个用户来说，一个信息组是否填写会与用户关联起来，如果一个信息组填写了，会在关联表中保存这个信息组与用户的一个关联记录
    前端可以查询某个用户的某个信息组是否填写，如果未填写可以调用信息组，并且为用户补充信息
 */
@@ -22,7 +22,7 @@ export class InfoGroup {
         name: 'name',
         type: 'varchar',
         length: '20',
-        unique:true
+        unique: true
     })
     name: string
 
@@ -38,14 +38,14 @@ export class InfoGroup {
        而组a已经被填写过了，即此时这个用户的X信息项存在
        那么当添加组b时由前端将X信息项当前值显示出来
     */
-    @ManyToMany(type=>InfoItem,infoItem=>infoItem.groups,{
+    @ManyToMany(type => InfoItem, infoItem => infoItem.groups, {
         cascadeInsert: true,
         cascadeUpdate: false,
         lazy: false,
         eager: false
     })
     @JoinTable({
-        name:'infogroup_infoitem'
+        name: 'infogroup_infoitem'
     })
-    items:InfoItem[]
+    items: InfoItem[]
 }
