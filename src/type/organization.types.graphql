@@ -76,12 +76,5 @@ type UsersInOrganizationData{
 type User{
     id:Int
     userName:String
-    nickname:String
-    realName:String
-    sex:String
-    birthday:String
-    email:String
-    cellPhoneNumber:String
     status:Boolean
-    recycle:Boolean
 }

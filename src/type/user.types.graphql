@@ -20,12 +20,6 @@ type Mutation{
         organizationId: Int, 
         userName: String!, 
         password: String!, 
-        nickname: String!, 
-        realName: String!, 
-        sex: Sex!, 
-        birthday: String!, 
-        email: String!, 
-        cellPhoneNumber: String!, 
     ):Data
 
     #create user with UserInfo, specify organization
@@ -33,12 +27,6 @@ type Mutation{
         organizationId: Int, 
         userName: String!, 
         password: String!, 
-        nickname: String!, 
-        realName: String!, 
-        sex: Sex!, 
-        birthday: String!, 
-        email: String!, 
-        cellPhoneNumber: String!, 
         groups: [UserInfoGroup]
     ):Data
 
@@ -47,12 +35,6 @@ type Mutation{
         id:Int,
         userName: String, 
         password: String, 
-        nickname: String, 
-        realName: String, 
-        sex: Sex, 
-        birthday: String, 
-        email: String, 
-        cellPhoneNumber: String, 
     ):Data
 
     #add userinfo to user , user must exist
