@@ -4,7 +4,15 @@ type Query{
 }
 
 Mutation{
+    #create new ScoreType
+    createScoreType(name:String!,type:ScoreTypeValueType!,description:String):Data
 
+}
+
+
+enum ScoreTypeValueType{
+    float
+    int
 }
 
 #scoreTypes return data
