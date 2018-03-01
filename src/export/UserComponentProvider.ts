@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { User } from '../model/User';
 import { Role } from '../model/Role';
 import { Func } from '../model/Func';
+import * as crypto from 'crypto';
 import * as path from 'path';
 
 
@@ -62,6 +63,26 @@ export class UserComponent {
             return a.id - b.id
         })
         return result
+    }
+
+    /* 用户登录方法，登录用户要求用户名与密码匹配，用户密码为加盐生成
+       回收站用户不能登录
+       封禁用户可以登录但是没有权限
+    */
+    async login(userName: string, password: string): Promise<boolean> {
+        let user: User = await this.userRepository.findOne({ userName })
+        if (!user) {
+            return false
+        }
+        /* 回收站用户不可登录 */
+        if (user.recycle) {
+            return false
+        }
+        let passwordWithSalt = crypto.createHash('md5').update(password + user.salt).digest('hex')
+        if (passwordWithSalt !== user.password) {
+            return false
+        }
+        return true
     }
 
 }

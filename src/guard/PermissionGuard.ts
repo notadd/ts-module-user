@@ -3,7 +3,7 @@ import { Guard, CanActivate, ExecutionContext, Inject } from '@nestjs/common';
 import { UserComponent } from '../export/UserComponentProvider';
 import { Permission } from '../model/Permission';
 import { IncomingMessage } from 'http';
-
+import { User } from '../model/User';
 
 export const MODULE_TOKEN = 'module_token';
 
@@ -23,10 +23,18 @@ export class PermissionGuard implements CanActivate {
         let { parent, handler } = context
         //从头信心中获取token，进而获取到用户id，这部分暂时未接入
         let auth = req.headers['authentication']
-        //用户id
-        let id = 1
+        //用户，从token中获得
+        let user: User = { id: 1, recycle: false, status: true } as User
         //获取用户此时拥有的权限，已经根据角色、增权限、减权限计算出了最终拥有的权限
-        let permissions: Permission[] = await this.userComponent.permissions(id)
+        let permissions: Permission[] = await this.userComponent.permissions(user.id)
+        //回收站用户不能访问任何接口
+        if(user.recycle){
+            return false
+        }
+        //封禁用户不具有任何权限
+        if (!user.status) {
+            permissions = []
+        }
         //获取类上定义权限
         let class_or: string[] = Reflect.getMetadata(PERMISSION_CONTROLLER_OR, parent) || []
         let class_and: string[] = Reflect.getMetadata(PERMISSION_CONTROLLER_AND, parent) || []
