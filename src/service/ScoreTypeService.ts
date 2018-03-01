@@ -7,7 +7,11 @@ import { IncomingMessage } from 'http';
 export class ScoreTypeService {
 
     constructor(
-
+        @Inject('UserPMModule.ScoreTypeRepository') private readonly scoreTypeRepository: Repository<ScoreType>
     ) { }
+
+    async getAll(): Promise<ScoreType[]> {
+        return await this.scoreTypeRepository.find()
+    }
 
 }
