@@ -13,11 +13,13 @@ import { InfoGroupService } from './service/InfoGroupService';
 import { ScoreTypeService } from './service/ScoreTypeService';
 import { InfoItemService } from './service/InfoItemService';
 import { ModuleResolver } from './resolver/ModuleResolver';
+import { ScoreResolver } from './resolver/ScoreResolver';
 import { ModuleService } from './service/ModuleService';
 import { UserResolver } from './resolver/UserResolver';
 import { FuncResolver } from './resolver/FuncResolver';
 import { RoleResolver } from './resolver/RoleResolver';
 import { MODULE_TOKEN } from './guard/PermissionGuard';
+import { ScoreService } from './service/ScoreService';
 import { UserService } from './service/UserService';
 import { FuncService } from './service/FuncService';
 import { RoleService } from './service/RoleService';
@@ -38,12 +40,13 @@ import { Role } from './model/Role';
     ConnectionProvider, ...RepositorysProvider,
     OrganizationService, OrganizationResolver,
     ScoreTypeService, ScoreTypeResolver,
-    InfoGroupResolver, InfoGroupService,
-    InfoItemResolver, InfoItemService,
-    ModuleResolver, ModuleService,
-    FuncResolver, FuncService,
-    UserResolver, UserService,
-    RoleResolver, RoleService
+    InfoGroupService, InfoGroupResolver,
+    InfoItemService, InfoItemResolver,
+    ModuleService, ModuleResolver,
+    ScoreService, ScoreResolver,
+    FuncService, FuncResolver,
+    UserService, UserResolver,
+    RoleService, RoleResolver
   ],
   exports: [UserService]
 })

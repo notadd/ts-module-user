@@ -3,7 +3,7 @@ type Query{
     scoreTypes:ScoreTypesData
 }
 
-Mutation{
+type Mutation{
     #create new ScoreType
     createScoreType(name:String!,type:ScoreValueType!,description:String):Data
     #update ScoreType

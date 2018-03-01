@@ -1,0 +1,18 @@
+type Query{
+    #get socre with specified user and specified ScoreType 
+    getScore(userId:Int!,scoreTypeId:Int!):ScoreData
+}
+
+type Query{
+    #set score add value with specified user and specified ScoreType 
+    setScore(userId:Int!,scoreTypeId:Int!,add:Float):Data
+}
+
+type ScoreData{
+    #error code
+    code:Int
+    #error message
+    message:String
+    #score value
+    score:Float
+}
