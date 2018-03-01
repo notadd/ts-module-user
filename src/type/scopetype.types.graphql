@@ -10,6 +10,8 @@ Mutation{
     updateScoreType(id:Int!,name:String!,type:ScoreValueType!,description:String!):Data
     #delete ScoreType
     deleteScoreType(id:Int!):Data
+    #batch delete 
+    deleteScoreTypes(ids:[Int!]!):Data
 }
 
 

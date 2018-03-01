@@ -116,4 +116,30 @@ export class ScoreTypeResolver {
         return data
     }
 
+    /* 批量删除积分类型，删除积分类型时，相关积分会被一起删除 */
+    @Mutation('deleteScoreTypes')
+    async deleteScoreTypes(req: IncomingMessage, body: { ids: number[] }): Promise<Data> {
+        let data: Data = {
+            code: 200,
+            message: '批量删除积分类型成功'
+        }
+        try {
+            let { ids } = body
+            if (!ids || ids.length === 0) {
+                throw new HttpException('缺少参数', 400)
+            }
+            await this.scoreTypeService.deleteScoreTypes(ids)
+        } catch (err) {
+            if (err instanceof HttpException) {
+                data.code = err.getStatus()
+                data.message = err.getResponse() + ''
+            } else {
+                console.log(err)
+                data.code = 500
+                data.message = '出现了意外错误' + err.toString()
+            }
+        }
+        return data
+    }
+
 }

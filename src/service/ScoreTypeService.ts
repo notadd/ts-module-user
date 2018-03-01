@@ -66,4 +66,24 @@ export class ScoreTypeService {
             throw new HttpException('数据库错误' + err.toString(), 401)
         }
     }
+
+    async deleteScoreTypes(ids: number[]): Promise<void> {
+        let exists: ScoreType[] = await this.scoreTypeRepository.findByIds(ids)
+        ids.forEach(id => {
+            let find: ScoreType = exists.find(exist => {
+                return exist.id === id
+            })
+            if (!find) {
+                throw new HttpException('指定id=' + id + '积分类型不存在', 425)
+            }
+            if (find.default) {
+                throw new HttpException('默认积分类型不允许更改', 426)
+            }
+        })
+        try {
+            await this.scoreTypeRepository.remove(exists)
+        } catch (err) {
+            throw new HttpException('数据库错误' + err.toString(), 401)
+        }
+    }
 }
