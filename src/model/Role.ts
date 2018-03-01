@@ -7,7 +7,7 @@ import { User } from './User';
    角色不能跨模块，所以它只能包含属于同一个模块下的功能，当删除模块时，其所属角色也会删除
 */
 @Entity('role')
-@Index('role_name_module_token',['name','moduleToken'])
+@Index('role_name_module_token', ['name', 'moduleToken'])
 export class Role {
 
     @PrimaryGeneratedColumn()
@@ -26,16 +26,17 @@ export class Role {
         name: 'score',
         type: 'int'
     })
-    score:number
+    score: number
 
     /* 角色包含功能，只能包含同一个模块下功能 */
     @ManyToMany(type => Func, {
         cascadeInsert: true,
         cascadeUpdate: false,
-        lazy: false
+        lazy: false,
+        eager: false
     })
     @JoinTable({
-        name:'role_func'
+        name: 'role_func'
     })
     funcs: Func[];
 
@@ -48,9 +49,10 @@ export class Role {
         cascadeInsert: true,
         cascadeUpdate: false,
         cascadeRemove: false,
-        onDelete:'CASCADE',
+        onDelete: 'CASCADE',
         nullable: false,
-        lazy: false
+        lazy: false,
+        eager: false
     })
     @JoinColumn({
         name: 'moduleToken',
@@ -59,11 +61,11 @@ export class Role {
     module: Module;
 
     /* 拥有这个角色的用户，删除角色时，需要删除关联关系 */
-    @ManyToMany(type => User,user=>user.roles, {
+    @ManyToMany(type => User, user => user.roles, {
         cascadeInsert: true,
         cascadeUpdate: false,
         lazy: false,
-        eager:false
+        eager: false
     })
-    users:User[]
+    users: User[]
 }

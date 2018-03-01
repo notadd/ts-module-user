@@ -7,7 +7,7 @@ import { Module } from './Module';
    模块删除时，其下包含的功能将会一起删除
 */
 @Entity('function')
-@Index('func_name_module_token',['name','moduleToken'])
+@Index('func_name_module_token', ['name', 'moduleToken'])
 export class Func {
 
     @PrimaryGeneratedColumn()
@@ -25,7 +25,8 @@ export class Func {
     @ManyToMany(type => Permission, {
         cascadeInsert: true,
         cascadeUpdate: false,
-        lazy: false
+        lazy: false,
+        eager: false
     })
     @JoinTable({
         name: 'function_permission',
@@ -41,9 +42,10 @@ export class Func {
         cascadeInsert: true,
         cascadeUpdate: false,
         cascadeRemove: false,
-        onDelete:'CASCADE',
+        onDelete: 'CASCADE',
         nullable: false,
-        lazy: false
+        lazy: false,
+        eager: false
     })
     @JoinColumn({
         name: 'moduleToken',

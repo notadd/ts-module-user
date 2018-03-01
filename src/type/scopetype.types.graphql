@@ -8,6 +8,8 @@ Mutation{
     createScoreType(name:String!,type:ScoreValueType!,description:String):Data
     #update ScoreType
     updateScoreType(id:Int!,name:String!,type:ScoreValueType!,description:String!):Data
+    #delete ScoreType
+    deleteScoreType(id:Int!):Data
 }
 
 

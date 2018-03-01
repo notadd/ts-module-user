@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable ,Index, ManyToOne, JoinColumn} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable, Index, ManyToOne, JoinColumn } from 'typeorm';
 import { Module } from './Module';
 import { User } from './User'
 /* 权限实体，代表了执行某种操作的权限，属于某个模块
@@ -8,30 +8,30 @@ import { User } from './User'
    当删除模块时，所有权限也会删除
 */
 @Entity('permission')
-@Index('name_module_token',['name','moduleToken'])
-export class Permission{
+@Index('name_module_token', ['name', 'moduleToken'])
+export class Permission {
 
     @PrimaryGeneratedColumn()
-    id:number;
+    id: number;
 
     /* 权限名，不同模块下可以重复 */
     @Column({
-        name:'name',
-        type:'varchar',
-        length:20
+        name: 'name',
+        type: 'varchar',
+        length: 20
     })
-    name:string;
+    name: string;
 
     /* 权限描述 */
     @Column({
-        name:'description',
-        type:'varchar',
-        length:'50'
+        name: 'description',
+        type: 'varchar',
+        length: '50'
     })
-    description:string;
+    description: string;
 
     /*添加了权限的用户 */
-    @ManyToMany(type => User,user=>user.adds,{
+    @ManyToMany(type => User, user => user.adds, {
         cascadeInsert: true,
         cascadeUpdate: false,
         lazy: false,
@@ -40,7 +40,7 @@ export class Permission{
     addUsers: User[]
 
     /*减去了权限的用户 */
-    @ManyToMany(type => User,user=>user.reduces,{
+    @ManyToMany(type => User, user => user.reduces, {
         cascadeInsert: true,
         cascadeUpdate: false,
         lazy: false,
@@ -50,21 +50,22 @@ export class Permission{
 
     /* 所属模块id */
     @Column()
-    moduleToken:string
+    moduleToken: string
 
     /* 所属模块 */
-    @ManyToOne(type=>Module,module=>module.permissions,{
+    @ManyToOne(type => Module, module => module.permissions, {
         cascadeInsert: true,
         cascadeUpdate: false,
         cascadeRemove: false,
-        onDelete:'CASCADE',
+        onDelete: 'CASCADE',
         nullable: false,
-        lazy:false
+        lazy: false,
+        eager: false
     })
     @JoinColumn({
-        name:'moduleToken',
-        referencedColumnName:'token'
+        name: 'moduleToken',
+        referencedColumnName: 'token'
     })
-    module:Module;
+    module: Module;
 }
 
