@@ -223,4 +223,6 @@ export class UserPMModule implements OnModuleInit {
     authentication.items = [email, realName, idNumber, idImage, cellPhoneNumber]
     await this.infoGroupRepository.save(authentication)
   }
+
+  /* 添加默认积分类型 */
 }
