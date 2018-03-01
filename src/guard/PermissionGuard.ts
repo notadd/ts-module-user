@@ -26,15 +26,24 @@ export class PermissionGuard implements CanActivate {
         //用户，从token中获得
         let user: User = { id: 1, recycle: false, status: true } as User
         //获取用户此时拥有的权限，已经根据角色、增权限、减权限计算出了最终拥有的权限
-        let permissions: Permission[] = await this.userComponent.permissions(user.id)
-        //回收站用户不能访问任何接口
-        if(user.recycle){
-            return false
-        }
-        //封禁用户不具有任何权限
-        if (!user.status) {
+        let permissions: Permission[]
+        //用户存在
+        if (user) {
+            //获取用户具有的权限
+            permissions = await this.userComponent.permissions(user.id)
+            //回收站用户不能访问任何接口
+            if (user.recycle) {
+                return false
+            }
+            //封禁用户不具有任何权限
+            if (!user.status) {
+                permissions = []
+            }
+        } else {
+            //用户不存在，权限为空
             permissions = []
         }
+
         //获取类上定义权限
         let class_or: string[] = Reflect.getMetadata(PERMISSION_CONTROLLER_OR, parent) || []
         let class_and: string[] = Reflect.getMetadata(PERMISSION_CONTROLLER_AND, parent) || []

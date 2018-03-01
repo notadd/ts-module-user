@@ -19,7 +19,7 @@ export class UserComponent {
     async permissions(id: number): Promise<Permission[]> {
         let user: User = await this.userRepository.findOneById(id, { relations: ['roles', 'adds', 'reduces'] })
         if (!user) {
-            throw new HttpException('指定用户不存在', 406)
+            return []
         }
         //声明最后的结果
         let result: Permission[] = []
