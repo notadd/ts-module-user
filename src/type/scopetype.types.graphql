@@ -1,0 +1,27 @@
+type Query{
+    #get all of ScoreType
+    scoreTypes:ScoreTypesData
+}
+
+Mutation{
+
+}
+
+#scoreTypes return data
+type ScoreTypesData{
+    #error code
+    code:Int
+    #error message
+    message:String
+    #scoreTypes
+    scoreTypes:[ScoreType]
+}
+
+#ScoreType type
+type ScoreType{
+    id:Int
+    name:String
+    type:String
+    default:Boolean
+    description:String
+}
