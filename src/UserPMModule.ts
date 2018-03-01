@@ -1,5 +1,6 @@
 import { ModulesContainer } from '@nestjs/core/injector/modules-container';
 import { PERMISSION_DEFINITION } from './decorator/PermissionDefinition';
+import { UserComponentProvider } from './export/UserComponentProvider';
 import { OrganizationResolver } from './resolver/OrganizationResolver';
 import { Module, Global, OnModuleInit, Inject } from '@nestjs/common';
 import { RepositorysProvider } from './database/RepositorysProvider';
@@ -46,9 +47,10 @@ import { Role } from './model/Role';
     ScoreService, ScoreResolver,
     FuncService, FuncResolver,
     UserService, UserResolver,
-    RoleService, RoleResolver
+    RoleService, RoleResolver,
+    UserComponentProvider
   ],
-  exports: [UserService]
+  exports: [UserComponentProvider]
 })
 export class UserPMModule implements OnModuleInit {
 
