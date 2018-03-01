@@ -225,4 +225,7 @@ export class UserPMModule implements OnModuleInit {
   }
 
   /* 添加默认积分类型 */
+  async addDefaultScoreType(){
+    
+  }
 }
