@@ -22,6 +22,7 @@ import { RoleService } from './service/RoleService';
 import { Module as Module1 } from './model/Module';
 import { Permission } from './model/Permission';
 import { InfoGroup } from './model/InfoGroup';
+import { ScoreType } from './model/ScoreType';
 import { InfoItem } from './model/InfoItem';
 import { Repository } from 'typeorm';
 import { Func } from './model/Func';
@@ -52,6 +53,7 @@ export class UserPMModule implements OnModuleInit {
     @Inject('UserPMModule.FuncRepository') private readonly funcRepository: Repository<Func>,
     @Inject('UserPMModule.ModuleRepository') private readonly moduleRepository: Repository<Module1>,
     @Inject('UserPMModule.InfoItemRepository') private readonly infoItemRepository: Repository<InfoItem>,
+    @Inject('UserPMModule.ScoreTypeRepository') private readonly scoreTypeRepository: Repository<ScoreType>,
     @Inject('UserPMModule.InfoGroupRepository') private readonly infoGroupRepository: Repository<InfoGroup>,
     @Inject('UserPMModule.PermissionRepository') private readonly permissionRepository: Repository<Permission>
   ) {
@@ -63,6 +65,8 @@ export class UserPMModule implements OnModuleInit {
     await this.checkPermissionDefinition()
     //确保默认信息组的存在
     await this.addDefaultInfoGroup()
+    //确保默认积分类型的存在
+    await this.addDefaultScoreType()
   }
 
   /* 在初始化钩子中遍历所有模块
@@ -225,7 +229,11 @@ export class UserPMModule implements OnModuleInit {
   }
 
   /* 添加默认积分类型 */
-  async addDefaultScoreType(){
-    
+  async addDefaultScoreType() {
+    let scoreType1: ScoreType = this.scoreTypeRepository.create({ id: 1, name: '积分', type: 'int', default: true, description: '积分，用于......' })
+    let scoreType2: ScoreType = this.scoreTypeRepository.create({ id: 2, name: '贡献', type: 'int', default: true, description: '贡献，用于......' })
+    let scoreType3: ScoreType = this.scoreTypeRepository.create({ id: 3, name: '威望', type: 'int', default: true, description: '威望，用于......' })
+    let scoreType4: ScoreType = this.scoreTypeRepository.create({ id: 4, name: '余额', type: 'float', default: true, description: '余额，用于......' })
+    await this.scoreTypeRepository.save([scoreType1,scoreType2,scoreType3,scoreType4])
   }
 }
