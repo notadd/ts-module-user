@@ -6,9 +6,11 @@ import { RepositorysProvider } from './database/RepositorysProvider';
 import { OrganizationService } from './service/OrganizationService';
 import { ConnectionProvider } from './database/ConnectionProvider';
 import { InfoGroupResolver } from './resolver/InfoGroupResolver';
+import { ScoreTypeResolver } from './resolver/ScoreTypeResolver';
 import { MetadataScanner } from '@nestjs/core/metadata-scanner';
 import { InfoItemResolver } from './resolver/InfoItemResolver';
 import { InfoGroupService } from './service/InfoGroupService';
+import { ScoreTypeService } from './service/ScoreTypeService';
 import { InfoItemService } from './service/InfoItemService';
 import { ModuleResolver } from './resolver/ModuleResolver';
 import { ModuleService } from './service/ModuleService';
@@ -35,6 +37,7 @@ import { Role } from './model/Role';
   components: [
     ConnectionProvider, ...RepositorysProvider,
     OrganizationService, OrganizationResolver,
+    ScoreTypeService, ScoreTypeResolver,
     InfoGroupResolver, InfoGroupService,
     InfoItemResolver, InfoItemService,
     ModuleResolver, ModuleService,
@@ -234,6 +237,6 @@ export class UserPMModule implements OnModuleInit {
     let scoreType2: ScoreType = this.scoreTypeRepository.create({ id: 2, name: '贡献', type: 'int', default: true, description: '贡献，用于......' })
     let scoreType3: ScoreType = this.scoreTypeRepository.create({ id: 3, name: '威望', type: 'int', default: true, description: '威望，用于......' })
     let scoreType4: ScoreType = this.scoreTypeRepository.create({ id: 4, name: '余额', type: 'float', default: true, description: '余额，用于......' })
-    await this.scoreTypeRepository.save([scoreType1,scoreType2,scoreType3,scoreType4])
+    await this.scoreTypeRepository.save([scoreType1, scoreType2, scoreType3, scoreType4])
   }
 }
