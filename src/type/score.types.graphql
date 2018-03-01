@@ -5,7 +5,7 @@ type Query{
 
 type Query{
     #set score add value with specified user and specified ScoreType 
-    setScore(userId:Int!,scoreTypeId:Int!,add:Float):Data
+    setScore(userId:Int!,scoreTypeId:Int!,add:Float!):Data
 }
 
 type ScoreData{

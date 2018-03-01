@@ -37,4 +37,30 @@ export class ScoreResolver {
         return data
     }
 
+    @Mutation('setScore')
+    async setScore(req: IncomingMessage, body: { userId: number, scoreTypeId: number, add: number }): Promise<Data> {
+        let data: Data = {
+            code: 200,
+            message: '设置积分成功'
+        }
+        try {
+            let { userId, scoreTypeId, add } = body
+            if (!userId || !scoreTypeId) {
+                throw new HttpException('缺少参数', 400)
+            }
+            await this.scoreService.setScore(userId, scoreTypeId, add)
+        } catch (err) {
+            if (err instanceof HttpException) {
+                data.code = err.getStatus()
+                data.message = err.getResponse() + ''
+            } else {
+                console.log(err)
+                data.code = 500
+                data.message = '出现了意外错误' + err.toString()
+            }
+        }
+        return data
+    }
+
+
 }
