@@ -1,5 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable } from 'typeorm';
-
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, OneToMany, JoinTable } from 'typeorm';
+import { Score } from './Score';
 /* 积分类型 */
 @Entity('score_type')
 export class ScoreType {
@@ -39,5 +39,14 @@ export class ScoreType {
         type: 'varchar'
     })
     description: string
+
+    /* 这个积分类型下的所有积分值 */
+    @OneToMany(type => Score, score => score.scoreType, {
+        cascadeInsert: true,
+        cascadeUpdate: false,
+        lazy: false,
+        eager: false
+    })
+    scores: Score[]
 
 }

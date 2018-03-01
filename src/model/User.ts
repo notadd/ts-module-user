@@ -3,6 +3,7 @@ import { Organization } from './Organization';
 import { Permission } from './Permission';
 import { InfoGroup } from './InfoGroup';
 import { UserInfo } from './UserInfo';
+import { Score } from './Score';
 import { Role } from './Role';
 
 /* 用户实体类，id自动生成、用户名必须唯一
@@ -63,6 +64,15 @@ export class User {
         eager: false
     })
     userInfos: UserInfo[]
+
+    /* 用户的各个积分值 */
+    @OneToMany(type => Score, score => score.user, {
+        cascadeInsert: true,
+        cascadeUpdate: false,
+        lazy: false,
+        eager: false
+    })
+    scores: Score[]
 
     /* 用户已经填写的信息组*/
     @ManyToMany(type => InfoGroup, {
