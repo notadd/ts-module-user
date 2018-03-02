@@ -85,6 +85,10 @@ export class UserComponent {
         return true
     }
 
+    async getUser(id: number): Promise<{ id: number, userName: string }> {
+        return await this.userRepository.findOneById(id, { select: ['id', 'userName'] })
+    }
+
 }
 
 export const UserComponentProvider = {
