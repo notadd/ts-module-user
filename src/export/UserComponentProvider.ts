@@ -86,7 +86,7 @@ export class UserComponent {
     }
 
     async getUser(id: number): Promise<{ id: number, userName: string }> {
-        return await this.userRepository.findOneById(id, { select: ['id', 'userName'] })
+        return await this.userRepository.findOneById(id, { select: ['id', 'userName', 'status', 'recycle'] })
     }
 
 }
