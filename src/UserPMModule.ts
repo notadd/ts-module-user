@@ -93,8 +93,8 @@ export class UserPMModule implements OnModuleInit {
     console.log('开始遍历模块')
     //遍历模块token、Module实例
     for (let [key, value] of this.moduleMap.entries()) {
-      //模块名称，从token中解析出来
-      let token = JSON.parse(key).module
+      //模块名称，直接使用nest容器里面存储Module的key，不会重复
+      let token = key
       //组件,包含了路由
       let components = [...value.components, ...value.routes]
       //获取到的权限定义，使用map为了name不重复
