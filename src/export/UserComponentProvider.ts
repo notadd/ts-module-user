@@ -69,7 +69,7 @@ export class UserComponent {
        回收站用户不能登录
        封禁用户可以登录但是没有权限
     */
-    async login(userName: string, password: string): Promise<boolean> {
+    async login(userName: string, password: string): Promise<boolean|User> {
         let user: User = await this.userRepository.findOne({ userName })
         if (!user) {
             return false
@@ -82,10 +82,10 @@ export class UserComponent {
         if (passwordWithSalt !== user.password) {
             return false
         }
-        return true
+        return await this.userRepository.findOneById(user.id, { select: ['id', 'userName', 'status', 'recycle'] })
     }
 
-    async getUser(id: number): Promise<{ id: number, userName: string }> {
+    async getUser(id:number): Promise<{ id: number, userName: string }> {
         return await this.userRepository.findOneById(id, { select: ['id', 'userName', 'status', 'recycle'] })
     }
 
