@@ -24,7 +24,7 @@ describe('FuncService', async () => {
             } catch (err) {
                 expect(err.getStatus()).toBe(416)
                 expect(err.getResponse()).toBe('指定模块token=aaaa下，指定名称name=bbbb功能已经存在')
-            } 
+            }
         })
 
         it('should throw HttpException: 数据库错误Error: 保存功能失败, 401', async () => {
@@ -40,7 +40,21 @@ describe('FuncService', async () => {
             } catch (err) {
                 expect(err.getStatus()).toBe(401)
                 expect(err.getResponse()).toBe('数据库错误Error: 保存功能失败')
-            } 
+            }
+        })
+    })
+
+    describe('updateFunc', async () => {
+
+        it('hould throw HttpException: 指定id=1功能不存在, 417', async () => {
+            let funcRepository = { findOneById: async (id: number,name:string): Promise<any> => Promise.resolve(null) }
+            let funcService: FuncService = new FuncService(funcRepository as any, {} as any, {} as any)
+            try{
+                await funcService.updateFunc(1,'管理文章')
+            }catch (err) {
+                expect(err.getStatus()).toBe(417)
+                expect(err.getResponse()).toBe('指定id=1功能不存在')
+            }
         })
     })
 })
