@@ -1,15 +1,15 @@
 import { Organization } from '../../src/model/Organization';
-import { Connection, Repository } from 'typeorm';
 import { Permission } from '../../src/model/Permission';
 import { InfoGroup } from '../../src/model/InfoGroup';
 import { ScoreType } from '../../src/model/ScoreType';
 import { InfoItem } from '../../src/model/InfoItem';
 import { UserInfo } from '../../src/model/UserInfo';
+import { Connection, Repository } from 'typeorm';
 import { Module } from '../../src/model/Module';
 import { Score } from '../../src/model/Score';
 import { User } from '../../src/model/User';
 import { Role } from '../../src/model/Role';
-import { Func } from '../../src//model/Func';
+import { Func } from '../../src/model/Func';
 
 const entityMap: Map<string, Function> = new Map()
 entityMap.set('UserPMModule.OrganizationRepository', Organization)
@@ -36,11 +36,15 @@ export let TestRepositorysProvider: Array<RepositoryProvider> = []
 entityMap.forEach((entity, token, map) => {
     TestRepositorysProvider.push({
         provide: token,
-        useFactory: (connection:Connection) => {
+        useFactory: (connection: Connection) => {
             return connection.getRepository(entity)
         },
         inject: ['UserPMModule.Connection']
     })
 })
+
+
+
+
 
 
