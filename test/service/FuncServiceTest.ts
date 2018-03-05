@@ -1,0 +1,1 @@
+import { FuncService } from '../../src/service/FuncService';
