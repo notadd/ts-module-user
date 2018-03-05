@@ -36,7 +36,7 @@ export let TestRepositorysProvider: Array<RepositoryProvider> = []
 entityMap.forEach((entity, token, map) => {
     TestRepositorysProvider.push({
         provide: token,
-        useFactory: (connection: Connection) => {
+        useFactory: (connection:Connection) => {
             return connection.getRepository(entity)
         },
         inject: ['UserPMModule.Connection']
