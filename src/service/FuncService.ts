@@ -16,7 +16,7 @@ export class FuncService {
         @Inject('UserPMModule.PermissionRepository') private readonly permissionRepository: Repository<Permission>
     ) { }
 
-    async createFunc(moduleToken,name: string): Promise<void> {
+    async createFunc(moduleToken:string,name: string): Promise<void> {
         let module:Module = await this.moduleRepository.findOneById(moduleToken)
         if(!module){
             throw new HttpException('指定模块token='+moduleToken+'不存在',415)
