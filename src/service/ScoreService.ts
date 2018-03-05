@@ -1,6 +1,7 @@
 import { HttpException, Inject, Component } from '@nestjs/common';
 import { Repository, Connection, EntityManager } from 'typeorm';
 import { ScoreType } from '../model/ScoreType';
+import { FloatUtil } from '../util/FloatUtil';
 import { Score } from '../model/Score';
 import { IncomingMessage } from 'http';
 import { User } from '../model/User';
@@ -8,6 +9,7 @@ import { User } from '../model/User';
 export class ScoreService {
 
     constructor(
+        @Inject(FloatUtil) private readonly floatUtil: FloatUtil,
         @Inject('UserPMModule.UserRepository') private readonly userRepository: Repository<User>,
         @Inject('UserPMModule.ScoreRepository') private readonly scoreRepository: Repository<Score>,
         @Inject('UserPMModule.ScoreTypeRepository') private readonly scoreTypeRepository: Repository<ScoreType>
@@ -62,7 +64,7 @@ export class ScoreService {
             if (scoreType.type === 'int') {
                 score.value = Number.parseInt(score.value + '') + Number.parseInt(add + '')
             } else if (scoreType.type === 'float') {
-                score.value = Number.parseFloat(score.value + '') + Number.parseFloat(add + '')
+                score.value = await this.floatUtil.add(score.value, add)
             }
         }
         /* 积分不存在创建，并存储，初值为0 */

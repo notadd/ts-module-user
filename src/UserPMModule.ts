@@ -28,6 +28,7 @@ import { Module as Module1 } from './model/Module';
 import { Permission } from './model/Permission';
 import { InfoGroup } from './model/InfoGroup';
 import { ScoreType } from './model/ScoreType';
+import { FloatUtil } from './util/FloatUtil';
 import { InfoItem } from './model/InfoItem';
 import { Repository } from 'typeorm';
 import { Func } from './model/Func';
@@ -38,6 +39,7 @@ import { Role } from './model/Role';
   modules: [],
   controllers: [],
   components: [
+    FloatUtil,
     ConnectionProvider, ...RepositorysProvider,
     OrganizationService, OrganizationResolver,
     ScoreTypeService, ScoreTypeResolver,
