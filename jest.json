@@ -1,0 +1,11 @@
+{
+    "moduleFileExtensions": ["ts","js","json","node"],
+    "transform": {
+        "^.+\\.tsx?$":"<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testMatch": ["/home/bc-040/桌面/UserPM/test/**/*.spec.ts"],
+    "testPathIgnorePatterns":["/home/bc-040/桌面/UserPM/src"],
+    "collectCoverage":true,
+    "collectCoverageFrom" : ["src/util/*.ts"],
+    "coverageReporters": ["json"]
+  }

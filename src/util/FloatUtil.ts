@@ -4,8 +4,6 @@ import { Component, HttpException } from '@nestjs/common';
 @Component()
 export class FloatUtil {
 
-    constructor() { }
-
     /*两个浮点数相加，返回浮点数 */
     async add(a: number, b: number): Promise<number> {
         /*声明转换后的整数字符串 */
