@@ -43,7 +43,6 @@ describe('FuncService', async () => {
     describe('createFunc', async () => {
 
         it('should equal', async () => {
-
             await moduleRepository.save({ token: 'TestModule' })
             await funcService.createFunc('TestModule', '文章管理')
             let module: Module = await moduleRepository.findOne()
@@ -95,6 +94,20 @@ describe('FuncService', async () => {
     })
 
     describe('updateFunc', async () => {
+
+        it('should equal', async () => {
+            await moduleRepository.save({ token: 'TestModule' })
+            await funcService.createFunc('TestModule', '文章管理')
+            let func1: Func = await funcRepository.findOneById(1)
+            await funcService.updateFunc(1,'论坛管理')
+            let func2: Func = await funcRepository.findOneById(1)
+            expect(func1.id).toBe(1)
+            expect(func1.name).toBe('文章管理')
+            expect(func1.moduleToken).toBe('TestModule')
+            expect(func2.id).toBe(1)
+            expect(func2.name).toBe('论坛管理')
+            expect(func2.moduleToken).toBe('TestModule')
+        })
 
         it('hould throw HttpException: 指定id=1功能不存在, 417', async () => {
             let funcRepository = { findOneById: async (id: number, name: string): Promise<any> => Promise.resolve(null) }
