@@ -15,7 +15,7 @@ export class Module {
     @PrimaryColumn({
         name: 'token',
         type: 'varchar',
-        length: 20
+        length: 100
     })
     token: string;
 
