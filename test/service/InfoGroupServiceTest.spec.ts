@@ -77,4 +77,32 @@ describe('FuncService', async () => {
         })
     })
 
+    describe('createInfoGroup', async () => {
+
+        it('should success', async () => {
+            await infoGroupService.createInfoGroup('基本信息')
+            let group = await infoGroupRepository.findOne()
+            expect(group).toEqual({ id: 1, name: '基本信息', default: 0, status: 1 })
+        })
+
+        it('should throw HttpException:给定名称name=基本信息信息组已存在, 407', async () => {
+            await infoGroupRepository.save({ name: '基本信息', default: true, status: true })
+            try {
+                await infoGroupService.createInfoGroup('基本信息')
+            } catch (err) {
+                expect(err.getStatus()).toBe(407)
+                expect(err.getResponse()).toBe('给定名称name=基本信息信息组已存在')
+            }
+        })
+
+        it('should throw HttpException:数据库错误Error: 保存信息组错误，401', async () => {
+            jest.spyOn(infoGroupRepository, 'save').mockImplementationOnce(async () => { throw new Error('保存信息组错误') })
+            try {
+                await infoGroupService.createInfoGroup('基本信息')
+            } catch (err) {
+                expect(err.getStatus()).toBe(401)
+                expect(err.getResponse()).toBe('数据库错误Error: 保存信息组错误')
+            }
+        })
+    })
 })

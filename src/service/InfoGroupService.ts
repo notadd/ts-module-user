@@ -30,7 +30,7 @@ export class InfoGroupService {
     async createInfoGroup(name: string): Promise<void> {
         let exist: InfoGroup = await this.infoGroupRepository.findOne({ name })
         if (exist) {
-            throw new HttpException('给定名称信息组已存在', 407)
+            throw new HttpException('给定名称name='+name+'信息组已存在', 407)
         }
         //方法中创建的信息组都是非默认的，只有模块初始化时写入信息组才是默认的
         let infoGroup: InfoGroup = this.infoGroupRepository.create({ name, default: false, status: true })
