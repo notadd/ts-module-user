@@ -272,4 +272,70 @@ describe('FuncService', async () => {
             }
         })
     })
+
+    describe('removeInfoItem', async () => {
+
+        it('should success', async () => {
+            let item = { id: 1, name: 'userName', label: '用户名', default: false, description: '用户的名字', type: 'text', necessary: true, order: 1 }
+            await infoItemRepository.save(item)
+            await infoGroupRepository.save({ name: '基本信息', default: false, status: true, items: [item] })
+            await infoGroupService.removeInfoItem(1, 1)
+            let group = await infoGroupRepository.findOneById(1, { relations: ['items'] })
+            expect(group.items).toBeDefined()
+            expect(group.items.length).toBe(0)
+        })
+
+        it('should throw HttpException:给定id=1信息组不存在, 408', async () => {
+            try {
+                await infoGroupService.removeInfoItem(1, 1)
+            } catch (err) {
+                expect(err.getStatus()).toBe(408)
+                expect(err.getResponse()).toBe('给定id=1信息组不存在')
+            }
+        })
+
+        it('should throw HttpException:默认信息组不可更改, 408', async () => {
+            await infoGroupRepository.save({ name: '基本信息', default: true, status: true })
+            try {
+                await infoGroupService.removeInfoItem(1, 1)
+            } catch (err) {
+                expect(err.getStatus()).toBe(408)
+                expect(err.getResponse()).toBe('默认信息组不可更改')
+            }
+        })
+
+        it('should throw HttpException:指定id=1信息项不存在, 409', async () => {
+            await infoGroupRepository.save({ name: '基本信息', default: false, status: true })
+            try {
+                await infoGroupService.removeInfoItem(1, 1)
+            } catch (err) {
+                expect(err.getStatus()).toBe(409)
+                expect(err.getResponse()).toBe('指定id=1信息项不存在')
+            }
+        })
+
+        it('should throw HttpException:指定信息项id=1不存在于指定信息组id=1中, 411', async () => {
+            await infoItemRepository.save({ name: 'userName', label: '用户名', default: false, description: '用户的名字', type: 'text', necessary: true, order: 1 })
+            await infoGroupRepository.save({ name: '基本信息', default: false, status: true })
+            try {
+                await infoGroupService.removeInfoItem(1, 1)
+            } catch (err) {
+                expect(err.getStatus()).toBe(411)
+                expect(err.getResponse()).toBe('指定信息项id=1不存在于指定信息组id=1中')
+            }
+        })
+
+        it('should throw HttpException:数据库错误Error: 移除信息项错误，401', async () => {
+            let item = { id: 1, name: 'userName', label: '用户名', default: false, description: '用户的名字', type: 'text', necessary: true, order: 1 }
+            await infoItemRepository.save(item)
+            await infoGroupRepository.save({ name: '基本信息', default: false, status: true, items: [item] })
+            jest.spyOn(infoGroupRepository, 'save').mockImplementationOnce(async () => { throw new Error('移除信息项错误') })
+            try {
+                await infoGroupService.removeInfoItem(1, 1)
+            } catch (err) {
+                expect(err.getStatus()).toBe(401)
+                expect(err.getResponse()).toBe('数据库错误Error: 移除信息项错误')
+            }
+        })
+    })
 })

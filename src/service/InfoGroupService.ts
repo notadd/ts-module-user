@@ -121,7 +121,7 @@ export class InfoGroupService {
     async removeInfoItem(id: number, infoItemId: number): Promise<void> {
         let group: InfoGroup = await this.infoGroupRepository.findOneById(id, { relations: ['items'] })
         if (!group) {
-            throw new HttpException('给定名称id信息组不存在', 408)
+            throw new HttpException('给定id='+id+'信息组不存在', 408)
         }
         //默认信息组不能更改
         if (group.default) {
@@ -130,7 +130,7 @@ export class InfoGroupService {
         //其他信息组不可能包含默认信息项，因为添加不进去
         let item: InfoItem = await this.infoItemRepository.findOneById(infoItemId)
         if (!item) {
-            throw new HttpException('指定信息项不存在', 409)
+            throw new HttpException('指定id='+infoItemId+'信息项不存在', 409)
         }
         //查找是否信息项已经存在于指定信息组中
         let index = group.items.findIndex(item => {
