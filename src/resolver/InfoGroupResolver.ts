@@ -89,17 +89,17 @@ export class InfoGroupResolver {
     }
 
     @Mutation('updateInfoGroup')
-    async updateInfoGroup(req: IncomingMessage, body: { name: string }): Promise<Data> {
+    async updateInfoGroup(req: IncomingMessage, body: { id: number, name: string }): Promise<Data> {
         let data: Data = {
             code: 200,
             message: '更新信息组成功'
         }
         try {
-            let { name } = body
-            if (!name) {
+            let { id, name } = body
+            if (!id || !name) {
                 throw new HttpException('缺少参数', 400)
             }
-            await this.infoGroupService.updateInfoGroup(name)
+            await this.infoGroupService.updateInfoGroup(id, name)
         } catch (err) {
             if (err instanceof HttpException) {
                 data.code = err.getStatus()

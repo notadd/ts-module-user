@@ -105,4 +105,54 @@ describe('FuncService', async () => {
             }
         })
     })
+
+    describe('updateInfoGroup', async () => {
+
+        it('should success', async () => {
+            await infoGroupRepository.save({ name: '基本信息', default: false, status: true })
+            await infoGroupService.updateInfoGroup(1, '认证信息')
+            let group = await infoGroupRepository.findOne()
+            expect(group).toEqual({ id: 1, name: '认证信息', default: 0, status: 1 })
+        })
+
+        it('should throw HttpException:给定id=1信息组不存在, 408', async () => {
+            try {
+                await infoGroupService.updateInfoGroup(1, '基本信息')
+            } catch (err) {
+                expect(err.getStatus()).toBe(408)
+                expect(err.getResponse()).toBe('给定id=1信息组不存在')
+            }
+        })
+
+        it('should throw HttpException:默认信息组不可更改, 408', async () => {
+            await infoGroupRepository.save({ name: '基本信息', default: true, status: true })
+            try {
+                await infoGroupService.updateInfoGroup(1, '认证信息')
+            } catch (err) {
+                expect(err.getStatus()).toBe(408)
+                expect(err.getResponse()).toBe('默认信息组不可更改')
+            }
+        })
+
+        it('should throw HttpException:指定名称信息组已存在：认证信息, 408', async () => {
+            await infoGroupRepository.save([{ name: '基本信息', default: false, status: true }, { name: '认证信息', default: false, status: true }])
+            try {
+                await infoGroupService.updateInfoGroup(1, '认证信息')
+            } catch (err) {
+                expect(err.getStatus()).toBe(408)
+                expect(err.getResponse()).toBe('指定名称信息组已存在：认证信息')
+            }
+        })
+
+        it('should throw HttpException:数据库错误Error: 更新信息组错误，401', async () => {
+            await infoGroupRepository.save({ name: '基本信息', default: false, status: true })
+            jest.spyOn(infoGroupRepository, 'save').mockImplementationOnce(async () => { throw new Error('更新信息组错误') })
+            try {
+                await infoGroupService.updateInfoGroup(1, '认证信息')
+            } catch (err) {
+                expect(err.getStatus()).toBe(401)
+                expect(err.getResponse()).toBe('数据库错误Error: 更新信息组错误')
+            }
+        })
+    })
 })

@@ -30,7 +30,7 @@ export class InfoGroupService {
     async createInfoGroup(name: string): Promise<void> {
         let exist: InfoGroup = await this.infoGroupRepository.findOne({ name })
         if (exist) {
-            throw new HttpException('给定名称name='+name+'信息组已存在', 407)
+            throw new HttpException('给定名称name=' + name + '信息组已存在', 407)
         }
         //方法中创建的信息组都是非默认的，只有模块初始化时写入信息组才是默认的
         let infoGroup: InfoGroup = this.infoGroupRepository.create({ name, default: false, status: true })
@@ -42,17 +42,17 @@ export class InfoGroupService {
     }
 
     /* 更新信息组 */
-    async updateInfoGroup(name: string): Promise<void> {
-        let exist: InfoGroup = await this.infoGroupRepository.findOne({ name })
+    async updateInfoGroup(id: number, name: string): Promise<void> {
+        let exist: InfoGroup = await this.infoGroupRepository.findOneById(id)
         if (!exist) {
-            throw new HttpException('给定名称信息组不存在', 408)
+            throw new HttpException('给定id=' + id + '信息组不存在', 408)
         }
         //默认信息组无法更新
-        if(exist.default){
+        if (exist.default) {
             throw new HttpException('默认信息组不可更改', 408)
         }
         //更新的名称已存在也无法更新
-        if(name!==exist.name){
+        if (name !== exist.name) {
             let exist1: InfoGroup = await this.infoGroupRepository.findOne({ name })
             if (exist1) {
                 throw new HttpException('指定名称信息组已存在：' + name, 408)
@@ -73,7 +73,7 @@ export class InfoGroupService {
             throw new HttpException('给定名称id信息组不存在', 408)
         }
         //默认信息组无法删除
-        if(exist.default){
+        if (exist.default) {
             throw new HttpException('默认信息组不可删除', 408)
         }
         try {
@@ -90,7 +90,7 @@ export class InfoGroupService {
             throw new HttpException('给定名称id信息组不存在', 408)
         }
         //不能向默认信息组添加新项
-        if(group.default){
+        if (group.default) {
             throw new HttpException('默认信息组不可更改', 408)
         }
         let item: InfoItem = await this.infoItemRepository.findOneById(infoItemId)
@@ -98,7 +98,7 @@ export class InfoGroupService {
             throw new HttpException('指定信息项不存在', 409)
         }
         //默认信息项也不能添加到别的组
-        if(item.default){
+        if (item.default) {
             throw new HttpException('默认信息项不可添加', 408)
         }
         //查找是否信息项已经存在于指定信息组中
@@ -124,7 +124,7 @@ export class InfoGroupService {
             throw new HttpException('给定名称id信息组不存在', 408)
         }
         //默认信息组不能更改
-        if(group.default){
+        if (group.default) {
             throw new HttpException('默认信息组不可更改', 408)
         }
         //其他信息组不可能包含默认信息项，因为添加不进去
