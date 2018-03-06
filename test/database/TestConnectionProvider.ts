@@ -39,8 +39,8 @@ export const TestConnectionProvider = {
             ],
             logger:'simple-console',
             logging:null,
-            synchronize:true,
-            dropSchema:true
+            synchronize:false,
+            dropSchema:false
         })
     }
 }
