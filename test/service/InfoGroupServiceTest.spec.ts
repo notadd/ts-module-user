@@ -195,4 +195,81 @@ describe('FuncService', async () => {
             }
         })
     })
+
+    describe('addInfoItem', async () => {
+
+        it('should success', async () => {
+            await infoItemRepository.save({ name: 'userName', label: '用户名', default: false, description: '用户的名字', type: 'text', necessary: true, order: 1 })
+            await infoGroupRepository.save({ name: '基本信息', default: false, status: true })
+            await infoGroupService.addInfoItem(1, 1)
+            let group = await infoGroupRepository.findOneById(1, { relations: ['items'] })
+            expect(group.items).toBeDefined()
+            expect(group.items.length).toBe(1)
+            expect(group.items[0]).toEqual({ id: 1, name: 'userName', label: '用户名', default: 0, description: '用户的名字', type: 'text', necessary: 1, order: 1 })
+        })
+
+        it('should throw HttpException:给定id=1信息组不存在, 408', async () => {
+            try {
+                await infoGroupService.addInfoItem(1, 1)
+            } catch (err) {
+                expect(err.getStatus()).toBe(408)
+                expect(err.getResponse()).toBe('给定id=1信息组不存在')
+            }
+        })
+
+        it('should throw HttpException:默认信息组不可更改, 408', async () => {
+            await infoGroupRepository.save({ name: '基本信息', default: true, status: true })
+            try {
+                await infoGroupService.addInfoItem(1, 1)
+            } catch (err) {
+                expect(err.getStatus()).toBe(408)
+                expect(err.getResponse()).toBe('默认信息组不可更改')
+            }
+        })
+
+        it('should throw HttpException:指定id=1信息项不存在, 409', async () => {
+            await infoGroupRepository.save({ name: '基本信息', default: false, status: true })
+            try {
+                await infoGroupService.addInfoItem(1, 1)
+            } catch (err) {
+                expect(err.getStatus()).toBe(409)
+                expect(err.getResponse()).toBe('指定id=1信息项不存在')
+            }
+        })
+
+        it('should throw HttpException:默认信息项不可添加, 408', async () => {
+            await infoItemRepository.save({ name: 'userName', label: '用户名', default: true, description: '用户的名字', type: 'text', necessary: true, order: 1 })
+            await infoGroupRepository.save({ name: '基本信息', default: false, status: true })
+            try {
+                await infoGroupService.addInfoItem(1, 1)
+            } catch (err) {
+                expect(err.getStatus()).toBe(408)
+                expect(err.getResponse()).toBe('默认信息项不可添加')
+            }
+        })
+
+        it('should throw HttpException:指定信息项id=1已经存在于指定信息组id=1中, 410', async () => {
+            let item = { id: 1, name: 'userName', label: '用户名', default: false, description: '用户的名字', type: 'text', necessary: true, order: 1 }
+            await infoItemRepository.save(item)
+            await infoGroupRepository.save({ name: '基本信息', default: false, status: true, items: [item] })
+            try {
+                await infoGroupService.addInfoItem(1, 1)
+            } catch (err) {
+                expect(err.getStatus()).toBe(410)
+                expect(err.getResponse()).toBe('指定信息项id=1已经存在于指定信息组id=1中')
+            }
+        })
+
+        it('should throw HttpException:数据库错误Error: 添加信息项错误，401', async () => {
+            await infoItemRepository.save({ name: 'userName', label: '用户名', default: false, description: '用户的名字', type: 'text', necessary: true, order: 1 })
+            await infoGroupRepository.save({ name: '基本信息', default: false, status: true })
+            jest.spyOn(infoGroupRepository, 'save').mockImplementationOnce(async () => { throw new Error('添加信息项错误') })
+            try {
+                await infoGroupService.addInfoItem(1, 1)
+            } catch (err) {
+                expect(err.getStatus()).toBe(401)
+                expect(err.getResponse()).toBe('数据库错误Error: 添加信息项错误')
+            }
+        })
+    })
 })

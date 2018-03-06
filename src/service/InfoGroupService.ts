@@ -87,7 +87,7 @@ export class InfoGroupService {
     async addInfoItem(id: number, infoItemId: number): Promise<void> {
         let group: InfoGroup = await this.infoGroupRepository.findOneById(id, { relations: ['items'] })
         if (!group) {
-            throw new HttpException('给定名称id信息组不存在', 408)
+            throw new HttpException('给定id='+id+'信息组不存在', 408)
         }
         //不能向默认信息组添加新项
         if (group.default) {
@@ -95,7 +95,7 @@ export class InfoGroupService {
         }
         let item: InfoItem = await this.infoItemRepository.findOneById(infoItemId)
         if (!item) {
-            throw new HttpException('指定信息项不存在', 409)
+            throw new HttpException('指定id='+infoItemId+'信息项不存在', 409)
         }
         //默认信息项也不能添加到别的组
         if (item.default) {
