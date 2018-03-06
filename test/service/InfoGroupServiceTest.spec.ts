@@ -155,4 +155,44 @@ describe('FuncService', async () => {
             }
         })
     })
+
+    describe('deleteInfoGroup', async () => {
+
+        it('should success', async () => {
+            await infoGroupRepository.save({ name: '基本信息', default: false, status: true })
+            await infoGroupService.deleteInfoGroup(1)
+            let group = await infoItemRepository.findOne()
+            expect(group).toBeUndefined()
+        })
+
+        it('should throw HttpException:给定id=1信息组不存在, 408', async () => {
+            try {
+                await infoGroupService.deleteInfoGroup(1)
+            } catch (err) {
+                expect(err.getStatus()).toBe(408)
+                expect(err.getResponse()).toBe('给定id=1信息组不存在')
+            }
+        })
+
+        it('should throw HttpException:默认信息组不可删除, 408', async () => {
+            await infoGroupRepository.save({ name: '基本信息', default: true, status: true })
+            try {
+                await infoGroupService.deleteInfoGroup(1)
+            } catch (err) {
+                expect(err.getStatus()).toBe(408)
+                expect(err.getResponse()).toBe('默认信息组不可删除')
+            }
+        })
+
+        it('should throw HttpException:数据库错误Error: 删除信息组错误，401', async () => {
+            await infoGroupRepository.save({ name: '基本信息', default: false, status: true })
+            jest.spyOn(infoGroupRepository, 'remove').mockImplementationOnce(async () => { throw new Error('删除信息组错误') })
+            try {
+                await infoGroupService.deleteInfoGroup(1)
+            } catch (err) {
+                expect(err.getStatus()).toBe(401)
+                expect(err.getResponse()).toBe('数据库错误Error: 删除信息组错误')
+            }
+        })
+    })
 })

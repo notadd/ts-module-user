@@ -68,9 +68,9 @@ export class InfoGroupService {
 
     /* 删除信息组，目前由于信息组与信息项是多对多关系，删除信息组只会解除关系，不会删除信息项 */
     async deleteInfoGroup(id: number): Promise<void> {
-        let exist: InfoGroup = await this.infoGroupRepository.findOne({ name })
+        let exist: InfoGroup = await this.infoGroupRepository.findOneById(id)
         if (!exist) {
-            throw new HttpException('给定名称id信息组不存在', 408)
+            throw new HttpException('给定id=' + id + '信息组不存在', 408)
         }
         //默认信息组无法删除
         if (exist.default) {
