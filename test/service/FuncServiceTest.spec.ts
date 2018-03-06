@@ -25,28 +25,28 @@ describe('FuncService', async () => {
         moduleRepository = testModule.get('UserPMModule.ModuleRepository')
         permissionRepository = testModule.get('UserPMModule.PermissionRepository')
     })
-
+    /* 在每个it运行之前都会运行，而不是在这一级包含的每个describe运行之前 */
     beforeEach(async () => {
         let connection: Connection = testModule.get('UserPMModule.Connection')
-        if (connection&&!connection.isConnected) {
+        if (connection && !connection.isConnected) {
             await connection.connect()
         }
     })
 
     afterEach(async () => {
         let connection: Connection = testModule.get('UserPMModule.Connection')
-        if (connection&&connection.isConnected) {
+        if (connection && connection.isConnected) {
             await connection.close()
         }
     })
 
     afterAll(async () => {
         let connection: Connection = testModule.get('UserPMModule.Connection')
-        if (connection&&connection.isConnected) {
+        if (connection && connection.isConnected) {
             await connection.close()
         }
     })
-
+    /* createFunc方法的一种正常情况，以及三种异常情况 */
     describe('createFunc', async () => {
 
         it('should equal', async () => {
@@ -61,8 +61,6 @@ describe('FuncService', async () => {
         })
 
         it('should throw HttpException: 指定模块token=aaaa不存在,415', async () => {
-            let moduleRepository = { findOneById: async (moduleToken: string): Promise<any> => Promise.resolve(null) }
-            let funcService: FuncService = new FuncService({} as any, moduleRepository as any, {} as any)
             try {
                 await funcService.createFunc('aaaa', '管理文章')
             } catch (err) {
@@ -72,9 +70,8 @@ describe('FuncService', async () => {
         })
 
         it('should throw HttpException: 指定模块token=aaaa下，指定名称name=bbbb功能已经存在, 416', async () => {
-            let funcRepository = { findOne: async (func: any): Promise<any> => Promise.resolve({ id: 1, name: 'bbbb' }) }
-            let moduleRepository = { findOneById: async (moduleToken: string): Promise<any> => Promise.resolve({ token: 'aaaa' }) }
-            let funcService: FuncService = new FuncService(funcRepository as any, moduleRepository as any, {} as any)
+            await moduleRepository.save({ token: 'aaaa' })
+            await funcRepository.save({ name: 'bbbb', moduleToken: 'aaaa' })
             try {
                 await funcService.createFunc('aaaa', 'bbbb')
             } catch (err) {
@@ -84,13 +81,8 @@ describe('FuncService', async () => {
         })
 
         it('should throw HttpException: 数据库错误Error: 保存功能失败, 401', async () => {
-            let funcRepository = {
-                create: (func: any): any => func,
-                findOne: async (func: any): Promise<any> => Promise.resolve(null),
-                save: async (func: any): Promise<void> => { throw new Error('保存功能失败') }
-            }
-            let moduleRepository = { findOneById: async (moduleToken: string): Promise<any> => Promise.resolve({ token: 'aaaa' }) }
-            let funcService: FuncService = new FuncService(funcRepository as any, moduleRepository as any, {} as any)
+            await moduleRepository.save({ token: 'aaaa' })
+            jest.spyOn(funcRepository, 'save').mockImplementationOnce(() => { throw new Error('保存功能失败') })
             try {
                 await funcService.createFunc('aaaa', 'bbbb')
             } catch (err) {
@@ -104,9 +96,9 @@ describe('FuncService', async () => {
 
         it('should equal', async () => {
             await moduleRepository.save({ token: 'TestModule' })
-            await funcService.createFunc('TestModule', '文章管理')
+            await funcRepository.save({ name: '文章管理', moduleToken: 'TestModule' })
             let func1: Func = await funcRepository.findOneById(1)
-            await funcService.updateFunc(1,'论坛管理')
+            await funcService.updateFunc(1, '论坛管理')
             let func2: Func = await funcRepository.findOneById(1)
             expect(func1.id).toBe(1)
             expect(func1.name).toBe('文章管理')
@@ -116,14 +108,23 @@ describe('FuncService', async () => {
             expect(func2.moduleToken).toBe('TestModule')
         })
 
-        it('hould throw HttpException: 指定id=1功能不存在, 417', async () => {
-            let funcRepository = { findOneById: async (id: number, name: string): Promise<any> => Promise.resolve(null) }
-            let funcService: FuncService = new FuncService(funcRepository as any, {} as any, {} as any)
+        it('should throw HttpException: 指定id=1功能不存在, 417', async () => {
             try {
                 await funcService.updateFunc(1, '管理文章')
             } catch (err) {
                 expect(err.getStatus()).toBe(417)
                 expect(err.getResponse()).toBe('指定id=1功能不存在')
+            }
+        })
+
+        it('should throw HttpException: 指定模块token=aaaa下，指定名称name=论坛管理功能已经存在, 416', async () => {
+            await moduleRepository.save({token:'aaaa'})
+            await funcRepository.save([{name:'管理文章',moduleToken:'aaaa'},{name:'论坛管理',moduleToken:'aaaa'}])
+            try {
+                await funcService.updateFunc(1, '论坛管理')
+            } catch (err) {
+                expect(err.getStatus()).toBe(416)
+                expect(err.getResponse()).toBe('指定模块token=aaaa下，指定名称name=论坛管理功能已经存在')
             }
         })
     })
