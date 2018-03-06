@@ -1,9 +1,9 @@
 import { TestRepositorysProvider } from '../database/TestRepositorysProvider';
 import { TestConnectionProvider } from '../database/TestConnectionProvider';
-import { Repository, Connection, QueryRunner, Table } from 'typeorm';
 import { TestingModule } from '@nestjs/testing/testing-module';
 import { FuncService } from '../../src/service/FuncService';
 import { Permission } from '../../src/model/Permission';
+import { Repository, Connection } from 'typeorm';
 import { Module } from '../../src/model/Module';
 import { Func } from '../../src/model/Func';
 import { Test } from '@nestjs/testing';
@@ -16,7 +16,7 @@ describe('FuncService', async () => {
     let funcRepository: Repository<Func>
     let moduleRepository: Repository<Module>
     let permissionRepository: Repository<Permission>
-    let tables = ['permission','function','module']
+    let tables = ['permission', 'function', 'module']
 
     beforeAll(async () => {
         testModule = await Test.createTestingModule({
@@ -32,14 +32,20 @@ describe('FuncService', async () => {
     /* 在每个it运行之前都会运行，而不是在这一级包含的每个describe运行之前 */
     beforeEach(async () => {
         await connection.query('delete from function_permission')
-        for(let i=0;i<tables.length;i++){
-            await connection.query('delete from '+tables[i])
-            await connection.query('alter table '+tables[i]+' auto_increment = 1')
+        for (let i = 0; i < tables.length; i++) {
+            await connection.query('delete from ' + tables[i])
+            await connection.query('alter table ' + tables[i] + ' auto_increment = 1')
         }
         let end = +new Date()
     })
 
     afterAll(async () => {
+        await connection.query('delete from function_permission')
+        for (let i = 0; i < tables.length; i++) {
+            await connection.query('delete from ' + tables[i])
+            await connection.query('alter table ' + tables[i] + ' auto_increment = 1')
+        }
+        let end = +new Date()
         if (connection && connection.isConnected) {
             await connection.close()
         }
@@ -90,7 +96,7 @@ describe('FuncService', async () => {
             }
         })
     })
-    
+
     /* 一种正常情况与三种异常情况 */
     describe('updateFunc', async () => {
 
