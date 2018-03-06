@@ -24,14 +24,17 @@ describe('FuncService', async () => {
         funcRepository = testModule.get('UserPMModule.FuncRepository')
         moduleRepository = testModule.get('UserPMModule.ModuleRepository')
         permissionRepository = testModule.get('UserPMModule.PermissionRepository')
-    })
+    },10000)
     /* 在每个it运行之前都会运行，而不是在这一级包含的每个describe运行之前 */
     beforeEach(async () => {
         let connection: Connection = testModule.get('UserPMModule.Connection')
         if (connection && !connection.isConnected) {
+            let start = +new Date()
             await connection.connect()
+            let end = +new Date()
+            console.log('连接数据库花费时间'+(end-start)+'毫秒')
         }
-    })
+    },10000)
 
     afterEach(async () => {
         let connection: Connection = testModule.get('UserPMModule.Connection')
@@ -82,7 +85,7 @@ describe('FuncService', async () => {
 
         it('should throw HttpException: 数据库错误Error: 保存功能失败, 401', async () => {
             await moduleRepository.save({ token: 'aaaa' })
-            jest.spyOn(funcRepository, 'save').mockImplementationOnce(() => { throw new Error('保存功能失败') })
+            jest.spyOn(funcRepository, 'save').mockImplementationOnce(async () => { throw new Error('保存功能失败') })
             try {
                 await funcService.createFunc('aaaa', 'bbbb')
             } catch (err) {
@@ -118,13 +121,25 @@ describe('FuncService', async () => {
         })
 
         it('should throw HttpException: 指定模块token=aaaa下，指定名称name=论坛管理功能已经存在, 416', async () => {
-            await moduleRepository.save({token:'aaaa'})
-            await funcRepository.save([{name:'管理文章',moduleToken:'aaaa'},{name:'论坛管理',moduleToken:'aaaa'}])
+            await moduleRepository.save({ token: 'aaaa' })
+            await funcRepository.save([{ name: '管理文章', moduleToken: 'aaaa' }, { name: '论坛管理', moduleToken: 'aaaa' }])
             try {
                 await funcService.updateFunc(1, '论坛管理')
             } catch (err) {
                 expect(err.getStatus()).toBe(416)
                 expect(err.getResponse()).toBe('指定模块token=aaaa下，指定名称name=论坛管理功能已经存在')
+            }
+        })
+
+        it('should throw HttpException: 数据库错误Error: 更新功能失败, 401', async () => {
+            await moduleRepository.save({ token: 'aaaa' })
+            await funcRepository.save({ name: '管理文章', moduleToken: 'aaaa' })
+            jest.spyOn(funcRepository, 'save').mockImplementationOnce(async () => { throw new Error('更新功能失败') })
+            try {
+                await funcService.updateFunc(1, '论坛管理')
+            } catch (err) {
+                expect(err.getStatus()).toBe(401)
+                expect(err.getResponse()).toBe('数据库错误Error: 更新功能失败')
             }
         })
     })
