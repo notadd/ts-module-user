@@ -24,7 +24,7 @@ describe('FuncService', async () => {
         funcRepository = testModule.get('UserPMModule.FuncRepository')
         moduleRepository = testModule.get('UserPMModule.ModuleRepository')
         permissionRepository = testModule.get('UserPMModule.PermissionRepository')
-    },10000)
+    }, 10000)
     /* 在每个it运行之前都会运行，而不是在这一级包含的每个describe运行之前 */
     beforeEach(async () => {
         let connection: Connection = testModule.get('UserPMModule.Connection')
@@ -32,9 +32,9 @@ describe('FuncService', async () => {
             let start = +new Date()
             await connection.connect()
             let end = +new Date()
-            console.log('连接数据库花费时间'+(end-start)+'毫秒')
+            console.log('连接数据库花费时间' + (end - start) + '毫秒')
         }
-    },10000)
+    }, 10000)
 
     afterEach(async () => {
         let connection: Connection = testModule.get('UserPMModule.Connection')
@@ -94,7 +94,7 @@ describe('FuncService', async () => {
             }
         })
     })
-
+    /* 一种正常情况与三种异常情况 */
     describe('updateFunc', async () => {
 
         it('should equal', async () => {
@@ -142,5 +142,38 @@ describe('FuncService', async () => {
                 expect(err.getResponse()).toBe('数据库错误Error: 更新功能失败')
             }
         })
+    })
+
+    describe('deleteFunc', async () => {
+
+        it('should success ', async () => {
+            await moduleRepository.save({ token: 'aaaa' })
+            await funcRepository.save({ name: '文章管理', moduleToken: 'aaaa' })
+            await funcService.deleteFunc(1)
+            let func = await funcRepository.findOne()
+            expect(func).toBeUndefined()
+        })
+
+        it('should throw HttpException:指定id=1功能不存在, 417', async () => {
+            try {
+                await funcService.deleteFunc(1)
+            } catch (err) {
+                expect(err.getStatus()).toBe(417)
+                expect(err.getResponse()).toBe('指定id=1功能不存在')
+            }
+        })
+
+        it('should throw HttpException:数据库错误Error: 删除功能失败, 401', async () => {
+            await moduleRepository.save({ token: 'aaaa' })
+            await funcRepository.save({ name: '文章管理', moduleToken: 'aaaa' })
+            jest.spyOn(funcRepository, 'remove').mockImplementationOnce(async () => { throw new Error('删除功能失败') })
+            try {
+                await funcService.deleteFunc(1)
+            } catch (err) {
+                expect(err.getStatus()).toBe(401)
+                expect(err.getResponse()).toBe('数据库错误Error: 删除功能失败')
+            }
+        })
+
     })
 })
