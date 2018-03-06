@@ -28,14 +28,21 @@ describe('FuncService', async () => {
 
     beforeEach(async () => {
         let connection: Connection = testModule.get('UserPMModule.Connection')
-        if (!connection.isConnected) {
+        if (connection&&!connection.isConnected) {
             await connection.connect()
         }
     })
 
     afterEach(async () => {
         let connection: Connection = testModule.get('UserPMModule.Connection')
-        if (connection.isConnected) {
+        if (connection&&connection.isConnected) {
+            await connection.close()
+        }
+    })
+
+    afterAll(async () => {
+        let connection: Connection = testModule.get('UserPMModule.Connection')
+        if (connection&&connection.isConnected) {
             await connection.close()
         }
     })

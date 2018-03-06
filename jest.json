@@ -5,7 +5,7 @@
     },
     "testMatch": ["/home/bc-040/桌面/UserPM/test/**/*.spec.ts"],
     "testPathIgnorePatterns":["/home/bc-040/桌面/UserPM/src"],
-    "collectCoverage":true,
+    "collectCoverage":false,
     "collectCoverageFrom" : ["src/**/*.ts"],
     "coverageReporters": ["json"]
   }
