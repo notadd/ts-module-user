@@ -36,7 +36,6 @@ describe('FuncService', async () => {
             await connection.query('delete from ' + tables[i])
             await connection.query('alter table ' + tables[i] + ' auto_increment = 1')
         }
-        let end = +new Date()
     })
 
     afterAll(async () => {

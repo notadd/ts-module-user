@@ -11,7 +11,7 @@ describe('FuncService', async () => {
 
     let testModule: TestingModule
     let connection: Connection
-    let infoGroupService: InfoGroupService    
+    let infoGroupService: InfoGroupService
     let infoItemRepository: Repository<InfoItem>
     let infoGroupRepository: Repository<InfoGroup>
     let tables = ['info_item', 'info_group']
@@ -28,13 +28,11 @@ describe('FuncService', async () => {
 
     /* 在每个it运行之前都会运行，而不是在这一级包含的每个describe运行之前 */
     beforeEach(async () => {
-        console.log('文件一')
         await connection.query('delete from infogroup_infoitem')
         for (let i = 0; i < tables.length; i++) {
             await connection.query('delete from ' + tables[i])
             await connection.query('alter table ' + tables[i] + ' auto_increment = 1')
         }
-        let end = +new Date()
     })
 
     afterAll(async () => {
@@ -42,28 +40,22 @@ describe('FuncService', async () => {
         for (let i = 0; i < tables.length; i++) {
             await connection.query('delete from ' + tables[i])
             await connection.query('alter table ' + tables[i] + ' auto_increment = 1')
-        } 
+        }
         if (connection && connection.isConnected) {
             await connection.close()
         }
     })
 
-    it('1', async () => {
+    describe('getAll', async () => {
 
-    })
-
-    it('2', async () => {
-
-    })
-
-
-    it('3', async () => {
-
-    })
-
-
-    it('4', async () => {
-
+        it('should success', async () => {
+            await infoGroupRepository.save([{ name: '基本信息', default: true, status: true }, { name: '认证信息', default: true, status: true }])
+            let groups: InfoGroup[] = await infoGroupService.getAll()
+            expect(groups).toBeDefined()
+            expect(groups.length).toBe(2)
+            expect(groups[0]).toEqual({ id: 1, name: '基本信息', default: 1, status: 1 })
+            expect(groups[1]).toEqual({ id: 2, name: '认证信息', default: 1, status: 1 })
+        })
     })
 
 
