@@ -6,9 +6,9 @@
   "scripts": {
     "start": "node index.js",
     "start:watch": "nodemon",
-    "test": "jest --config=jest.json",
-    "test:watch": "jest --watch --config=jest.json",
-    "test:coverage": "jest --config=jest.json --coverage "
+    "test": "jest --config=jest.json --runInBand --forceExit",
+    "test:watch": "jest --watch --config=jest.json --runInBand --forceExit",
+    "test:coverage": "jest --config=jest.json --coverage --runInBand --forceExit"
   },
   "repository": {
     "type": "git",

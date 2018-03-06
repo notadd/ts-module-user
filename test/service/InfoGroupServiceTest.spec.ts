@@ -4,10 +4,10 @@ import { InfoGroupService } from '../../src/service/InfoGroupService';
 import { TestingModule } from '@nestjs/testing/testing-module';
 import { InfoGroup } from '../../src/model/InfoGroup';
 import { InfoItem } from '../../src/model/InfoItem';
-import { Repository, Connection } from 'typeorm';
+import { Repository, Connection,getConnection } from 'typeorm';
 import { Test } from '@nestjs/testing';
 
-describe('FuncService', async () => {
+describe('InfoGroupService', async () => {
 
     let testModule: TestingModule
     let connection: Connection
@@ -17,6 +17,7 @@ describe('FuncService', async () => {
     let tables = ['info_item', 'info_group']
 
     beforeAll(async () => {
+        console.log('信息组测试开始'+(+new Date()))
         testModule = await Test.createTestingModule({
             components: [TestConnectionProvider, ...TestRepositorysProvider, InfoGroupService]
         }).compile()
@@ -28,11 +29,13 @@ describe('FuncService', async () => {
 
     /* 在每个it运行之前都会运行，而不是在这一级包含的每个describe运行之前 */
     beforeEach(async () => {
+        console.log('清除信息组'+(+new Date()))
         await connection.query('delete from infogroup_infoitem')
         for (let i = 0; i < tables.length; i++) {
             await connection.query('delete from ' + tables[i])
             await connection.query('alter table ' + tables[i] + ' auto_increment = 1')
         }
+        console.log('清除信息组成功'+(+new Date()))
     })
 
     afterAll(async () => {
