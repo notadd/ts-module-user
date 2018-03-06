@@ -58,5 +58,23 @@ describe('FuncService', async () => {
         })
     })
 
+    describe('getItems', async () => {
+
+        it('should success', async () => {
+            let name = { name: 'userName', label: '用户名', default: 1, description: '用户的名字', type: 'text', necessary: 1, order: 1 }
+            let age = { name: 'age', label: '年龄', default: 1, description: '用户的年龄', type: 'number', necessary: 1, order: 2 }
+            let sign = { name: 'sign', label: '签名', default: 1, description: '用户的签名', type: 'textarea', necessary: 1, order: 3 }
+            await infoGroupRepository.save({ name: '基本信息', default: true, status: true, items: [name, age, sign] })
+            let items = await infoGroupService.getInfoItems(1)
+            expect(items).toBeDefined()
+            expect(items.length).toBe(3)
+            expect(items[0].id).toBe(1)
+            expect(items[1].id).toBe(2)
+            expect(items[2].id).toBe(3)
+            expect(items[0]).toEqual(name)
+            expect(items[1]).toEqual(age)
+            expect(items[2]).toEqual(sign)
+        })
+    })
 
 })
