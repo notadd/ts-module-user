@@ -122,4 +122,48 @@ describe('FuncService', async () => {
 
     })
 
+    describe('deleteInfoItem', async () => {
+
+        it('should success', async () => {
+            await infoItemRepository.save({ name: 'userName', label: '用户名', description: '用户的名称', type: 'text', necessary: true, order: 1, default: false })
+            let items1 = await infoItemRepository.find()
+            await infoItemService.deleteInfoItem(1)
+            let items2 = await infoItemRepository.find()
+            expect(items1).toBeDefined()
+            expect(items1.length).toBe(1)
+            expect(items2).toBeDefined()
+            expect(items2.length).toBe(0)
+        })
+
+        it('should throw HttpException:指定id=1信息项不存在, 413', async () => {
+            try {
+                await infoItemService.deleteInfoItem(1)
+            } catch (err) {
+                expect(err.getStatus()).toBe(413)
+                expect(err.getResponse()).toBe('指定id=1信息项不存在')
+            }
+        })
+
+        it('should throw HttpException:默认信息项不允许删除, 413', async () => {
+            await infoItemRepository.save({ name: 'userName', label: '用户名', description: '用户的名称', type: 'text', necessary: true, order: 1, default: true })
+            try {
+                await infoItemService.deleteInfoItem(1)
+            } catch (err) {
+                expect(err.getStatus()).toBe(413)
+                expect(err.getResponse()).toBe('默认信息项不允许删除')
+            }
+        })
+
+        it('should throw HttpException:数据库错误Error: 删除信息项失败，401', async () => {
+            await infoItemRepository.save({ name: 'userName', label: '用户名', description: '用户的名称', type: 'text', necessary: true, order: 1, default: false })
+            jest.spyOn(infoItemRepository, 'remove').mockImplementationOnce(async () => { throw new Error('删除信息项失败') })
+            try {
+                await infoItemService.deleteInfoItem(1)
+            } catch (err) {
+                expect(err.getStatus()).toBe(401)
+                expect(err.getResponse()).toBe('数据库错误Error: 删除信息项失败')
+            }
+        })
+    })
+
 })

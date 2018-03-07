@@ -18,7 +18,7 @@ export class InfoItemService {
         if (exist) {
             throw new HttpException('指定名称信息项已存在：' + name, 412)
         }
-        let item: InfoItem = this.infoItemRepository.create({ name, label, default:false,description, type, necessary, order })
+        let item: InfoItem = this.infoItemRepository.create({ name, label, default: false, description, type, necessary, order })
         try {
             await this.infoItemRepository.save(item)
         } catch (err) {
@@ -30,16 +30,16 @@ export class InfoItemService {
     async updateInfoItem(id: number, name: string, label: string, description: string, type: string, necessary: boolean, order: number): Promise<void> {
         let exist: InfoItem = await this.infoItemRepository.findOneById(id)
         if (!exist) {
-            throw new HttpException('指定id='+id+'信息项不存在', 413)
+            throw new HttpException('指定id=' + id + '信息项不存在', 413)
         }
         //默认信息项无法更新
-        if(exist.default){
+        if (exist.default) {
             throw new HttpException('默认信息项不允许更新', 413)
         }
-        if(name!==exist.name){
+        if (name !== exist.name) {
             let exist1: InfoItem = await this.infoItemRepository.findOne({ name })
             if (exist1) {
-                throw new HttpException('指定name='+name+'信息项已存在', 412)
+                throw new HttpException('指定name=' + name + '信息项已存在', 412)
             }
         }
         exist.name = name
@@ -59,10 +59,10 @@ export class InfoItemService {
     async deleteInfoItem(id: number): Promise<void> {
         let exist: InfoItem = await this.infoItemRepository.findOneById(id)
         if (!exist) {
-            throw new HttpException('指定id信息项不存在：' + name, 413)
+            throw new HttpException('指定id=' + id + '信息项不存在', 413)
         }
         //默认信息项无法删除
-        if(exist.default){
+        if (exist.default) {
             throw new HttpException('默认信息项不允许删除', 413)
         }
         try {
@@ -87,7 +87,7 @@ export class InfoItemService {
                 throw new HttpException('指定id=' + id + '的信息项不存在', 414)
             }
             //默认信息项无法删除
-            if(find.default){
+            if (find.default) {
                 throw new HttpException('默认信息项不允许删除', 413)
             }
         })
