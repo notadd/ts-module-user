@@ -3,7 +3,7 @@ import { TestConnectionProvider } from '../database/TestConnectionProvider';
 import { TestingModule } from '@nestjs/testing/testing-module';
 import { FuncService } from '../../src/service/FuncService';
 import { Permission } from '../../src/model/Permission';
-import { Repository, Connection ,getConnection} from 'typeorm';
+import { Repository, Connection } from 'typeorm';
 import { Module } from '../../src/model/Module';
 import { Func } from '../../src/model/Func';
 import { Test } from '@nestjs/testing';
