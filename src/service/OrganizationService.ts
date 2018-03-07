@@ -183,19 +183,16 @@ export class OrganizationService {
     async removeUsersFromOrganization(id: number, userIds: number[]): Promise<void> {
         let o: Organization = await this.organizationRepository.findOneById(id, { relations: ['users'] })
         if (!o) {
-            throw new HttpException('指定组织不存在', 402)
+            throw new HttpException('指定id='+id+'组织不存在', 402)
         }
         let users: User[] = await this.userRepository.findByIds(userIds)
-        if (!users || users.length === 0) {
-            throw new HttpException('指定用户不存在', 402)
-        }
         //从组织的用户中循环移除指定用户，要求用户存在于数据库中，且用户必须已经存在于指定组织中
         userIds.forEach(userId => {
             let find: User = users.find(user => {
                 return user.id === userId
             })
             if (!find) {
-                throw new HttpException('指定用户id=' + userId + '不存在于数据库中', 402)
+                throw new HttpException('指定id=' + userId + '用户不存在', 402)
             }
             let index = o.users.findIndex(user => {
                 return user.id === userId
