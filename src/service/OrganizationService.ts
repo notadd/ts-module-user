@@ -105,11 +105,11 @@ export class OrganizationService {
     async addUserToOrganization(id: number, userId: number): Promise<void> {
         let o: Organization = await this.organizationRepository.findOneById(id, { relations: ['users'] })
         if (!o) {
-            throw new HttpException('指定组织不存在', 402)
+            throw new HttpException('指定id='+id+'组织不存在', 402)
         }
         let user: User = await this.userRepository.findOneById(userId)
         if (!user) {
-            throw new HttpException('指定用户不存在', 402)
+            throw new HttpException('指定id='+userId+'用户不存在', 402)
         }
         let exist: User = o.users.find(user => {
             return user.id === userId
