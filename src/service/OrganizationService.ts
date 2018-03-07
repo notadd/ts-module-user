@@ -128,19 +128,16 @@ export class OrganizationService {
     async addUsersToOrganization(id: number, userIds: number[]): Promise<void> {
         let o: Organization = await this.organizationRepository.findOneById(id, { relations: ['users'] })
         if (!o) {
-            throw new HttpException('指定组织不存在', 402)
+            throw new HttpException('指定id='+id+'组织不存在', 402)
         }
         let users: User[] = await this.userRepository.findByIds(userIds)
-        if (!users || users.length === 0) {
-            throw new HttpException('指定用户不存在', 402)
-        }
         //验证是否所有需要的用户都被查询出来
         userIds.forEach(id => {
             let find: User = users.find(user => {
                 return user.id === id
             })
             if (!find) {
-                throw new HttpException('指定用户id=' + id + '不存在', 402)
+                throw new HttpException('指定id=' + id + '用户不存在', 402)
             }
         })
         //验证是否有用户已存在于指定组织下

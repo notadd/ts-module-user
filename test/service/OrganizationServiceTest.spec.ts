@@ -330,4 +330,60 @@ describe('FuncService', async () => {
         })
     })
 
+    describe('addUsersToOrganization',async ()=>{
+
+        it('should success',async ()=>{
+            await organizationRepository.save({ name: '集团总公司', parentId: null })
+            await userRepository.save({userName:'老总',password:'123456',salt:'aaaaa',status:true,recycle:false})
+            await userRepository.save({userName:'小米',password:'123456',salt:'bbbbb',status:true,recycle:false})
+            await organizationService.addUsersToOrganization(1,[1,2])
+            let o = await organizationRepository.findOneById(1,{relations:['users']})
+            expect(o.users).toBeDefined()
+            expect(o.users.length).toBe(2)
+            expect(o.users[0]).toEqual({id:1,userName:'老总',password:'123456',salt:'aaaaa',status:1,recycle:0})
+            expect(o.users[1]).toEqual({id:2,userName:'小米',password:'123456',salt:'bbbbb',status:1,recycle:0})            
+        })
+
+        it('should throw HttpException:指定id=1组织不存在, 402',async ()=>{
+            try {
+                await organizationService.addUsersToOrganization(1,[1,2])
+            } catch (err) {
+                expect(err.getStatus()).toBe(402)
+                expect(err.getResponse()).toBe('指定id=1组织不存在')
+            }
+        })
+
+        it('should throw HttpException:指定id=1用户不存在, 402',async ()=>{
+            await organizationRepository.save({ name: '集团总公司', parentId: null })            
+            try {
+                await organizationService.addUsersToOrganization(1,[1,2])
+            } catch (err) {
+                expect(err.getStatus()).toBe(402)
+                expect(err.getResponse()).toBe('指定id=1用户不存在')
+            }
+        })
+
+        it('should throw HttpException:指定用户id=1已存在于指定组织id=1中, 402',async ()=>{
+            await organizationRepository.save({ name: '集团总公司', parentId: null ,users:[{userName:'老总',password:'123456',salt:'aaaaa',status:true,recycle:false}]})            
+            try {
+                await organizationService.addUsersToOrganization(1,[1])
+            } catch (err) {
+                expect(err.getStatus()).toBe(402)
+                expect(err.getResponse()).toBe('指定用户id=1已存在于指定组织id=1中')
+            }
+        })
+
+        it('should throw HttpException:数据库错误Error: 添加用户失败，401', async () => {
+            await organizationRepository.save({ name: '集团总公司', parentId: null })
+            await userRepository.save({userName:'老总',password:'123456',salt:'aaaaa',status:true,recycle:false})
+            jest.spyOn(organizationRepository, 'save').mockImplementationOnce(async () => { throw new Error('添加用户失败') })
+            try {
+                await organizationService.addUsersToOrganization(1,[1])
+            } catch (err) {
+                expect(err.getStatus()).toBe(401)
+                expect(err.getResponse()).toBe('数据库错误Error: 添加用户失败')
+            }
+        })
+    })
+
 })
