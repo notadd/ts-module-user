@@ -94,7 +94,7 @@ export class OrganizationService {
     async getUsersInOrganization(id: number): Promise<User[]> {
         let o: Organization = await this.organizationRepository.findOneById(id, { relations: ['users'] })
         if (!o) {
-            throw new HttpException('指定父组织不存在', 402)
+            throw new HttpException('指定id='+id+'父组织不存在', 402)
         }
         //只获取不再回收站中的用户
         return o.users.filter(user => {

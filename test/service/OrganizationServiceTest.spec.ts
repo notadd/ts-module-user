@@ -248,5 +248,32 @@ describe('FuncService', async () => {
         })
     })
 
+    describe('getUsersInOrganization',async ()=>{
+
+        it('should success',async ()=>{
+            await organizationRepository.save({
+                name:'集团总公司',
+                parentId:null,
+                users:[
+                    {userName:'老总',password:'123456',salt:'aaaaa',status:true,recycle:false},
+                    {userName:'小米',password:'123456',salt:'bbbbb',status:true,recycle:false}
+                ]})
+            let users = await organizationService.getUsersInOrganization(1)
+            expect(users).toBeDefined()
+            expect(users.length).toBe(2)
+            expect(users[0]).toEqual({id:1,userName:'老总',password:'123456',salt:'aaaaa',status:1,recycle:0})
+            expect(users[1]).toEqual({id:2,userName:'小米',password:'123456',salt:'bbbbb',status:1,recycle:0})            
+        })
+
+        it('should throw HttpException:指定id=1父组织不存在, 402',async ()=>{
+            try {
+                await organizationService.getUsersInOrganization(1)
+            } catch (err) {
+                expect(err.getStatus()).toBe(402)
+                expect(err.getResponse()).toBe('指定id=1父组织不存在')
+            }
+        })
+       
+    })
 
 })
