@@ -146,12 +146,70 @@ describe('FuncService', async () => {
 
         it('should throw HttpException:数据库错误Error: 创建组织失败，401', async () => {
             await organizationRepository.save({ name: '集团总公司', parentId: null })
-            jest.spyOn(organizationRepository,'save').mockImplementationOnce(async ()=>{throw new Error('创建组织失败')})
+            jest.spyOn(organizationRepository, 'save').mockImplementationOnce(async () => { throw new Error('创建组织失败') })
             try {
                 await organizationService.createOrganization('人力资源部', 1)
             } catch (err) {
                 expect(err.getStatus()).toBe(401)
                 expect(err.getResponse()).toBe('数据库错误Error: 创建组织失败')
+            }
+        })
+    })
+
+    describe('updateOrganization', async () => {
+
+        it('should success', async () => {
+            await organizationRepository.save({ name: '第一集团公司', parentId: null })
+            await organizationRepository.save({ name: '第二集团公司', parentId: null })
+            await organizationRepository.save({ name: '跑得快公司', parentId: 1 })
+            let o1 = await organizationRepository.findOneById(3)
+            await organizationService.updateOrganization(3, '跑得真快公司', 2)
+            let o2 = await organizationRepository.findOneById(3)
+            expect(o1).toEqual({ id: 3, name: '跑得快公司', parentId: 1 })
+            expect(o2).toEqual({ id: 3, name: '跑得真快公司', parentId: 2 })
+        })
+
+        it('should throw HttpException:指定id=2组织不存在, 404', async () => {
+            await organizationRepository.save({ name: '第一集团公司', parentId: null })
+            try {
+                await organizationService.updateOrganization(2, '跑得真快公司', 1)
+            } catch (err) {
+                expect(err.getStatus()).toBe(404)
+                expect(err.getResponse()).toBe('指定id=2组织不存在')
+            }
+        })
+
+        it('should throw HttpException:指定name=跑得真快公司组织已存在，404', async () => {
+            await organizationRepository.save({ name: '第一集团公司', parentId: null })
+            await organizationRepository.save({ name: '跑得快公司', parentId: 1 })
+            await organizationRepository.save({ name: '跑得真快公司', parentId: 1 })
+            try {
+                await organizationService.updateOrganization(2, '跑得真快公司', 1)
+            } catch (err) {
+                expect(err.getStatus()).toBe(404)
+                expect(err.getResponse()).toBe('指定name=跑得真快公司组织已存在')
+            }
+        })
+
+        it('should throw HttpException;指定父组织id=3不存在, 402', async () => {
+            await organizationRepository.save({ name: '第一集团公司', parentId: null })
+            await organizationRepository.save({ name: '跑得快公司', parentId: 1 })
+            try {
+                await organizationService.updateOrganization(2, '跑得真快公司', 3)
+            } catch (err) {
+                expect(err.getStatus()).toBe(402)
+                expect(err.getResponse()).toBe('指定父组织id=3不存在')
+            }
+        })
+
+        it('should throw HttpException:数据库错误Error: 更新组织失败，401', async () => {
+            await organizationRepository.save({ name: '集团总公司', parentId: null })
+            jest.spyOn(organizationRepository, 'save').mockImplementationOnce(async () => { throw new Error('更新组织失败') })
+            try {
+                await organizationService.updateOrganization(1,'人力资源部', null)
+            } catch (err) {
+                expect(err.getStatus()).toBe(401)
+                expect(err.getResponse()).toBe('数据库错误Error: 更新组织失败')
             }
         })
     })

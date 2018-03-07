@@ -47,16 +47,22 @@ export class OrganizationService {
     }
 
     async updateOrganization(id: number, name: string, parentId: number): Promise<void> {
+        let exist: Organization = await this.organizationRepository.findOneById(id)
+        if (!exist) {
+            throw new HttpException('指定id='+id+'组织不存在', 404)
+        }
+        if(name!==exist.name){
+            let exist: Organization = await this.organizationRepository.findOne({name})
+            if (exist) {
+                throw new HttpException('指定name='+name+'组织已存在', 404)
+            }
+        }
         let parent: Organization = null
         if (parentId !== undefined && parentId !== null) {
             parent = await this.organizationRepository.findOneById(parentId)
             if (!parent) {
-                throw new HttpException('指定父组织不存在', 402)
+                throw new HttpException('指定父组织id='+parentId+'不存在', 402)
             }
-        }
-        let exist: Organization = await this.organizationRepository.findOneById(id)
-        if (!exist) {
-            throw new HttpException('指定id组织不存在', 404)
         }
         try {
             //parent必须为null才有效，如果为undefined则不改动
