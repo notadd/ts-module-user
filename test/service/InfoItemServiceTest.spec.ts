@@ -1,9 +1,9 @@
 import { TestRepositorysProvider } from '../database/TestRepositorysProvider';
 import { TestConnectionProvider } from '../database/TestConnectionProvider';
 import { InfoItemService } from '../../src/service/InfoItemService';
+import { Repository, Connection, getConnection } from 'typeorm';
 import { TestingModule } from '@nestjs/testing/testing-module';
 import { InfoItem } from '../../src/model/InfoItem';
-import { Repository, Connection, getConnection } from 'typeorm';
 import { Test } from '@nestjs/testing';
 
 describe('FuncService', async () => {
@@ -25,13 +25,11 @@ describe('FuncService', async () => {
 
     /* 在每个it运行之前都会运行，而不是在这一级包含的每个describe运行之前 */
     beforeEach(async () => {
-        await connection.query('delete from infogroup_infoitem')
         await connection.query('delete from ' + tables[0])
         await connection.query('alter table ' + tables[0] + ' auto_increment = 1')
     })
 
     afterAll(async () => {
-        await connection.query('delete from infogroup_infoitem')
         await connection.query('delete from ' + tables[0])
         await connection.query('alter table ' + tables[0] + ' auto_increment = 1')
         if (connection && connection.isConnected) {

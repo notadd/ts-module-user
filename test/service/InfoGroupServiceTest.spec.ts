@@ -36,7 +36,7 @@ describe('InfoGroupService', async () => {
     })
 
     afterAll(async () => {
-        await connection.query('delete from function_permission')
+        await connection.query('delete from infogroup_infoitem')
         for (let i = 0; i < tables.length; i++) {
             await connection.query('delete from ' + tables[i])
             await connection.query('alter table ' + tables[i] + ' auto_increment = 1')
