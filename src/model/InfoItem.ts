@@ -28,8 +28,7 @@ export class InfoItem {
     @Column({
         name: 'label',
         type: 'varchar',
-        length: '20',
-        unique: true
+        length: '20'
     })
     label: string
 

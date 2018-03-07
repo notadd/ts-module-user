@@ -30,7 +30,7 @@ export class InfoItemService {
     async updateInfoItem(id: number, name: string, label: string, description: string, type: string, necessary: boolean, order: number): Promise<void> {
         let exist: InfoItem = await this.infoItemRepository.findOneById(id)
         if (!exist) {
-            throw new HttpException('指定id信息项不存在：' + name, 413)
+            throw new HttpException('指定id='+id+'信息项不存在', 413)
         }
         //默认信息项无法更新
         if(exist.default){
@@ -39,7 +39,7 @@ export class InfoItemService {
         if(name!==exist.name){
             let exist1: InfoItem = await this.infoItemRepository.findOne({ name })
             if (exist1) {
-                throw new HttpException('指定名称信息项已存在：' + name, 412)
+                throw new HttpException('指定name='+name+'信息项已存在', 412)
             }
         }
         exist.name = name
