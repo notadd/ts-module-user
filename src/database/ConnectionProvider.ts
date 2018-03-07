@@ -39,7 +39,7 @@ export const ConnectionProvider = {
                 Role
             ],
             logger:'simple-console',
-            logging:'all',
+            logging:null,
             synchronize:false,
             dropSchema:false
         })

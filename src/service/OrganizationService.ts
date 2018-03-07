@@ -17,7 +17,7 @@ export class OrganizationService {
     async getChildren(id: number): Promise<Organization[]> {
         let o: Organization = await this.organizationRepository.findOneById(id, { relations: ['children'] })
         if (!o) {
-            throw new HttpException('指定父组织不存在', 402)
+            throw new HttpException('指定父组织id='+id+'不存在', 402)
         }
         return o.children
     }

@@ -54,16 +54,42 @@ describe('FuncService', async () => {
             expect(orgs.length).toBe(0)
         })
 
-        it('should success',async ()=>{
-            await organizationRepository.save({name:'集团总公司',parentId:null})
-            await organizationRepository.save({name:'人力资源部',parentId:1})
-            await organizationRepository.save({name:'市场部',parentId:1})
-            await organizationRepository.save({name:'经营部',parentId:1})
+        it('should success', async () => {
+            await organizationRepository.save({ name: '集团总公司', parentId: null })
+            await organizationRepository.save({ name: '人力资源部', parentId: 1 })
+            await organizationRepository.save({ name: '市场部', parentId: 1 })
+            await organizationRepository.save({ name: '经营部', parentId: 1 })
             let orgs = await organizationService.getRoots()
             expect(orgs).toBeDefined()
             expect(orgs.length).toBe(1)
             expect(orgs[0].name).toBe('集团总公司')
         })
     })
+
+    describe('getChildren', async () => {
+
+        it('should success', async () => {
+            await organizationRepository.save({ name: '集团总公司', parentId: null })
+            await organizationRepository.save({ name: '人力资源部', parentId: 1 })
+            await organizationRepository.save({ name: '市场部', parentId: 1 })
+            await organizationRepository.save({ name: '经营部', parentId: 1 })
+            let orgs = await organizationService.getChildren(1)
+            expect(orgs).toBeDefined()
+            expect(orgs.length).toBe(3)
+            expect(orgs[0]).toEqual({ id: 2, name: '人力资源部', parentId: 1 })
+            expect(orgs[1]).toEqual({ id: 3, name: '市场部', parentId: 1 })
+            expect(orgs[2]).toEqual({ id: 4, name: '经营部', parentId: 1 })
+        })
+
+        it('should throw HttpException:指定父组织id=1不存在, 402', async () => {
+            try {
+                await organizationService.getChildren(1)
+            } catch (err) {
+                expect(err.getStatus()).toBe(402)
+                expect(err.getResponse()).toBe('指定父组织id=1不存在')
+            }
+        })
+    })
+
 
 })
