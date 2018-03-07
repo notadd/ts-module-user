@@ -114,5 +114,47 @@ describe('FuncService', async () => {
         })
     })
 
+    describe('createOrganization', async () => {
+
+        it('should succcess', async () => {
+            await organizationService.createOrganization('集团公司', null)
+            let orgs = await organizationRepository.find()
+            expect(orgs).toBeDefined()
+            expect(orgs.length).toBe(1)
+            expect(orgs[0]).toEqual({ id: 1, name: '集团公司', parentId: null })
+        })
+
+        it('should throw HttpException:指定父组织id=1不存在, 402', async () => {
+            try {
+                await organizationService.createOrganization('集团公司', 1)
+            } catch (err) {
+                expect(err.getStatus()).toBe(402)
+                expect(err.getResponse()).toBe('指定父组织id=1不存在')
+            }
+        })
+
+        it('should throw HttpException:指定名称name=人力资源部组织已存在, 403', async () => {
+            await organizationRepository.save({ name: '集团总公司', parentId: null })
+            await organizationRepository.save({ name: '人力资源部', parentId: 1 })
+            try {
+                await organizationService.createOrganization('人力资源部', 1)
+            } catch (err) {
+                expect(err.getStatus()).toBe(403)
+                expect(err.getResponse()).toBe('指定名称name=人力资源部组织已存在')
+            }
+        })
+
+        it('should throw HttpException:数据库错误Error: 创建组织失败，401', async () => {
+            await organizationRepository.save({ name: '集团总公司', parentId: null })
+            jest.spyOn(organizationRepository,'save').mockImplementationOnce(async ()=>{throw new Error('创建组织失败')})
+            try {
+                await organizationService.createOrganization('人力资源部', 1)
+            } catch (err) {
+                expect(err.getStatus()).toBe(401)
+                expect(err.getResponse()).toBe('数据库错误Error: 创建组织失败')
+            }
+        })
+    })
+
 
 })

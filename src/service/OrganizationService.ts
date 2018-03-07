@@ -30,12 +30,12 @@ export class OrganizationService {
         if (parentId !== undefined && parentId !== null) {
             parent = await this.organizationRepository.findOneById(parentId)
             if (!parent) {
-                throw new HttpException('指定父组织不存在', 402)
+                throw new HttpException('指定父组织id='+parentId+'不存在', 402)
             }
         }
         let exist: Organization = await this.organizationRepository.findOne({ name })
         if (exist) {
-            throw new HttpException('要创建的组织名已存在', 403)
+            throw new HttpException('指定名称name='+name+'组织已存在', 403)
         }
         //如果parent为undefined，则parentId为null
         let organization: Organization = this.organizationRepository.create({ name, parent })
