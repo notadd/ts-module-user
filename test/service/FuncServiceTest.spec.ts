@@ -5,6 +5,7 @@ import { FuncService } from '../../src/service/FuncService';
 import { Permission } from '../../src/model/Permission';
 import { Repository, Connection } from 'typeorm';
 import { Module } from '../../src/model/Module';
+import { HttpException } from '@nestjs/common';
 import { Func } from '../../src/model/Func';
 import { Test } from '@nestjs/testing';
 
@@ -66,7 +67,9 @@ describe('FuncService', async () => {
         it('should throw HttpException: 指定模块token=aaaa不存在,415', async () => {
             try {
                 await funcService.createFunc('aaaa', '管理文章')
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(415)
                 expect(err.getResponse()).toBe('指定模块token=aaaa不存在')
             }
@@ -77,7 +80,9 @@ describe('FuncService', async () => {
             await funcRepository.save({ name: 'bbbb', moduleToken: 'aaaa' })
             try {
                 await funcService.createFunc('aaaa', 'bbbb')
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(416)
                 expect(err.getResponse()).toBe('指定模块token=aaaa下，指定名称name=bbbb功能已经存在')
             }
@@ -88,7 +93,9 @@ describe('FuncService', async () => {
             jest.spyOn(funcRepository, 'save').mockImplementationOnce(async () => { throw new Error('保存功能失败') })
             try {
                 await funcService.createFunc('aaaa', 'bbbb')
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(401)
                 expect(err.getResponse()).toBe('数据库错误Error: 保存功能失败')
             }
@@ -115,7 +122,9 @@ describe('FuncService', async () => {
         it('should throw HttpException: 指定id=1功能不存在, 417', async () => {
             try {
                 await funcService.updateFunc(1, '管理文章')
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(417)
                 expect(err.getResponse()).toBe('指定id=1功能不存在')
             }
@@ -126,7 +135,9 @@ describe('FuncService', async () => {
             await funcRepository.save([{ name: '管理文章', moduleToken: 'aaaa' }, { name: '论坛管理', moduleToken: 'aaaa' }])
             try {
                 await funcService.updateFunc(1, '论坛管理')
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(416)
                 expect(err.getResponse()).toBe('指定模块token=aaaa下，指定名称name=论坛管理功能已经存在')
             }
@@ -138,7 +149,9 @@ describe('FuncService', async () => {
             jest.spyOn(funcRepository, 'save').mockImplementationOnce(async () => { throw new Error('更新功能失败') })
             try {
                 await funcService.updateFunc(1, '论坛管理')
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(401)
                 expect(err.getResponse()).toBe('数据库错误Error: 更新功能失败')
             }
@@ -158,7 +171,9 @@ describe('FuncService', async () => {
         it('should throw HttpException:指定id=1功能不存在, 417', async () => {
             try {
                 await funcService.deleteFunc(1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(417)
                 expect(err.getResponse()).toBe('指定id=1功能不存在')
             }
@@ -170,7 +185,9 @@ describe('FuncService', async () => {
             jest.spyOn(funcRepository, 'remove').mockImplementationOnce(async () => { throw new Error('删除功能失败') })
             try {
                 await funcService.deleteFunc(1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(401)
                 expect(err.getResponse()).toBe('数据库错误Error: 删除功能失败')
             }
@@ -201,7 +218,9 @@ describe('FuncService', async () => {
         it('should throw HttpException:指定id=1功能不存在, 417', async () => {
             try {
                 await funcService.setPermissions(1, [1])
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(417)
                 expect(err.getResponse()).toBe('指定id=1功能不存在')
             }
@@ -215,7 +234,9 @@ describe('FuncService', async () => {
                 { name: '文章更新', description: '更新文章', moduleToken: 'aaaa' }])
             try {
                 await funcService.setPermissions(1, [1, 2, 3])
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(418)
                 expect(err.getResponse()).toBe('指定id=3权限不存在')
             }
@@ -228,7 +249,9 @@ describe('FuncService', async () => {
                 { name: '文章创建', description: '创建文章', moduleToken: 'bbbb' }])
             try {
                 await funcService.setPermissions(1, [1])
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(419)
                 expect(err.getResponse()).toBe('指定功能、权限只能属于同一个模块')
             }
@@ -244,7 +267,9 @@ describe('FuncService', async () => {
             jest.spyOn(funcRepository, 'save').mockImplementationOnce(async () => { throw new Error('设置权限错误') })
             try {
                 await funcService.setPermissions(1, [1, 2, 3])
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(401)
                 expect(err.getResponse()).toBe('数据库错误Error: 设置权限错误')
             }

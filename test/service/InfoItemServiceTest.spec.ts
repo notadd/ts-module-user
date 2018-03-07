@@ -1,9 +1,10 @@
 import { TestRepositorysProvider } from '../database/TestRepositorysProvider';
 import { TestConnectionProvider } from '../database/TestConnectionProvider';
 import { InfoItemService } from '../../src/service/InfoItemService';
-import { Repository, Connection, getConnection } from 'typeorm';
 import { TestingModule } from '@nestjs/testing/testing-module';
 import { InfoItem } from '../../src/model/InfoItem';
+import { Repository, Connection } from 'typeorm';
+import { HttpException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 
 describe('FuncService', async () => {
@@ -49,7 +50,9 @@ describe('FuncService', async () => {
             await infoItemRepository.save({ name: 'userName', label: '用户名', description: '用户的名称', type: 'text', necessary: true, order: 1, default: false })
             try {
                 await infoItemService.createInfoItem('userName', '用户名', '用户的名称', 'text', true, 1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(412)
                 expect(err.getResponse()).toBe('指定名称信息项已存在：userName')
             }
@@ -59,7 +62,9 @@ describe('FuncService', async () => {
             jest.spyOn(infoItemRepository, 'save').mockImplementationOnce(async () => { throw new Error('创建信息项失败') })
             try {
                 await infoItemService.createInfoItem('userName', '用户名', '用户的名称', 'text', true, 1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(401)
                 expect(err.getResponse()).toBe('数据库错误Error: 创建信息项失败')
             }
@@ -80,7 +85,9 @@ describe('FuncService', async () => {
         it('should throw HttpException:指定id=1信息项不存在, 413', async () => {
             try {
                 await infoItemService.updateInfoItem(1, 'password', '密码', '用户的密码', 'text', false, 2)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(413)
                 expect(err.getResponse()).toBe('指定id=1信息项不存在')
             }
@@ -90,7 +97,9 @@ describe('FuncService', async () => {
             await infoItemRepository.save({ name: 'userName', label: '用户名', description: '用户的名称', type: 'text', necessary: true, order: 1, default: true })
             try {
                 await infoItemService.updateInfoItem(1, 'password', '密码', '用户的密码', 'text', false, 2)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(413)
                 expect(err.getResponse()).toBe('默认信息项不允许更新')
             }
@@ -98,10 +107,12 @@ describe('FuncService', async () => {
 
         it('should throw HttpException:指定name=password信息项已存在, 412', async () => {
             await infoItemRepository.save({ name: 'userName', label: '用户名', description: '用户的名称', type: 'text', necessary: true, order: 1, default: false })
-            await infoItemRepository.save({ name: 'passworde', label: '用户名', description: '用户的名称', type: 'text', necessary: true, order: 1, default: false })
+            await infoItemRepository.save({ name: 'password', label: '用户名', description: '用户的名称', type: 'text', necessary: true, order: 1, default: false })
             try {
                 await infoItemService.updateInfoItem(1, 'password', '密码', '用户的密码', 'text', false, 2)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(412)
                 expect(err.getResponse()).toBe('指定name=password信息项已存在')
             }
@@ -112,7 +123,9 @@ describe('FuncService', async () => {
             jest.spyOn(infoItemRepository, 'save').mockImplementationOnce(async () => { throw new Error('更新信息项失败') })
             try {
                 await infoItemService.updateInfoItem(1, 'password', '密码', '用户的密码', 'text', false, 2)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(401)
                 expect(err.getResponse()).toBe('数据库错误Error: 更新信息项失败')
             }
@@ -136,7 +149,9 @@ describe('FuncService', async () => {
         it('should throw HttpException:指定id=1信息项不存在, 413', async () => {
             try {
                 await infoItemService.deleteInfoItem(1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(413)
                 expect(err.getResponse()).toBe('指定id=1信息项不存在')
             }
@@ -146,7 +161,9 @@ describe('FuncService', async () => {
             await infoItemRepository.save({ name: 'userName', label: '用户名', description: '用户的名称', type: 'text', necessary: true, order: 1, default: true })
             try {
                 await infoItemService.deleteInfoItem(1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(413)
                 expect(err.getResponse()).toBe('默认信息项不允许删除')
             }
@@ -157,7 +174,9 @@ describe('FuncService', async () => {
             jest.spyOn(infoItemRepository, 'remove').mockImplementationOnce(async () => { throw new Error('删除信息项失败') })
             try {
                 await infoItemService.deleteInfoItem(1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(401)
                 expect(err.getResponse()).toBe('数据库错误Error: 删除信息项失败')
             }
@@ -181,7 +200,9 @@ describe('FuncService', async () => {
         it('should throw HttpException:指定id=1信息项不存在, 413', async () => {
             try {
                 await infoItemService.deleteInfoItems([1, 2])
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(413)
                 expect(err.getResponse()).toBe('指定id=1信息项不存在')
             }
@@ -192,7 +213,9 @@ describe('FuncService', async () => {
             await infoItemRepository.save({ name: 'password', label: '用户名', description: '用户的名称', type: 'text', necessary: true, order: 1, default: false })
             try {
                 await infoItemService.deleteInfoItems([1, 2])
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(413)
                 expect(err.getResponse()).toBe('默认信息项不允许删除')
             }
@@ -203,7 +226,9 @@ describe('FuncService', async () => {
             await infoItemRepository.save({ name: 'password', label: '用户名', description: '用户的名称', type: 'text', necessary: true, order: 1, default: false })            jest.spyOn(infoItemRepository, 'remove').mockImplementationOnce(async () => { throw new Error('删除信息项失败') })
             try {
                 await infoItemService.deleteInfoItems([1, 2])
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(401)
                 expect(err.getResponse()).toBe('数据库错误Error: 删除信息项失败')
             }

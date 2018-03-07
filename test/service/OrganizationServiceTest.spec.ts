@@ -1,9 +1,10 @@
 import { TestRepositorysProvider } from '../database/TestRepositorysProvider';
 import { TestConnectionProvider } from '../database/TestConnectionProvider';
 import { OrganizationService } from '../../src/service/OrganizationService';
-import { Repository, Connection, getConnection } from 'typeorm';
 import { TestingModule } from '@nestjs/testing/testing-module';
 import { Organization } from '../../src/model/Organization';
+import { Repository, Connection } from 'typeorm';
+import { HttpException } from '@nestjs/common';
 import { User } from '../../src/model/User';
 import { Test } from '@nestjs/testing';
 
@@ -84,7 +85,9 @@ describe('FuncService', async () => {
         it('should throw HttpException:指定父组织id=1不存在, 402', async () => {
             try {
                 await organizationService.getChildren(1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(402)
                 expect(err.getResponse()).toBe('指定父组织id=1不存在')
             }
@@ -127,7 +130,9 @@ describe('FuncService', async () => {
         it('should throw HttpException:指定父组织id=1不存在, 402', async () => {
             try {
                 await organizationService.createOrganization('集团公司', 1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(402)
                 expect(err.getResponse()).toBe('指定父组织id=1不存在')
             }
@@ -138,7 +143,9 @@ describe('FuncService', async () => {
             await organizationRepository.save({ name: '人力资源部', parentId: 1 })
             try {
                 await organizationService.createOrganization('人力资源部', 1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(403)
                 expect(err.getResponse()).toBe('指定名称name=人力资源部组织已存在')
             }
@@ -149,7 +156,9 @@ describe('FuncService', async () => {
             jest.spyOn(organizationRepository, 'save').mockImplementationOnce(async () => { throw new Error('创建组织失败') })
             try {
                 await organizationService.createOrganization('人力资源部', 1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(401)
                 expect(err.getResponse()).toBe('数据库错误Error: 创建组织失败')
             }
@@ -173,7 +182,9 @@ describe('FuncService', async () => {
             await organizationRepository.save({ name: '第一集团公司', parentId: null })
             try {
                 await organizationService.updateOrganization(2, '跑得真快公司', 1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(404)
                 expect(err.getResponse()).toBe('指定id=2组织不存在')
             }
@@ -185,7 +196,9 @@ describe('FuncService', async () => {
             await organizationRepository.save({ name: '跑得真快公司', parentId: 1 })
             try {
                 await organizationService.updateOrganization(2, '跑得真快公司', 1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(404)
                 expect(err.getResponse()).toBe('指定name=跑得真快公司组织已存在')
             }
@@ -196,7 +209,9 @@ describe('FuncService', async () => {
             await organizationRepository.save({ name: '跑得快公司', parentId: 1 })
             try {
                 await organizationService.updateOrganization(2, '跑得真快公司', 3)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(402)
                 expect(err.getResponse()).toBe('指定父组织id=3不存在')
             }
@@ -207,7 +222,9 @@ describe('FuncService', async () => {
             jest.spyOn(organizationRepository, 'save').mockImplementationOnce(async () => { throw new Error('更新组织失败') })
             try {
                 await organizationService.updateOrganization(1, '人力资源部', null)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(401)
                 expect(err.getResponse()).toBe('数据库错误Error: 更新组织失败')
             }
@@ -219,7 +236,9 @@ describe('FuncService', async () => {
         it('should throw HttpException:指定id=1组织不存在, 404', async () => {
             try {
                 await organizationService.deleteOrganization(1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(404)
                 expect(err.getResponse()).toBe('指定id=1组织不存在')
             }
@@ -230,7 +249,9 @@ describe('FuncService', async () => {
             await organizationRepository.save({ name: '跑得快公司', parentId: 1 })
             try {
                 await organizationService.deleteOrganization(1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(404)
                 expect(err.getResponse()).toBe('指定组织存在子组织，无法删除')
             }
@@ -241,7 +262,9 @@ describe('FuncService', async () => {
             jest.spyOn(organizationRepository, 'remove').mockImplementationOnce(async () => { throw new Error('移除组织失败') })
             try {
                 await organizationService.deleteOrganization(1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(401)
                 expect(err.getResponse()).toBe('数据库错误Error: 移除组织失败')
             }
@@ -269,7 +292,9 @@ describe('FuncService', async () => {
         it('should throw HttpException:指定id=1父组织不存在, 402', async () => {
             try {
                 await organizationService.getUsersInOrganization(1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(402)
                 expect(err.getResponse()).toBe('指定id=1父组织不存在')
             }
@@ -292,7 +317,9 @@ describe('FuncService', async () => {
         it('should throw HttpException:指定id=1组织不存在, 402', async () => {
             try {
                 await organizationService.addUserToOrganization(1, 1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(402)
                 expect(err.getResponse()).toBe('指定id=1组织不存在')
             }
@@ -302,7 +329,9 @@ describe('FuncService', async () => {
             await organizationRepository.save({ name: '集团总公司', parentId: null })
             try {
                 await organizationService.addUserToOrganization(1, 1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(402)
                 expect(err.getResponse()).toBe('指定id=1用户不存在')
             }
@@ -312,7 +341,9 @@ describe('FuncService', async () => {
             await organizationRepository.save({ name: '集团总公司', parentId: null, users: [{ userName: '老总', password: '123456', salt: 'aaaaa', status: true, recycle: false }] })
             try {
                 await organizationService.addUserToOrganization(1, 1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(402)
                 expect(err.getResponse()).toBe('指定用户id=1已存在于指定组织id=1中')
             }
@@ -324,7 +355,9 @@ describe('FuncService', async () => {
             jest.spyOn(organizationRepository, 'save').mockImplementationOnce(async () => { throw new Error('添加用户失败') })
             try {
                 await organizationService.addUserToOrganization(1, 1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(401)
                 expect(err.getResponse()).toBe('数据库错误Error: 添加用户失败')
             }
@@ -348,7 +381,9 @@ describe('FuncService', async () => {
         it('should throw HttpException:指定id=1组织不存在, 402', async () => {
             try {
                 await organizationService.addUsersToOrganization(1, [1, 2])
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(402)
                 expect(err.getResponse()).toBe('指定id=1组织不存在')
             }
@@ -358,7 +393,9 @@ describe('FuncService', async () => {
             await organizationRepository.save({ name: '集团总公司', parentId: null })
             try {
                 await organizationService.addUsersToOrganization(1, [1, 2])
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(402)
                 expect(err.getResponse()).toBe('指定id=1用户不存在')
             }
@@ -368,7 +405,9 @@ describe('FuncService', async () => {
             await organizationRepository.save({ name: '集团总公司', parentId: null, users: [{ userName: '老总', password: '123456', salt: 'aaaaa', status: true, recycle: false }] })
             try {
                 await organizationService.addUsersToOrganization(1, [1])
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(402)
                 expect(err.getResponse()).toBe('指定用户id=1已存在于指定组织id=1中')
             }
@@ -380,7 +419,9 @@ describe('FuncService', async () => {
             jest.spyOn(organizationRepository, 'save').mockImplementationOnce(async () => { throw new Error('添加用户失败') })
             try {
                 await organizationService.addUsersToOrganization(1, [1])
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(401)
                 expect(err.getResponse()).toBe('数据库错误Error: 添加用户失败')
             }
@@ -400,7 +441,9 @@ describe('FuncService', async () => {
         it('should throw HttpException:指定id=1组织不存在, 402', async () => {
             try {
                 await organizationService.removeUserFromOrganization(1, 1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(402)
                 expect(err.getResponse()).toBe('指定id=1组织不存在')
             }
@@ -410,7 +453,9 @@ describe('FuncService', async () => {
             await organizationRepository.save({ name: '集团总公司', parentId: null })
             try {
                 await organizationService.removeUserFromOrganization(1, 1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(402)
                 expect(err.getResponse()).toBe('指定id=1用户不存在')
             }
@@ -421,7 +466,9 @@ describe('FuncService', async () => {
             await userRepository.save({ userName: '老总', password: '123456', salt: 'aaaaa', status: true, recycle: false })
             try {
                 await organizationService.removeUserFromOrganization(1, 1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(402)
                 expect(err.getResponse()).toBe('指定用户id=1不存在于指定组织id=1中')
             }
@@ -432,7 +479,9 @@ describe('FuncService', async () => {
             jest.spyOn(organizationRepository, 'save').mockImplementationOnce(async () => { throw new Error('移除用户失败') })
             try {
                 await organizationService.removeUserFromOrganization(1, 1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(401)
                 expect(err.getResponse()).toBe('数据库错误Error: 移除用户失败')
             }
@@ -452,7 +501,9 @@ describe('FuncService', async () => {
         it('should throw HttpException:指定id=1组织不存在, 402', async () => {
             try {
                 await organizationService.removeUsersFromOrganization(1, [1])
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(402)
                 expect(err.getResponse()).toBe('指定id=1组织不存在')
             }
@@ -462,7 +513,9 @@ describe('FuncService', async () => {
             await organizationRepository.save({ name: '集团总公司', parentId: null })
             try {
                 await organizationService.removeUsersFromOrganization(1, [1])
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(402)
                 expect(err.getResponse()).toBe('指定id=1用户不存在')
             }
@@ -473,7 +526,9 @@ describe('FuncService', async () => {
             await userRepository.save({ userName: '老总', password: '123456', salt: 'aaaaa', status: true, recycle: false })
             try {
                 await organizationService.removeUsersFromOrganization(1, [1])
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(402)
                 expect(err.getResponse()).toBe('指定用户id=1不存在于指定组织id=1中')
             }
@@ -484,7 +539,9 @@ describe('FuncService', async () => {
             jest.spyOn(organizationRepository, 'save').mockImplementationOnce(async () => { throw new Error('移除用户失败') })
             try {
                 await organizationService.removeUsersFromOrganization(1, [1])
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(401)
                 expect(err.getResponse()).toBe('数据库错误Error: 移除用户失败')
             }

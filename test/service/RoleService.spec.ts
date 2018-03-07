@@ -4,6 +4,7 @@ import { TestingModule } from '@nestjs/testing/testing-module';
 import { RoleService } from '../../src/service/RoleService';
 import { Repository, Connection } from 'typeorm';
 import { Module } from '../../src/model/Module';
+import { HttpException } from '@nestjs/common';
 import { Role } from '../../src/model/Role';
 import { Func } from '../../src/model/Func';
 import { Test } from '@nestjs/testing';
@@ -62,7 +63,9 @@ describe('RoleService', async () => {
         it('should throw HttpException:指定模块token=aaaaa不存在, 415', async () => {
             try {
                 await roleService.createRole('aaaaa', '管理员', 80)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(415)
                 expect(err.getResponse()).toBe('指定模块token=aaaaa不存在')
             }
@@ -72,7 +75,9 @@ describe('RoleService', async () => {
             await moduleRepository.save({ token: 'aaaaa', roles: [{ name: '管理员', score: 80 }] })
             try {
                 await roleService.createRole('aaaaa', '管理员', 80)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(420)
                 expect(err.getResponse()).toBe('指定模块token=aaaaa下，指定名称name=管理员角色已经存在')
             }
@@ -83,7 +88,9 @@ describe('RoleService', async () => {
             jest.spyOn(roleRepository, 'save').mockImplementationOnce(async () => { throw new Error('创建角色失败') })
             try {
                 await roleService.createRole('aaaaa', '管理员', 80)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(401)
                 expect(err.getResponse()).toBe('数据库错误Error: 创建角色失败')
             }
@@ -102,20 +109,24 @@ describe('RoleService', async () => {
             expect(role2).toEqual({ id: 1, name: '后勤员', score: 20, moduleToken: 'aaaaa' })
         })
 
-        it('should throw HttpException:指定id=1角色不存在, 421',async ()=>{
+        it('should throw HttpException:指定id=1角色不存在, 421', async () => {
             try {
                 await roleService.updateRole(1, '后勤员', 20)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(421)
                 expect(err.getResponse()).toBe('指定id=1角色不存在')
             }
         })
 
-        it('should throw HttpException:指定模块token=aaaaa下，指定名称name=后勤员角色已经存在, 420',async ()=>{
-            await moduleRepository.save({ token: 'aaaaa', roles: [{ name: '管理员', score: 80 },{ name: '后勤员', score: 20 }] })
+        it('should throw HttpException:指定模块token=aaaaa下，指定名称name=后勤员角色已经存在, 420', async () => {
+            await moduleRepository.save({ token: 'aaaaa', roles: [{ name: '管理员', score: 80 }, { name: '后勤员', score: 20 }] })
             try {
                 await roleService.updateRole(1, '后勤员', 20)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(420)
                 expect(err.getResponse()).toBe('指定模块token=aaaaa下，指定名称name=后勤员角色已经存在')
             }
@@ -126,10 +137,49 @@ describe('RoleService', async () => {
             jest.spyOn(roleRepository, 'save').mockImplementationOnce(async () => { throw new Error('更新角色失败') })
             try {
                 await roleService.updateRole(1, '后勤员', 20)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(401)
                 expect(err.getResponse()).toBe('数据库错误Error: 更新角色失败')
             }
+
+        })
+    })
+
+    describe('deleteRole', async () => {
+
+        it('should success', async () => {
+            await moduleRepository.save({ token: 'aaaaa', roles: [{ name: '管理员', score: 80 }] })
+            await roleService.deleteRole(1)
+            let roles = await roleRepository.find()
+            expect(roles).toBeDefined()
+            expect(roles.length).toBe(0)
+        })
+
+        it('should throw HttpException:指定id=1角色不存在, 421', async () => {
+            try {
+                await roleService.deleteRole(1)
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(421)
+                expect(err.getResponse()).toBe('指定id=1角色不存在')
+            }
+        })
+
+        it('should throw HttpException:数据库错误Error: 移除角色失败，401', async () => {
+            await moduleRepository.save({ token: 'aaaaa', roles: [{ name: '管理员', score: 80 }] })
+            jest.spyOn(roleRepository, 'remove').mockImplementationOnce(async () => { throw new Error('移除角色失败') })
+            try {
+                await roleService.deleteRole(1)
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(401)
+                expect(err.getResponse()).toBe('数据库错误Error: 移除角色失败')
+            }
+
 
         })
     })

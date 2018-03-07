@@ -4,7 +4,8 @@ import { InfoGroupService } from '../../src/service/InfoGroupService';
 import { TestingModule } from '@nestjs/testing/testing-module';
 import { InfoGroup } from '../../src/model/InfoGroup';
 import { InfoItem } from '../../src/model/InfoItem';
-import { Repository, Connection,getConnection } from 'typeorm';
+import { Repository, Connection } from 'typeorm';
+import { HttpException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 
 describe('InfoGroupService', async () => {
@@ -89,7 +90,9 @@ describe('InfoGroupService', async () => {
             await infoGroupRepository.save({ name: '基本信息', default: true, status: true })
             try {
                 await infoGroupService.createInfoGroup('基本信息')
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(407)
                 expect(err.getResponse()).toBe('给定名称name=基本信息信息组已存在')
             }
@@ -99,7 +102,9 @@ describe('InfoGroupService', async () => {
             jest.spyOn(infoGroupRepository, 'save').mockImplementationOnce(async () => { throw new Error('保存信息组错误') })
             try {
                 await infoGroupService.createInfoGroup('基本信息')
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(401)
                 expect(err.getResponse()).toBe('数据库错误Error: 保存信息组错误')
             }
@@ -118,7 +123,9 @@ describe('InfoGroupService', async () => {
         it('should throw HttpException:给定id=1信息组不存在, 408', async () => {
             try {
                 await infoGroupService.updateInfoGroup(1, '基本信息')
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(408)
                 expect(err.getResponse()).toBe('给定id=1信息组不存在')
             }
@@ -128,7 +135,9 @@ describe('InfoGroupService', async () => {
             await infoGroupRepository.save({ name: '基本信息', default: true, status: true })
             try {
                 await infoGroupService.updateInfoGroup(1, '认证信息')
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(408)
                 expect(err.getResponse()).toBe('默认信息组不可更改')
             }
@@ -138,7 +147,9 @@ describe('InfoGroupService', async () => {
             await infoGroupRepository.save([{ name: '基本信息', default: false, status: true }, { name: '认证信息', default: false, status: true }])
             try {
                 await infoGroupService.updateInfoGroup(1, '认证信息')
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(408)
                 expect(err.getResponse()).toBe('指定名称信息组已存在：认证信息')
             }
@@ -149,7 +160,9 @@ describe('InfoGroupService', async () => {
             jest.spyOn(infoGroupRepository, 'save').mockImplementationOnce(async () => { throw new Error('更新信息组错误') })
             try {
                 await infoGroupService.updateInfoGroup(1, '认证信息')
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(401)
                 expect(err.getResponse()).toBe('数据库错误Error: 更新信息组错误')
             }
@@ -168,7 +181,9 @@ describe('InfoGroupService', async () => {
         it('should throw HttpException:给定id=1信息组不存在, 408', async () => {
             try {
                 await infoGroupService.deleteInfoGroup(1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(408)
                 expect(err.getResponse()).toBe('给定id=1信息组不存在')
             }
@@ -178,7 +193,9 @@ describe('InfoGroupService', async () => {
             await infoGroupRepository.save({ name: '基本信息', default: true, status: true })
             try {
                 await infoGroupService.deleteInfoGroup(1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(408)
                 expect(err.getResponse()).toBe('默认信息组不可删除')
             }
@@ -189,7 +206,9 @@ describe('InfoGroupService', async () => {
             jest.spyOn(infoGroupRepository, 'remove').mockImplementationOnce(async () => { throw new Error('删除信息组错误') })
             try {
                 await infoGroupService.deleteInfoGroup(1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(401)
                 expect(err.getResponse()).toBe('数据库错误Error: 删除信息组错误')
             }
@@ -211,7 +230,9 @@ describe('InfoGroupService', async () => {
         it('should throw HttpException:给定id=1信息组不存在, 408', async () => {
             try {
                 await infoGroupService.addInfoItem(1, 1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(408)
                 expect(err.getResponse()).toBe('给定id=1信息组不存在')
             }
@@ -221,7 +242,9 @@ describe('InfoGroupService', async () => {
             await infoGroupRepository.save({ name: '基本信息', default: true, status: true })
             try {
                 await infoGroupService.addInfoItem(1, 1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(408)
                 expect(err.getResponse()).toBe('默认信息组不可更改')
             }
@@ -231,7 +254,9 @@ describe('InfoGroupService', async () => {
             await infoGroupRepository.save({ name: '基本信息', default: false, status: true })
             try {
                 await infoGroupService.addInfoItem(1, 1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(409)
                 expect(err.getResponse()).toBe('指定id=1信息项不存在')
             }
@@ -242,7 +267,9 @@ describe('InfoGroupService', async () => {
             await infoGroupRepository.save({ name: '基本信息', default: false, status: true })
             try {
                 await infoGroupService.addInfoItem(1, 1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(408)
                 expect(err.getResponse()).toBe('默认信息项不可添加')
             }
@@ -254,7 +281,9 @@ describe('InfoGroupService', async () => {
             await infoGroupRepository.save({ name: '基本信息', default: false, status: true, items: [item] })
             try {
                 await infoGroupService.addInfoItem(1, 1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(410)
                 expect(err.getResponse()).toBe('指定信息项id=1已经存在于指定信息组id=1中')
             }
@@ -266,7 +295,9 @@ describe('InfoGroupService', async () => {
             jest.spyOn(infoGroupRepository, 'save').mockImplementationOnce(async () => { throw new Error('添加信息项错误') })
             try {
                 await infoGroupService.addInfoItem(1, 1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(401)
                 expect(err.getResponse()).toBe('数据库错误Error: 添加信息项错误')
             }
@@ -288,7 +319,9 @@ describe('InfoGroupService', async () => {
         it('should throw HttpException:给定id=1信息组不存在, 408', async () => {
             try {
                 await infoGroupService.removeInfoItem(1, 1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(408)
                 expect(err.getResponse()).toBe('给定id=1信息组不存在')
             }
@@ -298,7 +331,9 @@ describe('InfoGroupService', async () => {
             await infoGroupRepository.save({ name: '基本信息', default: true, status: true })
             try {
                 await infoGroupService.removeInfoItem(1, 1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(408)
                 expect(err.getResponse()).toBe('默认信息组不可更改')
             }
@@ -308,7 +343,9 @@ describe('InfoGroupService', async () => {
             await infoGroupRepository.save({ name: '基本信息', default: false, status: true })
             try {
                 await infoGroupService.removeInfoItem(1, 1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(409)
                 expect(err.getResponse()).toBe('指定id=1信息项不存在')
             }
@@ -319,7 +356,9 @@ describe('InfoGroupService', async () => {
             await infoGroupRepository.save({ name: '基本信息', default: false, status: true })
             try {
                 await infoGroupService.removeInfoItem(1, 1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(411)
                 expect(err.getResponse()).toBe('指定信息项id=1不存在于指定信息组id=1中')
             }
@@ -332,7 +371,9 @@ describe('InfoGroupService', async () => {
             jest.spyOn(infoGroupRepository, 'save').mockImplementationOnce(async () => { throw new Error('移除信息项错误') })
             try {
                 await infoGroupService.removeInfoItem(1, 1)
+                expect(1).toBe(2)
             } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(401)
                 expect(err.getResponse()).toBe('数据库错误Error: 移除信息项错误')
             }
