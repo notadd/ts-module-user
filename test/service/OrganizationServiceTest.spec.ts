@@ -91,5 +91,28 @@ describe('FuncService', async () => {
         })
     })
 
+    describe('getAll', async () => {
+
+        it('should be array with length is 0', async () => {
+            let orgs = await organizationService.getAll()
+            expect(orgs).toBeDefined()
+            expect(orgs.length).toBe(0)
+        })
+
+        it('should success', async () => {
+            await organizationRepository.save({ name: '集团总公司', parentId: null })
+            await organizationRepository.save({ name: '人力资源部', parentId: 1 })
+            await organizationRepository.save({ name: '市场部', parentId: 1 })
+            await organizationRepository.save({ name: '经营部', parentId: 1 })
+            let orgs = await organizationService.getAll()
+            expect(orgs).toBeDefined()
+            expect(orgs.length).toBe(4)
+            expect(orgs[0]).toEqual({ id: 1, name: '集团总公司', parentId: null })
+            expect(orgs[1]).toEqual({ id: 2, name: '人力资源部', parentId: 1 })
+            expect(orgs[2]).toEqual({ id: 3, name: '市场部', parentId: 1 })
+            expect(orgs[3]).toEqual({ id: 4, name: '经营部', parentId: 1 })
+        })
+    })
+
 
 })
