@@ -75,16 +75,13 @@ export class InfoItemService {
     /* 一次删除多个信息项，还是不会删除UserInfo */
     async deleteInfoItems(ids: number[]): Promise<void> {
         let infoItems: InfoItem[] = await this.infoItemRepository.findByIds(ids)
-        if (!infoItems) {
-            throw new HttpException('指定id信息项不存在：' + name, 413)
-        }
         //检查是否所有id的信息项都存在
         ids.forEach(id => {
             let find: InfoItem = infoItems.find(item => {
                 return item.id === id
             })
             if (!find) {
-                throw new HttpException('指定id=' + id + '的信息项不存在', 414)
+                throw new HttpException('指定id=' + id + '信息项不存在', 413)
             }
             //默认信息项无法删除
             if (find.default) {
