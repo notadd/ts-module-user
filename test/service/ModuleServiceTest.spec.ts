@@ -4,7 +4,6 @@ import { ModuleService } from '../../src/service/ModuleService';
 import { Repository, Connection, getConnection } from 'typeorm';
 import { TestingModule } from '@nestjs/testing/testing-module';
 import { Module } from '../../src/model/Module';
-import { Role } from '../../src/model/Role';
 import { Test } from '@nestjs/testing';
 
 describe('FuncService', async () => {
