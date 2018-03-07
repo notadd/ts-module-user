@@ -179,8 +179,76 @@ describe('RoleService', async () => {
                 expect(err.getStatus()).toBe(401)
                 expect(err.getResponse()).toBe('数据库错误Error: 移除角色失败')
             }
+        })
+    })
 
+    describe('setFuncs',async ()=>{
 
+        it('should success',async ()=>{
+            await moduleRepository.save({ 
+                token: 'aaaaa', 
+                roles: [{ name: '管理员', score: 80 }] ,
+                funcs: [{name:'文章管理'},{name:'后台管理'}]
+            })
+            await roleService.setFuncs(1,[1,2])
+            let role = await roleRepository.findOneById(1,{relations:['funcs']})
+            expect(role.funcs).toBeDefined()
+            expect(role.funcs.length).toBe(2)
+            expect(role.funcs[0]).toEqual({id:1,name:'文章管理',moduleToken:'aaaaa'})
+            expect(role.funcs[1]).toEqual({id:2,name:'后台管理',moduleToken:'aaaaa'})
+        })
+
+        it('should throw HttpException:指定id=1角色不存在, 421',async ()=>{
+            try {
+                await roleService.setFuncs(1,[1,2])
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(421)
+                expect(err.getResponse()).toBe('指定id=1角色不存在')
+            }
+        })
+
+        it('should throw HttpException:指定id=1功能不存在, 422',async ()=>{
+            await moduleRepository.save({  token: 'aaaaa',roles: [{ name: '管理员', score: 80 }]})
+            try {
+                await roleService.setFuncs(1,[1,2])
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(422)
+                expect(err.getResponse()).toBe('指定id=1功能不存在')
+            }
+        })
+
+        it('should throw HttpException:指定角色、功能必须属于同一个模块, 423',async ()=>{
+            await moduleRepository.save({  token: 'aaaaa',roles: [{ name: '管理员', score: 80 }]})
+            await moduleRepository.save({  token: 'bbbbb',funcs: [{ name: '管理员'}]})            
+            try {
+                await roleService.setFuncs(1,[1])
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(423)
+                expect(err.getResponse()).toBe('指定角色、功能必须属于同一个模块')
+            }
+        })
+
+        it('should throw HttpException:数据库错误Error: 设置功能失败，401',async ()=>{
+            await moduleRepository.save({ 
+                token: 'aaaaa', 
+                roles: [{ name: '管理员', score: 80 }] ,
+                funcs: [{name:'文章管理'},{name:'后台管理'}]
+            })
+            jest.spyOn(roleRepository,'save').mockImplementationOnce(async ()=>{throw new Error('设置功能失败')})
+            try {
+                await roleService.setFuncs(1,[1,2])
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(401)
+                expect(err.getResponse()).toBe('数据库错误Error: 设置功能失败')
+            }
         })
     })
 
