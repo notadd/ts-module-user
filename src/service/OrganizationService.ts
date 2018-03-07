@@ -79,7 +79,7 @@ export class OrganizationService {
     async deleteOrganization(id: number): Promise<void> {
         let exist: Organization = await this.organizationRepository.findOneById(id, { relations: ['children'] })
         if (!exist) {
-            throw new HttpException('指定id组织不存在', 404)
+            throw new HttpException('指定id='+id+'组织不存在', 404)
         }
         if (exist.children && exist.children.length > 0) {
             throw new HttpException('指定组织存在子组织，无法删除', 404)

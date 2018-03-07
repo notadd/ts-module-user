@@ -214,5 +214,39 @@ describe('FuncService', async () => {
         })
     })
 
+    describe('deleteOrganization',async ()=>{
+
+        it('should throw HttpException:指定id=1组织不存在, 404', async () => {
+            try {
+                await organizationService.deleteOrganization(1)
+            } catch (err) {
+                expect(err.getStatus()).toBe(404)
+                expect(err.getResponse()).toBe('指定id=1组织不存在')
+            }
+        })
+
+        it('should throw HttpException:指定组织存在子组织，无法删除, 404', async () => {
+            await organizationRepository.save({ name: '第一集团公司', parentId: null })
+            await organizationRepository.save({ name: '跑得快公司', parentId: 1 })
+            try {
+                await organizationService.deleteOrganization(1)
+            } catch (err) {
+                expect(err.getStatus()).toBe(404)
+                expect(err.getResponse()).toBe('指定组织存在子组织，无法删除')
+            }
+        })
+
+        it('should throw HttpException:数据库错误Error: 移除组织失败，401', async () => {
+            await organizationRepository.save({ name: '集团总公司', parentId: null })
+            jest.spyOn(organizationRepository, 'remove').mockImplementationOnce(async () => { throw new Error('移除组织失败') })
+            try {
+                await organizationService.deleteOrganization(1)
+            } catch (err) {
+                expect(err.getStatus()).toBe(401)
+                expect(err.getResponse()).toBe('数据库错误Error: 移除组织失败')
+            }
+        })
+    })
+
 
 })
