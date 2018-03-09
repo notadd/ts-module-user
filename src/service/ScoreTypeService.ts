@@ -77,7 +77,7 @@ export class ScoreTypeService {
                 throw new HttpException('指定id=' + id + '积分类型不存在', 425)
             }
             if (find.default) {
-                throw new HttpException('默认积分类型不允许更改', 426)
+                throw new HttpException('默认积分类型不允许删除', 426)
             }
         })
         try {
