@@ -153,7 +153,7 @@ describe('ScoreTypeService', async () => {
 
         it('should throw HttpException:数据库错误Error: 更新积分类型失败，401', async () => {
             await scoreTypeRepository.save({ id: 1, name: '贡献', type: 'int', default: false, description: '用户的贡献值' })
-            jest.spyOn(scoreTypeRepository,'save').mockImplementationOnce(async ()=>{throw new Error('更新积分类型失败')})
+            jest.spyOn(scoreTypeRepository, 'save').mockImplementationOnce(async () => { throw new Error('更新积分类型失败') })
             try {
                 await scoreTypeService.updateScoreType(1, '积分', 'int', '用户的贡献')
                 expect(1).toBe(2)
@@ -161,8 +161,56 @@ describe('ScoreTypeService', async () => {
                 expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(401)
                 expect(err.getResponse()).toBe('数据库错误Error: 更新积分类型失败')
-            }     
+            }
         })
 
+    })
+
+    describe('deleteScoreType', async () => {
+
+        it('should success', async () => {
+            await scoreTypeRepository.save({ id: 1, name: '贡献', type: 'int', default: false, description: '用户的贡献值' })
+            await scoreTypeService.deleteScoreType(1)
+            let types = await scoreTypeRepository.find()
+            expect(types).toBeDefined()
+            expect(types.length).toBe(0)
+        })
+
+        it('should throw HttpException:指定id=1积分类型不存在, 425',async ()=>{
+            try {
+                await scoreTypeService.deleteScoreType(1)
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(425)
+                expect(err.getResponse()).toBe('指定id=1积分类型不存在')
+            }
+        })
+
+        it('should throw HttpException:默认积分类型不允许删除，426',async ()=>{
+            await scoreTypeRepository.save({ id: 1, name: '贡献', type: 'int', default: true, description: '用户的贡献值' })
+            try {
+                await scoreTypeService.deleteScoreType(1)
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(426)
+                expect(err.getResponse()).toBe('默认积分类型不允许删除')
+            }
+        })
+
+
+        it('should throw HttpException:数据库错误Error: 删除积分类型失败，401', async () => {
+            await scoreTypeRepository.save({ id: 1, name: '贡献', type: 'int', default: false, description: '用户的贡献值' })
+            jest.spyOn(scoreTypeRepository, 'remove').mockImplementationOnce(async () => { throw new Error('删除积分类型失败') })
+            try {
+                await scoreTypeService.deleteScoreType(1)
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(401)
+                expect(err.getResponse()).toBe('数据库错误Error: 删除积分类型失败')
+            }
+        })
     })
 })

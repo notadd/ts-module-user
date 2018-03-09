@@ -55,10 +55,10 @@ export class ScoreTypeService {
     async deleteScoreType(id: number): Promise<void> {
         let exist: ScoreType = await this.scoreTypeRepository.findOneById(id)
         if (!exist) {
-            throw new HttpException('指定id积分类型不存在', 425)
+            throw new HttpException('指定id='+id+'积分类型不存在', 425)
         }
         if (exist.default) {
-            throw new HttpException('默认积分类型不允许更改', 426)
+            throw new HttpException('默认积分类型不允许删除', 426)
         }
         try {
             await this.scoreTypeRepository.remove(exist)
