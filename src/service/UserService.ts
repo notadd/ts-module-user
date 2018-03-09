@@ -7,11 +7,11 @@ import { Permission } from '../model/Permission';
 import { InfoGroup } from '../model/InfoGroup';
 import { InfoItem } from '../model/InfoItem';
 import { UserInfo } from '../model/UserInfo';
+import { IncomingMessage } from 'http';
 import { Func } from '../model/Func';
 import { Role } from '../model/Role';
 import { User } from '../model/User';
 import * as crypto from 'crypto';
-import { IncomingMessage } from 'http';
 
 @Component()
 export class UserService {
