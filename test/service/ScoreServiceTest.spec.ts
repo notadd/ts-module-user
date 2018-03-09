@@ -106,7 +106,7 @@ describe('ScoreService', async () => {
         it('should throw HttpException:数据库错误Error: 创建积分失败, 401', async () => {
             await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaaa', status: true, recycle: false })
             await scoreTypeRepository.save({ name: '积分', type: 'int', default: true, description: '用户的积分值' })
-            jest.spyOn(scoreRepository,'save').mockImplementationOnce(async ()=>{throw new Error('创建积分失败')})
+            jest.spyOn(scoreRepository, 'save').mockImplementationOnce(async () => { throw new Error('创建积分失败') })
             try {
                 let score = await scoreService.getScore(1, 1)
                 expect(1).toBe(2)
@@ -119,6 +119,105 @@ describe('ScoreService', async () => {
 
     })
 
+    describe('setScore', async () => {
 
+        it('should success with create new int score ', async () => {
+            await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaaa', status: true, recycle: false })
+            await scoreTypeRepository.save({ name: '积分', type: 'int', default: true, description: '用户的积分值' })
+            await scoreService.setScore(1, 1, 1234)
+            let score = await scoreRepository.findOneById(1)
+            expect(score).toEqual({ id: 1, name: '积分', value: 1234 })
+        })
+
+        it('should success with create new float score ', async () => {
+            await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaaa', status: true, recycle: false })
+            await scoreTypeRepository.save({ name: '积分', type: 'float', default: true, description: '用户的积分值' })
+            await scoreService.setScore(1, 1, 1234.1234)
+            let score = await scoreRepository.findOneById(1)
+            expect(score).toEqual({ id: 1, name: '积分', value: 1234.1234 })
+        })
+
+        it('should success with old int score add int score', async () => {
+            let user = await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaaa', status: true, recycle: false })
+            let scoreType = await scoreTypeRepository.save({ name: '积分', type: 'int', default: true, description: '用户的积分值' })
+            await scoreRepository.save({ name: '积分', value: 1234, scoreType, user })
+            await scoreService.setScore(1, 1, 1234)
+            let score = await scoreRepository.findOneById(1)
+            expect(score).toEqual({ id: 1, name: '积分', value: 2468 })
+        })
+
+        it('should success with old int score add float score and type = int', async () => {
+            let user = await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaaa', status: true, recycle: false })
+            let scoreType = await scoreTypeRepository.save({ name: '积分', type: 'int', default: true, description: '用户的积分值' })
+            await scoreRepository.save({ name: '积分', value: 1234, scoreType, user })
+            await scoreService.setScore(1, 1, 1234.1234)
+            let score = await scoreRepository.findOneById(1)
+            expect(score).toEqual({ id: 1, name: '积分', value: 2468 })
+        })
+
+        it('should success with old float score add float score', async () => {
+            let user = await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaaa', status: true, recycle: false })
+            let scoreType = await scoreTypeRepository.save({ name: '积分', type: 'float', default: true, description: '用户的积分值' })
+            await scoreRepository.save({ name: '积分', value: 1234.1234, scoreType, user })
+            await scoreService.setScore(1, 1, 1234.1234)
+            let score = await scoreRepository.findOneById(1)
+            expect(score).toEqual({ id: 1, name: '积分', value: 2468.2468 })
+        })
+
+        it('should success with old int score reduce int score', async () => {
+            let user = await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaaa', status: true, recycle: false })
+            let scoreType = await scoreTypeRepository.save({ name: '积分', type: 'int', default: true, description: '用户的积分值' })
+            await scoreRepository.save({ name: '积分', value: 1234, scoreType, user })
+            await scoreService.setScore(1, 1, -234)
+            let score = await scoreRepository.findOneById(1)
+            expect(score).toEqual({ id: 1, name: '积分', value: 1000 })
+        })
+
+        it('should success with old float score reduce float score', async () => {
+            let user = await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaaa', status: true, recycle: false })
+            let scoreType = await scoreTypeRepository.save({ name: '积分', type: 'float', default: true, description: '用户的积分值' })
+            await scoreRepository.save({ name: '积分', value: 1234.1234, scoreType, user })
+            await scoreService.setScore(1, 1, -1200.0034)
+            let score = await scoreRepository.findOneById(1)
+            expect(score).toEqual({ id: 1, name: '积分', value: 34.12 })
+        })
+
+        it('should throw HttpException;指定id=1积分类型不存在, 427', async () => {
+            try {
+                let score = await scoreService.setScore(1, 1, 112)
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(427)
+                expect(err.getResponse()).toBe('指定id=1积分类型不存在')
+            }
+        })
+
+        it('should throw HttpException:指定id=1用户不存在, 428',async ()=>{
+            let scoreType = await scoreTypeRepository.save({ name: '积分', type: 'int', default: true, description: '用户的积分值' })            
+            try {
+                let score = await scoreService.setScore(1, 1, 112)
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(428)
+                expect(err.getResponse()).toBe('指定id=1用户不存在')
+            }
+        })
+
+        it('should throw HttpException:数据库错误Error: 创建积分失败, 401', async () => {
+            await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaaa', status: true, recycle: false })
+            await scoreTypeRepository.save({ name: '积分', type: 'int', default: true, description: '用户的积分值' })
+            jest.spyOn(scoreRepository, 'save').mockImplementationOnce(async () => { throw new Error('创建积分失败') })
+            try {
+                let score = await scoreService.setScore(1, 1,12)
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(401)
+                expect(err.getResponse()).toBe('数据库错误Error: 创建积分失败')
+            }
+        })
+    })
 
 })
