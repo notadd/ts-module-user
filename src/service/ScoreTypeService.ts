@@ -17,7 +17,7 @@ export class ScoreTypeService {
     async createScoreType(name: string, type: string, description: string): Promise<void> {
         let exist: ScoreType = await this.scoreTypeRepository.findOne({ name })
         if (exist) {
-            throw new HttpException('指定名称积分类型已存在', 424)
+            throw new HttpException('指定名称name='+name+'积分类型已存在',424)
         }
         //方法中创建的积分项都是非默认的
         let scoreType: ScoreType = this.scoreTypeRepository.create({ name, type, default: false, description })
