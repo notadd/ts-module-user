@@ -103,4 +103,66 @@ describe('ScoreTypeService', async () => {
             }
         })
     })
+
+    describe('updateScoreType', async () => {
+
+        it('should success', async () => {
+            await scoreTypeRepository.save({ id: 1, name: '贡献', type: 'int', default: false, description: '用户的贡献值' })
+            let type1 = await scoreTypeRepository.findOneById(1)
+            await scoreTypeService.updateScoreType(1, '积分', 'float', '用户的积分值')
+            let type2 = await scoreTypeRepository.findOneById(1)
+            expect(type1).toEqual({ id: 1, name: '贡献', type: 'int', default: 0, description: '用户的贡献值' })
+            expect(type2).toEqual({ id: 1, name: '积分', type: 'float', default: 0, description: '用户的积分值' })
+        })
+
+        it('should throw HttpException:指定id=1积分类型不存在, 425', async () => {
+            try {
+                await scoreTypeService.updateScoreType(1, '贡献', 'int', '用户的贡献')
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(425)
+                expect(err.getResponse()).toBe('指定id=1积分类型不存在')
+            }
+        })
+
+        it('should throw HttpException:默认积分类型不允许更改, 426', async () => {
+            await scoreTypeRepository.save({ id: 1, name: '贡献', type: 'int', default: true, description: '用户的贡献值' })
+            try {
+                await scoreTypeService.updateScoreType(1, '贡献', 'int', '用户的贡献')
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(426)
+                expect(err.getResponse()).toBe('默认积分类型不允许更改')
+            }
+        })
+
+        it('should throw HttpException:指定名称name=积分积分类型已存在, 424', async () => {
+            await scoreTypeRepository.save({ id: 1, name: '贡献', type: 'int', default: false, description: '用户的贡献值' })
+            await scoreTypeRepository.save({ id: 2, name: '积分', type: 'int', default: false, description: '用户的贡献值' })
+            try {
+                await scoreTypeService.updateScoreType(1, '积分', 'int', '用户的贡献')
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(424)
+                expect(err.getResponse()).toBe('指定名称name=积分积分类型已存在')
+            }
+        })
+
+        it('should throw HttpException:数据库错误Error: 更新积分类型失败，401', async () => {
+            await scoreTypeRepository.save({ id: 1, name: '贡献', type: 'int', default: false, description: '用户的贡献值' })
+            jest.spyOn(scoreTypeRepository,'save').mockImplementationOnce(async ()=>{throw new Error('更新积分类型失败')})
+            try {
+                await scoreTypeService.updateScoreType(1, '积分', 'int', '用户的贡献')
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(401)
+                expect(err.getResponse()).toBe('数据库错误Error: 更新积分类型失败')
+            }     
+        })
+
+    })
 })
