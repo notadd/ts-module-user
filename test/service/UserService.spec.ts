@@ -3,6 +3,7 @@ import { TestConnectionProvider } from '../database/TestConnectionProvider';
 import { StoreComponent } from '../../src/interface/StoreComponent';
 import { TestingModule } from '@nestjs/testing/testing-module';
 import { UserService } from '../../src/service/UserService';
+import { Organization } from '../../src/model/Organization';
 import { Permission } from '../../src/model/Permission';
 import { Repository, Connection } from 'typeorm';
 import { Module } from '../../src/model/Module';
@@ -24,8 +25,9 @@ describe('UserService', async () => {
     let funcRepository: Repository<Func>
     let moduleRepository: Repository<Module>
     let permissionRepository: Repository<Permission>
-    let tables = ['permission', 'function', 'role', 'user', 'module']
-    let joinTables = ['user_role', 'role_func', 'function_permission', 'user_adds_permission', 'user_reduces_permission']
+    let organizationRepository: Repository<Organization>
+    let tables = ['permission', 'function', 'role', 'user', 'module', 'organization']
+    let joinTables = ['organization_user', 'user_role', 'role_func', 'function_permission', 'user_adds_permission', 'user_reduces_permission']
 
     beforeAll(async () => {
         testModule = await Test.createTestingModule({
@@ -33,38 +35,32 @@ describe('UserService', async () => {
         }).overrideComponent('StoreComponentToken').useValue({}).compile()
         connection = testModule.get('UserPMModule.Connection')
         userService = testModule.get<UserService>(UserService)
+        storeComponent = testModule.get('StoreComponentToken')
         userRepository = testModule.get('UserPMModule.UserRepository')
         roleRepository = testModule.get('UserPMModule.RoleRepository')
         funcRepository = testModule.get('UserPMModule.FuncRepository')
         moduleRepository = testModule.get('UserPMModule.ModuleRepository')
         permissionRepository = testModule.get('UserPMModule.PermissionRepository')
+        organizationRepository = testModule.get('UserPMModule.OrganizationRepository')
     }, 10000)
 
-    /* 在每个it运行之前都会运行，而不是在这一级包含的每个describe运行之前 */
-    beforeEach(async () => {
-        for (let i = 0; i < joinTables.length; i++) {
-            await connection.query('delete from ' + joinTables[i])
-        }
-        for (let i = 0; i < tables.length; i++) {
-            await connection.query('delete from ' + tables[i])
-            await connection.query('alter table ' + tables[i] + ' auto_increment = 1')
-        }
-    })
-
     afterAll(async () => {
-        for (let i = 0; i < joinTables.length; i++) {
-            await connection.query('delete from ' + joinTables[i])
-        }
-        for (let i = 0; i < tables.length; i++) {
-            await connection.query('delete from ' + tables[i])
-            await connection.query('alter table ' + tables[i] + ' auto_increment = 1')
-        }
         if (connection && connection.isConnected) {
             await connection.close()
         }
     })
 
     describe('getAll', async () => {
+
+        beforeEach(async () => {
+            await connection.query('delete from user')
+            await connection.query('alter table user auto_increment = 1')
+        })
+
+        afterAll(async () => {
+            await connection.query('delete from user')
+            await connection.query('alter table user auto_increment = 1')
+        })
 
         it('should be array with length is 0', async () => {
             let users = await userService.getAll()
@@ -88,7 +84,7 @@ describe('UserService', async () => {
             expect(users[3]).toEqual({ id: 4, userName: '牛六', password: '654123', salt: 'ddddd', status: 1, recycle: 0 })
         })
 
-        it('the user with recycle is true not return',async ()=>{
+        it('the user with recycle is true not return', async () => {
             await userRepository.save([
                 { userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false },
                 { userName: '李四', password: '654321', salt: 'bbbbb', status: true, recycle: true },
@@ -101,6 +97,56 @@ describe('UserService', async () => {
             expect(users[0]).toEqual({ id: 1, userName: '张三', password: '123456', salt: 'aaaaa', status: 1, recycle: 0 })
             expect(users[1]).toEqual({ id: 3, userName: '王五', password: '321456', salt: 'ccccc', status: 1, recycle: 0 })
             expect(users[2]).toEqual({ id: 4, userName: '牛六', password: '654123', salt: 'ddddd', status: 1, recycle: 0 })
+        })
+    })
+
+    describe('getFreedomUsers', async () => {
+
+        beforeEach(async () => {
+            await connection.query('delete from organization_user')
+            await connection.query('delete from user')
+            await connection.query('alter table user auto_increment = 1')
+            await connection.query('delete from organization')
+            await connection.query('alter table organization auto_increment = 1')
+        })
+
+        afterAll(async () => {
+            await connection.query('delete from organization_user')
+            await connection.query('delete from user')
+            await connection.query('alter table user auto_increment = 1')
+            await connection.query('delete from organization')
+            await connection.query('alter table organization auto_increment = 1')
+        })
+
+        it('should be array with length is 0', async () => {
+            let users = await userService.getFreedomUsers()
+            expect(users).toBeDefined()
+            expect(users.length).toBe(0)
+        })
+
+        it('should success', async () => {
+            let o = await organizationRepository.save({ name: '跑得快公司' })
+            await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false, organizations: [o] })
+            await userRepository.save({ userName: '李四', password: '654321', salt: 'bbbbb', status: true, recycle: false, organizations: [o] })
+            await userRepository.save({ userName: '王五', password: '321456', salt: 'ccccc', status: true, recycle: false })
+            await userRepository.save({ userName: '牛六', password: '654123', salt: 'ddddd', status: true, recycle: false })
+            let users = await userService.getFreedomUsers()
+            expect(users).toBeDefined()
+            expect(users.length).toBe(2)
+            expect(users[0]).toEqual({ id: 3, userName: '王五', password: '321456', salt: 'ccccc', status: 1, recycle: 0, organizations: [] })
+            expect(users[1]).toEqual({ id: 4, userName: '牛六', password: '654123', salt: 'ddddd', status: 1, recycle: 0, organizations: [] })
+        })
+
+        it('the user with recycle is true not return',async ()=>{
+            let o = await organizationRepository.save({ name: '跑得快公司' })
+            await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false, organizations: [o] })
+            await userRepository.save({ userName: '李四', password: '654321', salt: 'bbbbb', status: true, recycle: false, organizations: [o] })
+            await userRepository.save({ userName: '王五', password: '321456', salt: 'ccccc', status: true, recycle: true })
+            await userRepository.save({ userName: '牛六', password: '654123', salt: 'ddddd', status: true, recycle: false })
+            let users = await userService.getFreedomUsers()
+            expect(users).toBeDefined()
+            expect(users.length).toBe(1)
+            expect(users[0]).toEqual({ id: 4, userName: '牛六', password: '654123', salt: 'ddddd', status: 1, recycle: 0, organizations: [] })
         })
     })
 
