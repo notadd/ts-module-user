@@ -13,7 +13,7 @@ import { User } from '../../src/model/User';
 import { Role } from '../../src/model/Role';
 import { Func } from '../../src/model/Func';
 import { Test } from '@nestjs/testing';
-
+import * as crypto from 'crypto'
 
 describe('UserService', async () => {
 
@@ -261,7 +261,7 @@ describe('UserService', async () => {
             await connection.query('delete from role_func')
             await connection.query('delete from function_permission')
             await connection.query('delete from user_adds_permission')
-            await connection.query('delete from user_reduces_permission')            
+            await connection.query('delete from user_reduces_permission')
             await connection.query('delete from permission')
             await connection.query('alter table permission auto_increment = 1')
             await connection.query('delete from function')
@@ -279,7 +279,7 @@ describe('UserService', async () => {
             await connection.query('delete from role_func')
             await connection.query('delete from function_permission')
             await connection.query('delete from user_adds_permission')
-            await connection.query('delete from user_reduces_permission')            
+            await connection.query('delete from user_reduces_permission')
             await connection.query('delete from permission')
             await connection.query('alter table permission auto_increment = 1')
             await connection.query('delete from function')
@@ -302,37 +302,37 @@ describe('UserService', async () => {
         it('when adds and reduces is empty array ,should return roles contain permission', async () => {
             let module = await moduleRepository.save({ token: 'aaaa' })
             let user = await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false })
-            let per1 = await permissionRepository.save({name:'创建文章',description:'创建文章的权限',module})
-            let per2 = await permissionRepository.save({name:'更新文章',description:'更新文章的权限',module})
-            let per3 = await permissionRepository.save({name:'删除文章',description:'删除文章的权限',module})
-            let func = await funcRepository.save({name:'文章管理',module,permissions:[per1,per2,per3]})
-            await roleRepository.save({name:'文章管理员',score:80,users:[user],module,funcs:[func]})
+            let per1 = await permissionRepository.save({ name: '创建文章', description: '创建文章的权限', module })
+            let per2 = await permissionRepository.save({ name: '更新文章', description: '更新文章的权限', module })
+            let per3 = await permissionRepository.save({ name: '删除文章', description: '删除文章的权限', module })
+            let func = await funcRepository.save({ name: '文章管理', module, permissions: [per1, per2, per3] })
+            await roleRepository.save({ name: '文章管理员', score: 80, users: [user], module, funcs: [func] })
             let pers = await userService.permissions(1)
             expect(pers).toBeDefined()
             expect(pers.length).toBe(3)
-            expect(pers[0]).toEqual({id:1,name:'创建文章',description:'创建文章的权限',moduleToken:'aaaa'})
-            expect(pers[1]).toEqual({id:2,name:'更新文章',description:'更新文章的权限',moduleToken:'aaaa'})
-            expect(pers[2]).toEqual({id:3,name:'删除文章',description:'删除文章的权限',moduleToken:'aaaa'})
+            expect(pers[0]).toEqual({ id: 1, name: '创建文章', description: '创建文章的权限', moduleToken: 'aaaa' })
+            expect(pers[1]).toEqual({ id: 2, name: '更新文章', description: '更新文章的权限', moduleToken: 'aaaa' })
+            expect(pers[2]).toEqual({ id: 3, name: '删除文章', description: '删除文章的权限', moduleToken: 'aaaa' })
         })
 
-        it('when adds and reduces is exist,should return roles contain permission + adds - reduce',async ()=>{
+        it('when adds and reduces is exist,should return roles contain permission + adds - reduce', async () => {
             let module = await moduleRepository.save({ token: 'aaaa' })
-            let per1 = await permissionRepository.save({name:'创建文章',description:'创建文章的权限',module})
-            let per2 = await permissionRepository.save({name:'更新文章',description:'更新文章的权限',module})
-            let per3 = await permissionRepository.save({name:'删除文章',description:'删除文章的权限',module})
-            let per4 = await permissionRepository.save({name:'额外文章',description:'额外的权限',module})
-            let user = await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false ,adds:[per4],reduces:[per1]})            
-            let func = await funcRepository.save({name:'文章管理',module,permissions:[per1,per2,per3]})
-            await roleRepository.save({name:'文章管理员',score:80,users:[user],module,funcs:[func]})
+            let per1 = await permissionRepository.save({ name: '创建文章', description: '创建文章的权限', module })
+            let per2 = await permissionRepository.save({ name: '更新文章', description: '更新文章的权限', module })
+            let per3 = await permissionRepository.save({ name: '删除文章', description: '删除文章的权限', module })
+            let per4 = await permissionRepository.save({ name: '额外文章', description: '额外的权限', module })
+            let user = await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false, adds: [per4], reduces: [per1] })
+            let func = await funcRepository.save({ name: '文章管理', module, permissions: [per1, per2, per3] })
+            await roleRepository.save({ name: '文章管理员', score: 80, users: [user], module, funcs: [func] })
             let pers = await userService.permissions(1)
             expect(pers).toBeDefined()
             expect(pers.length).toBe(3)
-            expect(pers[0]).toEqual({id:2,name:'更新文章',description:'更新文章的权限',moduleToken:'aaaa'})
-            expect(pers[1]).toEqual({id:3,name:'删除文章',description:'删除文章的权限',moduleToken:'aaaa'})
-            expect(pers[2]).toEqual({id:4,name:'额外文章',description:'额外的权限',moduleToken:'aaaa'})
+            expect(pers[0]).toEqual({ id: 2, name: '更新文章', description: '更新文章的权限', moduleToken: 'aaaa' })
+            expect(pers[1]).toEqual({ id: 3, name: '删除文章', description: '删除文章的权限', moduleToken: 'aaaa' })
+            expect(pers[2]).toEqual({ id: 4, name: '额外文章', description: '额外的权限', moduleToken: 'aaaa' })
         })
 
-        it('should throw HttpException:指定id=1用户不存在, 406',async ()=>{
+        it('should throw HttpException:指定id=1用户不存在, 406', async () => {
             try {
                 await userService.permissions(1)
                 expect(1).toBe(2)
@@ -342,6 +342,64 @@ describe('UserService', async () => {
                 expect(err.getResponse()).toBe('指定id=1用户不存在')
             }
         })
+    })
 
+    describe('createUser', async () => {
+
+        beforeEach(async () => {
+            await connection.query('delete from user')
+            await connection.query('alter table user auto_increment = 1')
+        })
+
+        afterAll(async () => {
+            await connection.query('delete from user')
+            await connection.query('alter table user auto_increment = 1')
+        })
+
+        it('should success without organization', async () => {
+            await userService.createUser(null, '张三', '123456')
+            let user = await userRepository.findOneById(1)
+            expect(user).toBeDefined()
+            expect(user.id).toBe(1)
+            expect(user.userName).toBe('张三')
+            expect(user.status).toBe(1)
+            expect(user.recycle).toBe(0)
+            expect(user.password).toBe(crypto.createHash('md5').update('123456' + user.salt).digest('hex'))
+        })
+
+        it('should throw HttpException:指定id=1组织不存在, 402', async () => {
+            try {
+                await userService.createUser(1, '张三', '123456')
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(402)
+                expect(err.getResponse()).toBe('指定id=1组织不存在')
+            }
+        })
+
+        it('should throw HttpException:指定userName=张三用户已存在, 406',async ()=>{
+            await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false})
+            try {
+                await userService.createUser(null, '张三', '123456')
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(406)
+                expect(err.getResponse()).toBe('指定userName=张三用户已存在')
+            }
+        })
+
+        it('should throw HttpException:数据库错误Error: 创建用户失败, 401',async ()=>{
+            jest.spyOn(userRepository,'save').mockImplementationOnce(async ()=>{ throw new Error('创建用户失败')})
+            try {
+                await userService.createUser(null, '张三', '123456')
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(401)
+                expect(err.getResponse()).toBe('数据库错误Error: 创建用户失败')
+            }
+        })
     })
 })

@@ -114,13 +114,13 @@ export class UserService {
         if (organizationId) {
             let organization = await this.organizationRepository.findOneById(organizationId)
             if (!organization) {
-                throw new HttpException('指定组织不存在', 402)
+                throw new HttpException('指定id='+organizationId+'组织不存在', 402)
             }
             organizations.push(organization)
         }
         let exist: User = await this.userRepository.findOne({ userName })
         if (exist) {
-            throw new HttpException('指定用户名已存在', 406)
+            throw new HttpException('指定userName='+userName+'用户已存在', 406)
         }
         try {
             let salt = crypto.createHash('md5').update(new Date().toString()).digest('hex').slice(0, 10)
