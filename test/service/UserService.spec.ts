@@ -216,4 +216,41 @@ describe('UserService', async () => {
         })
 
     })
+
+    describe('roles', async () => {
+
+        beforeEach(async () => {
+            await connection.query('delete from user_role')
+            await connection.query('delete from role')
+            await connection.query('alter table role auto_increment = 1')
+            await connection.query('delete from user')
+            await connection.query('alter table user auto_increment = 1')
+        })
+
+        afterAll(async () => {
+            await connection.query('delete from user_role')
+            await connection.query('delete from role')
+            await connection.query('alter table role auto_increment = 1')
+            await connection.query('delete from user')
+            await connection.query('alter table user auto_increment = 1')
+        })
+
+        it('should be array with length is 0', async () => {
+            await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false })
+            let roles = await userService.roles(1)
+            expect(roles).toBeDefined()
+            expect(roles.length).toBe(0)
+        })
+
+        it('should success', async () => {
+            await moduleRepository.save({ token: 'aaaa' })
+            await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false, roles: [{ name: '文章管理员', score: 80, moduleToken: 'aaaa' }, { name: '后台管理员', score: 80, moduleToken: 'aaaa' }, { name: '论坛管理员', score: 80, moduleToken: 'aaaa' }] })
+            let roles = await userService.roles(1)
+            expect(roles).toBeDefined()
+            expect(roles.length).toBe(3)
+            expect(roles[0]).toEqual({ id: 1, name: '文章管理员', score: 80, moduleToken: 'aaaa' })
+            expect(roles[1]).toEqual({ id: 2, name: '后台管理员', score: 80, moduleToken: 'aaaa' })
+            expect(roles[2]).toEqual({ id: 3, name: '论坛管理员', score: 80, moduleToken: 'aaaa' })
+        })
+    })
 })
