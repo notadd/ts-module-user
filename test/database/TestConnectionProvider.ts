@@ -71,7 +71,7 @@ let sync = async () => {
             Role
         ],
         logger: 'simple-console',
-        logging: null,
+        logging: 'all',
         synchronize: true,
         dropSchema: true
     })

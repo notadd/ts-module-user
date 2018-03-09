@@ -5,6 +5,8 @@ import { TestingModule } from '@nestjs/testing/testing-module';
 import { UserService } from '../../src/service/UserService';
 import { Organization } from '../../src/model/Organization';
 import { Permission } from '../../src/model/Permission';
+import { InfoGroup } from '../../src/model/InfoGroup';
+import { InfoItem } from '../../src/model/InfoItem';
 import { UserInfo } from '../../src/model/UserInfo';
 import { Repository, Connection } from 'typeorm';
 import { Module } from '../../src/model/Module';
@@ -14,6 +16,7 @@ import { Role } from '../../src/model/Role';
 import { Func } from '../../src/model/Func';
 import { Test } from '@nestjs/testing';
 import * as crypto from 'crypto'
+import { watch } from 'fs';
 
 describe('UserService', async () => {
 
@@ -26,13 +29,28 @@ describe('UserService', async () => {
     let funcRepository: Repository<Func>
     let moduleRepository: Repository<Module>
     let userInfoRepository: Repository<UserInfo>
+    let infoItemRepository: Repository<InfoItem>
+    let infoGroupRepository: Repository<InfoGroup>
     let permissionRepository: Repository<Permission>
     let organizationRepository: Repository<Organization>
 
     beforeAll(async () => {
         testModule = await Test.createTestingModule({
             components: [TestConnectionProvider, ...TestRepositorysProvider, UserService]
-        }).overrideComponent('StoreComponentToken').useValue({}).compile()
+        }).overrideComponent('StoreComponentToken').useValue({
+            cache: {},
+            async delete(bucketName: string, name: string, type: string): Promise<void> {
+                this.cache[bucketName][name][type] = undefined
+            },
+            async upload(bucketName: string, rawName: string, base64: string, imagePreProcessInfo: any): Promise<{ bucketName: string, name: string, type: string }> {
+                let [name, type] = rawName.split('.')
+                this.cache[bucketName] = { [name]: { [type]: base64 } }
+                return { bucketName, name, type }
+            },
+            async getUrl(req: any, bucketName: string, name: string, type: string, imageProcessInfo: any): Promise<string> {
+                return 'http://localhost:8080/' + bucketName + '/' + name + '.' + type
+            }
+        }).compile()
         connection = testModule.get('UserPMModule.Connection')
         userService = testModule.get<UserService>(UserService)
         storeComponent = testModule.get('StoreComponentToken')
@@ -40,7 +58,9 @@ describe('UserService', async () => {
         roleRepository = testModule.get('UserPMModule.RoleRepository')
         funcRepository = testModule.get('UserPMModule.FuncRepository')
         moduleRepository = testModule.get('UserPMModule.ModuleRepository')
+        infoItemRepository = testModule.get('UserPMModule.InfoItemRepository')
         userInfoRepository = testModule.get('UserPMModule.UserInfoRepository')
+        infoGroupRepository = testModule.get('UserPMModule.InfoGroupRepository')
         permissionRepository = testModule.get('UserPMModule.PermissionRepository')
         organizationRepository = testModule.get('UserPMModule.OrganizationRepository')
     }, 10000)
@@ -378,8 +398,8 @@ describe('UserService', async () => {
             }
         })
 
-        it('should throw HttpException:指定userName=张三用户已存在, 406',async ()=>{
-            await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false})
+        it('should throw HttpException:指定userName=张三用户已存在, 406', async () => {
+            await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false })
             try {
                 await userService.createUser(null, '张三', '123456')
                 expect(1).toBe(2)
@@ -390,8 +410,8 @@ describe('UserService', async () => {
             }
         })
 
-        it('should throw HttpException:数据库错误Error: 创建用户失败, 401',async ()=>{
-            jest.spyOn(userRepository,'save').mockImplementationOnce(async ()=>{ throw new Error('创建用户失败')})
+        it('should throw HttpException:数据库错误Error: 创建用户失败, 401', async () => {
+            jest.spyOn(userRepository, 'save').mockImplementationOnce(async () => { throw new Error('创建用户失败') })
             try {
                 await userService.createUser(null, '张三', '123456')
                 expect(1).toBe(2)
@@ -399,6 +419,368 @@ describe('UserService', async () => {
                 expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(401)
                 expect(err.getResponse()).toBe('数据库错误Error: 创建用户失败')
+            }
+        })
+    })
+
+    describe('createUserWithUserInfo', async () => {
+
+        beforeEach(async () => {
+            (storeComponent as any).cache = {}
+            await connection.query('delete from user_infogroup')
+            await connection.query('delete from infogroup_infoitem')
+            await connection.query('delete from info_item')
+            await connection.query('alter table info_item auto_increment = 1')
+            await connection.query('delete from info_group')
+            await connection.query('alter table info_group auto_increment = 1')
+            await connection.query('delete from user_info')
+            await connection.query('alter table user_info auto_increment = 1')
+            await connection.query('delete from user')
+            await connection.query('alter table user auto_increment = 1')
+        })
+
+        afterAll(async () => {
+            (storeComponent as any).cache = {}            
+            await connection.query('delete from user_infogroup')
+            await connection.query('delete from infogroup_infoitem')
+            await connection.query('delete from info_item')
+            await connection.query('alter table info_item auto_increment = 1')
+            await connection.query('delete from info_group')
+            await connection.query('alter table info_group auto_increment = 1')
+            await connection.query('delete from user_info')
+            await connection.query('alter table user_info auto_increment = 1')
+            await connection.query('delete from user')
+            await connection.query('alter table user auto_increment = 1')
+        })
+
+        it('should success', async () => {
+            let group1 = await infoGroupRepository.save({
+                name: '基本信息',
+                default: true,
+                status: true,
+                items: [
+                    { name: 'nickname', label: '昵称', description: '用户的昵称', type: 'text', necessary: true, default: true, order: 1 },
+                    { name: 'age', label: '年龄', description: '用户的年龄', type: 'number', necessary: true, default: true, order: 2 },
+                    { name: 'hobby', label: '爱好', description: '用户的爱好', type: 'checkbox', necessary: true, default: true, order: 3 },
+                ]
+            })
+            let group2 = await infoGroupRepository.save({
+                name: '认证信息',
+                default: true,
+                status: true,
+                items: [
+                    { name: 'cardNumber', label: '身份证号', description: '用户的身份证号', type: 'text', necessary: true, default: true, order: 1 },
+                    { name: 'email', label: '邮箱', description: '用户的邮箱', type: 'text', necessary: true, default: true, order: 2 },
+                    { name: 'phone', label: '电话', description: '用户的电话', type: 'text', necessary: true, default: true, order: 3 },
+                    { name: 'pic', label: '身份证照片', description: '用户的身份证正反面照片', type: 'uploadfile', necessary: true, default: true, order: 4 }
+                ]
+            })
+            await userService.createUserWithUserInfo(null, null, '张三', '123456', [{
+                groupId: 1,
+                infos: [
+                    { name: 'nickname', value: '三儿' },
+                    { name: 'age', value: '23' },
+                    { name: 'hobby', array: ['电影', '吃饭', '打游戏'] }
+                ]
+            },
+            {
+                groupId: 2,
+                infos: [
+                    { name: 'cardNumber', value: '619199201112222044x' },
+                    { name: 'email', value: '12345678@qq.com' },
+                    { name: 'phone', value: '17299990000' },
+                    { name: 'pic', rawName: 'test.jpeg', base64: 'XXADAB9WUDHQAUWDAWUDBWIUDBWUI', bucketName: 'public' }
+                ]
+            }])
+            let user = await userRepository.findOneById(1, { relations: ['userInfos'] })
+            expect(user).toBeDefined()
+            expect(user.id).toBe(1)
+            expect(user.userName).toBe('张三')
+            expect(user.status).toBe(1)
+            expect(user.recycle).toBe(0)
+            expect(user.password).toBe(crypto.createHash('md5').update('123456' + user.salt).digest('hex'))
+            expect(user.userInfos[0]).toEqual({ id: 1, key: 'nickname', value: '三儿', userId: 1 })
+            expect(user.userInfos[1]).toEqual({ id: 2, key: 'age', value: '23', userId: 1 })
+            expect(user.userInfos[2]).toEqual({ id: 3, key: 'hobby', value: '电影,吃饭,打游戏', userId: 1 })
+            expect(user.userInfos[3]).toEqual({ id: 4, key: 'cardNumber', value: '619199201112222044x', userId: 1 })
+            expect(user.userInfos[4]).toEqual({ id: 5, key: 'email', value: '12345678@qq.com', userId: 1 })
+            expect(user.userInfos[5]).toEqual({ id: 6, key: 'phone', value: '17299990000', userId: 1 })
+            expect(user.userInfos[6]).toEqual({ id: 7, key: 'pic', value: 'http://localhost:8080/public/test.jpeg', userId: 1 })
+
+        })
+
+        it('should throw HttpException:指定id=1组织不存在, 402', async () => {
+            try {
+                await userService.createUserWithUserInfo(null, 1, '张三', '123456', [])
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(402)
+                expect(err.getResponse()).toBe('指定id=1组织不存在')
+            }
+        })
+
+        it('should throw HttpException:指定userName=张三用户已存在, 406', async () => {
+            await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false })
+            try {
+                await userService.createUserWithUserInfo(null, null, '张三', '123456', [])
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(406)
+                expect(err.getResponse()).toBe('指定userName=张三用户已存在')
+            }
+        })
+
+        it('should throw HttpException:出现了数据库错误Error: 保存用户失败，401', async () => {
+            jest.spyOn(userRepository, 'create').mockImplementationOnce(() => { throw new Error('保存用户失败') })
+            try {
+                await userService.createUserWithUserInfo(null, null, '张三', '123456', [])
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(401)
+                expect(err.getResponse()).toBe('出现了数据库错误Error: 保存用户失败')
+            }
+        })
+
+        it('should throw HttpException:指定信息组id=1不存在, 408', async () => {
+            try {
+                await userService.createUserWithUserInfo(null, null, '张三', '123456', [{ groupId: 1, infos: [] }])
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(408)
+                expect(err.getResponse()).toBe('指定信息组id=1不存在')
+            }
+        })
+
+        it('should throw HttpException:指定名称信息项:email不存在于信息组id=1中, 409', async () => {
+            let group1 = await infoGroupRepository.save({
+                name: '基本信息',
+                default: true,
+                status: true,
+                items: [
+                    { name: 'nickname', label: '昵称', description: '用户的昵称', type: 'text', necessary: true, default: true, order: 1 },
+                    { name: 'age', label: '年龄', description: '用户的年龄', type: 'number', necessary: true, default: true, order: 2 },
+                    { name: 'hobby', label: '爱好', description: '用户的爱好', type: 'checkbox', necessary: true, default: true, order: 3 },
+                ]
+            })
+            try {
+                await userService.createUserWithUserInfo(null, null, '张三', '123456', [{
+                    groupId: 1,
+                    infos: [
+                        { name: 'nickname', value: '三儿' },
+                        { name: 'age', value: '23' },
+                        { name: 'hobby', array: ['电影', '吃饭', '打游戏'] },
+                        { name: 'email', value: 'aaaaaaaa' }
+                    ]
+                }])
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(409)
+                expect(err.getResponse()).toBe('指定名称信息项:email不存在于信息组id=1中')
+            }
+        })
+
+        it('should throw HttpException:指定名称信息值:nickname不存在, 410',async ()=>{
+            let group1 = await infoGroupRepository.save({
+                name: '基本信息',
+                default: true,
+                status: true,
+                items: [
+                    { name: 'nickname', label: '昵称', description: '用户的昵称', type: 'text', necessary: true, default: true, order: 1 },
+                    { name: 'age', label: '年龄', description: '用户的年龄', type: 'number', necessary: true, default: true, order: 2 },
+                    { name: 'hobby', label: '爱好', description: '用户的爱好', type: 'checkbox', necessary: true, default: true, order: 3 },
+                ]
+            })
+            try {
+                await userService.createUserWithUserInfo(null, null, '张三', '123456', [{
+                    groupId: 1,
+                    infos: [
+                        { name: 'nickname', value: '' },
+                        { name: 'age', value: '23' },
+                        { name: 'hobby', array: ['电影', '吃饭', '打游戏'] }
+                    ]
+                }])
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(410)
+                expect(err.getResponse()).toBe('指定名称信息值:nickname不存在')
+            }
+        })
+
+        it('should throw HttpException:指定名称信息项name=nickname必须为字符串, 410',async ()=>{
+            let group1 = await infoGroupRepository.save({
+                name: '基本信息',
+                default: true,
+                status: true,
+                items: [
+                    { name: 'nickname', label: '昵称', description: '用户的昵称', type: 'text', necessary: true, default: true, order: 1 },
+                    { name: 'age', label: '年龄', description: '用户的年龄', type: 'number', necessary: true, default: true, order: 2 },
+                    { name: 'hobby', label: '爱好', description: '用户的爱好', type: 'checkbox', necessary: true, default: true, order: 3 },
+                ]
+            })
+            try {
+                await userService.createUserWithUserInfo(null, null, '张三', '123456', [{
+                    groupId: 1,
+                    infos: [
+                        { name: 'nickname', value: {} as any },
+                        { name: 'age', value: '23' },
+                        { name: 'hobby', array: ['电影', '吃饭', '打游戏'] }
+                    ]
+                }])
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(410)
+                expect(err.getResponse()).toBe('指定名称信息项name=nickname必须为字符串')
+            }
+        })
+
+        it('should throw HttpException:指定名称信息项name=hobby必须为数组, 410',async ()=>{
+            let group1 = await infoGroupRepository.save({
+                name: '基本信息',
+                default: true,
+                status: true,
+                items: [
+                    { name: 'nickname', label: '昵称', description: '用户的昵称', type: 'text', necessary: true, default: true, order: 1 },
+                    { name: 'age', label: '年龄', description: '用户的年龄', type: 'number', necessary: true, default: true, order: 2 },
+                    { name: 'hobby', label: '爱好', description: '用户的爱好', type: 'checkbox', necessary: true, default: true, order: 3 },
+                ]
+            })
+            try {
+                await userService.createUserWithUserInfo(null, null, '张三', '123456', [{
+                    groupId: 1,
+                    infos: [
+                        { name: 'nickname', value: 'ddddd'},
+                        { name: 'age', value: '23' },
+                        { name: 'hobby', array: 'aaaaa' as any }
+                    ]
+                }])
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(410)
+                expect(err.getResponse()).toBe('指定名称信息项name=hobby必须为数组')
+            }
+        })
+
+        it('should throw HttpException:指定名称信息项name=pic必须具有文件base64编码, 410',async ()=>{
+            let group1 = await infoGroupRepository.save({
+                name: '认证信息',
+                default: true,
+                status: true,
+                items: [
+                    { name: 'cardNumber', label: '身份证号', description: '用户的身份证号', type: 'text', necessary: true, default: true, order: 1 },
+                    { name: 'email', label: '邮箱', description: '用户的邮箱', type: 'text', necessary: true, default: true, order: 2 },
+                    { name: 'phone', label: '电话', description: '用户的电话', type: 'text', necessary: true, default: true, order: 3 },
+                    { name: 'pic', label: '身份证照片', description: '用户的身份证正反面照片', type: 'uploadfile', necessary: true, default: true, order: 4 }
+                ]
+            })
+            try {
+                await userService.createUserWithUserInfo(null, null, '张三', '123456', [{
+                    groupId: 1,
+                    infos: [
+                        { name: 'cardNumber', value: '619199201112222044x' },
+                        { name: 'email', value: '12345678@qq.com' },
+                        { name: 'phone', value: '17299990000' },
+                        { name: 'pic', rawName: 'test.jpeg', base64: '', bucketName: 'public' }
+                    ]
+                }])
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(410)
+                expect(err.getResponse()).toBe('指定名称信息项name=pic必须具有文件base64编码')
+            }
+        })
+
+        it('should throw HttpException:指定名称信息项name=pic必须具有文件原名, 410',async ()=>{
+            let group1 = await infoGroupRepository.save({
+                name: '认证信息',
+                default: true,
+                status: true,
+                items: [
+                    { name: 'cardNumber', label: '身份证号', description: '用户的身份证号', type: 'text', necessary: true, default: true, order: 1 },
+                    { name: 'email', label: '邮箱', description: '用户的邮箱', type: 'text', necessary: true, default: true, order: 2 },
+                    { name: 'phone', label: '电话', description: '用户的电话', type: 'text', necessary: true, default: true, order: 3 },
+                    { name: 'pic', label: '身份证照片', description: '用户的身份证正反面照片', type: 'uploadfile', necessary: true, default: true, order: 4 }
+                ]
+            })
+            try {
+                await userService.createUserWithUserInfo(null, null, '张三', '123456', [{
+                    groupId: 1,
+                    infos: [
+                        { name: 'cardNumber', value: '619199201112222044x' },
+                        { name: 'email', value: '12345678@qq.com' },
+                        { name: 'phone', value: '17299990000' },
+                        { name: 'pic', rawName: '', base64: 'XXXADASDASDADADW', bucketName: 'public' }
+                    ]
+                }])
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(410)
+                expect(err.getResponse()).toBe('指定名称信息项name=pic必须具有文件原名')
+            }
+        })
+
+        it('should throw HttpException:指定名称信息项name=pic必须具有文件存储空间名, 410',async ()=>{
+            let group1 = await infoGroupRepository.save({
+                name: '认证信息',
+                default: true,
+                status: true,
+                items: [
+                    { name: 'cardNumber', label: '身份证号', description: '用户的身份证号', type: 'text', necessary: true, default: true, order: 1 },
+                    { name: 'email', label: '邮箱', description: '用户的邮箱', type: 'text', necessary: true, default: true, order: 2 },
+                    { name: 'phone', label: '电话', description: '用户的电话', type: 'text', necessary: true, default: true, order: 3 },
+                    { name: 'pic', label: '身份证照片', description: '用户的身份证正反面照片', type: 'uploadfile', necessary: true, default: true, order: 4 }
+                ]
+            })
+            try {
+                await userService.createUserWithUserInfo(null, null, '张三', '123456', [{
+                    groupId: 1,
+                    infos: [
+                        { name: 'cardNumber', value: '619199201112222044x' },
+                        { name: 'email', value: '12345678@qq.com' },
+                        { name: 'phone', value: '17299990000' },
+                        { name: 'pic', rawName: 'test.jpeg', base64: 'CASDAWRDAEFASEFSF', bucketName: '' }
+                    ]
+                }])
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(410)
+                expect(err.getResponse()).toBe('指定名称信息项name=pic必须具有文件存储空间名')
+            }
+        })
+
+        it('should throw HttpException:指定信息项:nickname,age,hobby为必填项, 410',async ()=>{
+            console.log('进入犯法噶')
+            let group1 = await infoGroupRepository.save({
+                name: '基本信息',
+                default: true,
+                status: true,
+                items: [
+                    { name: 'nickname', label: '昵称', description: '用户的昵称', type: 'text', necessary: true, default: true, order: 1 },
+                    { name: 'age', label: '年龄', description: '用户的年龄', type: 'number', necessary: true, default: true, order: 2 },
+                    { name: 'hobby', label: '爱好', description: '用户的爱好', type: 'checkbox', necessary: true, default: true, order: 3 },
+                ]
+            })
+            try {
+                console.log('准备创建用户')
+                await userService.createUserWithUserInfo(null, null, '张三', '123456', [{
+                    groupId: 1,
+                    infos: []
+                }])
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(410)
+                expect(err.getResponse()).toBe('指定信息项:nickname,age,hobby为必填项')
             }
         })
     })

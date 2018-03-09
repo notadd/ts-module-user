@@ -137,13 +137,13 @@ export class UserService {
         if (organizationId) {
             let organization = await this.organizationRepository.findOneById(organizationId)
             if (!organization) {
-                throw new HttpException('指定组织不存在', 402)
+                throw new HttpException('指定id='+organizationId+'组织不存在', 402)
             }
             organizations.push(organization)
         }
         let exist: User = await this.userRepository.findOne({ userName })
         if (exist) {
-            throw new HttpException('指定用户名已存在', 406)
+            throw new HttpException('指定userName='+userName+'用户已存在', 406)
         }
         const queryRunner = this.connection.createQueryRunner();
         await queryRunner.connect();
@@ -154,7 +154,7 @@ export class UserService {
             let user: User = this.userRepository.create({ userName, password: passwordWithSalt, salt, status: true, recycle: false, organizations, userInfos: [],infoGroups:[] })
             await this.addUserInfosAndInfoGroups(req, queryRunner.manager, user, groups)
             await queryRunner.manager.save(user)
-            await queryRunner.commitTransaction();
+            await queryRunner.commitTransaction()
         } catch (err) {
             await queryRunner.rollbackTransaction();
             if (err instanceof HttpException) {
@@ -201,7 +201,8 @@ export class UserService {
             if (existAddGroups.find(group => {
                 return group.id === groupId
             })) {
-                throw new HttpException('指定信息组id=' + groupId + '已经添加到用户id=' + user.id, 407)
+                /*创建用户时不会抛出这个异常 */
+                throw new HttpException('指定信息组id=' + groupId + '已经添加到用户id=' + user.id+'中', 407)
             }
             //查找信息组，关联它下面的信息项
             let group: InfoGroup = await manager.findOneById(InfoGroup, groupId, { relations: ['items'] })
@@ -234,7 +235,7 @@ export class UserService {
                         throw new HttpException('指定名称信息值:' + match.name + '不存在', 410)
                     }
                     if (!(typeof (infos[j] as TextInfo).value === 'string')) {
-                        throw new HttpException('指定类型信息项:' + match.type + '必须为字符串', 410)
+                        throw new HttpException('指定名称信息项name='+match.name+ '必须为字符串', 410)
                     }
                     //普字符串类型值只需要删除前后空白
                     result = (infos[j] as TextInfo).value.trim()
@@ -243,25 +244,24 @@ export class UserService {
                         throw new HttpException('指定名称信息值:' + match.name + '不存在', 410)
                     }
                     if (!((infos[j] as ArrayInfo).array instanceof Array)) {
-                        throw new HttpException('指定类型信息项:' + match.type + '必须为数组', 410)
+                        throw new HttpException('指定名称信息项name=' + match.name + '必须为数组', 410)
                     }
                     //数组类型以，连接各个元素为字符串
                     result = (infos[j] as ArrayInfo).array.join(',')
                 } else if (match.type === 'uploadimagewithpreview' || match.type === 'uploadfile') {
                     if (!(infos[j] as FileInfo).base64) {
-                        throw new HttpException('指定类型信息项:' + match.type + '必须具有文件base64编码', 410)
+                        throw new HttpException('指定名称信息项name=' + match.name + '必须具有文件base64编码', 410)
                     }
                     if (!(infos[j] as FileInfo).rawName) {
-                        throw new HttpException('指定类型信息项:' + match.type + '必须具有文件原名', 410)
+                        throw new HttpException('指定名称信息项name=' + match.name + '必须具有文件原名', 410)
                     }
                     if (!(infos[j] as FileInfo).bucketName) {
-                        throw new HttpException('指定类型信息项:' + match.type + '必须具有文件存储空间名', 410)
+                        throw new HttpException('指定名称信息项name=' + match.name + '必须具有文件存储空间名', 410)
                     }
                     //文件类型，上传到存储插件，并保存访问url
                     let { bucketName, name, type } = await this.storeComponent.upload((infos[j] as FileInfo).bucketName, (infos[j] as FileInfo).rawName, (infos[j] as FileInfo).base64, null)
                     result = await this.storeComponent.getUrl(req, bucketName, name, type, null)
                 }
-                //
                 let userInfo: UserInfo = this.userInfoRepository.create({ key: name, value: result })
                 user.userInfos.push(userInfo)
                 let index = necessary.findIndex(item => {
@@ -274,7 +274,7 @@ export class UserService {
             user.infoGroups.push(group)
             //如果必填项没有填写，抛出异常
             if (necessary.length !== 0) {
-                throw new HttpException('指定信息项:' + necessary + '为必填项', 410)
+                throw new HttpException('指定信息项:' + necessary.join(',') + '为必填项', 410)
             }
         }
     }

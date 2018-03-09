@@ -81,7 +81,9 @@ export class User {
         lazy: false,
         eager: false
     })
-    @JoinTable()
+    @JoinTable({
+        name: 'user_infogroup'
+    })
     infoGroups: InfoGroup[]
 
     /* 用户添加的权限 */
