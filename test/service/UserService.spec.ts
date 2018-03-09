@@ -26,8 +26,6 @@ describe('UserService', async () => {
     let moduleRepository: Repository<Module>
     let permissionRepository: Repository<Permission>
     let organizationRepository: Repository<Organization>
-    let tables = ['permission', 'function', 'role', 'user', 'module', 'organization']
-    let joinTables = ['organization_user', 'user_role', 'role_func', 'function_permission', 'user_adds_permission', 'user_reduces_permission']
 
     beforeAll(async () => {
         testModule = await Test.createTestingModule({
@@ -137,7 +135,7 @@ describe('UserService', async () => {
             expect(users[1]).toEqual({ id: 4, userName: '牛六', password: '654123', salt: 'ddddd', status: 1, recycle: 0, organizations: [] })
         })
 
-        it('the user with recycle is true not return',async ()=>{
+        it('the user with recycle is true not return', async () => {
             let o = await organizationRepository.save({ name: '跑得快公司' })
             await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false, organizations: [o] })
             await userRepository.save({ userName: '李四', password: '654321', salt: 'bbbbb', status: true, recycle: false, organizations: [o] })
@@ -150,4 +148,34 @@ describe('UserService', async () => {
         })
     })
 
+    describe('getRecycleUsers', async () => {
+
+        beforeEach(async () => {
+            await connection.query('delete from user')
+            await connection.query('alter table user auto_increment = 1')
+        })
+
+        afterAll(async () => {
+            await connection.query('delete from user')
+            await connection.query('alter table user auto_increment = 1')
+        })
+
+        it('should be array with length is 0', async () => {
+            let users = await userService.getRecycleUsers()
+            expect(users).toBeDefined()
+            expect(users.length).toBe(0)
+        })
+
+        it('should success', async () => {
+            await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false })
+            await userRepository.save({ userName: '李四', password: '654321', salt: 'bbbbb', status: true, recycle: false })
+            await userRepository.save({ userName: '王五', password: '321456', salt: 'ccccc', status: true, recycle: true })
+            await userRepository.save({ userName: '牛六', password: '654123', salt: 'ddddd', status: true, recycle: true })
+            let users = await userService.getRecycleUsers()
+            expect(users).toBeDefined()
+            expect(users.length).toBe(2)
+            expect(users[0]).toEqual({ id: 3, userName: '王五', password: '321456', salt: 'ccccc', status: 1, recycle: 1 })
+            expect(users[1]).toEqual({ id: 4, userName: '牛六', password: '654123', salt: 'ddddd', status: 1, recycle: 1 })
+        })
+    })
 })
