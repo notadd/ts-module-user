@@ -253,4 +253,95 @@ describe('UserService', async () => {
             expect(roles[2]).toEqual({ id: 3, name: '论坛管理员', score: 80, moduleToken: 'aaaa' })
         })
     })
+
+    describe('permissions', async () => {
+
+        beforeEach(async () => {
+            await connection.query('delete from user_role')
+            await connection.query('delete from role_func')
+            await connection.query('delete from function_permission')
+            await connection.query('delete from user_adds_permission')
+            await connection.query('delete from user_reduces_permission')            
+            await connection.query('delete from permission')
+            await connection.query('alter table permission auto_increment = 1')
+            await connection.query('delete from function')
+            await connection.query('alter table function auto_increment = 1')
+            await connection.query('delete from role')
+            await connection.query('alter table role auto_increment = 1')
+            await connection.query('delete from user')
+            await connection.query('alter table user auto_increment = 1')
+            await connection.query('delete from module')
+            await connection.query('alter table module auto_increment = 1')
+        })
+
+        afterAll(async () => {
+            await connection.query('delete from user_role')
+            await connection.query('delete from role_func')
+            await connection.query('delete from function_permission')
+            await connection.query('delete from user_adds_permission')
+            await connection.query('delete from user_reduces_permission')            
+            await connection.query('delete from permission')
+            await connection.query('alter table permission auto_increment = 1')
+            await connection.query('delete from function')
+            await connection.query('alter table function auto_increment = 1')
+            await connection.query('delete from role')
+            await connection.query('alter table role auto_increment = 1')
+            await connection.query('delete from user')
+            await connection.query('alter table user auto_increment = 1')
+            await connection.query('delete from module')
+            await connection.query('alter table module auto_increment = 1')
+        })
+
+        it('should be array with length is 0', async () => {
+            await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false })
+            let pers = await userService.permissions(1)
+            expect(pers).toBeDefined()
+            expect(pers.length).toBe(0)
+        })
+
+        it('when adds and reduces is empty array ,should return roles contain permission', async () => {
+            let module = await moduleRepository.save({ token: 'aaaa' })
+            let user = await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false })
+            let per1 = await permissionRepository.save({name:'创建文章',description:'创建文章的权限',module})
+            let per2 = await permissionRepository.save({name:'更新文章',description:'更新文章的权限',module})
+            let per3 = await permissionRepository.save({name:'删除文章',description:'删除文章的权限',module})
+            let func = await funcRepository.save({name:'文章管理',module,permissions:[per1,per2,per3]})
+            await roleRepository.save({name:'文章管理员',score:80,users:[user],module,funcs:[func]})
+            let pers = await userService.permissions(1)
+            expect(pers).toBeDefined()
+            expect(pers.length).toBe(3)
+            expect(pers[0]).toEqual({id:1,name:'创建文章',description:'创建文章的权限',moduleToken:'aaaa'})
+            expect(pers[1]).toEqual({id:2,name:'更新文章',description:'更新文章的权限',moduleToken:'aaaa'})
+            expect(pers[2]).toEqual({id:3,name:'删除文章',description:'删除文章的权限',moduleToken:'aaaa'})
+        })
+
+        it('when adds and reduces is exist,should return roles contain permission + adds - reduce',async ()=>{
+            let module = await moduleRepository.save({ token: 'aaaa' })
+            let per1 = await permissionRepository.save({name:'创建文章',description:'创建文章的权限',module})
+            let per2 = await permissionRepository.save({name:'更新文章',description:'更新文章的权限',module})
+            let per3 = await permissionRepository.save({name:'删除文章',description:'删除文章的权限',module})
+            let per4 = await permissionRepository.save({name:'额外文章',description:'额外的权限',module})
+            let user = await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false ,adds:[per4],reduces:[per1]})            
+            let func = await funcRepository.save({name:'文章管理',module,permissions:[per1,per2,per3]})
+            await roleRepository.save({name:'文章管理员',score:80,users:[user],module,funcs:[func]})
+            let pers = await userService.permissions(1)
+            expect(pers).toBeDefined()
+            expect(pers.length).toBe(3)
+            expect(pers[0]).toEqual({id:2,name:'更新文章',description:'更新文章的权限',moduleToken:'aaaa'})
+            expect(pers[1]).toEqual({id:3,name:'删除文章',description:'删除文章的权限',moduleToken:'aaaa'})
+            expect(pers[2]).toEqual({id:4,name:'额外文章',description:'额外的权限',moduleToken:'aaaa'})
+        })
+
+        it('should throw HttpException:指定id=1用户不存在, 406',async ()=>{
+            try {
+                await userService.permissions(1)
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(406)
+                expect(err.getResponse()).toBe('指定id=1用户不存在')
+            }
+        })
+
+    })
 })
