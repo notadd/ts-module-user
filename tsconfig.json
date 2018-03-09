@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "declaration": false,
+    "declaration": true,
     "noImplicitAny": false,
     "removeComments": true,
     "noLib": false,
@@ -9,14 +9,16 @@
     "experimentalDecorators": true,
     "target": "es6",
     "sourceMap": true,
-    "allowJs": true,
-    "outDir": "./dist"
+    "allowJs": false,
+    "outDir": "./dist",
+    "emitBOM": true
   },
   "include": [
-    "./**/*"
+    "src/**/*.ts",
+    "a.ts"
   ],
   "exclude": [
     "node_modules",
-    "**/*.spec.ts"
+    "test"
   ]
 }
