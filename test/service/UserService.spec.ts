@@ -5,6 +5,7 @@ import { TestingModule } from '@nestjs/testing/testing-module';
 import { UserService } from '../../src/service/UserService';
 import { Organization } from '../../src/model/Organization';
 import { Permission } from '../../src/model/Permission';
+import { UserInfo } from '../../src/model/UserInfo';
 import { Repository, Connection } from 'typeorm';
 import { Module } from '../../src/model/Module';
 import { HttpException } from '@nestjs/common';
@@ -24,6 +25,7 @@ describe('UserService', async () => {
     let roleRepository: Repository<Role>
     let funcRepository: Repository<Func>
     let moduleRepository: Repository<Module>
+    let userInfoRepository: Repository<UserInfo>
     let permissionRepository: Repository<Permission>
     let organizationRepository: Repository<Organization>
 
@@ -38,6 +40,7 @@ describe('UserService', async () => {
         roleRepository = testModule.get('UserPMModule.RoleRepository')
         funcRepository = testModule.get('UserPMModule.FuncRepository')
         moduleRepository = testModule.get('UserPMModule.ModuleRepository')
+        userInfoRepository = testModule.get('UserPMModule.UserInfoRepository')
         permissionRepository = testModule.get('UserPMModule.PermissionRepository')
         organizationRepository = testModule.get('UserPMModule.OrganizationRepository')
     }, 10000)
@@ -177,5 +180,40 @@ describe('UserService', async () => {
             expect(users[0]).toEqual({ id: 3, userName: '王五', password: '321456', salt: 'ccccc', status: 1, recycle: 1 })
             expect(users[1]).toEqual({ id: 4, userName: '牛六', password: '654123', salt: 'ddddd', status: 1, recycle: 1 })
         })
+    })
+
+    describe('userInfos', async () => {
+
+        beforeEach(async () => {
+            await connection.query('delete from user_info')
+            await connection.query('alter table user_info auto_increment = 1')
+            await connection.query('delete from user')
+            await connection.query('alter table user auto_increment = 1')
+        })
+
+        afterAll(async () => {
+            await connection.query('delete from user_info')
+            await connection.query('alter table user_info auto_increment = 1')
+            await connection.query('delete from user')
+            await connection.query('alter table user auto_increment = 1')
+        })
+
+        it('should be array with length is 0', async () => {
+            await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false })
+            let userInfos = await userService.userInfos(1)
+            expect(userInfos).toBeDefined()
+            expect(userInfos.length).toBe(0)
+        })
+
+        it('should success', async () => {
+            await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false, userInfos: [{ key: 'nickname', value: '三儿' }, { key: 'age', value: '22' }, { key: 'birthday', value: '1992-02-22' }] })
+            let userInfos = await userService.userInfos(1)
+            expect(userInfos).toBeDefined()
+            expect(userInfos.length).toBe(3)
+            expect(userInfos[0]).toEqual({ id: 1, key: 'nickname', value: '三儿', userId: 1 })
+            expect(userInfos[1]).toEqual({ id: 2, key: 'age', value: '22', userId: 1 })
+            expect(userInfos[2]).toEqual({ id: 3, key: 'birthday', value: '1992-02-22', userId: 1 })
+        })
+
     })
 })
