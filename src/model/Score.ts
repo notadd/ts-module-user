@@ -21,10 +21,12 @@ export class Score {
     })
     name: string
 
-    /* 积分值 */
+    /* 积分值，要采用定点小数存储，浮点数存储会有误差，小数点后6位，小数点前8位 */
     @Column({
         name: 'value',
-        type: 'float'
+        type: 'decimal',
+        precision:14,
+        scale:6
     })
     value: number
 

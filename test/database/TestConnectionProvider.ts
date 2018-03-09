@@ -12,18 +12,18 @@ import { Func } from '../../src/model/Func';
 import { createConnection } from 'typeorm';
 
 export const TestConnectionProvider = {
-    provide:'UserPMModule.Connection',
-    useFactory:async ()=>{
+    provide: 'UserPMModule.Connection',
+    useFactory: async () => {
         return await createConnection({
-            name:'user_pm_test',
+            name: 'user_pm_test',
             type: 'mysql',
             host: 'localhost',
             port: 3306,
             username: 'root',
             password: '123456',
             database: "test",
-            charset:'UTF8',
-            dateStrings:false,
+            charset: 'UTF8',
+            dateStrings: false,
             entities: [
                 Organization,
                 Permission,
@@ -37,10 +37,42 @@ export const TestConnectionProvider = {
                 Func,
                 Role
             ],
-            logger:'simple-console',
-            logging:null,
-            synchronize:false,
-            dropSchema:false
+            logger: 'simple-console',
+            logging: null,
+            synchronize: false,
+            dropSchema: false
         })
     }
+}
+
+/*同步表结构的脚本 */
+let sync = async () => {
+    createConnection({
+        name: 'user_pm_test',
+        type: 'mysql',
+        host: 'localhost',
+        port: 3306,
+        username: 'root',
+        password: '123456',
+        database: "test",
+        charset: 'UTF8',
+        dateStrings: false,
+        entities: [
+            Organization,
+            Permission,
+            InfoGroup,
+            ScoreType,
+            InfoItem,
+            UserInfo,
+            Module,
+            Score,
+            User,
+            Func,
+            Role
+        ],
+        logger: 'simple-console',
+        logging: null,
+        synchronize: true,
+        dropSchema: true
+    })
 }
