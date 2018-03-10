@@ -184,8 +184,8 @@ export class UserService {
 
     }
 
-    /* 当创建用户时将指定信息组的信息加入到用户对象中*/
-    async addUserInfosAndInfoItemsWhenCreateUser(req: IncomingMessage, user: User, group: InfoGroup, infos: UnionUserInfo[]): Promise<void> {
+    /* 将指定信息组的信息加入到用户对象中，里面没有数据库更改操作，只是改变了用户的userInfos、infoItems两个属性，当save时新的userInfo会被插入，旧的会被更新，infoItem与user的关系会被建立*/
+    async addUserInfosAndInfoItems(req: IncomingMessage, user: User, group: InfoGroup, infos: UnionUserInfo[]): Promise<void> {
         //获取所有信息项
         let items: InfoItem[] = group.items || []
         //所有必填信息项
@@ -195,7 +195,6 @@ export class UserService {
         //遍历得到的信息
         for (let j = 0; j < infos.length; j++) {
             let { name }: UnionUserInfo = infos[j]
-
             //查找名称匹配的信息项
             let match: InfoItem = items.find(item => {
                 return item.name === name
@@ -206,16 +205,17 @@ export class UserService {
             }
             /*获取根据信息项类型转换后的信息值 */
             let result: string = await this.transfromInfoValue(req, match, infos[j])
-            let userInfo: UserInfo = this.userInfoRepository.create({ infoItem: match, value: result })
             /*如果此时user中已经包含同名信息项，后来的覆盖先前的，因为相同信息项可能存在于多个组当中，而添加时可能出现一次添加多个组信息的情况，所以可能出现同类信息项 */
             let userInfoIndex = user.userInfos.findIndex(userInfo => userInfo.infoItemId === match.id)
             if (userInfoIndex >= 0) {
-                /*如果当前遍历的信息项对应的信息已经存在于用户的信息当中，先移除它，再添加 
-                  由于这是用户创建时使用的方法，所以不牵扯数据库层面的移除
-                */
-                user.userInfos.splice(userInfoIndex, 1)
+                /*如果当前遍历的信息项对应的信息已经存在于用户的信息当中，直接修改其value
+                  当创建用户时，出现重复，修改value后就会只保存新的用户信息
+                  当添加用户信息时，出现重复，就会修改以前的信息，并且cascaedUpdate*/
+                user.userInfos[userInfoIndex].value = result
+            } else {
+                /*不存在添加新的 */
+                user.userInfos.push(this.userInfoRepository.create({ infoItem: match, value: result }))
             }
-            user.userInfos.push(userInfo)
             /*获取填写的必填信息项的下标 */
             let index = necessary.findIndex(item => {
                 return item.id === match.id

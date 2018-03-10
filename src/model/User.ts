@@ -59,7 +59,7 @@ export class User {
     /* 用户所包含信息，为调用信息组生成的信息 */
     @OneToMany(type => UserInfo, userInfo => userInfo.user, {
         cascadeInsert: true,
-        cascadeUpdate: false,
+        cascadeUpdate: true,
         lazy: false,
         eager: false
     })
