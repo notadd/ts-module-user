@@ -423,19 +423,19 @@ describe('UserService', async () => {
         })
     })
 
-    describe('createUserWithUserInfo', async () => {
+    fdescribe('createUserWithUserInfo', async () => {
 
-        beforeEach(async () => {
+        beforeEach(async () => {        
             (storeComponent as any).cache = {}
             await connection.query('delete from user_infogroup')
-            await connection.query('delete from infogroup_infoitem')
-            await connection.query('delete from info_item')
-            await connection.query('alter table info_item auto_increment = 1')
-            await connection.query('delete from info_group')
-            await connection.query('alter table info_group auto_increment = 1')
-            await connection.query('delete from user_info')
-            await connection.query('alter table user_info auto_increment = 1')
-            await connection.query('delete from user')
+            await connection.query('delete from infogroup_infoitem')            
+            await connection.query('delete from info_item')            
+            await connection.query('alter table info_item auto_increment = 1')            
+            await connection.query('delete from info_group')            
+            await connection.query('alter table info_group auto_increment = 1')            
+            await connection.query('delete from user_info')            
+            await connection.query('alter table user_info auto_increment = 1')            
+            await connection.query('delete from user')            
             await connection.query('alter table user auto_increment = 1')
         })
 
@@ -755,11 +755,10 @@ describe('UserService', async () => {
                 expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(410)
                 expect(err.getResponse()).toBe('指定名称信息项name=pic必须具有文件存储空间名')
-            }
+            }  
         })
 
-        it('should throw HttpException:指定信息项:nickname,age,hobby为必填项, 410',async ()=>{
-            console.log('进入犯法噶')
+        it('should throw HttpException:指定信息项:nickname,age,hobby为必填项, 410',async ()=>{       
             let group1 = await infoGroupRepository.save({
                 name: '基本信息',
                 default: true,
@@ -771,7 +770,6 @@ describe('UserService', async () => {
                 ]
             })
             try {
-                console.log('准备创建用户')
                 await userService.createUserWithUserInfo(null, null, '张三', '123456', [{
                     groupId: 1,
                     infos: []

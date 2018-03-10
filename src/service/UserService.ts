@@ -157,6 +157,7 @@ export class UserService {
             await queryRunner.commitTransaction()
         } catch (err) {
             await queryRunner.rollbackTransaction();
+            await queryRunner.release()
             if (err instanceof HttpException) {
                 throw err
             } else {
@@ -214,7 +215,7 @@ export class UserService {
             let items: InfoItem[] = group.items || []
             //所有必填信息项
             let necessary: InfoItem[] = items.filter(item => {
-                return item.necessary === true
+                return !!item.necessary
             })
             //遍历得到的信息
             for (let j = 0; j < infos.length; j++) {
@@ -268,13 +269,14 @@ export class UserService {
                     return item.id === match.id
                 })
                 if (index >= 0) {
-                    necessary.slice(index, 1)
+                    necessary.splice(index, 1)
                 }
             }
             user.infoGroups.push(group)
             //如果必填项没有填写，抛出异常
             if (necessary.length !== 0) {
-                throw new HttpException('指定信息项:' + necessary.join(',') + '为必填项', 410)
+                let names = necessary.map(item=>item.name)
+                throw new HttpException('指定信息项:' + names.join(',') + '为必填项', 410)
             }
         }
     }
