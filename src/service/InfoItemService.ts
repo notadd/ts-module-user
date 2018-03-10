@@ -13,12 +13,15 @@ export class InfoItemService {
     ) { }
 
     /* 创建信息项 */
-    async createInfoItem(name: string, label: string, description: string, type: string, necessary: boolean, order: number): Promise<void> {
+    async createInfoItem(name: string, label: string, description: string, type: string, necessary: boolean, registerVisible: boolean, informationVisible: boolean, order: number): Promise<void> {
         let exist: InfoItem = await this.infoItemRepository.findOne({ name })
         if (exist) {
             throw new HttpException('指定名称信息项已存在：' + name, 412)
         }
-        let item: InfoItem = this.infoItemRepository.create({ name, label, default: false, description, type, necessary, order })
+        if (necessary && !registerVisible) {
+            throw new HttpException('指定名称name=' + name + '必填信息项，注册时必须可见', 412)
+        }
+        let item: InfoItem = this.infoItemRepository.create({ name, label, default: false, description, type, necessary, registerVisible, informationVisible, order })
         try {
             await this.infoItemRepository.save(item)
         } catch (err) {
@@ -27,7 +30,7 @@ export class InfoItemService {
     }
 
     /* 更新信息项 */
-    async updateInfoItem(id: number, name: string, label: string, description: string, type: string, necessary: boolean, order: number): Promise<void> {
+    async updateInfoItem(id: number, name: string, label: string, description: string, type: string, necessary: boolean, registerVisible: boolean, informationVisible: boolean, order: number): Promise<void> {
         let exist: InfoItem = await this.infoItemRepository.findOneById(id)
         if (!exist) {
             throw new HttpException('指定id=' + id + '信息项不存在', 413)
@@ -35,6 +38,9 @@ export class InfoItemService {
         //默认信息项无法更新
         if (exist.default) {
             throw new HttpException('默认信息项不允许更新', 413)
+        }
+        if (necessary && !registerVisible) {
+            throw new HttpException('指定名称name=' + name + '必填信息项，注册时必须可见', 412)
         }
         if (name !== exist.name) {
             let exist1: InfoItem = await this.infoItemRepository.findOne({ name })
@@ -47,6 +53,8 @@ export class InfoItemService {
         exist.description = description
         exist.type = type
         exist.necessary = necessary
+        exist.registerVisible = registerVisible
+        exist.informationVisible = informationVisible
         exist.order = order
         try {
             await this.infoItemRepository.save(exist)

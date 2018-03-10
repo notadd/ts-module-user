@@ -14,17 +14,17 @@ export class InfoItemResolver {
     ) { }
 
     @Mutation('createInfoItem')
-    async createInfoItem(req: IncomingMessage, body: { name: string, label: string, description: string, type: string, necessary: boolean, order: number }): Promise<Data> {
+    async createInfoItem(req: IncomingMessage, body: { name: string, label: string, description: string, type: string, necessary: boolean, registerVisible: boolean, informationVisible: boolean, order: number }): Promise<Data> {
         let data: Data = {
             code: 200,
             message: '创建信息项成功'
         }
         try {
-            let { name, label, description, type, necessary, order } = body
+            let { name, label, description, type, necessary, registerVisible, informationVisible, order } = body
             if (!name || !label || !type || necessary === undefined || necessary === null) {
                 throw new HttpException('缺少参数', 400)
             }
-            await this.infoItemService.createInfoItem(name, label, description, type, necessary, order)
+            await this.infoItemService.createInfoItem(name, label, description, type, necessary, registerVisible, informationVisible, order)
         } catch (err) {
             if (err instanceof HttpException) {
                 data.code = err.getStatus()
@@ -39,17 +39,17 @@ export class InfoItemResolver {
     }
 
     @Mutation('updateInfoItem')
-    async updateInfoItem(req: IncomingMessage, body: { id: number, name: string,label:string, description: string, type: string, necessary: boolean, order: number }): Promise<Data> {
+    async updateInfoItem(req: IncomingMessage, body: { id: number, name: string, label: string, description: string, type: string, necessary: boolean, registerVisible: boolean, informationVisible: boolean, order: number }): Promise<Data> {
         let data: Data = {
             code: 200,
             message: '更新信息项成功'
         }
         try {
-            let { id, name, label,description, type, necessary, order } = body
+            let { id, name, label, description, type, necessary, registerVisible, informationVisible, order } = body
             if (!id) {
                 throw new HttpException('缺少参数', 400)
             }
-            await this.infoItemService.updateInfoItem(id, name,label, description, type, necessary, order)
+            await this.infoItemService.updateInfoItem(id, name, label, description, type, necessary, registerVisible, informationVisible, order)
         } catch (err) {
             if (err instanceof HttpException) {
                 data.code = err.getStatus()

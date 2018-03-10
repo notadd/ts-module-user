@@ -78,14 +78,14 @@ export class InfoItem {
         name: 'register_visible',
         type: 'tinyint'
     })
-    register_visible: boolean
+    registerVisible: boolean
 
     /* 资料页是否可见，当前端需要用户资料信息时返回给它，目前暂定不可见就不返回 */
     @Column({
         name: 'information_visible',
         type: 'tinyint'
     })
-    information_visible: boolean
+    informationVisible: boolean
 
     /* 排序 */
     @Column({
