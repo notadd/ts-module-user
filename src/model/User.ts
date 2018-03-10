@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable, OneToMany } from 'typeorm';
 import { Organization } from './Organization';
 import { Permission } from './Permission';
-import { InfoGroup } from './InfoGroup';
+import { InfoItem } from './InfoItem';
 import { UserInfo } from './UserInfo';
 import { Score } from './Score';
 import { Role } from './Role';
@@ -74,17 +74,17 @@ export class User {
     })
     scores: Score[]
 
-    /* 用户已经填写的信息组*/
-    @ManyToMany(type => InfoGroup, {
+    /* 用户已经填写的信息项，用户只保存与用户信息以及信息项的关系，不保存与信息组的关系*/
+    @ManyToMany(type => InfoItem, {
         cascadeInsert: true,
         cascadeUpdate: false,
         lazy: false,
         eager: false
     })
     @JoinTable({
-        name: 'user_infogroup'
+        name: 'user_infoitem'
     })
-    infoGroups: InfoGroup[]
+    infoItems: InfoItem[]
 
     /* 用户添加的权限 */
     @ManyToMany(type => Permission, permission => permission.addUsers, {

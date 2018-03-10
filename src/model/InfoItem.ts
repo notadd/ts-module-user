@@ -2,6 +2,8 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable } from 't
 import { InfoGroup } from './InfoGroup';
 
 /* 信息项实体，代表了用户需要额外填写的信息项
+   信息项与信息组为多对多关系，这个关系只是为了方便调用
+   信息项与用户也是多对多关系，这个关系是为了记录哪些信息已经被填写
 */
 @Entity('info_item')
 export class InfoItem {
@@ -62,12 +64,28 @@ export class InfoItem {
     })
     type: string
 
-    /* 是否必填信息项，非必填信息项，如果未填写就不返回 */
+    /* 是否必填信息项，当提交一个信息组信息时，如果必填信息项未填，会返回错误 */
     @Column({
         name: 'necessary',
         type: 'tinyint'
     })
     necessary: boolean
+
+    /* 注册页是否可见，如果注册页不可见，则不会当前端在注册时请求信息项时不会返回
+       一个必填项必须是注册页可见的，非必填项随意
+    */
+    @Column({
+        name: 'register_visible',
+        type: 'tinyint'
+    })
+    register_visible: boolean
+
+    /* 资料页是否可见，当前端需要用户资料信息时返回给它，目前暂定不可见就不返回 */
+    @Column({
+        name: 'information_visible',
+        type: 'tinyint'
+    })
+    information_visible: boolean
 
     /* 排序 */
     @Column({

@@ -181,7 +181,7 @@ export class UserService {
 
     /* 为指定用户添加信息组方法，注意添加时这些信息组还未存在于用户信息中
        可以在初始注册时添加多个信息组，也可以为一个已存在用户添加多个信息组
-       添加与更新信息组是两个方法
+       添加与更新信息组是两个方法，如果信息项信息已经存在于用户之中
     */
     async addUserInfosAndInfoGroups(req: IncomingMessage, user: User, groups: { groupId: number, infos: UnionUserInfo[] }[]): Promise<void> {
         let existAddGroups: InfoGroup[] = user.infoGroups || []
