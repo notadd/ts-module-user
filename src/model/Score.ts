@@ -1,9 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable, ManyToOne,JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable, ManyToOne,JoinColumn,Index } from 'typeorm';
 import { ScoreType } from './ScoreType';
 import { User } from './User';
 
 /* 积分值，属于用户 */
 @Entity('score')
+@Index('scoreTypeId_userId',['scoreTypeId','userId'])
 export class Score {
 
     @PrimaryGeneratedColumn({
@@ -42,6 +43,9 @@ export class Score {
     })
     scoreType: ScoreType
 
+    @Column()
+    userId:number
+
     @ManyToOne(type => User, user => user.scores, {
         cascadeInsert: true,
         cascadeUpdate: false,
@@ -49,6 +53,10 @@ export class Score {
         onDelete: 'CASCADE',
         lazy: false,
         eager: false
+    })
+    @JoinColumn({
+        name: 'userId',
+        referencedColumnName: 'id'
     })
     user: User
 

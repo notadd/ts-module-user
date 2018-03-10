@@ -50,7 +50,8 @@ export class UserService {
         if (!user) {
             throw new HttpException('指定用户不存在', 406)
         }
-        let userInfos: UserInfo[] = await this.userInfoRepository.findByIds(user.userInfos.map(userInfo => userInfo.id), { relations: ['infoItem'] })
+        let userInfos: UserInfo[] = await this.userInfoRepository.createQueryBuilder("userInfo").leftJoinAndSelect('userInfo.infoItem','infoItem','userInfo.infoItemId=infoItem.id').where("userInfo.userId = :id", { id }).getMany();
+        console.log(userInfos)
         return userInfos.map(userInfo => { return { name: userInfo.infoItem.name, value: userInfo.value } })
     }
 
@@ -157,7 +158,7 @@ export class UserService {
             if (!group) {
                 throw new HttpException('指定信息组id=' + groupId + '不存在', 408)
             }
-            await this.addUserInfosAndInfoItemsWhenCreateUser(req, user, group, infos)
+            await this.addUserInfosAndInfoItems(req, user, group, infos)
         }
         try {
             await this.userRepository.save(user)
@@ -167,12 +168,19 @@ export class UserService {
     }
 
     async addUserInfoToUser(req: IncomingMessage, id: number, groups: { groupId: number, infos: UnionUserInfo[] }[]): Promise<void> {
-        let user: User = await this.userRepository.findOneById(id, { relations: ['userInfos', 'infoGroups'] })
+        let user: User = await this.userRepository.findOneById(id, { relations: ['userInfos', 'infoItems'] })
         if (!user) {
             throw new HttpException('指定用户不存在', 406)
         }
+        for (let i = 0; i < groups.length; i++) {
+            let { groupId, infos } = groups[i]
+            let group: InfoGroup = await this.infoGroupRepository.findOneById(groupId, { relations: ['items'] })
+            if (!group) {
+                throw new HttpException('指定信息组id=' + groupId + '不存在', 408)
+            }
+            await this.addUserInfosAndInfoItems(req, user, group, infos)
+        }
         try {
-            await this.addUserInfosAndInfoItems(req, user, groups)
             await this.userRepository.save(user)
         } catch (err) {
             if (err instanceof HttpException) {

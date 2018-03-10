@@ -427,7 +427,7 @@ describe('UserService', async () => {
 
         beforeEach(async () => {
             (storeComponent as any).cache = {}
-            await connection.query('delete from user_infogroup')
+            await connection.query('delete from user_infoitem')
             await connection.query('delete from infogroup_infoitem')
             await connection.query('delete from info_item')
             await connection.query('alter table info_item auto_increment = 1')
@@ -441,7 +441,7 @@ describe('UserService', async () => {
 
         afterAll(async () => {
             (storeComponent as any).cache = {}
-            await connection.query('delete from user_infogroup')
+            await connection.query('delete from user_infoitem')
             await connection.query('delete from infogroup_infoitem')
             await connection.query('delete from info_item')
             await connection.query('alter table info_item auto_increment = 1')
@@ -459,9 +459,9 @@ describe('UserService', async () => {
                 default: true,
                 status: true,
                 items: [
-                    { name: 'nickname', label: '昵称', description: '用户的昵称', type: 'text', necessary: true, default: true, order: 1 },
-                    { name: 'age', label: '年龄', description: '用户的年龄', type: 'number', necessary: true, default: true, order: 2 },
-                    { name: 'hobby', label: '爱好', description: '用户的爱好', type: 'checkbox', necessary: true, default: true, order: 3 },
+                    { name: 'nickname', label: '昵称', description: '用户的昵称', type: 'text', necessary: true, registerVisible: true, informationVisible: true, default: true, order: 1 },
+                    { name: 'age', label: '年龄', description: '用户的年龄', type: 'number', necessary: true, registerVisible: true, informationVisible: true, default: true, order: 2 },
+                    { name: 'hobby', label: '爱好', description: '用户的爱好', type: 'checkbox', necessary: true, registerVisible: true, informationVisible: true, default: true, order: 3 },
                 ]
             })
             let group2 = await infoGroupRepository.save({
@@ -469,10 +469,10 @@ describe('UserService', async () => {
                 default: true,
                 status: true,
                 items: [
-                    { name: 'cardNumber', label: '身份证号', description: '用户的身份证号', type: 'text', necessary: true, default: true, order: 1 },
-                    { name: 'email', label: '邮箱', description: '用户的邮箱', type: 'text', necessary: true, default: true, order: 2 },
-                    { name: 'phone', label: '电话', description: '用户的电话', type: 'text', necessary: true, default: true, order: 3 },
-                    { name: 'pic', label: '身份证照片', description: '用户的身份证正反面照片', type: 'uploadfile', necessary: true, default: true, order: 4 }
+                    { name: 'cardNumber', label: '身份证号', description: '用户的身份证号', type: 'text', necessary: true, registerVisible: true, informationVisible: true, default: true, order: 1 },
+                    { name: 'email', label: '邮箱', description: '用户的邮箱', type: 'text', necessary: true, registerVisible: true, informationVisible: true, default: true, order: 2 },
+                    { name: 'phone', label: '电话', description: '用户的电话', type: 'text', necessary: true, registerVisible: true, informationVisible: true, default: true, order: 3 },
+                    { name: 'pic', label: '身份证照片', description: '用户的身份证正反面照片', type: 'uploadfile', necessary: true, registerVisible: true, informationVisible: true, default: true, order: 4 }
                 ]
             })
             await userService.createUserWithUserInfo(null, null, '张三', '123456', [{
@@ -561,9 +561,9 @@ describe('UserService', async () => {
                 default: true,
                 status: true,
                 items: [
-                    { name: 'nickname', label: '昵称', description: '用户的昵称', type: 'text', necessary: true, default: true, order: 1 },
-                    { name: 'age', label: '年龄', description: '用户的年龄', type: 'number', necessary: true, default: true, order: 2 },
-                    { name: 'hobby', label: '爱好', description: '用户的爱好', type: 'checkbox', necessary: true, default: true, order: 3 },
+                    { name: 'nickname', label: '昵称', description: '用户的昵称', type: 'text', necessary: true, registerVisible: true, informationVisible: true, default: true, order: 1 },
+                    { name: 'age', label: '年龄', description: '用户的年龄', type: 'number', necessary: true, registerVisible: true, informationVisible: true, default: true, order: 2 },
+                    { name: 'hobby', label: '爱好', description: '用户的爱好', type: 'checkbox', necessary: true, registerVisible: true, informationVisible: true, default: true, order: 3 },
                 ]
             })
             try {
@@ -590,9 +590,9 @@ describe('UserService', async () => {
                 default: true,
                 status: true,
                 items: [
-                    { name: 'nickname', label: '昵称', description: '用户的昵称', type: 'text', necessary: true, default: true, order: 1 },
-                    { name: 'age', label: '年龄', description: '用户的年龄', type: 'number', necessary: true, default: true, order: 2 },
-                    { name: 'hobby', label: '爱好', description: '用户的爱好', type: 'checkbox', necessary: true, default: true, order: 3 },
+                    { name: 'nickname', label: '昵称', description: '用户的昵称', type: 'text', necessary: true, registerVisible: true, informationVisible: true, default: true, order: 1 },
+                    { name: 'age', label: '年龄', description: '用户的年龄', type: 'number', necessary: true, registerVisible: true, informationVisible: true, default: true, order: 2 },
+                    { name: 'hobby', label: '爱好', description: '用户的爱好', type: 'checkbox', necessary: true, registerVisible: true, informationVisible: true, default: true, order: 3 },
                 ]
             })
             try {
@@ -618,9 +618,9 @@ describe('UserService', async () => {
                 default: true,
                 status: true,
                 items: [
-                    { name: 'nickname', label: '昵称', description: '用户的昵称', type: 'text', necessary: true, default: true, order: 1 },
-                    { name: 'age', label: '年龄', description: '用户的年龄', type: 'number', necessary: true, default: true, order: 2 },
-                    { name: 'hobby', label: '爱好', description: '用户的爱好', type: 'checkbox', necessary: true, default: true, order: 3 },
+                    { name: 'nickname', label: '昵称', description: '用户的昵称', type: 'text', necessary: true, registerVisible: true, informationVisible: true, default: true, order: 1 },
+                    { name: 'age', label: '年龄', description: '用户的年龄', type: 'number', necessary: true, registerVisible: true, informationVisible: true, default: true, order: 2 },
+                    { name: 'hobby', label: '爱好', description: '用户的爱好', type: 'checkbox', necessary: true, registerVisible: true, informationVisible: true, default: true, order: 3 },
                 ]
             })
             try {
@@ -646,9 +646,9 @@ describe('UserService', async () => {
                 default: true,
                 status: true,
                 items: [
-                    { name: 'nickname', label: '昵称', description: '用户的昵称', type: 'text', necessary: true, default: true, order: 1 },
-                    { name: 'age', label: '年龄', description: '用户的年龄', type: 'number', necessary: true, default: true, order: 2 },
-                    { name: 'hobby', label: '爱好', description: '用户的爱好', type: 'checkbox', necessary: true, default: true, order: 3 },
+                    { name: 'nickname', label: '昵称', description: '用户的昵称', type: 'text', necessary: true, registerVisible: true, informationVisible: true, default: true, order: 1 },
+                    { name: 'age', label: '年龄', description: '用户的年龄', type: 'number', necessary: true, registerVisible: true, informationVisible: true, default: true, order: 2 },
+                    { name: 'hobby', label: '爱好', description: '用户的爱好', type: 'checkbox', necessary: true, registerVisible: true, informationVisible: true, default: true, order: 3 },
                 ]
             })
             try {
@@ -674,10 +674,10 @@ describe('UserService', async () => {
                 default: true,
                 status: true,
                 items: [
-                    { name: 'cardNumber', label: '身份证号', description: '用户的身份证号', type: 'text', necessary: true, default: true, order: 1 },
-                    { name: 'email', label: '邮箱', description: '用户的邮箱', type: 'text', necessary: true, default: true, order: 2 },
-                    { name: 'phone', label: '电话', description: '用户的电话', type: 'text', necessary: true, default: true, order: 3 },
-                    { name: 'pic', label: '身份证照片', description: '用户的身份证正反面照片', type: 'uploadfile', necessary: true, default: true, order: 4 }
+                    { name: 'cardNumber', label: '身份证号', description: '用户的身份证号', type: 'text', necessary: true, registerVisible: true, informationVisible: true, default: true, order: 1 },
+                    { name: 'email', label: '邮箱', description: '用户的邮箱', type: 'text', necessary: true, registerVisible: true, informationVisible: true, default: true, order: 2 },
+                    { name: 'phone', label: '电话', description: '用户的电话', type: 'text', necessary: true, registerVisible: true, informationVisible: true, default: true, order: 3 },
+                    { name: 'pic', label: '身份证照片', description: '用户的身份证正反面照片', type: 'uploadfile', necessary: true, registerVisible: true, informationVisible: true, default: true, order: 4 }
                 ]
             })
             try {
@@ -704,10 +704,10 @@ describe('UserService', async () => {
                 default: true,
                 status: true,
                 items: [
-                    { name: 'cardNumber', label: '身份证号', description: '用户的身份证号', type: 'text', necessary: true, default: true, order: 1 },
-                    { name: 'email', label: '邮箱', description: '用户的邮箱', type: 'text', necessary: true, default: true, order: 2 },
-                    { name: 'phone', label: '电话', description: '用户的电话', type: 'text', necessary: true, default: true, order: 3 },
-                    { name: 'pic', label: '身份证照片', description: '用户的身份证正反面照片', type: 'uploadfile', necessary: true, default: true, order: 4 }
+                    { name: 'cardNumber', label: '身份证号', description: '用户的身份证号', type: 'text', necessary: true, registerVisible: true, informationVisible: true, default: true, order: 1 },
+                    { name: 'email', label: '邮箱', description: '用户的邮箱', type: 'text', necessary: true, registerVisible: true, informationVisible: true, default: true, order: 2 },
+                    { name: 'phone', label: '电话', description: '用户的电话', type: 'text', necessary: true, registerVisible: true, informationVisible: true, default: true, order: 3 },
+                    { name: 'pic', label: '身份证照片', description: '用户的身份证正反面照片', type: 'uploadfile', necessary: true, registerVisible: true, informationVisible: true, default: true, order: 4 }
                 ]
             })
             try {
@@ -734,10 +734,10 @@ describe('UserService', async () => {
                 default: true,
                 status: true,
                 items: [
-                    { name: 'cardNumber', label: '身份证号', description: '用户的身份证号', type: 'text', necessary: true, default: true, order: 1 },
-                    { name: 'email', label: '邮箱', description: '用户的邮箱', type: 'text', necessary: true, default: true, order: 2 },
-                    { name: 'phone', label: '电话', description: '用户的电话', type: 'text', necessary: true, default: true, order: 3 },
-                    { name: 'pic', label: '身份证照片', description: '用户的身份证正反面照片', type: 'uploadfile', necessary: true, default: true, order: 4 }
+                    { name: 'cardNumber', label: '身份证号', description: '用户的身份证号', type: 'text', necessary: true, registerVisible: true, informationVisible: true, default: true, order: 1 },
+                    { name: 'email', label: '邮箱', description: '用户的邮箱', type: 'text', necessary: true, registerVisible: true, informationVisible: true, default: true, order: 2 },
+                    { name: 'phone', label: '电话', description: '用户的电话', type: 'text', necessary: true, registerVisible: true, informationVisible: true, default: true, order: 3 },
+                    { name: 'pic', label: '身份证照片', description: '用户的身份证正反面照片', type: 'uploadfile', necessary: true, registerVisible: true, informationVisible: true, default: true, order: 4 }
                 ]
             })
             try {
@@ -764,9 +764,9 @@ describe('UserService', async () => {
                 default: true,
                 status: true,
                 items: [
-                    { name: 'nickname', label: '昵称', description: '用户的昵称', type: 'text', necessary: true, default: true, order: 1 },
-                    { name: 'age', label: '年龄', description: '用户的年龄', type: 'number', necessary: true, default: true, order: 2 },
-                    { name: 'hobby', label: '爱好', description: '用户的爱好', type: 'checkbox', necessary: true, default: true, order: 3 },
+                    { name: 'nickname', label: '昵称', description: '用户的昵称', type: 'text', necessary: true, registerVisible: true, informationVisible: true, default: true, order: 1 },
+                    { name: 'age', label: '年龄', description: '用户的年龄', type: 'number', necessary: true, registerVisible: true, informationVisible: true, default: true, order: 2 },
+                    { name: 'hobby', label: '爱好', description: '用户的爱好', type: 'checkbox', necessary: true, registerVisible: true, informationVisible: true, default: true, order: 3 },
                 ]
             })
             try {
@@ -787,7 +787,7 @@ describe('UserService', async () => {
 
         beforeEach(async () => {
             (storeComponent as any).cache = {}
-            await connection.query('delete from user_infogroup')
+            await connection.query('delete from user_infoitem')
             await connection.query('delete from infogroup_infoitem')
             await connection.query('delete from info_item')
             await connection.query('alter table info_item auto_increment = 1')
@@ -820,9 +820,9 @@ describe('UserService', async () => {
                 default: true,
                 status: true,
                 items: [
-                    { name: 'nickname', label: '昵称', description: '用户的昵称', type: 'text', necessary: true, default: true, order: 1 },
-                    { name: 'age', label: '年龄', description: '用户的年龄', type: 'number', necessary: true, default: true, order: 2 },
-                    { name: 'hobby', label: '爱好', description: '用户的爱好', type: 'checkbox', necessary: true, default: true, order: 3 },
+                    { name: 'nickname', label: '昵称', description: '用户的昵称', type: 'text', necessary: true, registerVisible:true,informationVisible:true,default: true, order: 1 },
+                    { name: 'age', label: '年龄', description: '用户的年龄', type: 'number', necessary: true, registerVisible:true,informationVisible:true,default: true, order: 2 },
+                    { name: 'hobby', label: '爱好', description: '用户的爱好', type: 'checkbox', necessary: true, registerVisible:true,informationVisible:true,default: true, order: 3 },
                 ]
             })
             let group2 = await infoGroupRepository.save({
@@ -830,13 +830,13 @@ describe('UserService', async () => {
                 default: true,
                 status: true,
                 items: [
-                    { name: 'cardNumber', label: '身份证号', description: '用户的身份证号', type: 'text', necessary: true, default: true, order: 1 },
-                    { name: 'email', label: '邮箱', description: '用户的邮箱', type: 'text', necessary: true, default: true, order: 2 },
-                    { name: 'phone', label: '电话', description: '用户的电话', type: 'text', necessary: true, default: true, order: 3 },
-                    { name: 'pic', label: '身份证照片', description: '用户的身份证正反面照片', type: 'uploadfile', necessary: true, default: true, order: 4 }
+                    { name: 'cardNumber', label: '身份证号', description: '用户的身份证号', type: 'text', necessary: true, registerVisible:true,informationVisible:true,default: true, order: 1 },
+                    { name: 'email', label: '邮箱', description: '用户的邮箱', type: 'text', necessary: true, registerVisible:true,informationVisible:true,default: true, order: 2 },
+                    { name: 'phone', label: '电话', description: '用户的电话', type: 'text', necessary: true, registerVisible:true,informationVisible:true,default: true, order: 3 },
+                    { name: 'pic', label: '身份证照片', description: '用户的身份证正反面照片', type: 'uploadfile', necessary: true, registerVisible:true,informationVisible:true,default: true, order: 4 }
                 ]
             })
-            await userService.addUserInfo(null, 1, [{
+            await userService.addUserInfoToUser(null, 1, [{
                 groupId: 1,
                 infos: [
                     { name: 'nickname', value: '三儿' },

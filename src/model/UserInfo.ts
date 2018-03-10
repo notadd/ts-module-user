@@ -5,7 +5,7 @@ import { User } from './User';
 /* 用户信息实体类，这里填的信息是用户现有信息之外的信息
 */
 @Entity('user_info')
-@Index('key_userId', ['key', 'userId'])
+@Index('infoItemId_userId', ['infoItemId', 'userId'])
 export class UserInfo {
 
     @PrimaryGeneratedColumn()

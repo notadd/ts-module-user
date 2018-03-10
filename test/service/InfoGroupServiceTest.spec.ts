@@ -62,9 +62,9 @@ describe('InfoGroupService', async () => {
     describe('getItems', async () => {
 
         it('should success', async () => {
-            let name = { name: 'userName', label: '用户名', default: 1, description: '用户的名字', type: 'text', necessary: 1, order: 1 }
-            let age = { name: 'age', label: '年龄', default: 1, description: '用户的年龄', type: 'number', necessary: 1, order: 2 }
-            let sign = { name: 'sign', label: '签名', default: 1, description: '用户的签名', type: 'textarea', necessary: 1, order: 3 }
+            let name = { name: 'userName', label: '用户名', default: 1, description: '用户的名字', type: 'text', necessary: 1, registerVisible: 1, informationVisible: 1, order: 1 }
+            let age = { name: 'age', label: '年龄', default: 1, description: '用户的年龄', type: 'number', necessary: 1, registerVisible: 1, informationVisible: 1, order: 2 }
+            let sign = { name: 'sign', label: '签名', default: 1, description: '用户的签名', type: 'textarea', necessary: 1, registerVisible: 1, informationVisible: 1, order: 3 }
             await infoGroupRepository.save({ name: '基本信息', default: true, status: true, items: [name, age, sign] })
             let items = await infoGroupService.getInfoItems(1)
             expect(items).toBeDefined()
@@ -218,13 +218,13 @@ describe('InfoGroupService', async () => {
     describe('addInfoItem', async () => {
 
         it('should success', async () => {
-            await infoItemRepository.save({ name: 'userName', label: '用户名', default: false, description: '用户的名字', type: 'text', necessary: true, order: 1 })
+            await infoItemRepository.save({ name: 'userName', label: '用户名', default: false, description: '用户的名字', type: 'text', necessary: true, registerVisible: true, informationVisible: true, order: 1 })
             await infoGroupRepository.save({ name: '基本信息', default: false, status: true })
             await infoGroupService.addInfoItem(1, 1)
             let group = await infoGroupRepository.findOneById(1, { relations: ['items'] })
             expect(group.items).toBeDefined()
             expect(group.items.length).toBe(1)
-            expect(group.items[0]).toEqual({ id: 1, name: 'userName', label: '用户名', default: 0, description: '用户的名字', type: 'text', necessary: 1, order: 1 })
+            expect(group.items[0]).toEqual({ id: 1, name: 'userName', label: '用户名', default: 0, description: '用户的名字', type: 'text', necessary: 1, registerVisible: 1, informationVisible: 1, order: 1 })
         })
 
         it('should throw HttpException:给定id=1信息组不存在, 408', async () => {
@@ -263,7 +263,7 @@ describe('InfoGroupService', async () => {
         })
 
         it('should throw HttpException:默认信息项不可添加, 408', async () => {
-            await infoItemRepository.save({ name: 'userName', label: '用户名', default: true, description: '用户的名字', type: 'text', necessary: true, order: 1 })
+            await infoItemRepository.save({ name: 'userName', label: '用户名', default: true, description: '用户的名字', type: 'text', necessary: true, registerVisible: true, informationVisible: true, order: 1 })
             await infoGroupRepository.save({ name: '基本信息', default: false, status: true })
             try {
                 await infoGroupService.addInfoItem(1, 1)
@@ -276,7 +276,7 @@ describe('InfoGroupService', async () => {
         })
 
         it('should throw HttpException:指定信息项id=1已经存在于指定信息组id=1中, 410', async () => {
-            let item = { id: 1, name: 'userName', label: '用户名', default: false, description: '用户的名字', type: 'text', necessary: true, order: 1 }
+            let item = { id: 1, name: 'userName', label: '用户名', default: false, description: '用户的名字', type: 'text', necessary: true, registerVisible: true, informationVisible: true, order: 1 }
             await infoItemRepository.save(item)
             await infoGroupRepository.save({ name: '基本信息', default: false, status: true, items: [item] })
             try {
@@ -290,7 +290,7 @@ describe('InfoGroupService', async () => {
         })
 
         it('should throw HttpException:数据库错误Error: 添加信息项错误，401', async () => {
-            await infoItemRepository.save({ name: 'userName', label: '用户名', default: false, description: '用户的名字', type: 'text', necessary: true, order: 1 })
+            await infoItemRepository.save({ name: 'userName', label: '用户名', default: false, description: '用户的名字', type: 'text', necessary: true, registerVisible: true, informationVisible: true, order: 1 })
             await infoGroupRepository.save({ name: '基本信息', default: false, status: true })
             jest.spyOn(infoGroupRepository, 'save').mockImplementationOnce(async () => { throw new Error('添加信息项错误') })
             try {
@@ -307,7 +307,7 @@ describe('InfoGroupService', async () => {
     describe('removeInfoItem', async () => {
 
         it('should success', async () => {
-            let item = { id: 1, name: 'userName', label: '用户名', default: false, description: '用户的名字', type: 'text', necessary: true, order: 1 }
+            let item = { id: 1, name: 'userName', label: '用户名', default: false, description: '用户的名字', type: 'text', necessary: true, registerVisible: true, informationVisible: true, order: 1 }
             await infoItemRepository.save(item)
             await infoGroupRepository.save({ name: '基本信息', default: false, status: true, items: [item] })
             await infoGroupService.removeInfoItem(1, 1)
@@ -352,7 +352,7 @@ describe('InfoGroupService', async () => {
         })
 
         it('should throw HttpException:指定信息项id=1不存在于指定信息组id=1中, 411', async () => {
-            await infoItemRepository.save({ name: 'userName', label: '用户名', default: false, description: '用户的名字', type: 'text', necessary: true, order: 1 })
+            await infoItemRepository.save({ name: 'userName', label: '用户名', default: false, description: '用户的名字', type: 'text', necessary: true, registerVisible: true, informationVisible: true, order: 1 })
             await infoGroupRepository.save({ name: '基本信息', default: false, status: true })
             try {
                 await infoGroupService.removeInfoItem(1, 1)
@@ -365,7 +365,7 @@ describe('InfoGroupService', async () => {
         })
 
         it('should throw HttpException:数据库错误Error: 移除信息项错误，401', async () => {
-            let item = { id: 1, name: 'userName', label: '用户名', default: false, description: '用户的名字', type: 'text', necessary: true, order: 1 }
+            let item = { id: 1, name: 'userName', label: '用户名', default: false, description: '用户的名字', type: 'text', necessary: true, registerVisible: true, informationVisible: true, order: 1 }
             await infoItemRepository.save(item)
             await infoGroupRepository.save({ name: '基本信息', default: false, status: true, items: [item] })
             jest.spyOn(infoGroupRepository, 'save').mockImplementationOnce(async () => { throw new Error('移除信息项错误') })
