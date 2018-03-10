@@ -58,6 +58,17 @@ describe('InfoItemService', async () => {
             }
         })
 
+        it('should throw HttpException:指定名称name=userName必填信息项，注册时必须可见，412',async ()=>{
+            try {
+                await infoItemService.createInfoItem('userName', '用户名', '用户的名称', 'text', true, false, true, 1)
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(412)
+                expect(err.getResponse()).toBe('指定名称name=userName必填信息项，注册时必须可见')
+            }
+        })
+
         it('should throw HttpException:数据库错误Error: 创建信息项失败，401', async () => {
             jest.spyOn(infoItemRepository, 'save').mockImplementationOnce(async () => { throw new Error('创建信息项失败') })
             try {
@@ -102,6 +113,18 @@ describe('InfoItemService', async () => {
                 expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(413)
                 expect(err.getResponse()).toBe('默认信息项不允许更新')
+            }
+        })
+
+        it('should throw HttpException:指定名称name=userName必填信息项，注册时必须可见，412',async ()=>{
+            await infoItemRepository.save({ name: 'userName', label: '用户名', description: '用户的名称', type: 'text', necessary: true, registerVisible: true, informationVisible: true, order: 1, default: false })            
+            try {
+                await infoItemService.updateInfoItem(1,'userName', '用户名', '用户的名称', 'text', true, false, true, 1)
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(412)
+                expect(err.getResponse()).toBe('指定名称name=userName必填信息项，注册时必须可见')
             }
         })
 
