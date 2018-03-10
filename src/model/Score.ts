@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable, ManyToOne,JoinColumn } from 'typeorm';
 import { ScoreType } from './ScoreType';
 import { User } from './User';
 
@@ -12,15 +12,6 @@ export class Score {
     })
     id: number;
 
-    /* 积分类型名称，默认的积分类型有贡献、积分、余额、威望*/
-    @Column({
-        name: 'name',
-        type: 'varchar',
-        length: '20',
-        unique: true
-    })
-    name: string
-
     /* 积分值，要采用定点小数存储，浮点数存储会有误差，小数点后6位，小数点前8位 */
     @Column({
         name: 'value',
@@ -30,6 +21,10 @@ export class Score {
     })
     value: number
 
+    /*积分所属积分类型，当积分类型删除时所有积分会级联删除，由于积分不被其他表引用，所以级联删除不会出现问题
+      之所以不使用积分类型名称作为被引用的键，是因为积分类型名称可以修改，而要保证修改后的积分类型仍能找到所属积分必须将积分与积分类型关联起来
+      如同用户信息与信息项关联起来
+    */
     @ManyToOne(type => ScoreType, scoreType => scoreType.scores, {
         cascadeInsert: true,
         cascadeUpdate: false,
@@ -37,6 +32,10 @@ export class Score {
         onDelete: 'CASCADE',
         lazy: false,
         eager: false
+    })
+    @JoinColumn({
+        name: 'scoreTypeId',
+        referencedColumnName: 'id'
     })
     scoreType: ScoreType
 

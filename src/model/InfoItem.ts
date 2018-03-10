@@ -34,7 +34,7 @@ export class InfoItem {
     })
     label: string
 
-    /* 是否为默认信息项，默认信息项不可删除、更改 */
+    /* 是否为默认信息项，默认信息项不可删除、更改 、也不可添加到其他信息组中，默认信息项只能存在于默认信息组中*/
     @Column({
         name: 'default',
         type: 'tinyint'
@@ -50,7 +50,7 @@ export class InfoItem {
     description: string
 
     /* 信息项类型，即前端的表单类型 
-       根据不同的信息项，在UserInfo中存储时存储方式不同，key为信息项名称，value为值，统一为字符串
+       根据不同的信息项，在UserInfo中存储时计算方式不同，key为信息项名称，value为值，统一为字符串
        文本框，都是存储为字符串
        单选框存储为值，多选框、复选框存储为逗号分割的值
        日期存储为字符串
@@ -71,7 +71,7 @@ export class InfoItem {
     })
     necessary: boolean
 
-    /* 注册页是否可见，如果注册页不可见，则不会当前端在注册时请求信息项时不会返回
+    /* 注册页是否可见，如果注册页不可见，则当前端在注册请求信息项时不会返回
        一个必填项必须是注册页可见的，非必填项随意
     */
     @Column({
@@ -87,14 +87,14 @@ export class InfoItem {
     })
     informationVisible: boolean
 
-    /* 排序 */
+    /* 排序，由前端使用，后端不做验证(不要求一个信息组中信息项排序不可重复等等) */
     @Column({
         name: 'order',
         type: 'int'
     })
     order: number
 
-    /* 信息项下的用户信息，当信息项删除时信息也会删除 */
+    /* 信息项下的用户信息，当信息项删除时用户信息也会删除，用户信息中外键列infoItemId引用了信息项的id，当信息项名称修改后仍能找到其包含的信息 */
     @OneToMany(type => UserInfo, userInfo => userInfo.infoItem, {
         cascadeInsert: true,
         cascadeUpdate: false,

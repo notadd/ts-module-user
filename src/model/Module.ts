@@ -19,30 +19,30 @@ export class Module {
     })
     token: string;
 
-    /* 模块下存储的权限 */
+    /* 模块下存储的权限，级联删除被关闭，删除模块之前需要单独删除权限 */
     @OneToMany(type => Permission, permission => permission.module, {
         cascadeInsert: true,
         cascadeUpdate: false,
         lazy: false,
-        eager:false
+        eager: false
     })
     permissions: Permission[];
 
-    /* 模块下的功能，删除模块时，一起删除 */
+    /* 模块下的功能，删除模块之前需要单独删除功能，不能级联删除，因为功能被权限引用 */
     @OneToMany(type => Func, func => func.module, {
         cascadeInsert: true,
         cascadeUpdate: false,
         lazy: false,
-        eager:false
+        eager: false
     })
     funcs: Func[];
 
-    /* 模块下的角色，删除模块时统一删除 */
+    /* 模块下的角色，模块删除前需要单独删除角色，不能级联删除，因为角色被功能引用*/
     @OneToMany(type => Role, role => role.module, {
         cascadeInsert: true,
         cascadeUpdate: false,
         lazy: false,
-        eager:false
+        eager: false
     })
     roles: Role[];
 

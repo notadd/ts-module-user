@@ -30,7 +30,7 @@ export class Permission {
     })
     description: string;
 
-    /*添加了权限的用户 */
+    /*单独添加了权限的用户 */
     @ManyToMany(type => User, user => user.adds, {
         cascadeInsert: true,
         cascadeUpdate: false,
@@ -39,7 +39,7 @@ export class Permission {
     })
     addUsers: User[]
 
-    /*减去了权限的用户 */
+    /*单独减去了权限的用户 */
     @ManyToMany(type => User, user => user.reduces, {
         cascadeInsert: true,
         cascadeUpdate: false,
@@ -52,12 +52,12 @@ export class Permission {
     @Column()
     moduleToken: string
 
-    /* 所属模块 */
+    /* 所属模块 ，当模块删除之前需要单独删除权限，否则数据库外键检查会报错*/
     @ManyToOne(type => Module, module => module.permissions, {
         cascadeInsert: true,
         cascadeUpdate: false,
         cascadeRemove: false,
-        onDelete: 'CASCADE',
+        onDelete: 'RESTRICT',
         nullable: false,
         lazy: false,
         eager: false

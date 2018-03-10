@@ -56,8 +56,8 @@ export class UserInfo {
         eager: false
     })
     @JoinColumn({
-        name: 'key',
-        referencedColumnName: 'name'
+        name: 'infoItemId',
+        referencedColumnName: 'id'
     })
     infoItem: InfoItem
 }

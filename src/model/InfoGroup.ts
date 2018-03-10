@@ -33,17 +33,14 @@ export class InfoGroup {
     })
     default: boolean
 
-    /* 信息组状态，是否可用 */
+    /* 信息组状态，是否可用，目前还未启用这个特性 */
     @Column({
         name: 'status',
         type: 'tinyint'
     })
     status: boolean
 
-    /* 信息项与信息组是多对多关系
-       如果在组a中已经有了信息项X，组b也有信息向X
-       而组a已经被填写过了，即此时这个用户的X信息项存在
-       那么当添加组b时由前端将X信息项当前值显示出来
+    /* 信息项与信息组是多对多关系，当删除信息组时只是解除关联而已，信息组与信息项的删除分别进行
     */
     @ManyToMany(type => InfoItem, infoItem => infoItem.groups, {
         cascadeInsert: true,

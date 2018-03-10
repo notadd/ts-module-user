@@ -28,7 +28,7 @@ export class Role {
     })
     score: number
 
-    /* 角色包含功能，只能包含同一个模块下功能 */
+    /* 角色包含功能，只能包含同一个模块下功能，权限功能为多对多关系 */
     @ManyToMany(type => Func, {
         cascadeInsert: true,
         cascadeUpdate: false,
@@ -49,7 +49,7 @@ export class Role {
         cascadeInsert: true,
         cascadeUpdate: false,
         cascadeRemove: false,
-        onDelete: 'CASCADE',
+        onDelete: 'RESTRICT',
         nullable: false,
         lazy: false,
         eager: false
@@ -60,7 +60,7 @@ export class Role {
     })
     module: Module;
 
-    /* 拥有这个角色的用户，删除角色时，需要删除关联关系 */
+    /* 拥有这个角色的用户，删除角色时，需要删除关联关系，因为用户并不会被删除 */
     @ManyToMany(type => User, user => user.roles, {
         cascadeInsert: true,
         cascadeUpdate: false,
