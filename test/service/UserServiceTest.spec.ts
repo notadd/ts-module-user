@@ -813,7 +813,7 @@ describe('UserService', async () => {
         })
     })
 
-    describe('addUserInfo', async () => {
+    describe('addUserInfoToUser', async () => {
 
         beforeEach(async () => {
             (storeComponent as any).cache = {}
@@ -843,7 +843,7 @@ describe('UserService', async () => {
             await connection.query('alter table user auto_increment = 1')
         })
 
-        it('should success', async () => {
+        it('should success and exist UserInfo will be update', async () => {
             await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false })
             let group1 = await infoGroupRepository.save({
                 name: '基本信息',
@@ -891,6 +891,54 @@ describe('UserService', async () => {
             expect(user.userInfos[4]).toEqual({ id: 5, value: '12345678@qq.com', userId: 1, infoItemId: 5 })
             expect(user.userInfos[5]).toEqual({ id: 6, value: '17299990000', userId: 1, infoItemId: 6 })
             expect(user.userInfos[6]).toEqual({ id: 7, value: 'http://localhost:8080/public/test.jpeg', userId: 1, infoItemId: 7 })
+            await userService.addUserInfoToUser(null, 1, [{
+                groupId: 1,
+                infos: [
+                    { name: 'nickname', value: '三儿子' },
+                    { name: 'age', value: '28' },
+                    { name: 'hobby', array: ['睡觉', '打盹', '荡秋千'] }
+                ]
+            },
+            {
+                groupId: 2,
+                infos: [
+                    { name: 'cardNumber', value: '619199201112222044x' },
+                    { name: 'email', value: '12345678@qq.com' },
+                    { name: 'phone', value: '17299990000' },
+                    { name: 'pic', rawName: 'test.jpeg', base64: 'XXADAB9WUDHQAUWDAWUDBWIUDBWUI', bucketName: 'public' }
+                ]
+            }])
+            user = await userRepository.findOneById(1, { relations: ['userInfos'] })
+            expect(user.userInfos[0]).toEqual({ id: 1, value: '三儿子', userId: 1, infoItemId: 1 })
+            expect(user.userInfos[1]).toEqual({ id: 2, value: '28', userId: 1, infoItemId: 2 })
+            expect(user.userInfos[2]).toEqual({ id: 3, value: '睡觉,打盹,荡秋千', userId: 1, infoItemId: 3 })
+            expect(user.userInfos[3]).toEqual({ id: 4, value: '619199201112222044x', userId: 1, infoItemId: 4 })
+            expect(user.userInfos[4]).toEqual({ id: 5, value: '12345678@qq.com', userId: 1, infoItemId: 5 })
+            expect(user.userInfos[5]).toEqual({ id: 6, value: '17299990000', userId: 1, infoItemId: 6 })
+            expect(user.userInfos[6]).toEqual({ id: 7, value: 'http://localhost:8080/public/test.jpeg', userId: 1, infoItemId: 7 })
+        })
+
+        it('should throw HttpException:指定id=1用户不存在, 406',async ()=>{
+            try {
+                await userService.addUserInfoToUser(null,1,[])
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(406)
+                expect(err.getResponse()).toBe('指定id=1用户不存在')
+            }
+        })
+
+        it('should throw HttpException:指定信息组id=1不存在, 408',async ()=>{
+            await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false })            
+            try {
+                await userService.addUserInfoToUser(null,1,[{groupId:1,infos:[]}])
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(408)
+                expect(err.getResponse()).toBe('指定信息组id=1不存在')
+            }
         })
     })
 })

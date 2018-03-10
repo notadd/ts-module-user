@@ -169,7 +169,7 @@ export class UserService {
     async addUserInfoToUser(req: IncomingMessage, id: number, groups: { groupId: number, infos: UnionUserInfo[] }[]): Promise<void> {
         let user: User = await this.userRepository.findOneById(id, { relations: ['userInfos', 'infoItems'] })
         if (!user) {
-            throw new HttpException('指定用户不存在', 406)
+            throw new HttpException('指定id='+id+'用户不存在', 406)
         }
         for (let i = 0; i < groups.length; i++) {
             let { groupId, infos } = groups[i]
