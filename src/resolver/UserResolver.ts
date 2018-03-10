@@ -235,7 +235,7 @@ export class UserResolver {
             if (!id) {
                 throw new HttpException('缺少参数', 400)
             }
-            await this.userService.addUserInfo(req, id, groups)
+            await this.userService.addUserInfoToUser(req, id, groups)
         } catch (err) {
             if (err instanceof HttpException) {
                 data.code = err.getStatus()

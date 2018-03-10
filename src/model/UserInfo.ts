@@ -43,7 +43,7 @@ export class UserInfo {
     @Column({
         nullable:true
     })
-    key: string
+    infoItemId: number
 
     /* 信息项所属用户 */
     @ManyToOne(type => InfoItem, infoItem => infoItem.userInfos, {

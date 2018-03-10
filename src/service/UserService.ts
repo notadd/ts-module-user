@@ -44,12 +44,14 @@ export class UserService {
         return await this.userRepository.find({ recycle: true })
     }
 
-    async userInfos(id: number): Promise<UserInfo[]> {
+    /*返回用户信息时，需要提取其InfoItem对象以获取信息名称 */
+    async userInfos(id: number): Promise<{ name: string, value: string }[]> {
         let user: User = await this.userRepository.findOneById(id, { relations: ['userInfos'] })
         if (!user) {
             throw new HttpException('指定用户不存在', 406)
         }
-        return user.userInfos
+        let userInfos: UserInfo[] = await this.userInfoRepository.findByIds(user.userInfos.map(userInfo => userInfo.id), { relations: ['infoItem'] })
+        return userInfos.map(userInfo => { return { name: userInfo.infoItem.name, value: userInfo.value } })
     }
 
     async roles(id: number): Promise<Role[]> {
@@ -63,7 +65,7 @@ export class UserService {
     async permissions(id: number): Promise<Permission[]> {
         let user: User = await this.userRepository.findOneById(id, { relations: ['roles', 'adds', 'reduces'] })
         if (!user) {
-            throw new HttpException('指定id='+id+'用户不存在', 406)
+            throw new HttpException('指定id=' + id + '用户不存在', 406)
         }
         //声明最后的结果
         let result: Permission[] = []
@@ -103,8 +105,8 @@ export class UserService {
                 result.splice(index, 1)
             }
         })
-        result.sort((a,b)=>{
-            return a.id-b.id
+        result.sort((a, b) => {
+            return a.id - b.id
         })
         return result
     }
@@ -115,13 +117,13 @@ export class UserService {
         if (organizationId) {
             let organization = await this.organizationRepository.findOneById(organizationId)
             if (!organization) {
-                throw new HttpException('指定id='+organizationId+'组织不存在', 402)
+                throw new HttpException('指定id=' + organizationId + '组织不存在', 402)
             }
             organizations.push(organization)
         }
         let exist: User = await this.userRepository.findOne({ userName })
         if (exist) {
-            throw new HttpException('指定userName='+userName+'用户已存在', 406)
+            throw new HttpException('指定userName=' + userName + '用户已存在', 406)
         }
         try {
             let salt = crypto.createHash('md5').update(new Date().toString()).digest('hex').slice(0, 10)
@@ -138,36 +140,39 @@ export class UserService {
         if (organizationId) {
             let organization = await this.organizationRepository.findOneById(organizationId)
             if (!organization) {
-                throw new HttpException('指定id='+organizationId+'组织不存在', 402)
+                throw new HttpException('指定id=' + organizationId + '组织不存在', 402)
             }
             organizations.push(organization)
         }
         let exist: User = await this.userRepository.findOne({ userName })
         if (exist) {
-            throw new HttpException('指定userName='+userName+'用户已存在', 406)
+            throw new HttpException('指定userName=' + userName + '用户已存在', 406)
+        }
+        let salt = crypto.createHash('md5').update(new Date().toString()).digest('hex').slice(0, 10)
+        let passwordWithSalt = crypto.createHash('md5').update(password + salt).digest('hex')
+        let user: User = this.userRepository.create({ userName, password: passwordWithSalt, salt, status: true, recycle: false, organizations, userInfos: [], infoItems: [] })
+        for (let i = 0; i < groups.length; i++) {
+            let { groupId, infos } = groups[i]
+            let group: InfoGroup = await this.infoGroupRepository.findOneById(groupId, { relations: ['items'] })
+            if (!group) {
+                throw new HttpException('指定信息组id=' + groupId + '不存在', 408)
+            }
+            await this.addUserInfosAndInfoItemsWhenCreateUser(req, user, group, infos)
         }
         try {
-            let salt = crypto.createHash('md5').update(new Date().toString()).digest('hex').slice(0, 10)
-            let passwordWithSalt = crypto.createHash('md5').update(password + salt).digest('hex')
-            let user: User = this.userRepository.create({ userName, password: passwordWithSalt, salt, status: true, recycle: false, organizations, userInfos: [],infoGroups:[] })
-            await this.addUserInfosAndInfoGroups(req, user, groups)
             await this.userRepository.save(user)
         } catch (err) {
-            if (err instanceof HttpException) {
-                throw err
-            } else {
-                throw new HttpException('出现了数据库错误' + err.toString(), 401)
-            }
+            throw new HttpException('出现了数据库错误' + err.toString(), 401)
         }
     }
 
-    async addUserInfo(req: IncomingMessage, id: number, groups: { groupId: number, infos: UnionUserInfo[] }[]): Promise<void> {
+    async addUserInfoToUser(req: IncomingMessage, id: number, groups: { groupId: number, infos: UnionUserInfo[] }[]): Promise<void> {
         let user: User = await this.userRepository.findOneById(id, { relations: ['userInfos', 'infoGroups'] })
         if (!user) {
             throw new HttpException('指定用户不存在', 406)
         }
         try {
-            await this.addUserInfosAndInfoGroups(req, user, groups)
+            await this.addUserInfosAndInfoItems(req, user, groups)
             await this.userRepository.save(user)
         } catch (err) {
             if (err instanceof HttpException) {
@@ -179,97 +184,95 @@ export class UserService {
 
     }
 
-    /* 为指定用户添加信息组方法，注意添加时这些信息组还未存在于用户信息中
-       可以在初始注册时添加多个信息组，也可以为一个已存在用户添加多个信息组
-       添加与更新信息组是两个方法，如果信息项信息已经存在于用户之中
-    */
-    async addUserInfosAndInfoGroups(req: IncomingMessage, user: User, groups: { groupId: number, infos: UnionUserInfo[] }[]): Promise<void> {
-        let existAddGroups: InfoGroup[] = user.infoGroups || []
-        //遍历信息组
-        for (let i = 0; i < groups.length; i++) {
-            let { groupId, infos } = groups[i]
-            //如果这个信息组已经添加到用户，抛出异常
-            if (existAddGroups.find(group => {
-                return group.id === groupId
-            })) {
-                /*创建用户时不会抛出这个异常 */
-                throw new HttpException('指定信息组id=' + groupId + '已经添加到用户id=' + user.id+'中', 407)
-            }
-            //查找信息组，关联它下面的信息项
-            let group: InfoGroup = await this.infoGroupRepository.findOneById(groupId, { relations: ['items'] })
-            //指定信息组不存在，也要异常
-            if (!group) {
-                throw new HttpException('指定信息组id=' + groupId + '不存在', 408)
-            }
-            //获取所有信息项
-            let items: InfoItem[] = group.items || []
-            //所有必填信息项
-            let necessary: InfoItem[] = items.filter(item => {
-                return !!item.necessary
+    /* 当创建用户时将指定信息组的信息加入到用户对象中*/
+    async addUserInfosAndInfoItemsWhenCreateUser(req: IncomingMessage, user: User, group: InfoGroup, infos: UnionUserInfo[]): Promise<void> {
+        //获取所有信息项
+        let items: InfoItem[] = group.items || []
+        //所有必填信息项
+        let necessary: InfoItem[] = items.filter(item => {
+            return !!item.necessary
+        })
+        //遍历得到的信息
+        for (let j = 0; j < infos.length; j++) {
+            let { name }: UnionUserInfo = infos[j]
+
+            //查找名称匹配的信息项
+            let match: InfoItem = items.find(item => {
+                return item.name === name
             })
-            //遍历得到的信息
-            for (let j = 0; j < infos.length; j++) {
-                let { name }: UnionUserInfo = infos[j]
-                let result: string
-                //查找名称匹配的信息项
-                let match: InfoItem = items.find(item => {
-                    return item.name === name
-                })
-                //如果接收到的信息项名称不存在，抛出异常
-                if (!match) {
-                    throw new HttpException('指定名称信息项:' + name + '不存在于信息组id=' + groupId + '中', 409)
-                }
-                //根据不同类型信息项校验信息类型，顺便转换信息值
-                //'单行文本框', '多行文本框', '单选框', '多选框', '复选框', '日期时间选择', '日期时间范围选择', '下拉菜单', '上传图片', '上传文件'
-                if (match.type === 'text' || match.type === 'textarea' || match.type === 'radio' || match.type === 'date' || match.type === 'number' || match.type === 'pulldownmenu') {
-                    if (!(infos[j] as TextInfo).value) {
-                        throw new HttpException('指定名称信息值:' + match.name + '不存在', 410)
-                    }
-                    if (!(typeof (infos[j] as TextInfo).value === 'string')) {
-                        throw new HttpException('指定名称信息项name='+match.name+ '必须为字符串', 410)
-                    }
-                    //普字符串类型值只需要删除前后空白
-                    result = (infos[j] as TextInfo).value.trim()
-                } else if (match.type === 'checkbox') {
-                    if (!(infos[j] as ArrayInfo).array || (infos[j] as ArrayInfo).array.length === 0) {
-                        throw new HttpException('指定名称信息值:' + match.name + '不存在', 410)
-                    }
-                    if (!((infos[j] as ArrayInfo).array instanceof Array)) {
-                        throw new HttpException('指定名称信息项name=' + match.name + '必须为数组', 410)
-                    }
-                    //数组类型以，连接各个元素为字符串
-                    result = (infos[j] as ArrayInfo).array.join(',')
-                } else if (match.type === 'uploadimagewithpreview' || match.type === 'uploadfile') {
-                    if (!(infos[j] as FileInfo).base64) {
-                        throw new HttpException('指定名称信息项name=' + match.name + '必须具有文件base64编码', 410)
-                    }
-                    if (!(infos[j] as FileInfo).rawName) {
-                        throw new HttpException('指定名称信息项name=' + match.name + '必须具有文件原名', 410)
-                    }
-                    if (!(infos[j] as FileInfo).bucketName) {
-                        throw new HttpException('指定名称信息项name=' + match.name + '必须具有文件存储空间名', 410)
-                    }
-                    //文件类型，上传到存储插件，并保存访问url
-                    let { bucketName, name, type } = await this.storeComponent.upload((infos[j] as FileInfo).bucketName, (infos[j] as FileInfo).rawName, (infos[j] as FileInfo).base64, null)
-                    result = await this.storeComponent.getUrl(req, bucketName, name, type, null)
-                }
-                let userInfo: UserInfo = this.userInfoRepository.create({ key: name, value: result })
-                user.userInfos.push(userInfo)
-                let index = necessary.findIndex(item => {
-                    return item.id === match.id
-                })
-                if (index >= 0) {
-                    necessary.splice(index, 1)
-                }
+            //如果接收到的信息项名称不存在，抛出异常
+            if (!match) {
+                throw new HttpException('指定名称信息项:' + name + '不存在于信息组id=' + group.id + '中', 409)
             }
-            user.infoGroups.push(group)
-            //如果必填项没有填写，抛出异常
-            if (necessary.length !== 0) {
-                let names = necessary.map(item=>item.name)
-                throw new HttpException('指定信息项:' + names.join(',') + '为必填项', 410)
+            /*获取根据信息项类型转换后的信息值 */
+            let result: string = await this.transfromInfoValue(req, match, infos[j])
+            let userInfo: UserInfo = this.userInfoRepository.create({ infoItem: match, value: result })
+            /*如果此时user中已经包含同名信息项，后来的覆盖先前的，因为相同信息项可能存在于多个组当中，而添加时可能出现一次添加多个组信息的情况，所以可能出现同类信息项 */
+            let userInfoIndex = user.userInfos.findIndex(userInfo => userInfo.infoItemId === match.id)
+            if (userInfoIndex >= 0) {
+                /*如果当前遍历的信息项对应的信息已经存在于用户的信息当中，先移除它，再添加 
+                  由于这是用户创建时使用的方法，所以不牵扯数据库层面的移除
+                */
+                user.userInfos.splice(userInfoIndex, 1)
             }
+            user.userInfos.push(userInfo)
+            /*获取填写的必填信息项的下标 */
+            let index = necessary.findIndex(item => {
+                return item.id === match.id
+            })
+            if (index >= 0) {
+                /*移除填写过的必填信息项 */
+                necessary.splice(index, 1)
+            }
+            /*将添加后的信息项加入用户，如果重复保存时会字段去重 */
+            user.infoItems.push(match)
+        }
+        //如果必填项没有填写，抛出异常
+        if (necessary.length !== 0) {
+            let names = necessary.map(item => item.name)
+            throw new HttpException('指定信息项:' + names.join(',') + '为必填项', 410)
         }
     }
+
+    async transfromInfoValue(req: IncomingMessage, match: InfoItem, info: UnionUserInfo): Promise<string> {
+        let result: string
+        //根据不同类型信息项校验信息类型，顺便转换信息值
+        //'单行文本框', '多行文本框', '单选框', '多选框', '复选框', '日期时间选择', '日期时间范围选择', '下拉菜单', '上传图片', '上传文件'
+        if (match.type === 'text' || match.type === 'textarea' || match.type === 'radio' || match.type === 'date' || match.type === 'number' || match.type === 'pulldownmenu') {
+            if (!(info as TextInfo).value) {
+                throw new HttpException('指定名称信息值:' + match.name + '不存在', 410)
+            }
+            if (!(typeof (info as TextInfo).value === 'string')) {
+                throw new HttpException('指定名称信息项name=' + match.name + '必须为字符串', 410)
+            }
+            //普字符串类型值只需要删除前后空白
+            result = (info as TextInfo).value.trim()
+        } else if (match.type === 'checkbox') {
+            if (!(info as ArrayInfo).array || (info as ArrayInfo).array.length === 0) {
+                throw new HttpException('指定名称信息值:' + match.name + '不存在', 410)
+            }
+            if (!((info as ArrayInfo).array instanceof Array)) {
+                throw new HttpException('指定名称信息项name=' + match.name + '必须为数组', 410)
+            }
+            //数组类型以，连接各个元素为字符串
+            result = (info as ArrayInfo).array.join(',')
+        } else if (match.type === 'uploadimagewithpreview' || match.type === 'uploadfile') {
+            if (!(info as FileInfo).base64) {
+                throw new HttpException('指定名称信息项name=' + match.name + '必须具有文件base64编码', 410)
+            }
+            if (!(info as FileInfo).rawName) {
+                throw new HttpException('指定名称信息项name=' + match.name + '必须具有文件原名', 410)
+            }
+            if (!(info as FileInfo).bucketName) {
+                throw new HttpException('指定名称信息项name=' + match.name + '必须具有文件存储空间名', 410)
+            }
+            //文件类型，上传到存储插件，并保存访问url
+            let { bucketName, name, type } = await this.storeComponent.upload((info as FileInfo).bucketName, (info as FileInfo).rawName, (info as FileInfo).base64, null)
+            result = await this.storeComponent.getUrl(req, bucketName, name, type, null)
+        }
+        return result
+    }
+
 
     async updateUser(id: number, userName: string, password: string): Promise<void> {
         let exist: User = await this.userRepository.findOneById(id)
@@ -424,18 +427,18 @@ export class UserService {
         }
     }
 
-    async setRoles(id:number, roleIds:number[]):Promise<void>{
+    async setRoles(id: number, roleIds: number[]): Promise<void> {
         let user: User = await this.userRepository.findOneById(id, { relations: ['roles'] })
         if (!user) {
             throw new HttpException('指定用户不存在', 406)
         }
-        let roles:Role[] = await this.roleRepository.findByIds(roleIds)
-        roleIds.forEach(roleId=>{
-            let find = roles.find(role=>{
+        let roles: Role[] = await this.roleRepository.findByIds(roleIds)
+        roleIds.forEach(roleId => {
+            let find = roles.find(role => {
                 return role.id === roleId
             })
-            if(!find){
-                throw new HttpException('指定id='+roleId+'角色不存在', 406)
+            if (!find) {
+                throw new HttpException('指定id=' + roleId + '角色不存在', 406)
             }
         })
         user.roles = roles
