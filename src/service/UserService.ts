@@ -51,7 +51,6 @@ export class UserService {
             throw new HttpException('指定用户不存在', 406)
         }
         let userInfos: UserInfo[] = await this.userInfoRepository.createQueryBuilder("userInfo").leftJoinAndSelect('userInfo.infoItem','infoItem','userInfo.infoItemId=infoItem.id').where("userInfo.userId = :id", { id }).getMany();
-        console.log(userInfos)
         return userInfos.map(userInfo => { return { name: userInfo.infoItem.name, value: userInfo.value } })
     }
 

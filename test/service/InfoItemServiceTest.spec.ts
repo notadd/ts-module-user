@@ -7,7 +7,7 @@ import { Repository, Connection } from 'typeorm';
 import { HttpException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 
-describe('FuncService', async () => {
+describe('InfoItemService', async () => {
 
     let testModule: TestingModule
     let connection: Connection
@@ -47,7 +47,7 @@ describe('FuncService', async () => {
         })
 
         it('should throw HttpException:指定名称信息项已存在：userName, 412', async () => {
-            await infoItemRepository.save({ name: 'userName', label: '用户名', description: '用户的名称', type: 'text', necessary: true, order: 1, default: false })
+            await infoItemRepository.save({ name: 'userName', label: '用户名', description: '用户的名称', type: 'text', necessary: true, registerVisible: true, informationVisible: true, order: 1, default: false })
             try {
                 await infoItemService.createInfoItem('userName', '用户名', '用户的名称', 'text', true, true, true, 1)
                 expect(1).toBe(2)
