@@ -25,7 +25,7 @@ export class ScoreService {
             throw new HttpException('指定id=' + userId + '用户不存在', 428)
         }
         let score: Score = user.scores.find(score => {
-            return score.name === scoreType.name
+            return score.scoreTypeId === scoreType.id
         })
         /* 如果积分存在直接返回 */
         if (score) {
@@ -37,7 +37,7 @@ export class ScoreService {
         }
         /* 积分不存在创建，并存储，初值为0 */
         else {
-            let score: Score = this.scoreRepository.create({ name: scoreType.name, value: 0, scoreType, user })
+            let score: Score = this.scoreRepository.create({ value: 0, scoreType, user })
             try {
                 await this.scoreRepository.save(score)
             } catch (err) {
@@ -57,7 +57,7 @@ export class ScoreService {
             throw new HttpException('指定id=' + userId + '用户不存在', 428)
         }
         let score: Score = user.scores.find(score => {
-            return score.name === scoreType.name
+            return score.scoreTypeId === scoreType.id
         })
         /* 如果积分存在加上添加值 */
         if (score) {
@@ -69,7 +69,7 @@ export class ScoreService {
         }
         /* 积分不存在创建，并存储，初值为0 */
         else {
-            score = this.scoreRepository.create({ name: scoreType.name, scoreType, user })
+            score = this.scoreRepository.create({ scoreType, user })
             if (scoreType.type === 'int') {
                 score.value = Number.parseInt(add + '')
             } else if (scoreType.type === 'float') {
