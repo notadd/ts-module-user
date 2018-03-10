@@ -23,6 +23,7 @@ export class UserService {
         @Inject('UserPMModule.RoleRepository') private readonly roleRepository: Repository<Role>,
         @Inject('UserPMModule.UserRepository') private readonly userRepository: Repository<User>,
         @Inject('UserPMModule.UserInfoRepository') private readonly userInfoRepository: Repository<UserInfo>,
+        @Inject('UserPMModule.InfoGroupRepository') private readonly infoGroupRepository: Repository<InfoGroup>,
         @Inject('UserPMModule.PermissionRepository') private readonly permissionRepository: Repository<Permission>,
         @Inject('UserPMModule.OrganizationRepository') private readonly organizationRepository: Repository<Organization>
     ) { }
@@ -145,19 +146,13 @@ export class UserService {
         if (exist) {
             throw new HttpException('指定userName='+userName+'用户已存在', 406)
         }
-        const queryRunner = this.connection.createQueryRunner();
-        await queryRunner.connect();
-        await queryRunner.startTransaction();
         try {
             let salt = crypto.createHash('md5').update(new Date().toString()).digest('hex').slice(0, 10)
             let passwordWithSalt = crypto.createHash('md5').update(password + salt).digest('hex')
             let user: User = this.userRepository.create({ userName, password: passwordWithSalt, salt, status: true, recycle: false, organizations, userInfos: [],infoGroups:[] })
-            await this.addUserInfosAndInfoGroups(req, queryRunner.manager, user, groups)
-            await queryRunner.manager.save(user)
-            await queryRunner.commitTransaction()
+            await this.addUserInfosAndInfoGroups(req, user, groups)
+            await this.userRepository.save(user)
         } catch (err) {
-            await queryRunner.rollbackTransaction();
-            await queryRunner.release()
             if (err instanceof HttpException) {
                 throw err
             } else {
@@ -171,15 +166,10 @@ export class UserService {
         if (!user) {
             throw new HttpException('指定用户不存在', 406)
         }
-        const queryRunner = this.connection.createQueryRunner();
-        await queryRunner.connect();
-        await queryRunner.startTransaction();
         try {
-            await this.addUserInfosAndInfoGroups(req, queryRunner.manager, user, groups)
+            await this.addUserInfosAndInfoGroups(req, user, groups)
             await this.userRepository.save(user)
-            await queryRunner.commitTransaction();
         } catch (err) {
-            await queryRunner.rollbackTransaction();
             if (err instanceof HttpException) {
                 throw err
             } else {
@@ -193,7 +183,7 @@ export class UserService {
        可以在初始注册时添加多个信息组，也可以为一个已存在用户添加多个信息组
        添加与更新信息组是两个方法
     */
-    async addUserInfosAndInfoGroups(req: IncomingMessage, manager: EntityManager, user: User, groups: { groupId: number, infos: UnionUserInfo[] }[]): Promise<void> {
+    async addUserInfosAndInfoGroups(req: IncomingMessage, user: User, groups: { groupId: number, infos: UnionUserInfo[] }[]): Promise<void> {
         let existAddGroups: InfoGroup[] = user.infoGroups || []
         //遍历信息组
         for (let i = 0; i < groups.length; i++) {
@@ -206,7 +196,7 @@ export class UserService {
                 throw new HttpException('指定信息组id=' + groupId + '已经添加到用户id=' + user.id+'中', 407)
             }
             //查找信息组，关联它下面的信息项
-            let group: InfoGroup = await manager.findOneById(InfoGroup, groupId, { relations: ['items'] })
+            let group: InfoGroup = await this.infoGroupRepository.findOneById(groupId, { relations: ['items'] })
             //指定信息组不存在，也要异常
             if (!group) {
                 throw new HttpException('指定信息组id=' + groupId + '不存在', 408)

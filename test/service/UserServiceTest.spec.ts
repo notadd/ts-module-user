@@ -423,7 +423,7 @@ describe('UserService', async () => {
         })
     })
 
-    fdescribe('createUserWithUserInfo', async () => {
+    describe('createUserWithUserInfo', async () => {
 
         beforeEach(async () => {        
             (storeComponent as any).cache = {}
