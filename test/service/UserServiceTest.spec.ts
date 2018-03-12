@@ -1036,104 +1036,170 @@ describe('UserService', async () => {
         it('should throw HttpException:指定名称信息值:nickname不存在, 410', async () => {
             let item = infoItemRepository.create({ id: 1, name: 'nickname', label: '昵称', default: true, description: '用户昵称', type: 'text', necessary: true, registerVisible: true, informationVisible: true, order: 1 })
             try {
-                await userService.transfromInfoValue(null, item, { name: 'nickname', value:null })
+                await userService.transfromInfoValue(null, item, { name: 'nickname', value: null })
                 expect(1).toBe(2)
             } catch (err) {
                 expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(410)
                 expect(err.getResponse()).toBe('指定名称信息值:nickname不存在')
-            } 
+            }
         })
 
-        it('should throw HttpException;指定名称信息项name=nickname必须为字符串, 410',async ()=>{
+        it('should throw HttpException;指定名称信息项name=nickname必须为字符串, 410', async () => {
             let item = infoItemRepository.create({ id: 1, name: 'nickname', label: '昵称', default: true, description: '用户昵称', type: 'text', necessary: true, registerVisible: true, informationVisible: true, order: 1 })
             try {
-                await userService.transfromInfoValue(null, item, { name: 'nickname', value:23 } as any)
+                await userService.transfromInfoValue(null, item, { name: 'nickname', value: 23 } as any)
                 expect(1).toBe(2)
             } catch (err) {
                 expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(410)
                 expect(err.getResponse()).toBe('指定名称信息项name=nickname必须为字符串')
-            } 
+            }
         })
 
-        it('array success',async ()=>{
+        it('array success', async () => {
             let item = infoItemRepository.create({ id: 1, name: 'hobby', label: '爱好', default: true, description: '用户爱好', type: 'checkbox', necessary: true, registerVisible: true, informationVisible: true, order: 1 })
-            let result = await userService.transfromInfoValue(null, item, { name: 'hobby', array: ['吃饭','睡觉','打游戏']})
+            let result = await userService.transfromInfoValue(null, item, { name: 'hobby', array: ['吃饭', '睡觉', '打游戏'] })
             expect(result).toBe('吃饭,睡觉,打游戏')
         })
 
-        it('should throw HttpException;指定名称信息值:hobby不存在, 410',async ()=>{
+        it('should throw HttpException;指定名称信息值:hobby不存在, 410', async () => {
             let item = infoItemRepository.create({ id: 1, name: 'hobby', label: '爱好', default: true, description: '用户爱好', type: 'checkbox', necessary: true, registerVisible: true, informationVisible: true, order: 1 })
             try {
-                await userService.transfromInfoValue(null, item, { name: 'hobby', array: null})
+                await userService.transfromInfoValue(null, item, { name: 'hobby', array: null })
                 expect(1).toBe(2)
             } catch (err) {
                 expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(410)
                 expect(err.getResponse()).toBe('指定名称信息值:hobby不存在')
-            } 
+            }
         })
 
-        it('should throw HttpException:指定名称信息项name=hobby必须为数组, 410',async ()=>{
+        it('should throw HttpException:指定名称信息项name=hobby必须为数组, 410', async () => {
             let item = infoItemRepository.create({ id: 1, name: 'hobby', label: '爱好', default: true, description: '用户爱好', type: 'checkbox', necessary: true, registerVisible: true, informationVisible: true, order: 1 })
             try {
-                await userService.transfromInfoValue(null, item, { name: 'hobby', array: 'aaaaa'} as any)
+                await userService.transfromInfoValue(null, item, { name: 'hobby', array: 'aaaaa' } as any)
                 expect(1).toBe(2)
             } catch (err) {
                 expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(410)
                 expect(err.getResponse()).toBe('指定名称信息项name=hobby必须为数组')
-            } 
+            }
         })
 
-        it('file success',async ()=>{
+        it('file success', async () => {
             let item = infoItemRepository.create({ id: 1, name: 'upload', label: '上传文件', default: true, description: '用户上传的文件', type: 'uploadfile', necessary: true, registerVisible: true, informationVisible: true, order: 1 })
-            let result = await userService.transfromInfoValue(null, item, { name: 'hobby', base64:'fadfasefasfwsef',bucketName:'public',rawName:'test.jpeg'})
+            let result = await userService.transfromInfoValue(null, item, { name: 'hobby', base64: 'fadfasefasfwsef', bucketName: 'public', rawName: 'test.jpeg' })
             expect(result).toBe('http://localhost:8080/public/test.jpeg')
         })
 
-        it('should throw HttpExceptio：指定名称信息项name=upload必须具有文件base64编码，410',async ()=>{
+        it('should throw HttpExceptio：指定名称信息项name=upload必须具有文件base64编码，410', async () => {
             let item = infoItemRepository.create({ id: 1, name: 'upload', label: '上传文件', default: true, description: '用户上传的文件', type: 'uploadfile', necessary: true, registerVisible: true, informationVisible: true, order: 1 })
-            let result = await userService.transfromInfoValue(null, item, { name: 'hobby', base64:'fadfasefasfwsef',bucketName:'public',rawName:'test.jpeg'})
+            let result = await userService.transfromInfoValue(null, item, { name: 'hobby', base64: 'fadfasefasfwsef', bucketName: 'public', rawName: 'test.jpeg' })
             try {
-                await userService.transfromInfoValue(null, item, { name: 'hobby', base64:'',bucketName:'public',rawName:'test.jpeg'})
+                await userService.transfromInfoValue(null, item, { name: 'hobby', base64: '', bucketName: 'public', rawName: 'test.jpeg' })
                 expect(1).toBe(2)
             } catch (err) {
                 expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(410)
                 expect(err.getResponse()).toBe('指定名称信息项name=upload必须具有文件base64编码')
-            }         
+            }
         })
 
-        it('should throw HttpException;指定名称信息项name=upload必须具有文件原名, 410',async ()=>{
+        it('should throw HttpException;指定名称信息项name=upload必须具有文件原名, 410', async () => {
             let item = infoItemRepository.create({ id: 1, name: 'upload', label: '上传文件', default: true, description: '用户上传的文件', type: 'uploadfile', necessary: true, registerVisible: true, informationVisible: true, order: 1 })
-            let result = await userService.transfromInfoValue(null, item, { name: 'hobby', base64:'fadfasefasfwsef',bucketName:'public',rawName:'test.jpeg'})
+            let result = await userService.transfromInfoValue(null, item, { name: 'hobby', base64: 'fadfasefasfwsef', bucketName: 'public', rawName: 'test.jpeg' })
             try {
-                await userService.transfromInfoValue(null, item, { name: 'hobby', base64:'erfasgfsfsfdsdf',bucketName:'public',rawName:''})
+                await userService.transfromInfoValue(null, item, { name: 'hobby', base64: 'erfasgfsfsfdsdf', bucketName: 'public', rawName: '' })
                 expect(1).toBe(2)
             } catch (err) {
                 expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(410)
                 expect(err.getResponse()).toBe('指定名称信息项name=upload必须具有文件原名')
-            }    
+            }
         })
 
-        it('should throw HttpException;指定名称信息项name=upload必须具有文件存储空间名, 410',async ()=>{
+        it('should throw HttpException;指定名称信息项name=upload必须具有文件存储空间名, 410', async () => {
             let item = infoItemRepository.create({ id: 1, name: 'upload', label: '上传文件', default: true, description: '用户上传的文件', type: 'uploadfile', necessary: true, registerVisible: true, informationVisible: true, order: 1 })
-            let result = await userService.transfromInfoValue(null, item, { name: 'hobby', base64:'fadfasefasfwsef',bucketName:'public',rawName:'test.jpeg'})
+            let result = await userService.transfromInfoValue(null, item, { name: 'hobby', base64: 'fadfasefasfwsef', bucketName: 'public', rawName: 'test.jpeg' })
             try {
-                await userService.transfromInfoValue(null, item, { name: 'hobby', base64:'erfasgfsfsfdsdf',bucketName:'',rawName:'test,jpeg'})
+                await userService.transfromInfoValue(null, item, { name: 'hobby', base64: 'erfasgfsfsfdsdf', bucketName: '', rawName: 'test,jpeg' })
                 expect(1).toBe(2)
             } catch (err) {
                 expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(410)
                 expect(err.getResponse()).toBe('指定名称信息项name=upload必须具有文件存储空间名')
-            } 
+            }
         })
     })
 
-    describe('updateUser',async ()=>{
+    describe('updateUser', async () => {
+
+        beforeEach(async () => {
+            await connection.query('delete from user')
+            await connection.query('alter table user auto_increment = 1')
+        })
+
+        afterAll(async () => {
+            await connection.query('delete from user')
+            await connection.query('alter table user auto_increment = 1')
+        })
+
+        it('should success', async () => {
+            await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false })
+            let user1 = await userRepository.findOneById(1)
+            await userService.updateUser(1, '李四', '654321')
+            let user2 = await userRepository.findOneById(1)
+            expect(user1).toBeDefined()
+            expect(user1.id).toBe(1)
+            expect(user1.userName).toBe('张三')
+            expect(user1.password).toBe('123456')
+            expect(user2).toBeDefined()
+            expect(user2.id).toBe(1)
+            expect(user2.userName).toBe('李四')
+            expect(user2.password).toBe(crypto.createHash('md5').update('654321' + user2.salt).digest('hex'))
+        })
+
+        it('should throw HttpException;指定id=1用户不存在, 406', async () => {
+            try {
+                await userService.updateUser(1, '李四', '654321')
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(406)
+                expect(err.getResponse()).toBe('指定id=1用户不存在')
+            }
+        })
+
+        it('should throw HttpException:指定userName=李四用户已存在, 406', async () => {
+            await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false })
+            await userRepository.save({ userName: '李四', password: '123456', salt: 'aaaaa', status: true, recycle: false })
+            try {
+                await userService.updateUser(1, '李四', '654321')
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(406)
+                expect(err.getResponse()).toBe('指定userName=李四用户已存在')
+            }
+        })
+
+        it('should throw HttpException:数据库错误Error: 更新用户失败, 401', async () => {
+            await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false })
+            jest.spyOn(userRepository, 'save').mockImplementationOnce(async () => { throw new Error('更新用户失败') })
+            try {
+                await userService.updateUser(1, '李四', '654321')
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(401)
+                expect(err.getResponse()).toBe('数据库错误Error: 更新用户失败')
+            }
+        })
+
+    })
+
+    describe('bannedUser', async () => {
 
         beforeEach(async () => {
             await connection.query('delete from user')
@@ -1147,54 +1213,9 @@ describe('UserService', async () => {
 
         it('should success',async ()=>{
             await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false })
-            let user1 = await userRepository.findOneById(1)
-            await userService.updateUser(1,'李四','654321')
-            let user2 = await userRepository.findOneById(1)
-            expect(user1).toBeDefined()
-            expect(user1.id).toBe(1)
-            expect(user1.userName).toBe('张三')
-            expect(user1.password).toBe('123456')
-            expect(user2).toBeDefined()
-            expect(user2.id).toBe(1)
-            expect(user2.userName).toBe('李四')
-            expect(user2.password).toBe(crypto.createHash('md5').update('654321' + user2.salt).digest('hex'))
-        })
-
-        it('should throw HttpException;指定id=1用户不存在, 406',async ()=>{
-            try {
-                await userService.updateUser(1,'李四','654321')                
-                expect(1).toBe(2)
-            } catch (err) {
-                expect(err instanceof HttpException).toBeTruthy()
-                expect(err.getStatus()).toBe(406)
-                expect(err.getResponse()).toBe('指定id=1用户不存在')
-            } 
-        })
-
-        it('should throw HttpException:指定userName=李四用户已存在, 406',async ()=>{
-            await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false })            
-            await userRepository.save({ userName: '李四', password: '123456', salt: 'aaaaa', status: true, recycle: false })            
-            try {
-                await userService.updateUser(1,'李四','654321')                
-                expect(1).toBe(2)
-            } catch (err) {
-                expect(err instanceof HttpException).toBeTruthy()
-                expect(err.getStatus()).toBe(406)
-                expect(err.getResponse()).toBe('指定userName=李四用户已存在')
-            } 
-        })
-
-        it('should throw HttpException:数据库错误Error: 更新用户失败, 401',async ()=>{
-            await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false })         
-            jest.spyOn(userRepository,'save').mockImplementationOnce(async ()=>{throw new Error('更新用户失败')})   
-            try {
-                await userService.updateUser(1,'李四','654321')                
-                expect(1).toBe(2)
-            } catch (err) {
-                expect(err instanceof HttpException).toBeTruthy()
-                expect(err.getStatus()).toBe(401)
-                expect(err.getResponse()).toBe('数据库错误Error: 更新用户失败')
-            } 
+            await userService.bannedUser(1)
+            let user = await userRepository.findOneById(1)
+            expect(user.status).toBe(0)
         })
 
     })

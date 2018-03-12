@@ -302,13 +302,13 @@ export class UserService {
     async bannedUser(id: number): Promise<void> {
         let exist: User = await this.userRepository.findOneById(id)
         if (!exist) {
-            throw new HttpException('指定用户不存在', 406)
+            throw new HttpException('指定id='+id+'用户不存在', 406)
         }
         if (exist.recycle) {
-            throw new HttpException('指定用户已存在回收站中', 406)
+            throw new HttpException('指定id='+id+'用户已存在回收站中', 406)
         }
         if (!exist.status) {
-            throw new HttpException('指定用户已经封禁', 406)
+            throw new HttpException('指定id='+id+'用户已经封禁', 406)
         }
         try {
             exist.status = false
@@ -321,13 +321,13 @@ export class UserService {
     async unBannedUser(id: number): Promise<void> {
         let exist: User = await this.userRepository.findOneById(id)
         if (!exist) {
-            throw new HttpException('指定用户不存在', 406)
+            throw new HttpException('指定id='+id+'用户不存在', 406)
         }
         if (exist.recycle) {
-            throw new HttpException('指定用户已存在回收站中', 406)
+            throw new HttpException('指定id='+id+'用户已存在回收站中', 406)
         }
         if (exist.status) {
-            throw new HttpException('指定用户不需要解封', 406)
+            throw new HttpException('指定id='+id+'用户不需要解封', 406)
         }
         try {
             exist.status = true
@@ -340,10 +340,10 @@ export class UserService {
     async softDeleteUser(id: number): Promise<void> {
         let exist: User = await this.userRepository.findOneById(id)
         if (!exist) {
-            throw new HttpException('指定用户不存在', 406)
+            throw new HttpException('指定id='+id+'用户不存在', 406)
         }
         if (exist.recycle) {
-            throw new HttpException('指定用户已存在回收站中', 406)
+            throw new HttpException('指定id='+id+'用户已存在回收站中', 406)
         }
         try {
             exist.recycle = true
@@ -356,10 +356,10 @@ export class UserService {
     async restoreUser(id: number): Promise<void> {
         let exist: User = await this.userRepository.findOneById(id)
         if (!exist) {
-            throw new HttpException('指定用户不存在', 406)
+            throw new HttpException('指定id='+id+'用户不存在', 406)
         }
         if (!exist.recycle) {
-            throw new HttpException('指定用户不存在回收站中', 406)
+            throw new HttpException('指定id='+id+'用户不存在回收站中', 406)
         }
         try {
             exist.recycle = false
@@ -372,14 +372,14 @@ export class UserService {
     async restoreUsers(ids: number[]): Promise<void> {
         let users: User[] = await this.userRepository.findByIds(ids)
         if (!users || users.length === 0) {
-            throw new HttpException('指定用户不存在', 406)
+            throw new HttpException('指定id='+id+'用户不存在', 406)
         }
         ids.forEach(id => {
             let find: User = users.find(user => {
                 return user.id === id
             })
             if (!find) {
-                throw new HttpException('指定id=' + id + '用户未找到', 406)
+                throw new HttpException('指定id=' + id + '用户不存在', 406)
             }
             if (!find.recycle) {
                 throw new HttpException('指定用户id=' + id + '不在回收站中', 406)
@@ -398,10 +398,10 @@ export class UserService {
     async deleteUser(id: number): Promise<void> {
         let exist: User = await this.userRepository.findOneById(id)
         if (!exist) {
-            throw new HttpException('指定用户不存在', 406)
+            throw new HttpException('指定id='+id+'用户不存在', 406)
         }
         if (!exist.recycle) {
-            throw new HttpException('指定用户不存在回收站中', 406)
+            throw new HttpException('指定id='+id+'用户不存在回收站中', 406)
         }
         try {
             await this.userRepository.remove(exist)
@@ -417,10 +417,10 @@ export class UserService {
                 return user.id === id
             })
             if (!find) {
-                throw new HttpException('指定id=' + id + '的用户不存在', 406)
+                throw new HttpException('指定id=' + id + '用户不存在', 406)
             }
             if (!find.recycle) {
-                throw new HttpException('指定用户id=' + id + '不存在于回收站中', 406)
+                throw new HttpException('指定id=' + id + '用户不存在于回收站中', 406)
             }
         })
         try {
@@ -433,7 +433,7 @@ export class UserService {
     async setRoles(id: number, roleIds: number[]): Promise<void> {
         let user: User = await this.userRepository.findOneById(id, { relations: ['roles'] })
         if (!user) {
-            throw new HttpException('指定用户不存在', 406)
+            throw new HttpException('指定id='+id+'用户不存在', 406)
         }
         let roles: Role[] = await this.roleRepository.findByIds(roleIds)
         roleIds.forEach(roleId => {
@@ -455,7 +455,7 @@ export class UserService {
     async setPermissions(id: number, permissionIds: number[]): Promise<void> {
         let user: User = await this.userRepository.findOneById(id, { relations: ['roles', 'adds', 'reduces'] })
         if (!user) {
-            throw new HttpException('指定用户不存在', 406)
+            throw new HttpException('指定id='+id+'用户不存在', 406)
         }
         //声明从role获取的权限集合
         let result: Permission[] = []
