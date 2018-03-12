@@ -1016,4 +1016,21 @@ describe('UserService', async () => {
             }
         })
     })
+
+    describe('transfromInfoValue',async ()=>{
+
+        beforeEach(async () => {
+            (storeComponent as any).cache = {}
+        })
+
+        afterAll(async () => {
+            (storeComponent as any).cache = {}
+        })
+
+        it('text success',async ()=>{
+            let item = infoItemRepository.create({ id: 1, name: 'nickname', label: '昵称', default: true, description: '用户昵称', type: 'text', necessary: true, registerVisible: true, informationVisible: true, order: 1 })
+            let result = await userService.transfromInfoValue(null,item,{name:'nickname',value:'三儿'})
+            expect(result).toBe('三儿')
+        })
+    })
 })
