@@ -971,17 +971,32 @@ describe('UserService', async () => {
             let item1 = infoItemRepository.create({ id: 1, name: 'nickname', label: '昵称', default: true, description: '用户昵称', type: 'text', necessary: true, registerVisible: true, informationVisible: true, order: 1 })
             let item2 = infoItemRepository.create({ id: 2, name: 'sex', label: '性别', default: true, description: '用户性别，只能为男或女', type: 'radio', necessary: true, registerVisible: true, informationVisible: true, order: 2 })
             let item3 = infoItemRepository.create({ id: 3, name: 'age', label: '年龄', default: true, description: '用户年龄，只能为数字', type: 'number', necessary: true, registerVisible: true, informationVisible: true, order: 3 })
-            let group = infoGroupRepository.create({id: 1, name: '基本信息', default: true, status: true,items: [item1,item2,item3]})
+            let group = infoGroupRepository.create({ id: 1, name: '基本信息', default: true, status: true, items: [item1, item2, item3] })
             let infos = [{ name: 'nickname', value: '三儿' }, { name: 'sex', value: '男' }, { name: 'age', value: '23' }]
             await userService.addUserInfosAndInfoItems(null, user, group, infos)
             expect(user.infoItems).toBeDefined()
             expect(user.infoItems.length).toBe(3)
-            expect(user.infoItems).toEqual([item1,item2,item3])
+            expect(user.infoItems).toEqual([item1, item2, item3])
             expect(user.userInfos).toBeDefined()
             expect(user.userInfos.length).toBe(3)
-            expect(user.userInfos[0]).toEqual({value:'三儿',infoItem:item1})
-            expect(user.userInfos[1]).toEqual({value:'男',infoItem:item2})
-            expect(user.userInfos[2]).toEqual({value:'23',infoItem:item3})
+            expect(user.userInfos[0]).toEqual({ value: '三儿', infoItem: item1 })
+            expect(user.userInfos[1]).toEqual({ value: '男', infoItem: item2 })
+            expect(user.userInfos[2]).toEqual({ value: '23', infoItem: item3 })
+        })
+
+        it('should throw HttpException:指定名称信息项:age不存在于信息组id=1中, 409', async () => {
+            let user = userRepository.create({ id: 1, userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false, userInfos: [], infoItems: [] })
+            let item1 = infoItemRepository.create({ id: 1, name: 'nickname', label: '昵称', default: true, description: '用户昵称', type: 'text', necessary: true, registerVisible: true, informationVisible: true, order: 1 })
+            let group = infoGroupRepository.create({ id: 1, name: '基本信息', default: true, status: true, items: [item1] })
+            let infos = [{ name: 'nickname', value: '三儿' }, { name: 'sex', value: '男' }, { name: 'age', value: '23' }]
+            try {
+                await userService.addUserInfosAndInfoItems(null, user, group, infos)
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(409)
+                expect(err.getResponse()).toBe('指定名称信息项:sex不存在于信息组id=1中')
+            }
         })
     })
 })
