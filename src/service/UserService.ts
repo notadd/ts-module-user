@@ -285,7 +285,7 @@ export class UserService {
         if (userName !== exist.userName) {
             let sameUser: User = await this.userRepository.findOne({ userName })
             if (sameUser) {
-                throw new HttpException('指定的新用户名已存在', 406)
+                throw new HttpException('指定userName='+userName+'用户已存在', 406)
             }
         }
         try {

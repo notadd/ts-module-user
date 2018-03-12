@@ -1170,5 +1170,32 @@ describe('UserService', async () => {
                 expect(err.getResponse()).toBe('指定id=1用户不存在')
             } 
         })
+
+        it('should throw HttpException:指定userName=李四用户已存在, 406',async ()=>{
+            await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false })            
+            await userRepository.save({ userName: '李四', password: '123456', salt: 'aaaaa', status: true, recycle: false })            
+            try {
+                await userService.updateUser(1,'李四','654321')                
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(406)
+                expect(err.getResponse()).toBe('指定userName=李四用户已存在')
+            } 
+        })
+
+        it('should throw HttpException:数据库错误Error: 更新用户失败, 401',async ()=>{
+            await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false })         
+            jest.spyOn(userRepository,'save').mockImplementationOnce(async ()=>{throw new Error('更新用户失败')})   
+            try {
+                await userService.updateUser(1,'李四','654321')                
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(401)
+                expect(err.getResponse()).toBe('数据库错误Error: 更新用户失败')
+            } 
+        })
+
     })
 })
