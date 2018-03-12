@@ -246,23 +246,24 @@ describe('UserService', async () => {
                     { name: 'birthday', label: '生日', description: '用户的生日', type: 'date', necessary: true, registerVisible: true, informationVisible: true, default: true, order: 3 },
                 ]
             })
-            await userRepository.save({ 
-                userName: '张三', 
-                password: '123456', 
-                salt: 'aaaaa', 
-                status: true, 
-                recycle: false, 
+            await userRepository.save({
+                userName: '张三',
+                password: '123456',
+                salt: 'aaaaa',
+                status: true,
+                recycle: false,
                 userInfos: [
-                    { value: '三儿',infoItemId:1 }, 
-                    { value: '22' ,infoItemId:2}, 
-                    { value: '1992-02-22',infoItemId:3 }
-                ] })
+                    { value: '三儿', infoItemId: 1 },
+                    { value: '22', infoItemId: 2 },
+                    { value: '1992-02-22', infoItemId: 3 }
+                ]
+            })
             let userInfos = await userService.userInfos(1)
             expect(userInfos).toBeDefined()
             expect(userInfos.length).toBe(3)
-            expect(userInfos[0]).toEqual({ name: 'nickname', value: '三儿'})
-            expect(userInfos[1]).toEqual({ name: 'age', value: '22'})
-            expect(userInfos[2]).toEqual({ name: 'birthday', value: '1992-02-22'})
+            expect(userInfos[0]).toEqual({ name: 'nickname', value: '三儿' })
+            expect(userInfos[1]).toEqual({ name: 'age', value: '22' })
+            expect(userInfos[2]).toEqual({ name: 'birthday', value: '1992-02-22' })
         })
 
     })
@@ -529,13 +530,13 @@ describe('UserService', async () => {
             expect(user.status).toBe(1)
             expect(user.recycle).toBe(0)
             expect(user.password).toBe(crypto.createHash('md5').update('123456' + user.salt).digest('hex'))
-            expect(user.userInfos[0]).toEqual({ id: 1, value: '三儿', userId: 1,infoItemId:1 })
-            expect(user.userInfos[1]).toEqual({ id: 2, value: '23', userId: 1 ,infoItemId:2})
-            expect(user.userInfos[2]).toEqual({ id: 3, value: '电影,吃饭,打游戏', userId: 1,infoItemId:3 })
-            expect(user.userInfos[3]).toEqual({ id: 4, value: '619199201112222044x', userId: 1,infoItemId:4 })
-            expect(user.userInfos[4]).toEqual({ id: 5, value: '12345678@qq.com', userId: 1,infoItemId:5 })
-            expect(user.userInfos[5]).toEqual({ id: 6, value: '17299990000', userId: 1,infoItemId:6 })
-            expect(user.userInfos[6]).toEqual({ id: 7, value: 'http://localhost:8080/public/test.jpeg', userId: 1,infoItemId:7 })
+            expect(user.userInfos[0]).toEqual({ id: 1, value: '三儿', userId: 1, infoItemId: 1 })
+            expect(user.userInfos[1]).toEqual({ id: 2, value: '23', userId: 1, infoItemId: 2 })
+            expect(user.userInfos[2]).toEqual({ id: 3, value: '电影,吃饭,打游戏', userId: 1, infoItemId: 3 })
+            expect(user.userInfos[3]).toEqual({ id: 4, value: '619199201112222044x', userId: 1, infoItemId: 4 })
+            expect(user.userInfos[4]).toEqual({ id: 5, value: '12345678@qq.com', userId: 1, infoItemId: 5 })
+            expect(user.userInfos[5]).toEqual({ id: 6, value: '17299990000', userId: 1, infoItemId: 6 })
+            expect(user.userInfos[6]).toEqual({ id: 7, value: 'http://localhost:8080/public/test.jpeg', userId: 1, infoItemId: 7 })
 
         })
 
@@ -918,9 +919,9 @@ describe('UserService', async () => {
             expect(user.userInfos[6]).toEqual({ id: 7, value: 'http://localhost:8080/public/test.jpeg', userId: 1, infoItemId: 7 })
         })
 
-        it('should throw HttpException:指定id=1用户不存在, 406',async ()=>{
+        it('should throw HttpException:指定id=1用户不存在, 406', async () => {
             try {
-                await userService.addUserInfoToUser(null,1,[])
+                await userService.addUserInfoToUser(null, 1, [])
                 expect(1).toBe(2)
             } catch (err) {
                 expect(err instanceof HttpException).toBeTruthy()
@@ -929,10 +930,10 @@ describe('UserService', async () => {
             }
         })
 
-        it('should throw HttpException:指定信息组id=1不存在, 408',async ()=>{
-            await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false })                        
+        it('should throw HttpException:指定信息组id=1不存在, 408', async () => {
+            await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false })
             try {
-                await userService.addUserInfoToUser(null,1,[{groupId:1,infos:[]}])
+                await userService.addUserInfoToUser(null, 1, [{ groupId: 1, infos: [] }])
                 expect(1).toBe(2)
             } catch (err) {
                 expect(err instanceof HttpException).toBeTruthy()
@@ -941,17 +942,46 @@ describe('UserService', async () => {
             }
         })
 
-        it('should throw HttpException:数据库错误Error: 保存用户失败，401',async ()=>{
-            await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false }) 
-            jest.spyOn(userRepository,'save').mockImplementationOnce(async ()=>{throw new Error('保存用户失败')})                       
+        it('should throw HttpException:数据库错误Error: 保存用户失败，401', async () => {
+            await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false })
+            jest.spyOn(userRepository, 'save').mockImplementationOnce(async () => { throw new Error('保存用户失败') })
             try {
-                await userService.addUserInfoToUser(null,1,[])
+                await userService.addUserInfoToUser(null, 1, [])
                 expect(1).toBe(2)
             } catch (err) {
                 expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(401)
                 expect(err.getResponse()).toBe('数据库错误Error: 保存用户失败')
             }
+        })
+    })
+
+    describe('addUserInfosAndInfoItems', async () => {
+
+        beforeEach(async () => {
+            (storeComponent as any).cache = {}
+        })
+
+        afterAll(async () => {
+            (storeComponent as any).cache = {}
+        })
+
+        it('should success', async () => {
+            let user = userRepository.create({ id: 1, userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false, userInfos: [], infoItems: [] })
+            let item1 = infoItemRepository.create({ id: 1, name: 'nickname', label: '昵称', default: true, description: '用户昵称', type: 'text', necessary: true, registerVisible: true, informationVisible: true, order: 1 })
+            let item2 = infoItemRepository.create({ id: 2, name: 'sex', label: '性别', default: true, description: '用户性别，只能为男或女', type: 'radio', necessary: true, registerVisible: true, informationVisible: true, order: 2 })
+            let item3 = infoItemRepository.create({ id: 3, name: 'age', label: '年龄', default: true, description: '用户年龄，只能为数字', type: 'number', necessary: true, registerVisible: true, informationVisible: true, order: 3 })
+            let group = infoGroupRepository.create({id: 1, name: '基本信息', default: true, status: true,items: [item1,item2,item3]})
+            let infos = [{ name: 'nickname', value: '三儿' }, { name: 'sex', value: '男' }, { name: 'age', value: '23' }]
+            await userService.addUserInfosAndInfoItems(null, user, group, infos)
+            expect(user.infoItems).toBeDefined()
+            expect(user.infoItems.length).toBe(3)
+            expect(user.infoItems).toEqual([item1,item2,item3])
+            expect(user.userInfos).toBeDefined()
+            expect(user.userInfos.length).toBe(3)
+            expect(user.userInfos[0]).toEqual({value:'三儿',infoItem:item1})
+            expect(user.userInfos[1]).toEqual({value:'男',infoItem:item2})
+            expect(user.userInfos[2]).toEqual({value:'23',infoItem:item3})
         })
     })
 })
