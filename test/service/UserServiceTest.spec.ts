@@ -1132,4 +1132,32 @@ describe('UserService', async () => {
             } 
         })
     })
+
+    describe('updateUser',async ()=>{
+
+        beforeEach(async () => {
+            await connection.query('delete from user')
+            await connection.query('alter table user auto_increment = 1')
+        })
+
+        afterAll(async () => {
+            await connection.query('delete from user')
+            await connection.query('alter table user auto_increment = 1')
+        })
+
+        it('should success',async ()=>{
+            await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false })
+            let user1 = await userRepository.findOneById(1)
+            await userService.updateUser(1,'李四','654321')
+            let user2 = await userRepository.findOneById(1)
+            expect(user1).toBeDefined()
+            expect(user1.id).toBe(1)
+            expect(user1.userName).toBe('张三')
+            expect(user1.password).toBe('123456')
+            expect(user2).toBeDefined()
+            expect(user2.id).toBe(1)
+            expect(user2.userName).toBe('李四')
+            expect(user2.password).toBe(crypto.createHash('md5').update('654321' + user2.salt).digest('hex'))
+        })
+    })
 })
