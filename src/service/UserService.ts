@@ -50,7 +50,7 @@ export class UserService {
         if (!user) {
             throw new HttpException('指定用户不存在', 406)
         }
-        let userInfos: UserInfo[] = await this.userInfoRepository.createQueryBuilder("userInfo").leftJoinAndSelect('userInfo.infoItem','infoItem','userInfo.infoItemId=infoItem.id').where("userInfo.userId = :id", { id }).getMany();
+        let userInfos: UserInfo[] = await this.userInfoRepository.createQueryBuilder("userInfo").leftJoinAndSelect('userInfo.infoItem', 'infoItem', 'userInfo.infoItemId=infoItem.id').where("userInfo.userId = :id", { id }).getMany();
         return userInfos.map(userInfo => { return { name: userInfo.infoItem.name, value: userInfo.value } })
     }
 
@@ -169,7 +169,7 @@ export class UserService {
     async addUserInfoToUser(req: IncomingMessage, id: number, groups: { groupId: number, infos: UnionUserInfo[] }[]): Promise<void> {
         let user: User = await this.userRepository.findOneById(id, { relations: ['userInfos', 'infoItems'] })
         if (!user) {
-            throw new HttpException('指定id='+id+'用户不存在', 406)
+            throw new HttpException('指定id=' + id + '用户不存在', 406)
         }
         for (let i = 0; i < groups.length; i++) {
             let { groupId, infos } = groups[i]
@@ -182,11 +182,7 @@ export class UserService {
         try {
             await this.userRepository.save(user)
         } catch (err) {
-            if (err instanceof HttpException) {
-                throw err
-            } else {
-                throw new HttpException('出现了数据库错误' + err.toString(), 401)
-            }
+            throw new HttpException('出现了数据库错误' + err.toString(), 401)
         }
 
     }
