@@ -1056,5 +1056,11 @@ describe('UserService', async () => {
                 expect(err.getResponse()).toBe('指定名称信息项name=nickname必须为字符串')
             } 
         })
+
+        it('array success',async ()=>{
+            let item = infoItemRepository.create({ id: 1, name: 'hobby', label: '爱好', default: true, description: '用户爱好', type: 'checkbox', necessary: true, registerVisible: true, informationVisible: true, order: 1 })
+            let result = await userService.transfromInfoValue(null, item, { name: 'hobby', array: ['吃饭','睡觉','打游戏']})
+            expect(result).toBe('吃饭,睡觉,打游戏')
+        })
     })
 })
