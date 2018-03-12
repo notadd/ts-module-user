@@ -999,7 +999,7 @@ describe('UserService', async () => {
             }
         })
 
-        it('should throw HttpException:指定信息项:sex,age为必填项, 410',async ()=>{
+        it('should throw HttpException:指定信息项:sex,age为必填项, 410', async () => {
             let user = userRepository.create({ id: 1, userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false, userInfos: [], infoItems: [] })
             let item1 = infoItemRepository.create({ id: 1, name: 'nickname', label: '昵称', default: true, description: '用户昵称', type: 'text', necessary: true, registerVisible: true, informationVisible: true, order: 1 })
             let item2 = infoItemRepository.create({ id: 2, name: 'sex', label: '性别', default: true, description: '用户性别，只能为男或女', type: 'radio', necessary: true, registerVisible: true, informationVisible: true, order: 2 })
@@ -1017,7 +1017,7 @@ describe('UserService', async () => {
         })
     })
 
-    describe('transfromInfoValue',async ()=>{
+    describe('transfromInfoValue', async () => {
 
         beforeEach(async () => {
             (storeComponent as any).cache = {}
@@ -1027,10 +1027,22 @@ describe('UserService', async () => {
             (storeComponent as any).cache = {}
         })
 
-        it('text success',async ()=>{
+        it('text success', async () => {
             let item = infoItemRepository.create({ id: 1, name: 'nickname', label: '昵称', default: true, description: '用户昵称', type: 'text', necessary: true, registerVisible: true, informationVisible: true, order: 1 })
-            let result = await userService.transfromInfoValue(null,item,{name:'nickname',value:'三儿'})
+            let result = await userService.transfromInfoValue(null, item, { name: 'nickname', value: '三儿' })
             expect(result).toBe('三儿')
+        })
+
+        it('should throw HttpException:指定名称信息值:nickname不存在, 410', async () => {
+            let item = infoItemRepository.create({ id: 1, name: 'nickname', label: '昵称', default: true, description: '用户昵称', type: 'text', necessary: true, registerVisible: true, informationVisible: true, order: 1 })
+            try {
+                await userService.transfromInfoValue(null, item, { name: 'nickname', value:null })
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(410)
+                expect(err.getResponse()).toBe('指定名称信息值:nickname不存在')
+            } 
         })
     })
 })
