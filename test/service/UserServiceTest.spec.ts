@@ -1044,5 +1044,17 @@ describe('UserService', async () => {
                 expect(err.getResponse()).toBe('指定名称信息值:nickname不存在')
             } 
         })
+
+        it('should throw HttpException;指定名称信息项name=nickname必须为字符串, 410',async ()=>{
+            let item = infoItemRepository.create({ id: 1, name: 'nickname', label: '昵称', default: true, description: '用户昵称', type: 'text', necessary: true, registerVisible: true, informationVisible: true, order: 1 })
+            try {
+                await userService.transfromInfoValue(null, item, { name: 'nickname', value:23 } as any)
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(410)
+                expect(err.getResponse()).toBe('指定名称信息项name=nickname必须为字符串')
+            } 
+        })
     })
 })
