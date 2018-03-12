@@ -162,7 +162,7 @@ export class UserService {
         try {
             await this.userRepository.save(user)
         } catch (err) {
-            throw new HttpException('出现了数据库错误' + err.toString(), 401)
+            throw new HttpException('数据库错误' + err.toString(), 401)
         }
     }
 
@@ -182,7 +182,7 @@ export class UserService {
         try {
             await this.userRepository.save(user)
         } catch (err) {
-            throw new HttpException('出现了数据库错误' + err.toString(), 401)
+            throw new HttpException('数据库错误' + err.toString(), 401)
         }
 
     }

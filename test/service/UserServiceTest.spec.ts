@@ -570,7 +570,7 @@ describe('UserService', async () => {
             } catch (err) {
                 expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(401)
-                expect(err.getResponse()).toBe('出现了数据库错误Error: 保存用户失败')
+                expect(err.getResponse()).toBe('数据库错误Error: 保存用户失败')
             }
         })
 
@@ -930,7 +930,7 @@ describe('UserService', async () => {
         })
 
         it('should throw HttpException:指定信息组id=1不存在, 408',async ()=>{
-            await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false })            
+            await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false })                        
             try {
                 await userService.addUserInfoToUser(null,1,[{groupId:1,infos:[]}])
                 expect(1).toBe(2)
@@ -938,6 +938,19 @@ describe('UserService', async () => {
                 expect(err instanceof HttpException).toBeTruthy()
                 expect(err.getStatus()).toBe(408)
                 expect(err.getResponse()).toBe('指定信息组id=1不存在')
+            }
+        })
+
+        it('should throw HttpException:数据库错误Error: 保存用户失败，401',async ()=>{
+            await userRepository.save({ userName: '张三', password: '123456', salt: 'aaaaa', status: true, recycle: false }) 
+            jest.spyOn(userRepository,'save').mockImplementationOnce(async ()=>{throw new Error('保存用户失败')})                       
+            try {
+                await userService.addUserInfoToUser(null,1,[])
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(401)
+                expect(err.getResponse()).toBe('数据库错误Error: 保存用户失败')
             }
         })
     })
