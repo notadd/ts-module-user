@@ -280,7 +280,7 @@ export class UserService {
     async updateUser(id: number, userName: string, password: string): Promise<void> {
         let exist: User = await this.userRepository.findOneById(id)
         if (!exist) {
-            throw new HttpException('指定用户不存在', 406)
+            throw new HttpException('指定id='+id+'用户不存在', 406)
         }
         if (userName !== exist.userName) {
             let sameUser: User = await this.userRepository.findOne({ userName })

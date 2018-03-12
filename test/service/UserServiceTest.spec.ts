@@ -1159,5 +1159,16 @@ describe('UserService', async () => {
             expect(user2.userName).toBe('李四')
             expect(user2.password).toBe(crypto.createHash('md5').update('654321' + user2.salt).digest('hex'))
         })
+
+        it('should throw HttpException;指定id=1用户不存在, 406',async ()=>{
+            try {
+                await userService.updateUser(1,'李四','654321')                
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(406)
+                expect(err.getResponse()).toBe('指定id=1用户不存在')
+            } 
+        })
     })
 })
