@@ -1092,5 +1092,18 @@ describe('UserService', async () => {
             let result = await userService.transfromInfoValue(null, item, { name: 'hobby', base64:'fadfasefasfwsef',bucketName:'public',rawName:'test.jpeg'})
             expect(result).toBe('http://localhost:8080/public/test.jpeg')
         })
+
+        it('should throw HttpExceptio：指定名称信息项name=upload必须具有文件base64编码，410',async ()=>{
+            let item = infoItemRepository.create({ id: 1, name: 'upload', label: '上传文件', default: true, description: '用户上传的文件', type: 'uploadfile', necessary: true, registerVisible: true, informationVisible: true, order: 1 })
+            let result = await userService.transfromInfoValue(null, item, { name: 'hobby', base64:'fadfasefasfwsef',bucketName:'public',rawName:'test.jpeg'})
+            try {
+                await userService.transfromInfoValue(null, item, { name: 'hobby', base64:'',bucketName:'public',rawName:'test.jpeg'})
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(410)
+                expect(err.getResponse()).toBe('指定名称信息项name=upload必须具有文件base64编码')
+            }         
+        })
     })
 })
