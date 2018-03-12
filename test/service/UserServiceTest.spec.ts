@@ -1086,5 +1086,11 @@ describe('UserService', async () => {
                 expect(err.getResponse()).toBe('指定名称信息项name=hobby必须为数组')
             } 
         })
+
+        it('file success',async ()=>{
+            let item = infoItemRepository.create({ id: 1, name: 'upload', label: '上传文件', default: true, description: '用户上传的文件', type: 'uploadfile', necessary: true, registerVisible: true, informationVisible: true, order: 1 })
+            let result = await userService.transfromInfoValue(null, item, { name: 'hobby', base64:'fadfasefasfwsef',bucketName:'public',rawName:'test.jpeg'})
+            expect(result).toBe('http://localhost:8080/public/test.jpeg')
+        })
     })
 })
