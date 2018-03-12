@@ -1074,5 +1074,17 @@ describe('UserService', async () => {
                 expect(err.getResponse()).toBe('指定名称信息值:hobby不存在')
             } 
         })
+
+        it('should throw HttpException:指定名称信息项name=hobby必须为数组, 410',async ()=>{
+            let item = infoItemRepository.create({ id: 1, name: 'hobby', label: '爱好', default: true, description: '用户爱好', type: 'checkbox', necessary: true, registerVisible: true, informationVisible: true, order: 1 })
+            try {
+                await userService.transfromInfoValue(null, item, { name: 'hobby', array: 'aaaaa'} as any)
+                expect(1).toBe(2)
+            } catch (err) {
+                expect(err instanceof HttpException).toBeTruthy()
+                expect(err.getStatus()).toBe(410)
+                expect(err.getResponse()).toBe('指定名称信息项name=hobby必须为数组')
+            } 
+        })
     })
 })
