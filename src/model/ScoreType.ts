@@ -6,7 +6,7 @@ export class ScoreType {
 
     @PrimaryGeneratedColumn({
         name: 'id',
-        type: 'int'
+        type: 'integer'
     })
     id: number;
 
@@ -22,15 +22,14 @@ export class ScoreType {
     /* 积分值类型，只能为float、int两种，根据类型不同，解析方式不同*/
     @Column({
         name: 'type',
-        type: 'enum',
-        enum: ['float', 'int']
+        type: 'varchar',
     })
     type: string
 
     /* 是否为默认积分类型，默认类型不可删除、更改 */
     @Column({
         name: 'default',
-        type: 'tinyint'
+        type: 'smallint'
     })
     default: boolean
 

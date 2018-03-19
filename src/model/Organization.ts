@@ -31,7 +31,7 @@ export class Organization {
     /* 父组织id，可以不存在父组织，说明为根组织 */
     @Column({
         name: 'parentId',
-        type: 'int',
+        type: 'integer',
         nullable: true
     })
     parentId: number

@@ -10,7 +10,7 @@ export class InfoItem {
 
     @PrimaryGeneratedColumn({
         name: 'id',
-        type: 'int'
+        type: 'integer'
     })
     id: number;
 
@@ -37,7 +37,7 @@ export class InfoItem {
     /* 是否为默认信息项，默认信息项不可删除、更改 、也不可添加到其他信息组中，默认信息项只能存在于默认信息组中*/
     @Column({
         name: 'default',
-        type: 'tinyint'
+        type: 'smallint'
     })
     default: boolean
 
@@ -59,15 +59,14 @@ export class InfoItem {
     */
     @Column({
         name: 'type',
-        type: 'enum',
-        enum: ['text', 'number', 'textarea', 'radio', 'checkbox', 'date', 'pulldownmenu', 'uploadimagewithpreview', 'uploadfile']
+        type: 'varchar'
     })
     type: string
 
     /* 是否必填信息项，当提交一个信息组信息时，如果必填信息项未填，会返回错误 */
     @Column({
         name: 'necessary',
-        type: 'tinyint'
+        type: 'smallint'
     })
     necessary: boolean
 
@@ -76,21 +75,21 @@ export class InfoItem {
     */
     @Column({
         name: 'register_visible',
-        type: 'tinyint'
+        type: 'smallint'
     })
     registerVisible: boolean
 
     /* 资料页是否可见，当前端需要用户资料信息时返回给它，目前暂定不可见就不返回 */
     @Column({
         name: 'information_visible',
-        type: 'tinyint'
+        type: 'smallint'
     })
     informationVisible: boolean
 
     /* 排序，由前端使用，后端不做验证(不要求一个信息组中信息项排序不可重复等等) */
     @Column({
         name: 'order',
-        type: 'int'
+        type: 'integer'
     })
     order: number
 

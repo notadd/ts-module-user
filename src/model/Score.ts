@@ -9,7 +9,7 @@ export class Score {
 
     @PrimaryGeneratedColumn({
         name: 'id',
-        type: 'int'
+        type: 'integer'
     })
     id: number;
 

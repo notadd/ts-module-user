@@ -24,7 +24,7 @@ export class Role {
     /* 角色权限值，前端使用*/
     @Column({
         name: 'score',
-        type: 'int'
+        type: 'integer'
     })
     score: number
 

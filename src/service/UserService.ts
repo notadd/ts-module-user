@@ -371,9 +371,6 @@ export class UserService {
 
     async restoreUsers(ids: number[]): Promise<void> {
         let users: User[] = await this.userRepository.findByIds(ids)
-        if (!users || users.length === 0) {
-            throw new HttpException('指定id='+id+'用户不存在', 406)
-        }
         ids.forEach(id => {
             let find: User = users.find(user => {
                 return user.id === id

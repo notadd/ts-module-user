@@ -17,14 +17,12 @@ export const ConnectionProvider = {
     useFactory:async ()=>{
         return await createConnection({
             name:'user_pm',
-            type: 'mysql',
+            type: 'postgres',
             host: 'localhost',
-            port: 3306,
-            username: 'root',
+            port: 5433,
+            username: 'postgres',
             password: '123456',
             database: "user_pm",
-            charset:'UTF8',
-            dateStrings:false,
             entities: [
                 Organization,
                 Permission,
@@ -40,8 +38,8 @@ export const ConnectionProvider = {
             ],
             logger:'simple-console',
             logging:null,
-            synchronize:false,
-            dropSchema:false
+            synchronize:true,
+            dropSchema:true
         })
     }
 }

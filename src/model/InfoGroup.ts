@@ -13,7 +13,7 @@ export class InfoGroup {
     /* 信息组id不能自动生成，因为前面几个id的信息组都是约定好的，信息组id由方法内根据当前最大id生成 */
     @PrimaryGeneratedColumn({
         name: 'id',
-        type: 'int'
+        type: 'integer'
     })
     id: number;
 
@@ -29,14 +29,14 @@ export class InfoGroup {
     /* 是否为默认信息组，默认信息组不可删除、更改 */
     @Column({
         name: 'default',
-        type: 'tinyint'
+        type: 'smallint'
     })
     default: boolean
 
     /* 信息组状态，是否可用，目前还未启用这个特性 */
     @Column({
         name: 'status',
-        type: 'tinyint'
+        type: 'smallint'
     })
     status: boolean
 
