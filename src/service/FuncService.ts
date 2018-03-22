@@ -1,8 +1,9 @@
 import { Component, Inject, HttpException } from '@nestjs/common';
-import { Permission } from '../model/Permission';
-import { Module } from '../model/Module';
+import { Permission } from '../model/Permission.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Module } from '../model/Module.entity';
+import { Func } from '../model/Func.entity';
 import { IncomingMessage } from 'http';
-import { Func } from '../model/Func';
 import { Repository } from 'typeorm';
 import * as crypto from 'crypto';
 
@@ -11,9 +12,9 @@ import * as crypto from 'crypto';
 export class FuncService {
 
     constructor(
-        @Inject('UserPMModule.FuncRepository') private readonly funcRepository: Repository<Func>,
-        @Inject('UserPMModule.ModuleRepository') private readonly moduleRepository: Repository<Module>,
-        @Inject('UserPMModule.PermissionRepository') private readonly permissionRepository: Repository<Permission>
+        @InjectRepository(Func) private readonly funcRepository: Repository<Func>,
+        @InjectRepository(Module) private readonly moduleRepository: Repository<Module>,
+        @InjectRepository(Permission) private readonly permissionRepository: Repository<Permission>
     ) { }
 
     async createFunc(moduleToken:string,name: string): Promise<void> {

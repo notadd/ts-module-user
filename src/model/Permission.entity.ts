@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable, Index, ManyToOne, JoinColumn } from 'typeorm';
-import { Module } from './Module';
-import { User } from './User'
+import { Module } from './Module.entity';
+import { User } from './User.entity'
 /* 权限实体，代表了执行某种操作的权限，属于某个模块
    目前所有权限由模块中使用装饰器提供，找到权限之后保存它
    不能在后台添加权限，因为添加也没用，权限的使用是写死在代码里的

@@ -6,7 +6,7 @@ import { Connection, Repository } from 'typeorm';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  modules: [GraphQLModule, UserPMModule, TypeOrmModule.forRoot({
+  modules: [GraphQLModule, TypeOrmModule.forRoot({
     name: 'user_pm',
     type: 'postgres',
     host: 'localhost',
@@ -19,7 +19,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     logging: null,
     synchronize: true,
     dropSchema: true
-  })]
+  }),UserPMModule]
 })
 
 

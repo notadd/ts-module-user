@@ -1,5 +1,6 @@
 import { Component, Inject, HttpException } from '@nestjs/common';
-import { Module } from '../model/Module';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Module } from '../model/Module.entity';
 import { IncomingMessage } from 'http';
 import { Repository } from 'typeorm';
 import * as crypto from 'crypto';
@@ -9,7 +10,7 @@ import * as crypto from 'crypto';
 export class ModuleService {
 
     constructor(
-        @Inject('UserPMModule.ModuleRepository') private readonly moduleRepository: Repository<Module>
+        @InjectRepository(Module) private readonly moduleRepository: Repository<Module>
     ) { }
 
     async getAll(): Promise<Module[]> {

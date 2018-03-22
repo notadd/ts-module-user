@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, Index, ManyToOne, ManyToMany, JoinTable, JoinColumn } from 'typeorm';
-import { Permission } from './Permission';
-import { Module } from './Module';
+import { Permission } from './Permission.entity';
+import { Module } from './Module.entity';
 
 /* 功能实体，功能是权限的集合
    功能与权限是多对多关系，但是功能是属于某个模块的，一个功能所包含的权限也都是同一个模块的

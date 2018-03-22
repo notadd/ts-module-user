@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryColumn, Index, OneToMany } from 'typeorm';
-import { Permission } from './Permission';
-import { Func } from './Func';
-import { Role } from './Role';
+import { Permission } from './Permission.entity';
+import { Func } from './Func.entity';
+import { Role } from './Role.entity';
 
 
 /* 模块实体，这个模块实体主要用于存储权限

@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, Index, ManyToOne, ManyToMany, JoinTable, JoinColumn } from 'typeorm';
-import { Module } from './Module';
-import { Func } from './Func';
-import { User } from './User';
+import { Module } from './Module.entity';
+import { Func } from './Func.entity';
+import { User } from './User.entity';
 
 /* 角色，一般由后台创建，一个角色包含多个功能，进而包含了功能下的权限，具有指定特定操作的权限
    角色不能跨模块，所以它只能包含属于同一个模块下的功能，当删除模块时，其所属角色也会删除

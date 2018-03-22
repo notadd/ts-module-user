@@ -1,8 +1,9 @@
 import { Component, Inject, HttpException } from '@nestjs/common';
-import { Module } from '../model/Module';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Module } from '../model/Module.entity';
+import { Func } from '../model/Func.entity';
+import { Role } from '../model/Role.entity';
 import { IncomingMessage } from 'http';
-import { Func } from '../model/Func';
-import { Role } from '../model/Role';
 import { Repository } from 'typeorm';
 import * as crypto from 'crypto';
 
@@ -11,9 +12,9 @@ import * as crypto from 'crypto';
 export class RoleService {
 
     constructor(
-        @Inject('UserPMModule.FuncRepository') private readonly funcRepository: Repository<Func>,
-        @Inject('UserPMModule.RoleRepository') private readonly roleRepository: Repository<Role>,
-        @Inject('UserPMModule.ModuleRepository') private readonly moduleRepository: Repository<Module>
+        @InjectRepository(Func) private readonly funcRepository: Repository<Func>,
+        @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
+        @InjectRepository(Module) private readonly moduleRepository: Repository<Module>
     ) { }
 
     async createRole(moduleToken: string, name: string, score: number): Promise<void> {

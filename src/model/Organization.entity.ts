@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
-import { User } from './User';
+import { User } from './User.entity';
 
 /* 组织实体，组织可以互相包含，一个组织下可以包含多个组织，还可以包含多个用户
    组织完全与模块无关

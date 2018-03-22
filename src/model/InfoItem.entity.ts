@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, OneToMany, JoinTable } from 'typeorm';
-import { InfoGroup } from './InfoGroup';
-import { UserInfo } from './UserInfo';
+import { InfoGroup } from './InfoGroup.entity';
+import { UserInfo } from './UserInfo.entity';
 /* 信息项实体，代表了用户需要额外填写的信息项
    信息项与信息组为多对多关系，这个关系只是为了方便调用
    信息项与用户也是多对多关系，这个关系是为了记录哪些信息已经被填写

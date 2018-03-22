@@ -1,13 +1,14 @@
 import { HttpException, Inject, Component } from '@nestjs/common';
 import { Repository, Connection, EntityManager } from 'typeorm';
-import { ScoreType } from '../model/ScoreType';
+import { ScoreType } from '../model/ScoreType.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 import { IncomingMessage } from 'http';
 
 @Component()
 export class ScoreTypeService {
 
     constructor(
-        @Inject('UserPMModule.ScoreTypeRepository') private readonly scoreTypeRepository: Repository<ScoreType>
+        @InjectRepository(ScoreType) private readonly scoreTypeRepository: Repository<ScoreType>
     ) { }
 
     async getAll(): Promise<ScoreType[]> {

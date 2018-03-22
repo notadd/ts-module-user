@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, OneToMany, JoinTable } from 'typeorm';
-import { Score } from './Score';
+import { Score } from './Score.entity';
 /* 积分类型 */
 @Entity('score_type')
 export class ScoreType {

@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable, ManyToOne,JoinColumn,Index } from 'typeorm';
-import { ScoreType } from './ScoreType';
-import { User } from './User';
+import { ScoreType } from './ScoreType.entity';
+import { User } from './User.entity';
 
 /* 积分值，属于用户 */
 @Entity('score')

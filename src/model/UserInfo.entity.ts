@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, Index, JoinColumn } from 'typeorm';
-import { InfoItem } from './InfoItem';
-import { User } from './User';
+import { InfoItem } from './InfoItem.entity';
+import { User } from './User.entity';
 
 /* 用户信息实体类，这里填的信息是用户现有信息之外的信息
 */

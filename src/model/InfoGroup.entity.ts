@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable } from 'typeorm';
-import { InfoItem } from './InfoItem';
+import { InfoItem } from './InfoItem.entity';
 
 /* 信息组，包含多个信息项
    目前信息组不属于任何模块，会写入一些默认信息组，由不同模块根据id调用信息组，一个模块可能会调用多个信息组

@@ -1,9 +1,10 @@
 import { Component, Inject, HttpException } from '@nestjs/common';
-import { InfoGroup } from '../model/InfoGroup';
-import { InfoItem } from '../model/InfoItem'
+import { InfoGroup } from '../model/InfoGroup.entity';
+import { InfoItem } from '../model/InfoItem.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from '../model/User.entity';
 import { IncomingMessage } from 'http';
 import { Repository } from 'typeorm';
-import { User } from '../model/User';
 import * as crypto from 'crypto';
 
 
@@ -11,8 +12,8 @@ import * as crypto from 'crypto';
 export class InfoGroupService {
 
     constructor(
-        @Inject('UserPMModule.InfoItemRepository') private readonly infoItemRepository: Repository<InfoItem>,
-        @Inject('UserPMModule.InfoGroupRepository') private readonly infoGroupRepository: Repository<InfoGroup>
+        @InjectRepository(InfoItem) private readonly infoItemRepository: Repository<InfoItem>,
+        @InjectRepository(InfoGroup) private readonly infoGroupRepository: Repository<InfoGroup>
     ) { }
 
     /* 获取所有信息组 */

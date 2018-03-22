@@ -1,10 +1,10 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable, OneToMany } from 'typeorm';
-import { Organization } from './Organization';
-import { Permission } from './Permission';
-import { InfoItem } from './InfoItem';
-import { UserInfo } from './UserInfo';
-import { Score } from './Score';
-import { Role } from './Role';
+import { Organization } from './Organization.entity';
+import { Permission } from './Permission.entity';
+import { InfoItem } from './InfoItem.entity';
+import { UserInfo } from './UserInfo.entity';
+import { Score } from './Score.entity';
+import { Role } from './Role.entity';
 
 /* 用户实体类，id自动生成、用户名必须唯一
    用户可以属于多个组织，也可以不属于组织，为自由用户

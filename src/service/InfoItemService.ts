@@ -1,5 +1,6 @@
 import { Component, Inject, HttpException } from '@nestjs/common';
-import { InfoItem } from '../model/InfoItem';
+import { InfoItem } from '../model/InfoItem.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 import { IncomingMessage } from 'http';
 import { Repository } from 'typeorm';
 import * as crypto from 'crypto';
@@ -9,7 +10,7 @@ import * as crypto from 'crypto';
 export class InfoItemService {
 
     constructor(
-        @Inject('UserPMModule.InfoItemRepository') private readonly infoItemRepository: Repository<InfoItem>
+        @InjectRepository(InfoItem) private readonly infoItemRepository: Repository<InfoItem>
     ) { }
 
     /* 创建信息项 */

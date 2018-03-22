@@ -2,15 +2,16 @@ import { UnionUserInfo, TextInfo, ArrayInfo, FileInfo } from '../interface/user/
 import { HttpException, Inject, Component } from '@nestjs/common';
 import { Repository, Connection, EntityManager } from 'typeorm';
 import { StoreComponent } from '../interface/StoreComponent';
-import { Organization } from '../model/Organization';
-import { Permission } from '../model/Permission';
-import { InfoGroup } from '../model/InfoGroup';
-import { InfoItem } from '../model/InfoItem';
-import { UserInfo } from '../model/UserInfo';
+import { Organization } from '../model/Organization.entity';
+import { Permission } from '../model/Permission.entity';
+import { InfoGroup } from '../model/InfoGroup.entity';
+import { InfoItem } from '../model/InfoItem.entity';
+import { UserInfo } from '../model/UserInfo.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Func } from '../model/Func.entity';
+import { Role } from '../model/Role.entity';
+import { User } from '../model/User.entity';
 import { IncomingMessage } from 'http';
-import { Func } from '../model/Func';
-import { Role } from '../model/Role';
-import { User } from '../model/User';
 import * as crypto from 'crypto';
 
 @Component()
@@ -18,14 +19,13 @@ export class UserService {
 
     constructor(
         @Inject('StoreComponentToken') private readonly storeComponent: StoreComponent,
-        @Inject('UserPMModule.Connection') private readonly connection: Connection,
-        @Inject('UserPMModule.FuncRepository') private readonly funcRepository: Repository<Func>,
-        @Inject('UserPMModule.RoleRepository') private readonly roleRepository: Repository<Role>,
-        @Inject('UserPMModule.UserRepository') private readonly userRepository: Repository<User>,
-        @Inject('UserPMModule.UserInfoRepository') private readonly userInfoRepository: Repository<UserInfo>,
-        @Inject('UserPMModule.InfoGroupRepository') private readonly infoGroupRepository: Repository<InfoGroup>,
-        @Inject('UserPMModule.PermissionRepository') private readonly permissionRepository: Repository<Permission>,
-        @Inject('UserPMModule.OrganizationRepository') private readonly organizationRepository: Repository<Organization>
+        @InjectRepository(Func) private readonly funcRepository: Repository<Func>,
+        @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
+        @InjectRepository(User) private readonly userRepository: Repository<User>,
+        @InjectRepository(UserInfo) private readonly userInfoRepository: Repository<UserInfo>,
+        @InjectRepository(InfoGroup) private readonly infoGroupRepository: Repository<InfoGroup>,
+        @InjectRepository(Permission) private readonly permissionRepository: Repository<Permission>,
+        @InjectRepository(Organization) private readonly organizationRepository: Repository<Organization>
     ) { }
 
 
@@ -280,12 +280,12 @@ export class UserService {
     async updateUser(id: number, userName: string, password: string): Promise<void> {
         let exist: User = await this.userRepository.findOneById(id)
         if (!exist) {
-            throw new HttpException('指定id='+id+'用户不存在', 406)
+            throw new HttpException('指定id=' + id + '用户不存在', 406)
         }
         if (userName !== exist.userName) {
             let sameUser: User = await this.userRepository.findOne({ userName })
             if (sameUser) {
-                throw new HttpException('指定userName='+userName+'用户已存在', 406)
+                throw new HttpException('指定userName=' + userName + '用户已存在', 406)
             }
         }
         try {
@@ -302,13 +302,13 @@ export class UserService {
     async bannedUser(id: number): Promise<void> {
         let exist: User = await this.userRepository.findOneById(id)
         if (!exist) {
-            throw new HttpException('指定id='+id+'用户不存在', 406)
+            throw new HttpException('指定id=' + id + '用户不存在', 406)
         }
         if (exist.recycle) {
-            throw new HttpException('指定id='+id+'用户已存在回收站中', 406)
+            throw new HttpException('指定id=' + id + '用户已存在回收站中', 406)
         }
         if (!exist.status) {
-            throw new HttpException('指定id='+id+'用户已经封禁', 406)
+            throw new HttpException('指定id=' + id + '用户已经封禁', 406)
         }
         try {
             exist.status = false
@@ -321,13 +321,13 @@ export class UserService {
     async unBannedUser(id: number): Promise<void> {
         let exist: User = await this.userRepository.findOneById(id)
         if (!exist) {
-            throw new HttpException('指定id='+id+'用户不存在', 406)
+            throw new HttpException('指定id=' + id + '用户不存在', 406)
         }
         if (exist.recycle) {
-            throw new HttpException('指定id='+id+'用户已存在回收站中', 406)
+            throw new HttpException('指定id=' + id + '用户已存在回收站中', 406)
         }
         if (exist.status) {
-            throw new HttpException('指定id='+id+'用户不需要解封', 406)
+            throw new HttpException('指定id=' + id + '用户不需要解封', 406)
         }
         try {
             exist.status = true
@@ -340,10 +340,10 @@ export class UserService {
     async softDeleteUser(id: number): Promise<void> {
         let exist: User = await this.userRepository.findOneById(id)
         if (!exist) {
-            throw new HttpException('指定id='+id+'用户不存在', 406)
+            throw new HttpException('指定id=' + id + '用户不存在', 406)
         }
         if (exist.recycle) {
-            throw new HttpException('指定id='+id+'用户已存在回收站中', 406)
+            throw new HttpException('指定id=' + id + '用户已存在回收站中', 406)
         }
         try {
             exist.recycle = true
@@ -356,10 +356,10 @@ export class UserService {
     async restoreUser(id: number): Promise<void> {
         let exist: User = await this.userRepository.findOneById(id)
         if (!exist) {
-            throw new HttpException('指定id='+id+'用户不存在', 406)
+            throw new HttpException('指定id=' + id + '用户不存在', 406)
         }
         if (!exist.recycle) {
-            throw new HttpException('指定id='+id+'用户不存在回收站中', 406)
+            throw new HttpException('指定id=' + id + '用户不存在回收站中', 406)
         }
         try {
             exist.recycle = false
@@ -395,10 +395,10 @@ export class UserService {
     async deleteUser(id: number): Promise<void> {
         let exist: User = await this.userRepository.findOneById(id)
         if (!exist) {
-            throw new HttpException('指定id='+id+'用户不存在', 406)
+            throw new HttpException('指定id=' + id + '用户不存在', 406)
         }
         if (!exist.recycle) {
-            throw new HttpException('指定id='+id+'用户不存在回收站中', 406)
+            throw new HttpException('指定id=' + id + '用户不存在回收站中', 406)
         }
         try {
             await this.userRepository.remove(exist)
@@ -430,7 +430,7 @@ export class UserService {
     async setRoles(id: number, roleIds: number[]): Promise<void> {
         let user: User = await this.userRepository.findOneById(id, { relations: ['roles'] })
         if (!user) {
-            throw new HttpException('指定id='+id+'用户不存在', 406)
+            throw new HttpException('指定id=' + id + '用户不存在', 406)
         }
         let roles: Role[] = await this.roleRepository.findByIds(roleIds)
         roleIds.forEach(roleId => {
@@ -452,7 +452,7 @@ export class UserService {
     async setPermissions(id: number, permissionIds: number[]): Promise<void> {
         let user: User = await this.userRepository.findOneById(id, { relations: ['roles', 'adds', 'reduces'] })
         if (!user) {
-            throw new HttpException('指定id='+id+'用户不存在', 406)
+            throw new HttpException('指定id=' + id + '用户不存在', 406)
         }
         //声明从role获取的权限集合
         let result: Permission[] = []

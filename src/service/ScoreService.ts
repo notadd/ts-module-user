@@ -1,18 +1,21 @@
 import { HttpException, Inject, Component } from '@nestjs/common';
 import { Repository, Connection, EntityManager } from 'typeorm';
-import { ScoreType } from '../model/ScoreType';
+import { ScoreType } from '../model/ScoreType.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 import { FloatUtil } from '../util/FloatUtil';
-import { Score } from '../model/Score';
+import { Score } from '../model/Score.entity';
+import { User } from '../model/User.entity';
 import { IncomingMessage } from 'http';
-import { User } from '../model/User';
+
+
 @Component()
 export class ScoreService {
 
     constructor(
         @Inject(FloatUtil) private readonly floatUtil: FloatUtil,
-        @Inject('UserPMModule.UserRepository') private readonly userRepository: Repository<User>,
-        @Inject('UserPMModule.ScoreRepository') private readonly scoreRepository: Repository<Score>,
-        @Inject('UserPMModule.ScoreTypeRepository') private readonly scoreTypeRepository: Repository<ScoreType>
+        @InjectRepository(User) private readonly userRepository: Repository<User>,
+        @InjectRepository(Score) private readonly scoreRepository: Repository<Score>,
+        @InjectRepository(ScoreType) private readonly scoreTypeRepository: Repository<ScoreType>
     ) { }
 
     async getScore(userId: number, scoreTypeId: number): Promise<number> {
