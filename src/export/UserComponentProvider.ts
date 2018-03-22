@@ -1,9 +1,10 @@
 import { HttpException, Component, Inject } from '@nestjs/common';
-import { Permission } from '../model/Permission';
+import { Permission } from '../model/Permission.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from '../model/User.entity';
+import { Role } from '../model/Role.entity';
+import { Func } from '../model/Func.entity';
 import { Repository } from 'typeorm';
-import { User } from '../model/User';
-import { Role } from '../model/Role';
-import { Func } from '../model/Func';
 import * as crypto from 'crypto';
 import * as path from 'path';
 
@@ -11,9 +12,9 @@ import * as path from 'path';
 export class UserComponent {
 
     constructor(
-        @Inject('UserPMModule.FuncRepository') private readonly funcRepository: Repository<Func>,
-        @Inject('UserPMModule.RoleRepository') private readonly roleRepository: Repository<Role>,
-        @Inject('UserPMModule.UserRepository') private readonly userRepository: Repository<User>
+        @InjectRepository(Func) private readonly funcRepository: Repository<Func>,
+        @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
+        @InjectRepository(User) private readonly userRepository: Repository<User>
     ) { }
 
     async permissions(id: number): Promise<Permission[]> {
