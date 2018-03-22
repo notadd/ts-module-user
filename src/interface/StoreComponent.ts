@@ -4,7 +4,7 @@ export interface StoreComponent{
     getUrl(req:any,bucketName:string,name:string,type:string,imageProcessInfo:ImageProcessInfo):Promise<string>
 }
 
-interface ImageProcessInfo{
+export interface ImageProcessInfo{
     resize:{
         mode:string
         data:{

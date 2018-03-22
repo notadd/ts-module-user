@@ -1,9 +1,10 @@
 import { PERMISSION_CONTROLLER_AND, PERMISSION_CONTROLLER_OR } from '../decorator/PermissionController';
 import { Guard, CanActivate, ExecutionContext, Inject } from '@nestjs/common';
 import { UserComponent } from '../export/UserComponentProvider';
-import { Permission } from '../model/Permission';
+import { Permission } from '../model/Permission.entity';
+import { User } from '../model/User.entity';
 import { IncomingMessage } from 'http';
-import { User } from '../model/User';
+
 
 export const MODULE_TOKEN = 'module_token';
 
@@ -21,7 +22,7 @@ export class PermissionGuard implements CanActivate {
     */
     async canActivate(req: IncomingMessage, context: ExecutionContext): Promise<boolean> {
         let { parent, handler } = context
-        //从头信心中获取token，进而获取到用户id，这部分暂时未接入
+        //从头信息中获取token，进而获取到用户id，这部分暂时未接入
         let auth = req.headers['authentication']
         //用户，从token中获得
         let user: User = { id: 1, recycle: false, status: true } as User
