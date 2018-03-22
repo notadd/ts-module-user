@@ -3,9 +3,8 @@ import { PERMISSION_DEFINITION } from './decorator/PermissionDefinition';
 import { UserComponentProvider } from './export/UserComponentProvider';
 import { OrganizationResolver } from './resolver/OrganizationResolver';
 import { Module, Global, OnModuleInit, Inject } from '@nestjs/common';
-import { RepositorysProvider } from './database/RepositorysProvider';
 import { OrganizationService } from './service/OrganizationService';
-import { ConnectionProvider } from './database/ConnectionProvider';
+import { TypeOrmModule,InjectRepository } from '@nestjs/typeorm';
 import { InfoGroupResolver } from './resolver/InfoGroupResolver';
 import { ScoreTypeResolver } from './resolver/ScoreTypeResolver';
 import { MetadataScanner } from '@nestjs/core/metadata-scanner';
@@ -14,33 +13,38 @@ import { InfoGroupService } from './service/InfoGroupService';
 import { ScoreTypeService } from './service/ScoreTypeService';
 import { InfoItemService } from './service/InfoItemService';
 import { ModuleResolver } from './resolver/ModuleResolver';
+import { Organization } from './model/Organization.entity';
+import { Module as Module1 } from './model/Module.entity';
 import { ScoreResolver } from './resolver/ScoreResolver';
 import { ModuleService } from './service/ModuleService';
 import { UserResolver } from './resolver/UserResolver';
 import { FuncResolver } from './resolver/FuncResolver';
 import { RoleResolver } from './resolver/RoleResolver';
 import { MODULE_TOKEN } from './guard/PermissionGuard';
+import { Permission } from './model/Permission.entity';
 import { ScoreService } from './service/ScoreService';
 import { UserService } from './service/UserService';
 import { FuncService } from './service/FuncService';
 import { RoleService } from './service/RoleService';
-import { Module as Module1 } from './model/Module';
-import { Permission } from './model/Permission';
-import { InfoGroup } from './model/InfoGroup';
-import { ScoreType } from './model/ScoreType';
+import { InfoGroup } from './model/InfoGroup.entity';
+import { ScoreType } from './model/ScoreType.entity';
+import { InfoItem } from './model/InfoItem.entity';
+import { UserInfo } from './model/UserInfo.entity';
 import { FloatUtil } from './util/FloatUtil';
-import { InfoItem } from './model/InfoItem';
+import { Score } from './model/Score.entity';
+import { User } from './model/User.entity';
+import { Func } from './model/Func.entity';
+import { Role } from './model/Role.entity';
 import { Repository } from 'typeorm';
-import { Func } from './model/Func';
-import { Role } from './model/Role';
+
+
 
 @Global()
 @Module({
-  modules: [],
+  modules: [TypeOrmModule.forFeature([Module1,Organization,User,ScoreType,Score,InfoGroup,InfoItem,UserInfo,Role,Func,Permission])],
   controllers: [],
   components: [
     FloatUtil,
-    ConnectionProvider, ...RepositorysProvider,
     OrganizationService, OrganizationResolver,
     ScoreTypeService, ScoreTypeResolver,
     InfoGroupService, InfoGroupResolver,
@@ -59,13 +63,13 @@ export class UserPMModule implements OnModuleInit {
   private readonly metadataScanner: MetadataScanner
   constructor(
     @Inject(ModulesContainer.name) private readonly moduleMap: ModulesContainer,
-    @Inject('UserPMModule.RoleRepository') private readonly roleRepository: Repository<Role>,
-    @Inject('UserPMModule.FuncRepository') private readonly funcRepository: Repository<Func>,
-    @Inject('UserPMModule.ModuleRepository') private readonly moduleRepository: Repository<Module1>,
-    @Inject('UserPMModule.InfoItemRepository') private readonly infoItemRepository: Repository<InfoItem>,
-    @Inject('UserPMModule.ScoreTypeRepository') private readonly scoreTypeRepository: Repository<ScoreType>,
-    @Inject('UserPMModule.InfoGroupRepository') private readonly infoGroupRepository: Repository<InfoGroup>,
-    @Inject('UserPMModule.PermissionRepository') private readonly permissionRepository: Repository<Permission>
+    @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
+    @InjectRepository(Func) private readonly funcRepository: Repository<Func>,
+    @InjectRepository(Module) private readonly moduleRepository: Repository<Module1>,
+    @InjectRepository(InfoItem) private readonly infoItemRepository: Repository<InfoItem>,
+    @InjectRepository(ScoreType) private readonly scoreTypeRepository: Repository<ScoreType>,
+    @InjectRepository(InfoGroup) private readonly infoGroupRepository: Repository<InfoGroup>,
+    @InjectRepository(Permission) private readonly permissionRepository: Repository<Permission>
   ) {
     this.metadataScanner = new MetadataScanner()
   }
