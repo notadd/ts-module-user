@@ -90,6 +90,11 @@ export class UserComponent {
         return await this.userRepository.findOneById(id, { select: ['id', 'userName', 'status', 'recycle'] })
     }
 
+    async isExist(user:{ id: number, userName: string, status: boolean, recycle: boolean }): Promise<boolean> {
+        let exist = await this.userRepository.findOne(user)
+        return !!exist
+    }
+
 }
 
 export const UserComponentProvider = {
@@ -97,6 +102,6 @@ export const UserComponentProvider = {
     useFactory: (funcRepository: Repository<Func>, roleRepository: Repository<Role>, userRepository: Repository<User>) => {
         return new UserComponent(funcRepository, roleRepository, userRepository)
     },
-    inject: ['UserPMModule.FuncRepository', 'UserPMModule.RoleRepository', 'UserPMModule.UserRepository']
+    inject: ['FuncRepository', 'RoleRepository', 'UserRepository']
 
 }
