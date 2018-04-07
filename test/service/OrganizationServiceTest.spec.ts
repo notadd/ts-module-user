@@ -21,10 +21,10 @@ describe('FuncService', async () => {
         testModule = await Test.createTestingModule({
             components: [TestConnectionProvider, ...TestRepositorysProvider, OrganizationService]
         }).compile()
-        connection = testModule.get('UserPMModule.Connection')
-        userRepository = testModule.get('UserPMModule.UserRepository')
+        connection = testModule.get('UserModule.Connection')
+        userRepository = testModule.get('UserModule.UserRepository')
         organizationService = testModule.get<OrganizationService>(OrganizationService)
-        organizationRepository = testModule.get('UserPMModule.OrganizationRepository')
+        organizationRepository = testModule.get('UserModule.OrganizationRepository')
     }, 10000)
 
     /* 在每个it运行之前都会运行，而不是在这一级包含的每个describe运行之前 */

@@ -22,9 +22,9 @@ describe('InfoGroupService', async () => {
             components: [TestConnectionProvider, ...TestRepositorysProvider, InfoGroupService]
         }).compile()
         infoGroupService = testModule.get<InfoGroupService>(InfoGroupService)
-        connection = testModule.get('UserPMModule.Connection')
-        infoItemRepository = testModule.get('UserPMModule.InfoItemRepository')
-        infoGroupRepository = testModule.get('UserPMModule.InfoGroupRepository')
+        connection = testModule.get('UserModule.Connection')
+        infoItemRepository = testModule.get('UserModule.InfoItemRepository')
+        infoGroupRepository = testModule.get('UserModule.InfoGroupRepository')
     }, 10000)
 
     /* 在每个it运行之前都会运行，而不是在这一级包含的每个describe运行之前 */

@@ -58,7 +58,7 @@ import { Repository } from 'typeorm';
   ],
   exports: [UserComponentProvider]
 })
-export class UserPMModule implements OnModuleInit {
+export class UserModule implements OnModuleInit {
 
   private readonly metadataScanner: MetadataScanner
   constructor(

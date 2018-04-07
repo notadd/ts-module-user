@@ -51,18 +51,18 @@ describe('UserService', async () => {
                 return 'http://localhost:8080/' + bucketName + '/' + name + '.' + type
             }
         }).compile()
-        connection = testModule.get('UserPMModule.Connection')
+        connection = testModule.get('UserModule.Connection')
         userService = testModule.get<UserService>(UserService)
         storeComponent = testModule.get('StoreComponentToken')
-        userRepository = testModule.get('UserPMModule.UserRepository')
-        roleRepository = testModule.get('UserPMModule.RoleRepository')
-        funcRepository = testModule.get('UserPMModule.FuncRepository')
-        moduleRepository = testModule.get('UserPMModule.ModuleRepository')
-        infoItemRepository = testModule.get('UserPMModule.InfoItemRepository')
-        userInfoRepository = testModule.get('UserPMModule.UserInfoRepository')
-        infoGroupRepository = testModule.get('UserPMModule.InfoGroupRepository')
-        permissionRepository = testModule.get('UserPMModule.PermissionRepository')
-        organizationRepository = testModule.get('UserPMModule.OrganizationRepository')
+        userRepository = testModule.get('UserModule.UserRepository')
+        roleRepository = testModule.get('UserModule.RoleRepository')
+        funcRepository = testModule.get('UserModule.FuncRepository')
+        moduleRepository = testModule.get('UserModule.ModuleRepository')
+        infoItemRepository = testModule.get('UserModule.InfoItemRepository')
+        userInfoRepository = testModule.get('UserModule.UserInfoRepository')
+        infoGroupRepository = testModule.get('UserModule.InfoGroupRepository')
+        permissionRepository = testModule.get('UserModule.PermissionRepository')
+        organizationRepository = testModule.get('UserModule.OrganizationRepository')
     }, 10000)
 
     afterAll(async () => {

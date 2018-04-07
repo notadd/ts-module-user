@@ -25,10 +25,10 @@ describe('RoleService', async () => {
             components: [TestConnectionProvider, ...TestRepositorysProvider, RoleService]
         }).compile()
         roleService = testModule.get<RoleService>(RoleService)
-        connection = testModule.get('UserPMModule.Connection')
-        funcRepository = testModule.get('UserPMModule.FuncRepository')
-        roleRepository = testModule.get('UserPMModule.RoleRepository')
-        moduleRepository = testModule.get('UserPMModule.ModuleRepository')
+        connection = testModule.get('UserModule.Connection')
+        funcRepository = testModule.get('UserModule.FuncRepository')
+        roleRepository = testModule.get('UserModule.RoleRepository')
+        moduleRepository = testModule.get('UserModule.ModuleRepository')
     }, 10000)
 
     /* 在每个it运行之前都会运行，而不是在这一级包含的每个describe运行之前 */

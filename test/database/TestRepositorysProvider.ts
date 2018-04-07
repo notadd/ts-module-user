@@ -12,17 +12,17 @@ import { Role } from '../../src/model/Role';
 import { Func } from '../../src/model/Func';
 
 const entityMap: Map<string, Function> = new Map()
-entityMap.set('UserPMModule.OrganizationRepository', Organization)
-entityMap.set('UserPMModule.PermissionRepository', Permission)
-entityMap.set('UserPMModule.InfoGroupRepository', InfoGroup)
-entityMap.set('UserPMModule.ScoreTypeRepository', ScoreType)
-entityMap.set('UserPMModule.InfoItemRepository', InfoItem)
-entityMap.set('UserPMModule.UserInfoRepository', UserInfo)
-entityMap.set('UserPMModule.ModuleRepository', Module)
-entityMap.set('UserPMModule.ScoreRepository', Score)
-entityMap.set('UserPMModule.UserRepository', User)
-entityMap.set('UserPMModule.RoleRepository', Role)
-entityMap.set('UserPMModule.FuncRepository', Func)
+entityMap.set('UserModule.OrganizationRepository', Organization)
+entityMap.set('UserModule.PermissionRepository', Permission)
+entityMap.set('UserModule.InfoGroupRepository', InfoGroup)
+entityMap.set('UserModule.ScoreTypeRepository', ScoreType)
+entityMap.set('UserModule.InfoItemRepository', InfoItem)
+entityMap.set('UserModule.UserInfoRepository', UserInfo)
+entityMap.set('UserModule.ModuleRepository', Module)
+entityMap.set('UserModule.ScoreRepository', Score)
+entityMap.set('UserModule.UserRepository', User)
+entityMap.set('UserModule.RoleRepository', Role)
+entityMap.set('UserModule.FuncRepository', Func)
 
 
 class RepositoryProvider {
@@ -39,7 +39,7 @@ entityMap.forEach((entity, token, map) => {
         useFactory: (connection: Connection) => {
             return connection.getRepository(entity)
         },
-        inject: ['UserPMModule.Connection']
+        inject: ['UserModule.Connection']
     })
 })
 

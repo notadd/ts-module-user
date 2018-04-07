@@ -20,9 +20,9 @@ describe('ScoreTypeService', async () => {
         testModule = await Test.createTestingModule({
             components: [TestConnectionProvider, ...TestRepositorysProvider, ScoreTypeService]
         }).compile()
-        connection = testModule.get('UserPMModule.Connection')
+        connection = testModule.get('UserModule.Connection')
         scoreTypeService = testModule.get<ScoreTypeService>(ScoreTypeService)
-        scoreTypeRepository = testModule.get('UserPMModule.ScoreTypeRepository')
+        scoreTypeRepository = testModule.get('UserModule.ScoreTypeRepository')
     }, 10000)
 
     /* 在每个it运行之前都会运行，而不是在这一级包含的每个describe运行之前 */

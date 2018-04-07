@@ -24,10 +24,10 @@ describe('FuncService', async () => {
             components: [TestConnectionProvider, ...TestRepositorysProvider, FuncService]
         }).compile()
         funcService = testModule.get<FuncService>(FuncService)
-        connection = testModule.get('UserPMModule.Connection')
-        funcRepository = testModule.get('UserPMModule.FuncRepository')
-        moduleRepository = testModule.get('UserPMModule.ModuleRepository')
-        permissionRepository = testModule.get('UserPMModule.PermissionRepository')
+        connection = testModule.get('UserModule.Connection')
+        funcRepository = testModule.get('UserModule.FuncRepository')
+        moduleRepository = testModule.get('UserModule.ModuleRepository')
+        permissionRepository = testModule.get('UserModule.PermissionRepository')
     }, 10000)
 
     /* 在每个it运行之前都会运行，而不是在这一级包含的每个describe运行之前 */

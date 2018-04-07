@@ -12,7 +12,7 @@ import { Func } from '../../src/model/Func';
 import { createConnection } from 'typeorm';
 
 export const TestConnectionProvider = {
-    provide: 'UserPMModule.Connection',
+    provide: 'UserModule.Connection',
     useFactory: async () => {
         return await createConnection({
             name: 'user_pm_test',

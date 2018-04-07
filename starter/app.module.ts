@@ -1,7 +1,7 @@
 import { Module, MiddlewaresConsumer, NestModule, RequestMethod, Inject } from '@nestjs/common';
 import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
 import { GraphQLModule, GraphQLFactory } from '@nestjs/graphql';
-import { UserPMModule } from '../src/UserPMModule';
+import { UserModule } from '../src/user.module';
 import { Connection, Repository } from 'typeorm';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -19,7 +19,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     logging: null,
     synchronize: true,
     dropSchema: true
-  }),UserPMModule]
+  }),UserModule]
 })
 
 

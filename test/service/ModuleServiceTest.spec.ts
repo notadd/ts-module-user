@@ -19,8 +19,8 @@ describe('FuncService', async () => {
             components: [TestConnectionProvider, ...TestRepositorysProvider, ModuleService]
         }).compile()
         moduleService = testModule.get<ModuleService>(ModuleService)
-        connection = testModule.get('UserPMModule.Connection')
-        moduleRepository = testModule.get('UserPMModule.ModuleRepository')
+        connection = testModule.get('UserModule.Connection')
+        moduleRepository = testModule.get('UserModule.ModuleRepository')
     }, 10000)
 
     /* 在每个it运行之前都会运行，而不是在这一级包含的每个describe运行之前 */
