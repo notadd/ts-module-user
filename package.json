@@ -4,6 +4,9 @@
     "description": "notadd 用户中心模块，向商城、微信、cms等模块提供了权限服务",
     "main": "index.js",
     "scripts": {
+        "build": "node --max_old_space_size=4096 ./node_modules/gulp/bin/gulp.js build",
+        "prepublish": "node --max_old_space_size=4096 ./node_modules/gulp/bin/gulp.js build",
+        "publish": "node ./node_modules/lerna/bin/lerna.js publish -m \"chore(release): publish %s\"",
         "tsc": "tsc",
         "start": "node index.js",
         "start:watch": "nodemon",
