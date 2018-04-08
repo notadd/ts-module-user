@@ -4,7 +4,7 @@ const sequence = require("gulp-sequence");
 const ts = require("@notadd/gulp-typescript");
 
 const packages = {
-    "user": ts.createProject("src/open-in-browser/tsconfig.json"),
+    "user": ts.createProject("src/tsconfig.json"),
 };
 
 const dist = "package";
