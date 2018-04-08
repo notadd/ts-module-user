@@ -1,12 +1,8 @@
-import { Component, Inject, HttpException } from '@nestjs/common';
+import { Component, HttpException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { InfoGroup } from '../model/InfoGroup.entity';
 import { InfoItem } from '../model/InfoItem.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../model/User.entity';
-import { IncomingMessage } from 'http';
-import { Repository } from 'typeorm';
-import * as crypto from 'crypto';
-
 
 @Component()
 export class InfoGroupService {
@@ -14,7 +10,8 @@ export class InfoGroupService {
     constructor(
         @InjectRepository(InfoItem) private readonly infoItemRepository: Repository<InfoItem>,
         @InjectRepository(InfoGroup) private readonly infoGroupRepository: Repository<InfoGroup>
-    ) { }
+    ) {
+    }
 
     /* 获取所有信息组 */
     async getAll(): Promise<InfoGroup[]> {
@@ -23,7 +20,7 @@ export class InfoGroupService {
 
     /* 获取指定信息组的信息项，不管信息组状态如何都能获取到 */
     async getInfoItems(id: number): Promise<InfoItem[]> {
-        let infoGroup: InfoGroup = await this.infoGroupRepository.findOneById(id, { relations: ['items'] })
+        let infoGroup: InfoGroup = await this.infoGroupRepository.findOneById(id, { relations: [ 'items' ] })
         return infoGroup.items
     }
 
@@ -86,9 +83,9 @@ export class InfoGroupService {
 
     /* 向指定信息组添加信息项 */
     async addInfoItem(id: number, infoItemId: number): Promise<void> {
-        let group: InfoGroup = await this.infoGroupRepository.findOneById(id, { relations: ['items'] })
+        let group: InfoGroup = await this.infoGroupRepository.findOneById(id, { relations: [ 'items' ] })
         if (!group) {
-            throw new HttpException('给定id='+id+'信息组不存在', 408)
+            throw new HttpException('给定id=' + id + '信息组不存在', 408)
         }
         //不能向默认信息组添加新项
         if (group.default) {
@@ -96,7 +93,7 @@ export class InfoGroupService {
         }
         let item: InfoItem = await this.infoItemRepository.findOneById(infoItemId)
         if (!item) {
-            throw new HttpException('指定id='+infoItemId+'信息项不存在', 409)
+            throw new HttpException('指定id=' + infoItemId + '信息项不存在', 409)
         }
         //默认信息项也不能添加到别的组
         if (item.default) {
@@ -120,9 +117,9 @@ export class InfoGroupService {
 
     /* 从信息组移除信息项 */
     async removeInfoItem(id: number, infoItemId: number): Promise<void> {
-        let group: InfoGroup = await this.infoGroupRepository.findOneById(id, { relations: ['items'] })
+        let group: InfoGroup = await this.infoGroupRepository.findOneById(id, { relations: [ 'items' ] })
         if (!group) {
-            throw new HttpException('给定id='+id+'信息组不存在', 408)
+            throw new HttpException('给定id=' + id + '信息组不存在', 408)
         }
         //默认信息组不能更改
         if (group.default) {
@@ -131,7 +128,7 @@ export class InfoGroupService {
         //其他信息组不可能包含默认信息项，因为添加不进去
         let item: InfoItem = await this.infoItemRepository.findOneById(infoItemId)
         if (!item) {
-            throw new HttpException('指定id='+infoItemId+'信息项不存在', 409)
+            throw new HttpException('指定id=' + infoItemId + '信息项不存在', 409)
         }
         //查找是否信息项已经存在于指定信息组中
         let index = group.items.findIndex(item => {

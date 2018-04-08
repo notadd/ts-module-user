@@ -1,14 +1,13 @@
-import { UsersInOrganizationData } from '../interface/organization/UsersInOrganizationData';
-import { OrganizationsData } from '../interface/organization/OrganizationsData';
-import { ExceptionInterceptor } from '../interceptor/ExceptionInterceptor';
 import { HttpException, Inject, UseInterceptors } from '@nestjs/common';
-import { ChildrenData } from '../interface/organization/ChildrenData';
-import { OrganizationService } from '../service/OrganizationService';
-import { RootsData } from '../interface/organization/RootsData';
-import { Resolver, Query, Mutation } from '@nestjs/graphql';
-import { Data } from '../interface/Data';
+import { Mutation, Query, Resolver } from '@nestjs/graphql';
 import { IncomingMessage } from 'http';
-
+import { ExceptionInterceptor } from '../interceptor/ExceptionInterceptor';
+import { Data } from '../interface/Data';
+import { ChildrenData } from '../interface/organization/ChildrenData';
+import { OrganizationsData } from '../interface/organization/OrganizationsData';
+import { RootsData } from '../interface/organization/RootsData';
+import { UsersInOrganizationData } from '../interface/organization/UsersInOrganizationData';
+import { OrganizationService } from '../service/OrganizationService';
 
 @Resolver('Organization')
 @UseInterceptors(ExceptionInterceptor)
@@ -16,7 +15,8 @@ export class OrganizationResolver {
 
     constructor(
         @Inject(OrganizationService) private readonly organizationService: OrganizationService
-    ) { }
+    ) {
+    }
 
     /* 查找所有根组织 */
     @Query('roots')

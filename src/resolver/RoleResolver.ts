@@ -1,13 +1,10 @@
-import { ExceptionInterceptor } from '../interceptor/ExceptionInterceptor';
-import { Inject, HttpException, UseInterceptors } from '@nestjs/common';
-import { Resolver, Query, Mutation } from '@nestjs/graphql';
-import { RoleService } from '../service/RoleService';
-import { Func } from '../model/Func.entity';
-import { Role } from '../model/Role.entity';
-import { Data } from '../interface/Data';
+import { HttpException, Inject, UseInterceptors } from '@nestjs/common';
+import { Mutation, Resolver } from '@nestjs/graphql';
 import { IncomingMessage } from 'http';
-
-
+import { ExceptionInterceptor } from '../interceptor/ExceptionInterceptor';
+import { Data } from '../interface/Data';
+import { Role } from '../model/Role.entity';
+import { RoleService } from '../service/RoleService';
 
 /* 角色是功能的集合，因为功能属于模块，则角色也属于某个模块，随着模块删除而删除 */
 @Resolver('Role')
@@ -16,7 +13,8 @@ export class RoleResolver {
 
     constructor(
         @Inject(RoleService) private readonly roleService: RoleService
-    ) { }
+    ) {
+    }
 
     @Mutation('createRole')
     async createRole(req: IncomingMessage, body: { moduleToken: string, name: string, score: number }): Promise<Data> {

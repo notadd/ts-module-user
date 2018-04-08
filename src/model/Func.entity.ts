@@ -1,13 +1,13 @@
-import { Entity, Column, PrimaryGeneratedColumn, Index, ManyToOne, ManyToMany, JoinTable, JoinColumn } from 'typeorm';
-import { Permission } from './Permission.entity';
+import { Column, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Module } from './Module.entity';
+import { Permission } from './Permission.entity';
 
 /* 功能实体，功能是权限的集合
    功能与权限是多对多关系，但是功能是属于某个模块的，一个功能所包含的权限也都是同一个模块的
    模块删除时，其下包含的功能将会一起删除
 */
 @Entity('function')
-@Index('func_name_module_token', ['name', 'moduleToken'])
+@Index('func_name_module_token', [ 'name', 'moduleToken' ])
 export class Func {
 
     @PrimaryGeneratedColumn()

@@ -1,11 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, Index, JoinColumn } from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { InfoItem } from './InfoItem.entity';
 import { User } from './User.entity';
 
 /* 用户信息实体类，这里填的信息是用户现有信息之外的信息
 */
 @Entity('user_info')
-@Index('infoItemId_userId', ['infoItemId', 'userId'])
+@Index('infoItemId_userId', [ 'infoItemId', 'userId' ])
 export class UserInfo {
 
     @PrimaryGeneratedColumn()
@@ -20,7 +20,7 @@ export class UserInfo {
     value: string
 
     @Column({
-        nullable:true
+        nullable: true
     })
     userId: number
 
@@ -41,7 +41,7 @@ export class UserInfo {
     user: User
 
     @Column({
-        nullable:true
+        nullable: true
     })
     infoItemId: number
 

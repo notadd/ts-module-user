@@ -1,9 +1,9 @@
-import { ExceptionInterceptor } from '../interceptor/ExceptionInterceptor';
-import { Inject, HttpException, UseInterceptors } from '@nestjs/common';
-import { Resolver, Query, Mutation } from '@nestjs/graphql';
-import { ScoreService } from '../service/ScoreService';
-import { Data } from '../interface/Data';
+import { HttpException, Inject, UseInterceptors } from '@nestjs/common';
+import { Mutation, Query, Resolver } from '@nestjs/graphql';
 import { IncomingMessage } from 'http';
+import { ExceptionInterceptor } from '../interceptor/ExceptionInterceptor';
+import { Data } from '../interface/Data';
+import { ScoreService } from '../service/ScoreService';
 
 @Resolver('Score')
 @UseInterceptors(ExceptionInterceptor)
@@ -11,7 +11,8 @@ export class ScoreResolver {
 
     constructor(
         @Inject(ScoreService) private readonly scoreService: ScoreService
-    ) { }
+    ) {
+    }
 
     @Query('getScore')
     async getScore(req: IncomingMessage, body: { userId: number, scoreTypeId: number }): Promise<Data & { score: number }> {
@@ -32,6 +33,5 @@ export class ScoreResolver {
         await this.scoreService.setScore(userId, scoreTypeId, add)
         return { code: 200, message: '设置积分成功' }
     }
-
 
 }

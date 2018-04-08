@@ -1,8 +1,7 @@
-import { Entity, Column, PrimaryColumn, Index, OneToMany } from 'typeorm';
-import { Permission } from './Permission.entity';
+import { Entity, OneToMany, PrimaryColumn } from 'typeorm';
 import { Func } from './Func.entity';
+import { Permission } from './Permission.entity';
 import { Role } from './Role.entity';
-
 
 /* 模块实体，这个模块实体主要用于存储权限
    这个实体不提供写入接口，当用户中心模块启动时，扫描所有Module,获取其组件、控制器上的Permission定义

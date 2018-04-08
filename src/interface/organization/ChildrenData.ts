@@ -1,8 +1,10 @@
-export interface ChildrenData{
-    code:number
-    message:string
-    children:{
-        id:number
-        name:string
+export interface ChildrenData {
+    code: number
+
+    message: string
+
+    children: {
+        id: number
+        name: string
     }[]
 }

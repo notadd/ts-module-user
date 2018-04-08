@@ -1,12 +1,9 @@
-import { Component, Inject, HttpException } from '@nestjs/common';
-import { Permission } from '../model/Permission.entity';
+import { Component, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Module } from '../model/Module.entity';
-import { Func } from '../model/Func.entity';
-import { IncomingMessage } from 'http';
 import { Repository } from 'typeorm';
-import * as crypto from 'crypto';
-
+import { Func } from '../model/Func.entity';
+import { Module } from '../model/Module.entity';
+import { Permission } from '../model/Permission.entity';
 
 @Component()
 export class FuncService {
@@ -15,18 +12,19 @@ export class FuncService {
         @InjectRepository(Func) private readonly funcRepository: Repository<Func>,
         @InjectRepository(Module) private readonly moduleRepository: Repository<Module>,
         @InjectRepository(Permission) private readonly permissionRepository: Repository<Permission>
-    ) { }
+    ) {
+    }
 
-    async createFunc(moduleToken:string,name: string): Promise<void> {
-        let module:Module = await this.moduleRepository.findOneById(moduleToken)
-        if(!module){
-            throw new HttpException('指定模块token='+moduleToken+'不存在',415)
+    async createFunc(moduleToken: string, name: string): Promise<void> {
+        let module: Module = await this.moduleRepository.findOneById(moduleToken)
+        if (!module) {
+            throw new HttpException('指定模块token=' + moduleToken + '不存在', 415)
         }
-        let exist: Func = await this.funcRepository.findOne({ name,moduleToken })
+        let exist: Func = await this.funcRepository.findOne({ name, moduleToken })
         if (exist) {
-            throw new HttpException('指定模块token='+moduleToken+'下，指定名称name=' + name + '功能已经存在', 416)
+            throw new HttpException('指定模块token=' + moduleToken + '下，指定名称name=' + name + '功能已经存在', 416)
         }
-        let func: Func = this.funcRepository.create({ name ,module})
+        let func: Func = this.funcRepository.create({ name, module })
         try {
             await this.funcRepository.save(func)
         } catch (err) {
@@ -39,10 +37,10 @@ export class FuncService {
         if (!func) {
             throw new HttpException('指定id=' + id + '功能不存在', 417)
         }
-        if(name!==func.name){
-            let exist: Func = await this.funcRepository.findOne({ name,moduleToken:func.moduleToken })
+        if (name !== func.name) {
+            let exist: Func = await this.funcRepository.findOne({ name, moduleToken: func.moduleToken })
             if (exist) {
-                throw new HttpException('指定模块token='+func.moduleToken+'下，指定名称name=' + name + '功能已经存在', 416)
+                throw new HttpException('指定模块token=' + func.moduleToken + '下，指定名称name=' + name + '功能已经存在', 416)
             }
             try {
                 func.name = name
@@ -65,13 +63,12 @@ export class FuncService {
         }
     }
 
-
     async setPermissions(id: number, permissionIds: number[]): Promise<void> {
-        let func: Func = await this.funcRepository.findOneById(id, { relations: ['permissions'] })
+        let func: Func = await this.funcRepository.findOneById(id, { relations: [ 'permissions' ] })
         if (!func) {
             throw new HttpException('指定id=' + id + '功能不存在', 417)
         }
-        let pers: Permission[] = await this.permissionRepository.findByIds(permissionIds, { relations: ['module'] })
+        let pers: Permission[] = await this.permissionRepository.findByIds(permissionIds, { relations: [ 'module' ] })
         //检查是否所有指定权限都存在
         permissionIds.forEach(permissionId => {
             let find: Permission = pers.find(per => {
@@ -80,7 +77,7 @@ export class FuncService {
             if (!find) {
                 throw new HttpException('指定id=' + permissionId + '权限不存在', 418)
             }
-            if(find.moduleToken!==func.moduleToken){
+            if (find.moduleToken !== func.moduleToken) {
                 throw new HttpException('指定功能、权限只能属于同一个模块', 419)
             }
         })

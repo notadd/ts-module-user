@@ -1,15 +1,15 @@
-import { HttpException, Inject, Component } from '@nestjs/common';
-import { Repository, Connection, EntityManager } from 'typeorm';
-import { ScoreType } from '../model/ScoreType.entity';
+import { Component, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IncomingMessage } from 'http';
+import { Repository } from 'typeorm';
+import { ScoreType } from '../model/ScoreType.entity';
 
 @Component()
 export class ScoreTypeService {
 
     constructor(
         @InjectRepository(ScoreType) private readonly scoreTypeRepository: Repository<ScoreType>
-    ) { }
+    ) {
+    }
 
     async getAll(): Promise<ScoreType[]> {
         return await this.scoreTypeRepository.find()
@@ -18,7 +18,7 @@ export class ScoreTypeService {
     async createScoreType(name: string, type: string, description: string): Promise<void> {
         let exist: ScoreType = await this.scoreTypeRepository.findOne({ name })
         if (exist) {
-            throw new HttpException('指定名称name='+name+'积分类型已存在',424)
+            throw new HttpException('指定名称name=' + name + '积分类型已存在', 424)
         }
         //方法中创建的积分项都是非默认的
         let scoreType: ScoreType = this.scoreTypeRepository.create({ name, type, default: false, description })
@@ -32,7 +32,7 @@ export class ScoreTypeService {
     async updateScoreType(id: number, name: string, type: string, description: string): Promise<void> {
         let original: ScoreType = await this.scoreTypeRepository.findOneById(id)
         if (!original) {
-            throw new HttpException('指定id='+id+'积分类型不存在', 425)
+            throw new HttpException('指定id=' + id + '积分类型不存在', 425)
         }
         if (original.default) {
             throw new HttpException('默认积分类型不允许更改', 426)
@@ -40,7 +40,7 @@ export class ScoreTypeService {
         if (name !== original.name) {
             let exist: ScoreType = await this.scoreTypeRepository.findOne({ name })
             if (exist) {
-                throw new HttpException('指定名称name='+name+'积分类型已存在', 424)
+                throw new HttpException('指定名称name=' + name + '积分类型已存在', 424)
             }
         }
         try {
@@ -56,7 +56,7 @@ export class ScoreTypeService {
     async deleteScoreType(id: number): Promise<void> {
         let exist: ScoreType = await this.scoreTypeRepository.findOneById(id)
         if (!exist) {
-            throw new HttpException('指定id='+id+'积分类型不存在', 425)
+            throw new HttpException('指定id=' + id + '积分类型不存在', 425)
         }
         if (exist.default) {
             throw new HttpException('默认积分类型不允许删除', 426)

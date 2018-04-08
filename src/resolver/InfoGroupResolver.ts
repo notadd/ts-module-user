@@ -1,12 +1,11 @@
+import { HttpException, Inject, UseInterceptors } from '@nestjs/common';
+import { Mutation, Query, Resolver } from '@nestjs/graphql';
+import { IncomingMessage } from 'http';
 import { ExceptionInterceptor } from '../interceptor/ExceptionInterceptor';
-import { Inject, HttpException, UseInterceptors } from '@nestjs/common';
+import { Data } from '../interface/Data';
 import { InfoGroupsData } from '../interface/infoGroup/InfoGroupsData';
 import { InfoItemsData } from '../interface/infoGroup/InfoItemsData';
 import { InfoGroupService } from '../service/InfoGroupService';
-import { Resolver, Query, Mutation } from '@nestjs/graphql';
-import { Data } from '../interface/Data';
-import { IncomingMessage } from 'http';
-
 
 /* 这个几个接口只是写在这，使用上还有很多问题 */
 @Resolver('InfoGroup')
@@ -15,7 +14,8 @@ export class InfoGroupResolver {
 
     constructor(
         @Inject(InfoGroupService) private readonly infoGroupService: InfoGroupService
-    ) { }
+    ) {
+    }
 
     @Query('infoGroups')
     async infoGroups(): Promise<InfoGroupsData> {

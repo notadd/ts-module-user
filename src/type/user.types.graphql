@@ -1,11 +1,11 @@
 type Query{
-    #get all of user 
+    #get all of user
     users:UsersData
     #get all of freedom users
     freedomUsers:FreedomUsersData
-    #get users in recycle bin 
+    #get users in recycle bin
     recycleUsers:RecycleUsersData
-    #get user info 
+    #get user info
     userInfos(id:Int!):UserInfosData
     #get user roles
     rolesInUser(id:Int!):RolesData
@@ -17,24 +17,24 @@ type Query{
 type Mutation{
     #create user , specify organization
     createUser(
-        organizationId: Int, 
-        userName: String!, 
-        password: String!, 
+        organizationId: Int,
+        userName: String!,
+        password: String!,
     ):Data
 
     #create user with UserInfo, specify organization
     createUserWithUserInfo(
-        organizationId: Int, 
-        userName: String!, 
-        password: String!, 
+        organizationId: Int,
+        userName: String!,
+        password: String!,
         groups: [UserInfoGroup]
     ):Data
 
     #update user , specify organization
     updateUser(
         id:Int,
-        userName: String, 
-        password: String, 
+        userName: String,
+        password: String,
     ):Data
 
     #add userinfo to user , user must exist
@@ -110,7 +110,7 @@ input UserInfoGroup{
     infos:[UnionUserInfo]
 }
 
-#userinfo union type , name is required 
+#userinfo union type , name is required
 #when text ,value is required
 #when checkbox , array is required
 #when file , base64、rawName、bucketName is required

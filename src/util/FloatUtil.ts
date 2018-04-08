@@ -1,4 +1,4 @@
-import { Component, HttpException } from '@nestjs/common';
+import { Component } from '@nestjs/common';
 
 /* 异步操作文件的封装工具类 */
 @Component()

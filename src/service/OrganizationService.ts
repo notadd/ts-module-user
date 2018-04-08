@@ -1,9 +1,8 @@
-import { HttpException, Inject, Component } from '@nestjs/common';
-import { Organization } from '../model/Organization.entity';
+import { Component, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../model/User.entity';
 import { Repository } from 'typeorm';
-
+import { Organization } from '../model/Organization.entity';
+import { User } from '../model/User.entity';
 
 @Component()
 export class OrganizationService {
@@ -11,19 +10,21 @@ export class OrganizationService {
     constructor(
         @InjectRepository(User) private readonly userRepository: Repository<User>,
         @InjectRepository(Organization) private readonly organizationRepository: Repository<Organization>
-    ) { }
+    ) {
+    }
 
     async getRoots(): Promise<Organization[]> {
         return await this.organizationRepository.find({ parentId: null })
     }
 
     async getChildren(id: number): Promise<Organization[]> {
-        let o: Organization = await this.organizationRepository.findOneById(id, { relations: ['children'] })
+        let o: Organization = await this.organizationRepository.findOneById(id, { relations: [ 'children' ] })
         if (!o) {
-            throw new HttpException('指定父组织id='+id+'不存在', 402)
+            throw new HttpException('指定父组织id=' + id + '不存在', 402)
         }
         return o.children
     }
+
     async getAll(): Promise<Organization[]> {
         return await this.organizationRepository.find()
     }
@@ -33,12 +34,12 @@ export class OrganizationService {
         if (parentId !== undefined && parentId !== null) {
             parent = await this.organizationRepository.findOneById(parentId)
             if (!parent) {
-                throw new HttpException('指定父组织id='+parentId+'不存在', 402)
+                throw new HttpException('指定父组织id=' + parentId + '不存在', 402)
             }
         }
         let exist: Organization = await this.organizationRepository.findOne({ name })
         if (exist) {
-            throw new HttpException('指定名称name='+name+'组织已存在', 403)
+            throw new HttpException('指定名称name=' + name + '组织已存在', 403)
         }
         //如果parent为undefined，则parentId为null
         let organization: Organization = this.organizationRepository.create({ name, parent })
@@ -52,19 +53,19 @@ export class OrganizationService {
     async updateOrganization(id: number, name: string, parentId: number): Promise<void> {
         let exist: Organization = await this.organizationRepository.findOneById(id)
         if (!exist) {
-            throw new HttpException('指定id='+id+'组织不存在', 404)
+            throw new HttpException('指定id=' + id + '组织不存在', 404)
         }
-        if(name!==exist.name){
-            let exist: Organization = await this.organizationRepository.findOne({name})
+        if (name !== exist.name) {
+            let exist: Organization = await this.organizationRepository.findOne({ name })
             if (exist) {
-                throw new HttpException('指定name='+name+'组织已存在', 404)
+                throw new HttpException('指定name=' + name + '组织已存在', 404)
             }
         }
         let parent: Organization = null
         if (parentId !== undefined && parentId !== null) {
             parent = await this.organizationRepository.findOneById(parentId)
             if (!parent) {
-                throw new HttpException('指定父组织id='+parentId+'不存在', 402)
+                throw new HttpException('指定父组织id=' + parentId + '不存在', 402)
             }
         }
         try {
@@ -78,11 +79,10 @@ export class OrganizationService {
         }
     }
 
-
     async deleteOrganization(id: number): Promise<void> {
-        let exist: Organization = await this.organizationRepository.findOneById(id, { relations: ['children'] })
+        let exist: Organization = await this.organizationRepository.findOneById(id, { relations: [ 'children' ] })
         if (!exist) {
-            throw new HttpException('指定id='+id+'组织不存在', 404)
+            throw new HttpException('指定id=' + id + '组织不存在', 404)
         }
         if (exist.children && exist.children.length > 0) {
             throw new HttpException('指定组织存在子组织，无法删除', 404)
@@ -95,9 +95,9 @@ export class OrganizationService {
     }
 
     async getUsersInOrganization(id: number): Promise<User[]> {
-        let o: Organization = await this.organizationRepository.findOneById(id, { relations: ['users'] })
+        let o: Organization = await this.organizationRepository.findOneById(id, { relations: [ 'users' ] })
         if (!o) {
-            throw new HttpException('指定id='+id+'父组织不存在', 402)
+            throw new HttpException('指定id=' + id + '父组织不存在', 402)
         }
         //只获取不再回收站中的用户
         return o.users.filter(user => {
@@ -106,13 +106,13 @@ export class OrganizationService {
     }
 
     async addUserToOrganization(id: number, userId: number): Promise<void> {
-        let o: Organization = await this.organizationRepository.findOneById(id, { relations: ['users'] })
+        let o: Organization = await this.organizationRepository.findOneById(id, { relations: [ 'users' ] })
         if (!o) {
-            throw new HttpException('指定id='+id+'组织不存在', 402)
+            throw new HttpException('指定id=' + id + '组织不存在', 402)
         }
         let user: User = await this.userRepository.findOneById(userId)
         if (!user) {
-            throw new HttpException('指定id='+userId+'用户不存在', 402)
+            throw new HttpException('指定id=' + userId + '用户不存在', 402)
         }
         let exist: User = o.users.find(user => {
             return user.id === userId
@@ -129,9 +129,9 @@ export class OrganizationService {
     }
 
     async addUsersToOrganization(id: number, userIds: number[]): Promise<void> {
-        let o: Organization = await this.organizationRepository.findOneById(id, { relations: ['users'] })
+        let o: Organization = await this.organizationRepository.findOneById(id, { relations: [ 'users' ] })
         if (!o) {
-            throw new HttpException('指定id='+id+'组织不存在', 402)
+            throw new HttpException('指定id=' + id + '组织不存在', 402)
         }
         let users: User[] = await this.userRepository.findByIds(userIds)
         //验证是否所有需要的用户都被查询出来
@@ -161,13 +161,13 @@ export class OrganizationService {
     }
 
     async removeUserFromOrganization(id: number, userId: number): Promise<void> {
-        let o: Organization = await this.organizationRepository.findOneById(id, { relations: ['users'] })
+        let o: Organization = await this.organizationRepository.findOneById(id, { relations: [ 'users' ] })
         if (!o) {
-            throw new HttpException('指定id='+id+'组织不存在', 402)
+            throw new HttpException('指定id=' + id + '组织不存在', 402)
         }
         let user: User = await this.userRepository.findOneById(userId)
         if (!user) {
-            throw new HttpException('指定id='+userId+'用户不存在', 402)
+            throw new HttpException('指定id=' + userId + '用户不存在', 402)
         }
         let index = o.users.findIndex(user => {
             return user.id === userId
@@ -184,9 +184,9 @@ export class OrganizationService {
     }
 
     async removeUsersFromOrganization(id: number, userIds: number[]): Promise<void> {
-        let o: Organization = await this.organizationRepository.findOneById(id, { relations: ['users'] })
+        let o: Organization = await this.organizationRepository.findOneById(id, { relations: [ 'users' ] })
         if (!o) {
-            throw new HttpException('指定id='+id+'组织不存在', 402)
+            throw new HttpException('指定id=' + id + '组织不存在', 402)
         }
         let users: User[] = await this.userRepository.findByIds(userIds)
         //从组织的用户中循环移除指定用户，要求用户存在于数据库中，且用户必须已经存在于指定组织中

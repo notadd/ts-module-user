@@ -7,7 +7,7 @@ type Query{
 
 type Mutation{
     #create InfoGroup
-    createInfoGroup(name:String!):Data 
+    createInfoGroup(name:String!):Data
     #update  InfoGroup
     updateInfoGroup(name:String!):Data
     #delete InfoGroup

@@ -1,6 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, OneToMany, JoinTable } from 'typeorm';
+import { Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { InfoGroup } from './InfoGroup.entity';
 import { UserInfo } from './UserInfo.entity';
+
 /* 信息项实体，代表了用户需要额外填写的信息项
    信息项与信息组为多对多关系，这个关系只是为了方便调用
    信息项与用户也是多对多关系，这个关系是为了记录哪些信息已经被填写
@@ -14,7 +15,7 @@ export class InfoItem {
     })
     id: number;
 
-    /* 信息项名称，如用户名、密码等 
+    /* 信息项名称，如用户名、密码等
        相互之间不能重复，也不能与已有的User实体属性重复
     */
     @Column({
@@ -49,7 +50,7 @@ export class InfoItem {
     })
     description: string
 
-    /* 信息项类型，即前端的表单类型 
+    /* 信息项类型，即前端的表单类型
        根据不同的信息项，在UserInfo中存储时计算方式不同，key为信息项名称，value为值，统一为字符串
        文本框，都是存储为字符串
        单选框存储为值，多选框、复选框存储为逗号分割的值

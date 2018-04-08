@@ -1,4 +1,4 @@
-export type UnionUserInfo = TextInfo|ArrayInfo|FileInfo
+export type UnionUserInfo = TextInfo | ArrayInfo | FileInfo
 export type TextInfo = {
     name: string
     value: string

@@ -1,10 +1,9 @@
-import { ExceptionInterceptor } from '../interceptor/ExceptionInterceptor';
-import { Inject, HttpException, UseInterceptors } from '@nestjs/common';
-import { InfoItemService } from '../service/InfoItemService';
-import { Resolver, Query, Mutation } from '@nestjs/graphql';
-import { Data } from '../interface/Data';
+import { HttpException, Inject, UseInterceptors } from '@nestjs/common';
+import { Mutation, Resolver } from '@nestjs/graphql';
 import { IncomingMessage } from 'http';
-
+import { ExceptionInterceptor } from '../interceptor/ExceptionInterceptor';
+import { Data } from '../interface/Data';
+import { InfoItemService } from '../service/InfoItemService';
 
 /* 这个几个接口只是写在这，使用上还有很多问题,因为信息项可能不会编辑，所以不一定有用 */
 @Resolver('InfoItem')
@@ -13,7 +12,8 @@ export class InfoItemResolver {
 
     constructor(
         @Inject(InfoItemService) private readonly infoItemService: InfoItemService
-    ) { }
+    ) {
+    }
 
     @Mutation('createInfoItem')
     async createInfoItem(req: IncomingMessage, body: { name: string, label: string, description: string, type: string, necessary: boolean, registerVisible: boolean, informationVisible: boolean, order: number }): Promise<Data> {

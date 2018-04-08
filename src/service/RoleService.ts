@@ -1,12 +1,9 @@
-import { Component, Inject, HttpException } from '@nestjs/common';
+import { Component, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Module } from '../model/Module.entity';
-import { Func } from '../model/Func.entity';
-import { Role } from '../model/Role.entity';
-import { IncomingMessage } from 'http';
 import { Repository } from 'typeorm';
-import * as crypto from 'crypto';
-
+import { Func } from '../model/Func.entity';
+import { Module } from '../model/Module.entity';
+import { Role } from '../model/Role.entity';
 
 @Component()
 export class RoleService {
@@ -15,7 +12,8 @@ export class RoleService {
         @InjectRepository(Func) private readonly funcRepository: Repository<Func>,
         @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
         @InjectRepository(Module) private readonly moduleRepository: Repository<Module>
-    ) { }
+    ) {
+    }
 
     async createRole(moduleToken: string, name: string, score: number): Promise<void> {
         let module: Module = await this.moduleRepository.findOneById(moduleToken)
@@ -90,6 +88,5 @@ export class RoleService {
             throw new HttpException('数据库错误' + err.toString(), 401)
         }
     }
-
 
 }

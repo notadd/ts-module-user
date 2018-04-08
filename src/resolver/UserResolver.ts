@@ -1,18 +1,18 @@
+import { HttpException, Inject, UseInterceptors } from '@nestjs/common';
+import { Mutation, Query, Resolver } from '@nestjs/graphql';
+import { IncomingMessage } from 'http';
 import { ExceptionInterceptor } from '../interceptor/ExceptionInterceptor';
-import { Inject, HttpException, UseInterceptors } from '@nestjs/common';
-import { FreedomUsersData } from '../interface/user/FreedomUsersData';
-import { RecycleUsersData } from '../interface/user/RecycleUsersData';
-import { PermissionsData } from '../interface/user/PermissionsData';
+import { Data } from '../interface/Data';
 import { CreateUserBody } from '../interface/user/CreateUserBody';
+import { FreedomUsersData } from '../interface/user/FreedomUsersData';
+import { PermissionsData } from '../interface/user/PermissionsData';
+import { RecycleUsersData } from '../interface/user/RecycleUsersData';
+import { RolesData } from '../interface/user/RolesData';
+import { UnionUserInfo } from '../interface/user/UnionUserInfo';
 import { UpdateUserBody } from '../interface/user/UpdateUserBody';
 import { UserInfosData } from '../interface/user/UserInfosData';
-import { UnionUserInfo } from '../interface/user/UnionUserInfo';
-import { Resolver, Query, Mutation } from '@nestjs/graphql';
-import { RolesData } from '../interface/user/RolesData';
 import { UsersData } from '../interface/user/UsersData';
 import { UserService } from '../service/UserService';
-import { Data } from '../interface/Data';
-import { IncomingMessage } from 'http';
 
 @Resolver('User')
 @UseInterceptors(ExceptionInterceptor)
@@ -20,7 +20,8 @@ export class UserResolver {
 
     constructor(
         @Inject(UserService) private readonly userService: UserService
-    ) { }
+    ) {
+    }
 
     /* 获取当前所有用户 */
     @Query('users')
@@ -98,7 +99,6 @@ export class UserResolver {
         await this.userService.createUserWithUserInfo(req, organizationId, userName, password, groups)
         return { code: 200, message: '创建用户成功' }
     }
-
 
     @Mutation('addUserInfo')
     async addUserInfo(req: IncomingMessage, body: { id: number, groups: { groupId: number, infos: UnionUserInfo[] }[] }): Promise<Data> {
@@ -192,7 +192,6 @@ export class UserResolver {
         await this.userService.deleteUsers(ids)
         return { code: 200, message: '删除用户成功' }
     }
-
 
     /* 设置用户角色，设置的角色就是用户以后拥有的所有角色 */
     @Mutation('setRoles')

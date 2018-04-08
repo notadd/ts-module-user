@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './User.entity';
 
 /* 组织实体，组织可以互相包含，一个组织下可以包含多个组织，还可以包含多个用户
@@ -41,10 +41,10 @@ export class Organization {
         cascadeInsert: true,
         cascadeUpdate: true,
         cascadeRemove: false,
-        nullable:true,
-        lazy:false,
+        nullable: true,
+        lazy: false,
         eager: false,
-        onDelete:'CASCADE'
+        onDelete: 'CASCADE'
     })
     @JoinColumn({
         name: 'parentId',

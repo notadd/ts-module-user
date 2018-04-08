@@ -1,11 +1,10 @@
-import { ExceptionInterceptor } from '../interceptor/ExceptionInterceptor';
-import { Inject, HttpException, UseInterceptors } from '@nestjs/common';
-import { Resolver, Query, Mutation } from '@nestjs/graphql';
-import { FuncService } from '../service/FuncService';
-import { Func } from '../model/Func.entity';
-import { Data } from '../interface/Data';
+import { HttpException, Inject, UseInterceptors } from '@nestjs/common';
+import { Mutation, Resolver } from '@nestjs/graphql';
 import { IncomingMessage } from 'http';
-
+import { ExceptionInterceptor } from '../interceptor/ExceptionInterceptor';
+import { Data } from '../interface/Data';
+import { Func } from '../model/Func.entity';
+import { FuncService } from '../service/FuncService';
 
 /* 功能是权限的集合，且只能包含一个模块下的权限，所以功能也属于某个模块 */
 @Resolver('Func')
@@ -14,7 +13,8 @@ export class FuncResolver {
 
     constructor(
         @Inject(FuncService) private readonly funcService: FuncService
-    ) { }
+    ) {
+    }
 
     @Mutation('createFunc')
     async createFunc(req: IncomingMessage, body: { moduleToken: string, name: string }): Promise<Data> {

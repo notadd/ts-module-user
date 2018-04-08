@@ -1,4 +1,5 @@
-export interface Data{
-    code:number
-    message:string
+export interface Data {
+    code: number
+
+    message: string
 }

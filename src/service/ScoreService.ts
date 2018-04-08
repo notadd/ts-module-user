@@ -1,12 +1,10 @@
-import { HttpException, Inject, Component } from '@nestjs/common';
-import { Repository, Connection, EntityManager } from 'typeorm';
-import { ScoreType } from '../model/ScoreType.entity';
+import { Component, HttpException, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FloatUtil } from '../util/FloatUtil';
+import { Repository } from 'typeorm';
 import { Score } from '../model/Score.entity';
+import { ScoreType } from '../model/ScoreType.entity';
 import { User } from '../model/User.entity';
-import { IncomingMessage } from 'http';
-
+import { FloatUtil } from '../util/FloatUtil';
 
 @Component()
 export class ScoreService {
@@ -16,14 +14,15 @@ export class ScoreService {
         @InjectRepository(User) private readonly userRepository: Repository<User>,
         @InjectRepository(Score) private readonly scoreRepository: Repository<Score>,
         @InjectRepository(ScoreType) private readonly scoreTypeRepository: Repository<ScoreType>
-    ) { }
+    ) {
+    }
 
     async getScore(userId: number, scoreTypeId: number): Promise<number> {
         let scoreType: ScoreType = await this.scoreTypeRepository.findOneById(scoreTypeId)
         if (!scoreType) {
             throw new HttpException('指定id=' + scoreTypeId + '积分类型不存在', 427)
         }
-        let user: User = await this.userRepository.findOneById(userId, { relations: ['scores'] })
+        let user: User = await this.userRepository.findOneById(userId, { relations: [ 'scores' ] })
         if (!user) {
             throw new HttpException('指定id=' + userId + '用户不存在', 428)
         }
@@ -55,7 +54,7 @@ export class ScoreService {
         if (!scoreType) {
             throw new HttpException('指定id=' + scoreTypeId + '积分类型不存在', 427)
         }
-        let user: User = await this.userRepository.findOneById(userId, { relations: ['scores'] })
+        let user: User = await this.userRepository.findOneById(userId, { relations: [ 'scores' ] })
         if (!user) {
             throw new HttpException('指定id=' + userId + '用户不存在', 428)
         }

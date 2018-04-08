@@ -1,10 +1,10 @@
-import { ExceptionInterceptor } from '../interceptor/ExceptionInterceptor';
-import { ScoreTypesData } from '../interface/scoreType/ScoreTypesData';
-import { Inject, HttpException, UseInterceptors } from '@nestjs/common';
-import { ScoreTypeService } from '../service/ScoreTypeService';
-import { Resolver, Query, Mutation } from '@nestjs/graphql';
-import { Data } from '../interface/Data';
+import { HttpException, Inject, UseInterceptors } from '@nestjs/common';
+import { Mutation, Query, Resolver } from '@nestjs/graphql';
 import { IncomingMessage } from 'http';
+import { ExceptionInterceptor } from '../interceptor/ExceptionInterceptor';
+import { Data } from '../interface/Data';
+import { ScoreTypesData } from '../interface/scoreType/ScoreTypesData';
+import { ScoreTypeService } from '../service/ScoreTypeService';
 
 @Resolver('ScoreType')
 @UseInterceptors(ExceptionInterceptor)
@@ -12,7 +12,8 @@ export class ScoreTypeResolver {
 
     constructor(
         @Inject(ScoreTypeService) private readonly scoreTypeService: ScoreTypeService
-    ) { }
+    ) {
+    }
 
     @Query('scoreTypes')
     async scoreTypes(): Promise<ScoreTypesData> {

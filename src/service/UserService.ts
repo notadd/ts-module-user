@@ -1,18 +1,18 @@
-import { UnionUserInfo, TextInfo, ArrayInfo, FileInfo } from '../interface/user/UnionUserInfo';
-import { HttpException, Inject, Component } from '@nestjs/common';
-import { Repository, Connection, EntityManager } from 'typeorm';
+import { Component, HttpException, Inject } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import * as crypto from 'crypto';
+import { IncomingMessage } from 'http';
+import { Repository } from 'typeorm';
 import { StoreComponent } from '../interface/StoreComponent';
-import { Organization } from '../model/Organization.entity';
-import { Permission } from '../model/Permission.entity';
+import { ArrayInfo, FileInfo, TextInfo, UnionUserInfo } from '../interface/user/UnionUserInfo';
+import { Func } from '../model/Func.entity';
 import { InfoGroup } from '../model/InfoGroup.entity';
 import { InfoItem } from '../model/InfoItem.entity';
-import { UserInfo } from '../model/UserInfo.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Func } from '../model/Func.entity';
+import { Organization } from '../model/Organization.entity';
+import { Permission } from '../model/Permission.entity';
 import { Role } from '../model/Role.entity';
 import { User } from '../model/User.entity';
-import { IncomingMessage } from 'http';
-import * as crypto from 'crypto';
+import { UserInfo } from '../model/UserInfo.entity';
 
 @Component()
 export class UserService {
@@ -26,15 +26,15 @@ export class UserService {
         @InjectRepository(InfoGroup) private readonly infoGroupRepository: Repository<InfoGroup>,
         @InjectRepository(Permission) private readonly permissionRepository: Repository<Permission>,
         @InjectRepository(Organization) private readonly organizationRepository: Repository<Organization>
-    ) { }
-
+    ) {
+    }
 
     async getAll(): Promise<User[]> {
         return await this.userRepository.find({ recycle: false })
     }
 
     async getFreedomUsers(): Promise<User[]> {
-        let users: User[] = await this.userRepository.find({ relations: ['organizations'] })
+        let users: User[] = await this.userRepository.find({ relations: [ 'organizations' ] })
         return users.filter(user => {
             return (user.organizations === null || user.organizations === undefined || user.organizations.length === 0) && !user.recycle
         })
@@ -46,16 +46,18 @@ export class UserService {
 
     /*返回用户信息时，需要提取其InfoItem对象以获取信息名称 */
     async userInfos(id: number): Promise<{ name: string, value: string }[]> {
-        let user: User = await this.userRepository.findOneById(id, { relations: ['userInfos'] })
+        let user: User = await this.userRepository.findOneById(id, { relations: [ 'userInfos' ] })
         if (!user) {
             throw new HttpException('指定用户不存在', 406)
         }
         let userInfos: UserInfo[] = await this.userInfoRepository.createQueryBuilder("userInfo").leftJoinAndSelect('userInfo.infoItem', 'infoItem', 'userInfo.infoItemId=infoItem.id').where("userInfo.userId = :id", { id }).getMany();
-        return userInfos.map(userInfo => { return { name: userInfo.infoItem.name, value: userInfo.value } })
+        return userInfos.map(userInfo => {
+            return { name: userInfo.infoItem.name, value: userInfo.value }
+        })
     }
 
     async roles(id: number): Promise<Role[]> {
-        let user: User = await this.userRepository.findOneById(id, { relations: ['roles'] })
+        let user: User = await this.userRepository.findOneById(id, { relations: [ 'roles' ] })
         if (!user) {
             throw new HttpException('指定用户不存在', 406)
         }
@@ -63,7 +65,7 @@ export class UserService {
     }
 
     async permissions(id: number): Promise<Permission[]> {
-        let user: User = await this.userRepository.findOneById(id, { relations: ['roles', 'adds', 'reduces'] })
+        let user: User = await this.userRepository.findOneById(id, { relations: [ 'roles', 'adds', 'reduces' ] })
         if (!user) {
             throw new HttpException('指定id=' + id + '用户不存在', 406)
         }
@@ -75,9 +77,9 @@ export class UserService {
         let ids: Set<number> = new Set()
         //遍历获取所有角色拥有的权限
         for (let i = 0; i < user.roles.length; i++) {
-            let role: Role = await this.roleRepository.findOneById(user.roles[i].id, { relations: ['funcs'] })
+            let role: Role = await this.roleRepository.findOneById(user.roles[ i ].id, { relations: [ 'funcs' ] })
             for (let j = 0; j < role.funcs.length; j++) {
-                let func: Func = await this.funcRepository.findOneById(role.funcs[i].id, { relations: ['permissions'] })
+                let func: Func = await this.funcRepository.findOneById(role.funcs[ i ].id, { relations: [ 'permissions' ] })
                 temp = temp.concat(func.permissions)
             }
         }
@@ -111,7 +113,6 @@ export class UserService {
         return result
     }
 
-
     async createUser(organizationId: number, userName: string, password: string): Promise<void> {
         let organizations: Organization[] = []
         if (organizationId) {
@@ -128,7 +129,14 @@ export class UserService {
         try {
             let salt = crypto.createHash('md5').update(new Date().toString()).digest('hex').slice(0, 10)
             let passwordWithSalt = crypto.createHash('md5').update(password + salt).digest('hex')
-            let user: User = this.userRepository.create({ userName, password: passwordWithSalt, salt, status: true, recycle: false, organizations })
+            let user: User = this.userRepository.create({
+                userName,
+                password: passwordWithSalt,
+                salt,
+                status: true,
+                recycle: false,
+                organizations
+            })
             await this.userRepository.save(user)
         } catch (err) {
             throw new HttpException('数据库错误' + err.toString(), 401)
@@ -150,10 +158,19 @@ export class UserService {
         }
         let salt = crypto.createHash('md5').update(new Date().toString()).digest('hex').slice(0, 10)
         let passwordWithSalt = crypto.createHash('md5').update(password + salt).digest('hex')
-        let user: User = this.userRepository.create({ userName, password: passwordWithSalt, salt, status: true, recycle: false, organizations, userInfos: [], infoItems: [] })
+        let user: User = this.userRepository.create({
+            userName,
+            password: passwordWithSalt,
+            salt,
+            status: true,
+            recycle: false,
+            organizations,
+            userInfos: [],
+            infoItems: []
+        })
         for (let i = 0; i < groups.length; i++) {
-            let { groupId, infos } = groups[i]
-            let group: InfoGroup = await this.infoGroupRepository.findOneById(groupId, { relations: ['items'] })
+            let { groupId, infos } = groups[ i ]
+            let group: InfoGroup = await this.infoGroupRepository.findOneById(groupId, { relations: [ 'items' ] })
             if (!group) {
                 throw new HttpException('指定信息组id=' + groupId + '不存在', 408)
             }
@@ -167,13 +184,13 @@ export class UserService {
     }
 
     async addUserInfoToUser(req: IncomingMessage, id: number, groups: { groupId: number, infos: UnionUserInfo[] }[]): Promise<void> {
-        let user: User = await this.userRepository.findOneById(id, { relations: ['userInfos', 'infoItems'] })
+        let user: User = await this.userRepository.findOneById(id, { relations: [ 'userInfos', 'infoItems' ] })
         if (!user) {
             throw new HttpException('指定id=' + id + '用户不存在', 406)
         }
         for (let i = 0; i < groups.length; i++) {
-            let { groupId, infos } = groups[i]
-            let group: InfoGroup = await this.infoGroupRepository.findOneById(groupId, { relations: ['items'] })
+            let { groupId, infos } = groups[ i ]
+            let group: InfoGroup = await this.infoGroupRepository.findOneById(groupId, { relations: [ 'items' ] })
             if (!group) {
                 throw new HttpException('指定信息组id=' + groupId + '不存在', 408)
             }
@@ -197,7 +214,7 @@ export class UserService {
         })
         //遍历得到的信息
         for (let j = 0; j < infos.length; j++) {
-            let { name }: UnionUserInfo = infos[j]
+            let { name }: UnionUserInfo = infos[ j ]
             //查找名称匹配的信息项
             let match: InfoItem = items.find(item => {
                 return item.name === name
@@ -207,14 +224,14 @@ export class UserService {
                 throw new HttpException('指定名称信息项:' + name + '不存在于信息组id=' + group.id + '中', 409)
             }
             /*获取根据信息项类型转换后的信息值 */
-            let result: string = await this.transfromInfoValue(req, match, infos[j])
+            let result: string = await this.transfromInfoValue(req, match, infos[ j ])
             /*如果此时user中已经包含同名信息项，后来的覆盖先前的，因为相同信息项可能存在于多个组当中，而添加时可能出现一次添加多个组信息的情况，所以可能出现同类信息项 */
             let userInfoIndex = user.userInfos.findIndex(userInfo => userInfo.infoItemId === match.id)
             if (userInfoIndex >= 0) {
                 /*如果当前遍历的信息项对应的信息已经存在于用户的信息当中，直接修改其value
                   当创建用户时，出现重复，修改value后就会只保存新的用户信息
                   当添加用户信息时，出现重复，就会修改以前的信息，并且cascaedUpdate*/
-                user.userInfos[userInfoIndex].value = result
+                user.userInfos[ userInfoIndex ].value = result
             } else {
                 /*不存在添加新的 */
                 user.userInfos.push(this.userInfoRepository.create({ infoItem: match, value: result }))
@@ -275,7 +292,6 @@ export class UserService {
         }
         return result
     }
-
 
     async updateUser(id: number, userName: string, password: string): Promise<void> {
         let exist: User = await this.userRepository.findOneById(id)
@@ -428,7 +444,7 @@ export class UserService {
     }
 
     async setRoles(id: number, roleIds: number[]): Promise<void> {
-        let user: User = await this.userRepository.findOneById(id, { relations: ['roles'] })
+        let user: User = await this.userRepository.findOneById(id, { relations: [ 'roles' ] })
         if (!user) {
             throw new HttpException('指定id=' + id + '用户不存在', 406)
         }
@@ -450,7 +466,7 @@ export class UserService {
     }
 
     async setPermissions(id: number, permissionIds: number[]): Promise<void> {
-        let user: User = await this.userRepository.findOneById(id, { relations: ['roles', 'adds', 'reduces'] })
+        let user: User = await this.userRepository.findOneById(id, { relations: [ 'roles', 'adds', 'reduces' ] })
         if (!user) {
             throw new HttpException('指定id=' + id + '用户不存在', 406)
         }
@@ -462,9 +478,9 @@ export class UserService {
         let ids: Set<number> = new Set()
         //遍历获取所有角色拥有的权限
         for (let i = 0; i < user.roles.length; i++) {
-            let role: Role = await this.roleRepository.findOneById(user.roles[i].id, { relations: ['funcs'] })
+            let role: Role = await this.roleRepository.findOneById(user.roles[ i ].id, { relations: [ 'funcs' ] })
             for (let j = 0; j < role.funcs.length; j++) {
-                let func: Func = await this.funcRepository.findOneById(role.funcs[i].id, { relations: ['permissions'] })
+                let func: Func = await this.funcRepository.findOneById(role.funcs[ i ].id, { relations: [ 'permissions' ] })
                 temp = temp.concat(func.permissions)
             }
         }

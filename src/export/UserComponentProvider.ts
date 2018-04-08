@@ -1,13 +1,10 @@
-import { HttpException, Component, Inject } from '@nestjs/common';
-import { Permission } from '../model/Permission.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../model/User.entity';
-import { Role } from '../model/Role.entity';
-import { Func } from '../model/Func.entity';
-import { Repository } from 'typeorm';
 import * as crypto from 'crypto';
-import * as path from 'path';
-
+import { Repository } from 'typeorm';
+import { Func } from '../model/Func.entity';
+import { Permission } from '../model/Permission.entity';
+import { Role } from '../model/Role.entity';
+import { User } from '../model/User.entity';
 
 export class UserComponent {
 
@@ -15,10 +12,11 @@ export class UserComponent {
         @InjectRepository(Func) private readonly funcRepository: Repository<Func>,
         @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
         @InjectRepository(User) private readonly userRepository: Repository<User>
-    ) { }
+    ) {
+    }
 
     async permissions(id: number): Promise<Permission[]> {
-        let user: User = await this.userRepository.findOneById(id, { relations: ['roles', 'adds', 'reduces'] })
+        let user: User = await this.userRepository.findOneById(id, { relations: [ 'roles', 'adds', 'reduces' ] })
         if (!user) {
             return []
         }
@@ -30,9 +28,9 @@ export class UserComponent {
         let ids: Set<number> = new Set()
         //遍历获取所有角色拥有的权限
         for (let i = 0; i < user.roles.length; i++) {
-            let role: Role = await this.roleRepository.findOneById(user.roles[i].id, { relations: ['funcs'] })
+            let role: Role = await this.roleRepository.findOneById(user.roles[ i ].id, { relations: [ 'funcs' ] })
             for (let j = 0; j < role.funcs.length; j++) {
-                let func: Func = await this.funcRepository.findOneById(role.funcs[i].id, { relations: ['permissions'] })
+                let func: Func = await this.funcRepository.findOneById(role.funcs[ i ].id, { relations: [ 'permissions' ] })
                 temp = temp.concat(func.permissions)
             }
         }
@@ -83,14 +81,14 @@ export class UserComponent {
         if (passwordWithSalt !== user.password) {
             return false
         }
-        return await this.userRepository.findOneById(user.id, { select: ['id', 'userName', 'status', 'recycle'] })
+        return await this.userRepository.findOneById(user.id, { select: [ 'id', 'userName', 'status', 'recycle' ] })
     }
 
     async getUser(id: number): Promise<{ id: number, userName: string, status: boolean, recycle: boolean }> {
-        return await this.userRepository.findOneById(id, { select: ['id', 'userName', 'status', 'recycle'] })
+        return await this.userRepository.findOneById(id, { select: [ 'id', 'userName', 'status', 'recycle' ] })
     }
 
-    async isExist(user:{ id: number, userName: string, status: boolean, recycle: boolean }): Promise<boolean> {
+    async isExist(user: { id: number, userName: string, status: boolean, recycle: boolean }): Promise<boolean> {
         let exist = await this.userRepository.findOne(user)
         return !!exist
     }
@@ -102,6 +100,6 @@ export const UserComponentProvider = {
     useFactory: (funcRepository: Repository<Func>, roleRepository: Repository<Role>, userRepository: Repository<User>) => {
         return new UserComponent(funcRepository, roleRepository, userRepository)
     },
-    inject: ['FuncRepository', 'RoleRepository', 'UserRepository']
+    inject: [ 'FuncRepository', 'RoleRepository', 'UserRepository' ]
 
 }

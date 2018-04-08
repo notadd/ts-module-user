@@ -1,17 +1,15 @@
-import { Component, Inject, HttpException } from '@nestjs/common';
-import { InfoItem } from '../model/InfoItem.entity';
+import { Component, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IncomingMessage } from 'http';
 import { Repository } from 'typeorm';
-import * as crypto from 'crypto';
-
+import { InfoItem } from '../model/InfoItem.entity';
 
 @Component()
 export class InfoItemService {
 
     constructor(
         @InjectRepository(InfoItem) private readonly infoItemRepository: Repository<InfoItem>
-    ) { }
+    ) {
+    }
 
     /* 创建信息项 */
     async createInfoItem(name: string, label: string, description: string, type: string, necessary: boolean, registerVisible: boolean, informationVisible: boolean, order: number): Promise<void> {
@@ -22,7 +20,17 @@ export class InfoItemService {
         if (necessary && !registerVisible) {
             throw new HttpException('指定名称name=' + name + '必填信息项，注册时必须可见', 412)
         }
-        let item: InfoItem = this.infoItemRepository.create({ name, label, default: false, description, type, necessary, registerVisible, informationVisible, order })
+        let item: InfoItem = this.infoItemRepository.create({
+            name,
+            label,
+            default: false,
+            description,
+            type,
+            necessary,
+            registerVisible,
+            informationVisible,
+            order
+        })
         try {
             await this.infoItemRepository.save(item)
         } catch (err) {

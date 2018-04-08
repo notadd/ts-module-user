@@ -1,10 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable, ManyToOne,JoinColumn,Index } from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ScoreType } from './ScoreType.entity';
 import { User } from './User.entity';
 
 /* 积分值，属于用户 */
 @Entity('score')
-@Index('scoreTypeId_userId',['scoreTypeId','userId'])
+@Index('scoreTypeId_userId', [ 'scoreTypeId', 'userId' ])
 export class Score {
 
     @PrimaryGeneratedColumn({
@@ -17,13 +17,13 @@ export class Score {
     @Column({
         name: 'value',
         type: 'decimal',
-        precision:14,
-        scale:6
+        precision: 14,
+        scale: 6
     })
     value: number
 
     @Column()
-    scoreTypeId:number
+    scoreTypeId: number
 
     /*积分所属积分类型，当积分类型删除时所有积分会级联删除，由于积分不被其他表引用，所以级联删除不会出现问题
       之所以不使用积分类型名称作为被引用的键，是因为积分类型名称可以修改，而要保证修改后的积分类型仍能找到所属积分必须将积分与积分类型关联起来
@@ -44,7 +44,7 @@ export class Score {
     scoreType: ScoreType
 
     @Column()
-    userId:number
+    userId: number
 
     @ManyToOne(type => User, user => user.scores, {
         cascadeInsert: true,
