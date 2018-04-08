@@ -19,7 +19,7 @@
         "notadd"
     ],
     "author": "czy12345",
-    "license": "ISC",
+    "license": "Apache-2.0",
     "dependencies": {
         "@nestjs/common": "^4.5.9",
         "@nestjs/core": "^4.5.10",
@@ -45,6 +45,11 @@
     "devDependencies": {
         "@types/jest": "^22.1.4",
         "@types/node": "^8.0.28",
+        "gulp": "^3.9.1",
+        "gulp-rename": "^1.2.2",
+        "gulp-sequence": "^1.0.0",
+        "gulp-watch": "^5.0.0",
+        "lerna": "^2.9.1",
         "nodemon": "^1.12.1",
         "ts-node": "^3.3.0"
     }
