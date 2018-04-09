@@ -1,12 +1,14 @@
 # User Center Module
 
+### [中文说明](README_zh.md)
+
 - [x] Support user login registration, organization management
 - [x] Points System, User Information Management
 - [x] Management of permissions, functions, and roles.
 - [x] Multi-level organization management, support positions.
 - [x] Support system permission value setting
 - [x] permission injection for modules, plugins
-- [] Single Sign-On, Status Management
+- [ ] Single Sign-On, Status Management
 
 ## Application Installation
 
