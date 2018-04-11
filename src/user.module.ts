@@ -107,7 +107,7 @@ export class UserModule implements OnModuleInit {
                 const [ key, value ] = component;
                 // 只有resolver、controller才会被遍历，其他组件上定义权限无效
                 const isResolver = Reflect.getMetadata("graphql:resolver_type", value.metatype);
-                const isController = Reflect.getMetadata("path", value.metatype,);
+                const isController = Reflect.getMetadata("path", value.metatype);
                 if (isResolver || isController) {
                     // 在需要进行权限判断的组件类上定义模块token，用来在guard中判断权限属于哪个模块
                     Reflect.defineMetadata(MODULE_TOKEN, token, value.metatype);

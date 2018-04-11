@@ -18,7 +18,7 @@ export class PermissionGuard implements CanActivate {
     /* 对类、方法上的控制权限进行判断，用来判断请求是否可以通过
        如果类、方法上都有控制权限，必须分别通过，才可通过，也就是and关系
        在类或者方法上，必须通过所有and权限，且通过or权限之一才可通过，也就是顶层关系为and
-       class_and1&&class_and2&&(class_or1||class_or2) && method_and1&&method_and2&&(method_or1||method2)
+       classAnd1&&classAnd2&&(classOr1||classOr2) && method_and1&&method_and2&&(method_or1||method2)
     */
     async canActivate(req: IncomingMessage, context: ExecutionContext): Promise<boolean> {
         const { parent, handler } = context;
@@ -46,18 +46,18 @@ export class PermissionGuard implements CanActivate {
         }
 
         // 获取类上定义权限
-        const class_or: Array<string> = Reflect.getMetadata(PERMISSION_CONTROLLER_OR, parent) || [];
-        const class_and: Array<string> = Reflect.getMetadata(PERMISSION_CONTROLLER_AND, parent) || [];
+        const classOr: Array<string> = Reflect.getMetadata(PERMISSION_CONTROLLER_OR, parent) || [];
+        const classAnd: Array<string> = Reflect.getMetadata(PERMISSION_CONTROLLER_AND, parent) || [];
         // 在onModuleInit方法中设置，模块名称，用来判断权限属于哪个模块
         const token = Reflect.getMetadata(MODULE_TOKEN, parent);
         // 检查类上控制权限
-        const classPass = this.checkPermission(permissions, class_and, class_or, token);
+        const classPass = this.checkPermission(permissions, classAnd, classOr, token);
         if (!classPass) return false;
         // 获取方法上定义权限
-        const method_or: Array<string> = Reflect.getMetadata(PERMISSION_CONTROLLER_OR, handler) || [];
-        const method_and: Array<string> = Reflect.getMetadata(PERMISSION_CONTROLLER_AND, handler) || [];
+        const methodOr: Array<string> = Reflect.getMetadata(PERMISSION_CONTROLLER_OR, handler) || [];
+        const methodAnd: Array<string> = Reflect.getMetadata(PERMISSION_CONTROLLER_AND, handler) || [];
         // 检查方法上控制权限
-        const methodPass = this.checkPermission(permissions, method_and, method_or, token);
+        const methodPass = this.checkPermission(permissions, methodAnd, methodOr, token);
         return methodPass;
     }
 

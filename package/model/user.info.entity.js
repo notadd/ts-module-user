@@ -5,69 +5,73 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-exports.__esModule = true;
-var typeorm_1 = require("typeorm");
-var info_item_entity_1 = require("./info.item.entity");
-var user_entity_1 = require("./user.entity");
-/* 用户信息实体类，这里填的信息是用户现有信息之外的信息
-*/
-var UserInfo = /** @class */ (function () {
-    function UserInfo() {
-    }
-    __decorate([
-        typeorm_1.PrimaryGeneratedColumn()
-    ], UserInfo.prototype, "id");
-    __decorate([
-        typeorm_1.Column({
-            name: "value",
-            type: "varchar",
-            length: "120"
-        })
-    ], UserInfo.prototype, "value");
-    __decorate([
-        typeorm_1.Column({
-            nullable: true
-        })
-    ], UserInfo.prototype, "userId");
-    __decorate([
-        typeorm_1.ManyToOne(function (type) { return user_entity_1.User; }, function (user) { return user.userInfos; }, {
-            cascadeInsert: false,
-            cascadeUpdate: false,
-            cascadeRemove: false,
-            nullable: true,
-            onDelete: "CASCADE",
-            lazy: false,
-            eager: false
-        }),
-        typeorm_1.JoinColumn({
-            name: "userId",
-            referencedColumnName: "id"
-        })
-    ], UserInfo.prototype, "user");
-    __decorate([
-        typeorm_1.Column({
-            nullable: true
-        })
-    ], UserInfo.prototype, "infoItemId");
-    __decorate([
-        typeorm_1.ManyToOne(function (type) { return info_item_entity_1.InfoItem; }, function (infoItem) { return infoItem.userInfos; }, {
-            cascadeInsert: false,
-            cascadeUpdate: false,
-            cascadeRemove: false,
-            nullable: true,
-            onDelete: "CASCADE",
-            lazy: false,
-            eager: false
-        }),
-        typeorm_1.JoinColumn({
-            name: "infoItemId",
-            referencedColumnName: "id"
-        })
-    ], UserInfo.prototype, "infoItem");
-    UserInfo = __decorate([
-        typeorm_1.Entity("user_info"),
-        typeorm_1.Index("infoItemId_userId", ["infoItemId", "userId"])
-    ], UserInfo);
-    return UserInfo;
-}());
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const typeorm_1 = require("typeorm");
+const info_item_entity_1 = require("./info.item.entity");
+const user_entity_1 = require("./user.entity");
+let UserInfo = class UserInfo {
+};
+__decorate([
+    typeorm_1.PrimaryGeneratedColumn(),
+    __metadata("design:type", Number)
+], UserInfo.prototype, "id", void 0);
+__decorate([
+    typeorm_1.Column({
+        name: "value",
+        type: "varchar",
+        length: "120"
+    }),
+    __metadata("design:type", String)
+], UserInfo.prototype, "value", void 0);
+__decorate([
+    typeorm_1.Column({
+        nullable: true
+    }),
+    __metadata("design:type", Number)
+], UserInfo.prototype, "userId", void 0);
+__decorate([
+    typeorm_1.ManyToOne(type => user_entity_1.User, user => user.userInfos, {
+        cascadeInsert: false,
+        cascadeUpdate: false,
+        cascadeRemove: false,
+        nullable: true,
+        onDelete: "CASCADE",
+        lazy: false,
+        eager: false
+    }),
+    typeorm_1.JoinColumn({
+        name: "userId",
+        referencedColumnName: "id"
+    }),
+    __metadata("design:type", user_entity_1.User)
+], UserInfo.prototype, "user", void 0);
+__decorate([
+    typeorm_1.Column({
+        nullable: true
+    }),
+    __metadata("design:type", Number)
+], UserInfo.prototype, "infoItemId", void 0);
+__decorate([
+    typeorm_1.ManyToOne(type => info_item_entity_1.InfoItem, infoItem => infoItem.userInfos, {
+        cascadeInsert: false,
+        cascadeUpdate: false,
+        cascadeRemove: false,
+        nullable: true,
+        onDelete: "CASCADE",
+        lazy: false,
+        eager: false
+    }),
+    typeorm_1.JoinColumn({
+        name: "infoItemId",
+        referencedColumnName: "id"
+    }),
+    __metadata("design:type", info_item_entity_1.InfoItem)
+], UserInfo.prototype, "infoItem", void 0);
+UserInfo = __decorate([
+    typeorm_1.Entity("user_info"),
+    typeorm_1.Index("infoItemId_userId", ["infoItemId", "userId"])
+], UserInfo);
 exports.UserInfo = UserInfo;

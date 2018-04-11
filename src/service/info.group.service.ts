@@ -19,9 +19,9 @@ export class InfoGroupService {
     }
 
     /* 获取指定信息组的信息项，不管信息组状态如何都能获取到 */
-    async getInfoItems(id: number): Promise<Array<InfoItem>> {
+    async getInfoItems(id: number): Promise<Array<InfoItem>|undefined> {
         const infoGroup: InfoGroup|undefined = await this.infoGroupRepository.findOneById(id, { relations: [ "items" ] });
-        return infoGroup.items;
+        return infoGroup ? infoGroup.items : undefined;
     }
 
     /* 创建信息组 */

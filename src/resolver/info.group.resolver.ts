@@ -29,7 +29,7 @@ export class InfoGroupResolver {
         if (!id) {
             throw new HttpException("缺少参数", 400);
         }
-        const infoItems = await this.infoGroupService.getInfoItems(id);
+        const infoItems: any = await this.infoGroupService.getInfoItems(id);
         return { code: 200, message: "获取指定信息组的信息项成功", infoItems };
     }
 

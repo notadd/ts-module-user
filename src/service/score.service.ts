@@ -33,7 +33,7 @@ export class ScoreService {
         if (score) {
             if (scoreType.type === "int") {
                 return Number.parseInt(score.value + "");
-            } else (scoreType.type === "float"); {
+            } else {
                 return Number.parseFloat(score.value + "");
             }
         }

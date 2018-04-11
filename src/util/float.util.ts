@@ -37,15 +37,15 @@ export class FloatUtil {
         /*整数结果字符串 */
         const result: string = temp + "";
         /*小数点应该插入的下标 */
-        let decimal_point_index: number = null;
+        let decimalPointIndex = 0;
         /*如果第一个小数位数大于第二个 */
         if (num > 0) {
-            decimal_point_index = result.length - num1;
+            decimalPointIndex = result.length - num1;
         } else {
-            decimal_point_index = result.length - num2;
+            decimalPointIndex = result.length - num2;
         }
 
-        return Number.parseFloat(result.substr(0, decimal_point_index).concat(".", result.substr(decimal_point_index)));
+        return Number.parseFloat(result.substr(0, decimalPointIndex).concat(".", result.substr(decimalPointIndex)));
     }
 
 }

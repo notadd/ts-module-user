@@ -280,7 +280,7 @@ export class UserService {
             }
             // 数组类型以，连接各个元素为字符串
             result = (info as ArrayInfo).array.join(",");
-        } else (match.type === "uploadimagewithpreview" || match.type === "uploadfile"); {
+        } else {
             if (!(info as FileInfo).base64) {
                 throw new HttpException("指定名称信息项name=" + match.name + "必须具有文件base64编码", 410);
             }
@@ -291,7 +291,7 @@ export class UserService {
                 throw new HttpException("指定名称信息项name=" + match.name + "必须具有文件存储空间名", 410);
             }
             // 文件类型，上传到存储插件，并保存访问url
-            const { bucketName, name, type } = await this.storeComponent.upload((info as FileInfo).bucketName, (info as FileInfo).rawName, (info as FileInfo).base64, null);
+            const { bucketName, name, type } = await this.storeComponent.upload((info as FileInfo).bucketName, (info as FileInfo).rawName, (info as FileInfo).base64, undefined);
             result = await this.storeComponent.getUrl(req, bucketName, name, type, undefined as any);
         }
         return result;
@@ -401,12 +401,11 @@ export class UserService {
             if (!find.recycle) {
                 throw new HttpException("指定用户id=" + id + "不在回收站中", 406);
             }
-            find.recycle === true;
+            find.recycle = false;
         });
         try {
-            await Promise.all(users.map(async user => {
-                return this.userRepository.save(user);
-            }, this));
+            await this.userRepository.save(users);
+
         } catch (err) {
             throw new HttpException("数据库错误" + err.toString(), 401);
         }
@@ -500,7 +499,7 @@ export class UserService {
             }
         });
         // 对参数进行去重
-        permissionIds = [].concat(...new Set(permissionIds));
+        permissionIds = [].concat(...new Set(permissionIds) as any);
         // 声明计算出来的添加权限、减少权限、以及参数指定的权限
         const adds: Array<Permission> = [];
         const reduces: Array<Permission> = [];
