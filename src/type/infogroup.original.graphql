@@ -1,0 +1,51 @@
+type Query{
+    #get all info group
+    infoGroups:InfoGroupsData
+    #get info item
+    infoItems(id:Int!):InfoItemsData
+}
+
+type Mutation{
+    #create InfoGroup
+    createInfoGroup(name:String!):Data
+    #update  InfoGroup
+    updateInfoGroup(name:String!):Data
+    #delete InfoGroup
+    deleteInfoGroup(id:Int!):Data
+    #add info item to group
+    addInfoItem(id:Int!,infoItemId:Int!):Data
+    #remove info item from group
+    removeInfoItem(id:Int!,infoItemId:Int!):Data
+}
+
+
+#infoGroups return data
+type InfoGroupsData{
+    code:Int
+    message:String
+    infoGroups:[InfoGroup]
+}
+
+type InfoGroup{
+    id:Int
+    name:String
+    default:Boolean
+    status:Boolean
+}
+
+#infoItems return data
+type InfoItemsData{
+    code:Int
+    message:String
+    infoItems:[InfoItem]
+}
+
+type InfoItem{
+    id:Int
+    name:String
+    default:Boolean
+    description:String
+    type:String
+    necessary:Boolean
+    order:Int
+}

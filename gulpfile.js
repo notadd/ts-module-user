@@ -47,8 +47,8 @@ function tasks() {
 function watchGraphql(source, module) {
     gulp.watch(
         [
-            `${source}/${module}/**/*.graphql`,
-            `${source}/${module}/*.graphql`,
+            `${source}/**/*.graphql`,
+            `${source}/*.graphql`,
         ],
         [
             module,
@@ -56,11 +56,11 @@ function watchGraphql(source, module) {
     ).on("change", function (event) {
         console.log("File " + event.path + " was " + event.type + ", running tasks...");
         gulp.src([
-            `${source}/${module}/**/*.graphql`,
-            `${source}/${module}/*.graphql`,
+            `${source}/**/*.graphql`,
+            `${source}/*.graphql`,
         ]).pipe(rename(function (path) {
             path.basename = path.basename.replace(".original", ".types");
-        })).pipe(gulp.dest(`${dist}/${module}`));
+        })).pipe(gulp.dest(`${dist}`));
     });
 }
 

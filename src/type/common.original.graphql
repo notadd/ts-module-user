@@ -1,0 +1,7 @@
+#commom return data
+type Data{
+    #error code
+    code:Int
+    #error message
+    message:String
+}

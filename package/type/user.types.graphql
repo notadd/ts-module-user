@@ -13,7 +13,6 @@ type Query{
     permissionsInUser(id:Int!):PermissionsData
 }
 
-
 type Mutation{
     #create user , specify organization
     createUser(
@@ -70,7 +69,6 @@ type Mutation{
     #set permission ,that is final result ,generate by role adds reduces
     setUserOwnPermissions(id:Int!,permissionIds:[Int!]!):Data
 }
-
 
 #users return Data
 type UsersData{
