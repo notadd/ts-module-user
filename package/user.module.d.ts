@@ -4,7 +4,7 @@ import { Repository } from "typeorm";
 import { Func } from "./model/func.entity";
 import { InfoGroup } from "./model/info.group.entity";
 import { InfoItem } from "./model/info.item.entity";
-import { Module as Module1 } from "./model/module.entity";
+import { Module as ModuleEntity } from "./model/module.entity";
 import { Permission } from "./model/permission.entity";
 import { Role } from "./model/role.entity";
 import { ScoreType } from "./model/score.type.entity";
@@ -18,7 +18,7 @@ export declare class UserModule implements OnModuleInit {
     private readonly infoGroupRepository;
     private readonly permissionRepository;
     private readonly metadataScanner;
-    constructor(moduleMap: ModulesContainer, roleRepository: Repository<Role>, funcRepository: Repository<Func>, moduleRepository: Repository<Module1>, infoItemRepository: Repository<InfoItem>, scoreTypeRepository: Repository<ScoreType>, infoGroupRepository: Repository<InfoGroup>, permissionRepository: Repository<Permission>);
+    constructor(moduleMap: ModulesContainer, roleRepository: Repository<Role>, funcRepository: Repository<Func>, moduleRepository: Repository<ModuleEntity>, infoItemRepository: Repository<InfoItem>, scoreTypeRepository: Repository<ScoreType>, infoGroupRepository: Repository<InfoGroup>, permissionRepository: Repository<Permission>);
     onModuleInit(): Promise<void>;
     checkPermissionDefinition(): Promise<void>;
     addDefaultInfoGroup(): Promise<void>;

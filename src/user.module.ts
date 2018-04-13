@@ -9,7 +9,7 @@ import { MODULE_TOKEN } from "./guard/permission.guard";
 import { Func } from "./model/func.entity";
 import { InfoGroup } from "./model/info.group.entity";
 import { InfoItem } from "./model/info.item.entity";
-import { Module as Module1 } from "./model/module.entity";
+import { Module as ModuleEntity } from "./model/module.entity";
 import { Organization } from "./model/organization.entity";
 import { Permission } from "./model/permission.entity";
 import { Role } from "./model/role.entity";
@@ -39,22 +39,46 @@ import { FloatUtil } from "./util/float.util";
 
 @Global()
 @Module({
-    modules: [ TypeOrmModule.forFeature([ Module1, Organization, User, ScoreType, Score, InfoGroup, InfoItem, UserInfo, Role, Func, Permission ]) ],
-    controllers: [],
+    modules: [
+        TypeOrmModule.forFeature([
+            ModuleEntity,
+            Organization,
+            User,
+            ScoreType,
+            Score,
+            InfoGroup,
+            InfoItem,
+            UserInfo,
+            Role,
+            Func,
+            Permission,
+        ]),
+    ],
     components: [
         FloatUtil,
-        OrganizationService, OrganizationResolver,
-        ScoreTypeService, ScoreTypeResolver,
-        InfoGroupService, InfoGroupResolver,
-        InfoItemService, InfoItemResolver,
-        ModuleService, ModuleResolver,
-        ScoreService, ScoreResolver,
-        FuncService, FuncResolver,
-        UserService, UserResolver,
-        RoleService, RoleResolver,
-        UserComponentProvider
+        OrganizationService,
+        OrganizationResolver,
+        ScoreTypeService,
+        ScoreTypeResolver,
+        InfoGroupService,
+        InfoGroupResolver,
+        InfoItemService,
+        InfoItemResolver,
+        ModuleService,
+        ModuleResolver,
+        ScoreService,
+        ScoreResolver,
+        FuncService,
+        FuncResolver,
+        UserService,
+        UserResolver,
+        RoleService,
+        RoleResolver,
+        UserComponentProvider,
     ],
-    exports: [ UserComponentProvider ]
+    exports: [
+        UserComponentProvider,
+    ]
 })
 export class UserModule implements OnModuleInit {
 
@@ -64,7 +88,7 @@ export class UserModule implements OnModuleInit {
         @Inject(ModulesContainer.name) private readonly moduleMap: ModulesContainer,
         @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
         @InjectRepository(Func) private readonly funcRepository: Repository<Func>,
-        @InjectRepository(Module) private readonly moduleRepository: Repository<Module1>,
+        @InjectRepository(Module) private readonly moduleRepository: Repository<ModuleEntity>,
         @InjectRepository(InfoItem) private readonly infoItemRepository: Repository<InfoItem>,
         @InjectRepository(ScoreType) private readonly scoreTypeRepository: Repository<ScoreType>,
         @InjectRepository(InfoGroup) private readonly infoGroupRepository: Repository<InfoGroup>,
@@ -92,7 +116,7 @@ export class UserModule implements OnModuleInit {
      */
     async checkPermissionDefinition(): Promise<void> {
         // 获取当前既有模块，关联获取模块具有的权限、功能、角色
-        const modules: Array<Module1> = await this.moduleRepository.find({ relations: [ "permissions", "funcs", "roles" ] });
+        const modules: Array<ModuleEntity> = await this.moduleRepository.find({ relations: [ "permissions", "funcs", "roles" ] });
         // 遍历模块token、Module实例
         for (const [ key, value ] of this.moduleMap.entries()) {
             // 模块名称，直接使用nest容器里面存储Module的key，不会重复
@@ -180,7 +204,7 @@ export class UserModule implements OnModuleInit {
                     modules.splice(index, 1);
                 } else if (pers.length > 0) {
                     // 模块不存在，直接保存它与相应权限
-                    const module: Module1 = this.moduleRepository.create({ token, permissions: pers });
+                    const module: ModuleEntity = this.moduleRepository.create({ token, permissions: pers });
                     await this.moduleRepository.save(module);
                 } else {
                     // 模块不存在且没有权限，则不管它
