@@ -25,6 +25,7 @@
     ],
     "author": "czy12345",
     "license": "Apache-2.0",
+    "private": true,
     "dependencies": {
         "@nestjs/common": "^4.5.9",
         "@nestjs/core": "^4.5.10",
@@ -49,6 +50,7 @@
     },
     "devDependencies": {
         "@notadd/gulp-typescript": "^4.0.2",
+        "@notadd/user": "^2.3.27",
         "@types/jest": "^22.1.4",
         "@types/node": "^8.0.28",
         "gulp": "^3.9.1",
@@ -60,5 +62,8 @@
         "nodemon": "^1.12.1",
         "ts-node": "^3.3.0",
         "tslint": "^5.9.1"
-    }
+    },
+    "workspaces": [
+        "package"
+    ]
 }
