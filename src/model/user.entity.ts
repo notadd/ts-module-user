@@ -45,14 +45,14 @@ export class User {
     /* 状态，是否封禁 */
     @Column({
         name: "status",
-        type: "smallint"
+        type: "boolean"
     })
     status: boolean;
 
     /* 状态，是否处于回收站 */
     @Column({
         name: "recycle",
-        type: "smallint"
+        type: "boolean"
     })
     recycle: boolean;
 

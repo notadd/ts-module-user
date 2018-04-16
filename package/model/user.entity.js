@@ -50,14 +50,14 @@ __decorate([
 __decorate([
     typeorm_1.Column({
         name: "status",
-        type: "smallint"
+        type: "boolean"
     }),
     __metadata("design:type", Boolean)
 ], User.prototype, "status", void 0);
 __decorate([
     typeorm_1.Column({
         name: "recycle",
-        type: "smallint"
+        type: "boolean"
     }),
     __metadata("design:type", Boolean)
 ], User.prototype, "recycle", void 0);
