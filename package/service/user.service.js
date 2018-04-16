@@ -22,7 +22,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
-const crypto = require("crypto");
+const crypto_1 = require("crypto");
 const typeorm_2 = require("typeorm");
 const func_entity_1 = require("../model/func.entity");
 const info_group_entity_1 = require("../model/info.group.entity");
@@ -66,7 +66,11 @@ let UserService = class UserService {
             if (!user) {
                 throw new common_1.HttpException("指定用户不存在", 406);
             }
-            const userInfos = yield this.userInfoRepository.createQueryBuilder("userInfo").leftJoinAndSelect("userInfo.infoItem", "infoItem", "userInfo.infoItemId=infoItem.id").where("userInfo.userId = :id", { id }).getMany();
+            const userInfos = yield this.userInfoRepository
+                .createQueryBuilder("userInfo")
+                .leftJoinAndSelect("userInfo.infoItem", "infoItem", "userInfo.infoItemId=infoItem.id")
+                .where("userInfo.userId = :id", { id })
+                .getMany();
             return userInfos.map(userInfo => {
                 return { name: userInfo.infoItem.name, value: userInfo.value };
             });
@@ -143,8 +147,8 @@ let UserService = class UserService {
                 throw new common_1.HttpException("指定userName=" + userName + "用户已存在", 406);
             }
             try {
-                const salt = crypto.createHash("md5").update(new Date().toString()).digest("hex").slice(0, 10);
-                const passwordWithSalt = crypto.createHash("md5").update(password + salt).digest("hex");
+                const salt = crypto_1.createHash("sha256").update(new Date().toString()).digest("hex").slice(0, 10);
+                const passwordWithSalt = crypto_1.createHash("sha256").update(password + salt).digest("hex");
                 const user = this.userRepository.create({
                     userName,
                     password: passwordWithSalt,
@@ -174,8 +178,8 @@ let UserService = class UserService {
             if (exist) {
                 throw new common_1.HttpException("指定userName=" + userName + "用户已存在", 406);
             }
-            const salt = crypto.createHash("md5").update(new Date().toString()).digest("hex").slice(0, 10);
-            const passwordWithSalt = crypto.createHash("md5").update(password + salt).digest("hex");
+            const salt = crypto_1.createHash("sha256").update(new Date().toString()).digest("hex").slice(0, 10);
+            const passwordWithSalt = crypto_1.createHash("sha256").update(password + salt).digest("hex");
             const user = this.userRepository.create({
                 userName,
                 password: passwordWithSalt,
@@ -228,7 +232,7 @@ let UserService = class UserService {
         return __awaiter(this, void 0, void 0, function* () {
             const items = group.items || [];
             const necessary = items.filter(item => {
-                return !!item.necessary;
+                return item.necessary === true;
             });
             for (let j = 0; j < infos.length; j++) {
                 const { name } = infos[j];
@@ -267,7 +271,7 @@ let UserService = class UserService {
                 if (!info.value) {
                     throw new common_1.HttpException("指定名称信息值:" + match.name + "不存在", 410);
                 }
-                if (!(typeof info.value === "string")) {
+                if (typeof info.value !== "string") {
                     throw new common_1.HttpException("指定名称信息项name=" + match.name + "必须为字符串", 410);
                 }
                 result = info.value.trim();
@@ -311,9 +315,9 @@ let UserService = class UserService {
             }
             try {
                 exist.userName = userName;
-                const salt = crypto.createHash("md5").update(new Date().toString()).digest("hex").slice(0, 10);
+                const salt = crypto_1.createHash("sha256").update(new Date().toString()).digest("hex").slice(0, 10);
                 exist.salt = salt;
-                exist.password = crypto.createHash("md5").update(password + salt).digest("hex");
+                exist.password = crypto_1.createHash("sha256").update(password + salt).digest("hex");
                 yield this.userRepository.save(exist);
             }
             catch (err) {

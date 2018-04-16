@@ -1,6 +1,6 @@
 import { Component, HttpException, Inject } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import * as crypto from "crypto";
+import { createHash } from "crypto";
 import { IncomingMessage } from "http";
 import { Repository } from "typeorm";
 import { StoreComponent } from "../interface/store.component";
@@ -50,7 +50,12 @@ export class UserService {
         if (!user) {
             throw new HttpException("指定用户不存在", 406);
         }
-        const userInfos: Array<UserInfo> = await this.userInfoRepository.createQueryBuilder("userInfo").leftJoinAndSelect("userInfo.infoItem", "infoItem", "userInfo.infoItemId=infoItem.id").where("userInfo.userId = :id", { id }).getMany();
+        const userInfos: Array<UserInfo> = await this.userInfoRepository
+            .createQueryBuilder("userInfo")
+            .leftJoinAndSelect("userInfo.infoItem", "infoItem", "userInfo.infoItemId=infoItem.id")
+            .where("userInfo.userId = :id", { id })
+            .getMany();
+
         return userInfos.map(userInfo => {
             return { name: userInfo.infoItem.name, value: userInfo.value };
         });
@@ -114,6 +119,7 @@ export class UserService {
         result.sort((a, b) => {
             return a.id - b.id;
         });
+
         return result;
     }
 
@@ -131,8 +137,8 @@ export class UserService {
             throw new HttpException("指定userName=" + userName + "用户已存在", 406);
         }
         try {
-            const salt = crypto.createHash("md5").update(new Date().toString()).digest("hex").slice(0, 10);
-            const passwordWithSalt = crypto.createHash("md5").update(password + salt).digest("hex");
+            const salt = createHash("sha256").update(new Date().toString()).digest("hex").slice(0, 10);
+            const passwordWithSalt = createHash("sha256").update(password + salt).digest("hex");
             const user: User = this.userRepository.create({
                 userName,
                 password: passwordWithSalt,
@@ -160,8 +166,8 @@ export class UserService {
         if (exist) {
             throw new HttpException("指定userName=" + userName + "用户已存在", 406);
         }
-        const salt = crypto.createHash("md5").update(new Date().toString()).digest("hex").slice(0, 10);
-        const passwordWithSalt = crypto.createHash("md5").update(password + salt).digest("hex");
+        const salt = createHash("sha256").update(new Date().toString()).digest("hex").slice(0, 10);
+        const passwordWithSalt = createHash("sha256").update(password + salt).digest("hex");
         const user: User = this.userRepository.create({
             userName,
             password: passwordWithSalt,
@@ -205,7 +211,6 @@ export class UserService {
         } catch (err) {
             throw new HttpException("数据库错误" + err.toString(), 401);
         }
-
     }
 
     /* 将指定信息组的信息加入到用户对象中，里面没有数据库更改操作，只是改变了用户的userInfos、infoItems两个属性，当save时新的userInfo会被插入，旧的会被更新，infoItem与user的关系会被建立*/
@@ -214,7 +219,7 @@ export class UserService {
         const items: Array<InfoItem> = group.items || [];
         // 所有必填信息项
         const necessary: Array<InfoItem> = items.filter(item => {
-            return !!item.necessary;
+            return item.necessary === true;
         });
         // 遍历得到的信息
         for (let j = 0; j < infos.length; j++) {
@@ -266,7 +271,7 @@ export class UserService {
             if (!(info as TextInfo).value) {
                 throw new HttpException("指定名称信息值:" + match.name + "不存在", 410);
             }
-            if (!(typeof (info as TextInfo).value === "string")) {
+            if (typeof (info as TextInfo).value !== "string") {
                 throw new HttpException("指定名称信息项name=" + match.name + "必须为字符串", 410);
             }
             // 普字符串类型值只需要删除前后空白
@@ -310,9 +315,9 @@ export class UserService {
         }
         try {
             exist.userName = userName;
-            const salt = crypto.createHash("md5").update(new Date().toString()).digest("hex").slice(0, 10);
+            const salt = createHash("sha256").update(new Date().toString()).digest("hex").slice(0, 10);
             exist.salt = salt;
-            exist.password = crypto.createHash("md5").update(password + salt).digest("hex");
+            exist.password = createHash("sha256").update(password + salt).digest("hex");
             await this.userRepository.save(exist);
         } catch (err) {
             throw new HttpException("数据库错误" + err.toString(), 401);

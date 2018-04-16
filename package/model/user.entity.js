@@ -35,7 +35,7 @@ __decorate([
     typeorm_1.Column({
         name: "password",
         type: "varchar",
-        length: 40
+        length: 70
     }),
     __metadata("design:type", String)
 ], User.prototype, "password", void 0);
