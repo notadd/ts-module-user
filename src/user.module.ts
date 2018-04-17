@@ -78,6 +78,7 @@ import { FloatUtil } from "./util/float.util";
     ],
     exports: [
         UserComponentProvider,
+        UserService,
     ],
 })
 export class UserModule implements OnModuleInit {

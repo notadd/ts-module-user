@@ -384,6 +384,7 @@ UserModule = __decorate([
         ],
         exports: [
             user_component_provider_1.UserComponentProvider,
+            user_service_1.UserService,
         ],
     }),
     __param(0, common_1.Inject(modules_container_1.ModulesContainer.name)),
