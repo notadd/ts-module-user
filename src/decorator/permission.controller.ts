@@ -1,7 +1,7 @@
 import "reflect-metadata";
 
-export const PERMISSION_CONTROLLER_OR = "userpm:permission_controller_or";
-export const PERMISSION_CONTROLLER_AND = "userpm:permission_controller_and";
+export const PERMISSION_CONTROLLER_OR = "user:permission_controller_or";
+export const PERMISSION_CONTROLLER_AND = "user:permission_controller_and";
 
 export function PermissionController(names: Array<string>, mode: "or" | "and" = "and") {
     return (target: object, key?, descriptor?) => {
