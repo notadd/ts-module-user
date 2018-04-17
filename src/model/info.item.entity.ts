@@ -17,7 +17,7 @@ export class InfoItem {
     */
     @Column({
         name: "name",
-        length: "20",
+        length: 100,
         unique: true
     })
     name: string;
@@ -26,7 +26,7 @@ export class InfoItem {
     */
     @Column({
         name: "label",
-        length: "20"
+        length: 100
     })
     label: string;
 
@@ -39,7 +39,7 @@ export class InfoItem {
     /* 信息项描述 */
     @Column({
         name: "description",
-        length: "40"
+        length: 200
     })
     description: string;
 
@@ -53,7 +53,7 @@ export class InfoItem {
     */
     @Column({
         name: "type",
-        length: 20
+        length: 100
     })
     type: string;
 

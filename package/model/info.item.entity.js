@@ -21,7 +21,7 @@ __decorate([
 __decorate([
     typeorm_1.Column({
         name: "name",
-        length: "20",
+        length: 100,
         unique: true
     }),
     __metadata("design:type", String)
@@ -29,7 +29,7 @@ __decorate([
 __decorate([
     typeorm_1.Column({
         name: "label",
-        length: "20"
+        length: 100
     }),
     __metadata("design:type", String)
 ], InfoItem.prototype, "label", void 0);
@@ -42,14 +42,14 @@ __decorate([
 __decorate([
     typeorm_1.Column({
         name: "description",
-        length: "40"
+        length: 200
     }),
     __metadata("design:type", String)
 ], InfoItem.prototype, "description", void 0);
 __decorate([
     typeorm_1.Column({
         name: "type",
-        length: 20
+        length: 100
     }),
     __metadata("design:type", String)
 ], InfoItem.prototype, "type", void 0);
