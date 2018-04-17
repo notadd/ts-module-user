@@ -88,16 +88,21 @@ let UserComponent = class UserComponent {
             if (user.recycle) {
                 return false;
             }
-            const passwordWithSalt = crypto.createHash("md5").update(password + user.salt).digest("hex");
+            const passwordWithSalt = crypto.createHash("sha256").update(password + user.salt).digest("hex");
             if (passwordWithSalt !== user.password) {
                 return false;
             }
             return this.userRepository.findOneById(user.id, { select: ["id", "userName", "status", "recycle"] });
         });
     }
-    getUser(id) {
+    getUserById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.userRepository.findOneById(id, { select: ["id", "userName", "status", "recycle"] });
+        });
+    }
+    getUserByName(userName) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.userRepository.findOne({ userName }, { select: ["id", "userName", "status", "recycle"] });
         });
     }
     isExist(user) {

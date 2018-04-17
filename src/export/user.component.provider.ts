@@ -9,9 +9,9 @@ import { User } from "../model/user.entity";
 export class UserComponent {
 
     constructor(
-        @InjectRepository(Func) private readonly funcRepository: Repository<Func>,
-        @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
-        @InjectRepository(User) private readonly userRepository: Repository<User>
+        private readonly funcRepository: Repository<Func>,
+        private readonly roleRepository: Repository<Role>,
+        private readonly userRepository: Repository<User>
     ) {
     }
 
@@ -73,8 +73,8 @@ export class UserComponent {
        回收站用户不能登录
        封禁用户可以登录但是没有权限
     */
-    async login(userName: string, password: string): Promise<boolean | User|undefined> {
-        const user: User|undefined = await this.userRepository.findOne({ userName });
+    async login(userName: string, password: string): Promise<boolean | User | undefined> {
+        const user: User | undefined = await this.userRepository.findOne({ userName });
         if (!user) {
             return false;
         }
@@ -82,15 +82,19 @@ export class UserComponent {
         if (user.recycle) {
             return false;
         }
-        const passwordWithSalt = crypto.createHash("md5").update(password + user.salt).digest("hex");
+        const passwordWithSalt = crypto.createHash("sha256").update(password + user.salt).digest("hex");
         if (passwordWithSalt !== user.password) {
             return false;
         }
         return this.userRepository.findOneById(user.id, { select: ["id", "userName", "status", "recycle"] });
     }
 
-    async getUser(id: number): Promise<{ id: number, userName: string, status: boolean, recycle: boolean }|undefined> {
+    async getUserById(id: number): Promise<{ id: number, userName: string, status: boolean, recycle: boolean } | undefined> {
         return this.userRepository.findOneById(id, { select: ["id", "userName", "status", "recycle"] });
+    }
+
+    async getUserByName(userName: string): Promise<{ id: number, userName: string, status: boolean, recycle: boolean } | undefined> {
+        return this.userRepository.createQueryBuilder("user").select(["user.id", "user.userName", "user.status", "user.recycle"]).where({ userName }).getOne();
     }
 
     async isExist(user: { id: number, userName: string, status: boolean, recycle: boolean }): Promise<boolean> {
