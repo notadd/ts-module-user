@@ -49,7 +49,7 @@ let UserService = class UserService {
     }
     getUserByName(userName) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.userRepository.createQueryBuilder("user").select(["user.id", "user.userName", "user.status", "user.recycle"]).where({ userName }).getOne();
+            return this.userRepository.createQueryBuilder("user").where({ userName }).getOne();
         });
     }
     getAll() {
@@ -165,7 +165,7 @@ let UserService = class UserService {
                     salt,
                     status: true,
                     recycle: false,
-                    organizations
+                    organizations,
                 });
                 yield this.userRepository.save(user);
             }
@@ -198,7 +198,7 @@ let UserService = class UserService {
                 recycle: false,
                 organizations,
                 userInfos: [],
-                infoItems: []
+                infoItems: [],
             });
             for (let i = 0; i < groups.length; i++) {
                 const { groupId, infos } = groups[i];
@@ -277,7 +277,18 @@ let UserService = class UserService {
     transfromInfoValue(req, match, info) {
         return __awaiter(this, void 0, void 0, function* () {
             let result;
-            if (match.type === "text" || match.type === "textarea" || match.type === "radio" || match.type === "date" || match.type === "number" || match.type === "pulldownmenu") {
+            if (match.type
+                === "text"
+                || match.type
+                    === "textarea"
+                || match.type
+                    === "radio"
+                || match.type
+                    === "date"
+                || match.type
+                    === "number"
+                || match.type
+                    === "pulldownmenu") {
                 if (!info.value) {
                     throw new common_1.HttpException("指定名称信息值:" + match.name + "不存在", 410);
                 }

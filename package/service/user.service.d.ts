@@ -27,12 +27,7 @@ export declare class UserService {
         status: boolean;
         recycle: boolean;
     } | undefined>;
-    getUserByName(userName: string): Promise<{
-        id: number;
-        userName: string;
-        status: boolean;
-        recycle: boolean;
-    } | undefined>;
+    getUserByName(userName: string): Promise<User | undefined>;
     getAll(): Promise<Array<User>>;
     getFreedomUsers(): Promise<Array<User>>;
     getRecycleUsers(): Promise<Array<User>>;
