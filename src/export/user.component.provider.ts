@@ -91,11 +91,11 @@ export class UserComponent {
         return this.userRepository.findOneById(user.id, { select: ["id", "userName", "status", "recycle"] });
     }
 
-    async getUserById(id: number): Promise<{ id: number, userName: string, status: boolean, recycle: boolean } | undefined> {
+    async getUserById(id: number): Promise<User | undefined> {
         return this.userRepository.findOneById(id, { select: ["id", "userName", "status", "recycle"] });
     }
 
-    async getUserByName(userName: string): Promise<{ id: number, userName: string, status: boolean, recycle: boolean } | undefined> {
+    async getUserByName(userName: string): Promise<User | undefined> {
         return this.userRepository.createQueryBuilder("user").select(["user.id", "user.userName", "user.status", "user.recycle"]).where({ userName }).getOne();
     }
 
