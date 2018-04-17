@@ -30,7 +30,7 @@ export class ScoreType {
     /* 是否为默认积分类型，默认类型不可删除、更改 */
     @Column({
         name: "default",
-        type: "smallint"
+        type: "boolean"
     })
     default: boolean;
 

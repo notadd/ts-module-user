@@ -29,14 +29,14 @@ export class InfoGroup {
     /* 是否为默认信息组，默认信息组不可删除、更改 */
     @Column({
         name: "default",
-        type: "smallint"
+        type: "boolean"
     })
     default: boolean;
 
     /* 信息组状态，是否可用，目前还未启用这个特性 */
     @Column({
         name: "status",
-        type: "smallint"
+        type: "boolean"
     })
     status: boolean;
 

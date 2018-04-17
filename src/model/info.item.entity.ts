@@ -38,7 +38,7 @@ export class InfoItem {
     /* 是否为默认信息项，默认信息项不可删除、更改 、也不可添加到其他信息组中，默认信息项只能存在于默认信息组中*/
     @Column({
         name: "default",
-        type: "smallint"
+        type: "boolean"
     })
     default: boolean;
 
@@ -67,7 +67,7 @@ export class InfoItem {
     /* 是否必填信息项，当提交一个信息组信息时，如果必填信息项未填，会返回错误 */
     @Column({
         name: "necessary",
-        type: "smallint"
+        type: "boolean"
     })
     necessary: boolean;
 
@@ -76,14 +76,14 @@ export class InfoItem {
     */
     @Column({
         name: "register_visible",
-        type: "smallint"
+        type: "boolean"
     })
     registerVisible: boolean;
 
     /* 资料页是否可见，当前端需要用户资料信息时返回给它，目前暂定不可见就不返回 */
     @Column({
         name: "information_visible",
-        type: "smallint"
+        type: "boolean"
     })
     informationVisible: boolean;
 
