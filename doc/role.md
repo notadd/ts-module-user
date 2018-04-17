@@ -1,10 +1,17 @@
+```
 type Mutation{
-    #create role with name and score
+
+    #创建指定模块下、指定名称、指定权重的角色
     createRole(moduleToken:String!,name:String!,score:Int!):Data
-    #update role with name and score
+
+    #更新指定角色
     updateRole(id:Int!,name:String!,score:Int!):Data
-    #delete role with id
+
+    #删除指定角色
     deleteRole(id:Int!):Data
-    #set role.funcs
+
+    #设置角色包含的功能
     setFuncs(id:Int!,funcIds:[Int!]!):Data
+    
 }
+```
