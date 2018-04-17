@@ -1,11 +1,13 @@
-import { InjectRepository } from "@nestjs/typeorm";
-import * as crypto from "crypto";
-import { Repository } from "typeorm";
-import { Func } from "../model/func.entity";
 import { Permission } from "../model/permission.entity";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Func } from "../model/func.entity";
 import { Role } from "../model/role.entity";
 import { User } from "../model/user.entity";
+import { Repository } from "typeorm";
+import * as crypto from "crypto";
 
+
+/* 用户模块向其他模块提供的导出组件类 */
 export class UserComponent {
 
     constructor(

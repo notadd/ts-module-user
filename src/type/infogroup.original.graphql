@@ -9,7 +9,7 @@ type Mutation{
     #create InfoGroup
     createInfoGroup(name:String!):Data
     #update  InfoGroup
-    updateInfoGroup(name:String!):Data
+    updateInfoGroup(id:Int!,name:String!):Data
     #delete InfoGroup
     deleteInfoGroup(id:Int!):Data
     #add info item to group

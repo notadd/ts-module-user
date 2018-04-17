@@ -1,0 +1,19 @@
+type Mutation{
+    createInfoItem(name:String!,description:String,type:InfoItemType!,necessary:Boolean!,order:Int):Data
+    updateInfoItem(id:Int!,name:String,description:String,type:InfoItemType,necessary:Boolean,order:Int):Data
+    deleteInfoItem(id:Int!):Data
+    deleteInfoItems(ids:[Int!]!):Data
+}
+
+
+enum InfoItemType{
+    text
+    number
+    textarea
+    radio
+    date
+    pulldownmenu
+    checkbox
+    uploadfile
+    uploadimagewithpreview
+}

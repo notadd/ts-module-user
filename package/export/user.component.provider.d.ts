@@ -1,8 +1,8 @@
-import { Repository } from "typeorm";
-import { Func } from "../model/func.entity";
 import { Permission } from "../model/permission.entity";
+import { Func } from "../model/func.entity";
 import { Role } from "../model/role.entity";
 import { User } from "../model/user.entity";
+import { Repository } from "typeorm";
 export declare class UserComponent {
     private readonly funcRepository;
     private readonly roleRepository;
