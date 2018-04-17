@@ -25,7 +25,6 @@ __decorate([
 __decorate([
     typeorm_1.Column({
         name: "user_name",
-        type: "varchar",
         length: "20",
         unique: true
     }),
@@ -34,7 +33,6 @@ __decorate([
 __decorate([
     typeorm_1.Column({
         name: "password",
-        type: "varchar",
         length: 70
     }),
     __metadata("design:type", String)
@@ -42,7 +40,6 @@ __decorate([
 __decorate([
     typeorm_1.Column({
         name: "salt",
-        type: "varchar",
         length: 10
     }),
     __metadata("design:type", String)
@@ -50,14 +47,12 @@ __decorate([
 __decorate([
     typeorm_1.Column({
         name: "status",
-        type: "boolean"
     }),
     __metadata("design:type", Boolean)
 ], User.prototype, "status", void 0);
 __decorate([
     typeorm_1.Column({
         name: "recycle",
-        type: "boolean"
     }),
     __metadata("design:type", Boolean)
 ], User.prototype, "recycle", void 0);

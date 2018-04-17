@@ -21,7 +21,6 @@ __decorate([
 __decorate([
     typeorm_1.Column({
         name: "name",
-        type: "varchar",
         length: 20
     }),
     __metadata("design:type", String)
@@ -29,7 +28,6 @@ __decorate([
 __decorate([
     typeorm_1.Column({
         name: "description",
-        type: "varchar",
         length: "50"
     }),
     __metadata("design:type", String)
@@ -53,7 +51,9 @@ __decorate([
     __metadata("design:type", Array)
 ], Permission.prototype, "reduceUsers", void 0);
 __decorate([
-    typeorm_1.Column(),
+    typeorm_1.Column({
+        length: 100
+    }),
     __metadata("design:type", String)
 ], Permission.prototype, "moduleToken", void 0);
 __decorate([

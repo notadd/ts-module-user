@@ -16,14 +16,12 @@ let ScoreType = class ScoreType {
 __decorate([
     typeorm_1.PrimaryGeneratedColumn({
         name: "id",
-        type: "integer"
     }),
     __metadata("design:type", Number)
 ], ScoreType.prototype, "id", void 0);
 __decorate([
     typeorm_1.Column({
         name: "name",
-        type: "varchar",
         length: "20",
         unique: true
     }),
@@ -32,21 +30,20 @@ __decorate([
 __decorate([
     typeorm_1.Column({
         name: "type",
-        type: "varchar",
+        length: "20"
     }),
     __metadata("design:type", String)
 ], ScoreType.prototype, "type", void 0);
 __decorate([
     typeorm_1.Column({
         name: "default",
-        type: "boolean"
     }),
     __metadata("design:type", Boolean)
 ], ScoreType.prototype, "default", void 0);
 __decorate([
     typeorm_1.Column({
         name: "description",
-        type: "varchar"
+        length: 50
     }),
     __metadata("design:type", String)
 ], ScoreType.prototype, "description", void 0);

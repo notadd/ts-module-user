@@ -21,7 +21,6 @@ __decorate([
 __decorate([
     typeorm_1.Column({
         name: "value",
-        type: "varchar",
         length: "120"
     }),
     __metadata("design:type", String)
