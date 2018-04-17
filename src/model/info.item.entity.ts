@@ -9,10 +9,7 @@ import { UserInfo } from "./user.info.entity";
 @Entity("info_item")
 export class InfoItem {
 
-    @PrimaryGeneratedColumn({
-        name: "id",
-        type: "integer"
-    })
+    @PrimaryGeneratedColumn()
     id: number;
 
     /* 信息项名称，如用户名、密码等
@@ -20,7 +17,6 @@ export class InfoItem {
     */
     @Column({
         name: "name",
-        type: "varchar",
         length: "20",
         unique: true
     })
@@ -30,7 +26,6 @@ export class InfoItem {
     */
     @Column({
         name: "label",
-        type: "varchar",
         length: "20"
     })
     label: string;
@@ -38,14 +33,12 @@ export class InfoItem {
     /* 是否为默认信息项，默认信息项不可删除、更改 、也不可添加到其他信息组中，默认信息项只能存在于默认信息组中*/
     @Column({
         name: "default",
-        type: "boolean"
     })
     default: boolean;
 
     /* 信息项描述 */
     @Column({
         name: "description",
-        type: "varchar",
         length: "40"
     })
     description: string;
@@ -60,14 +53,13 @@ export class InfoItem {
     */
     @Column({
         name: "type",
-        type: "varchar"
+        length: 20
     })
     type: string;
 
     /* 是否必填信息项，当提交一个信息组信息时，如果必填信息项未填，会返回错误 */
     @Column({
         name: "necessary",
-        type: "boolean"
     })
     necessary: boolean;
 
@@ -76,21 +68,18 @@ export class InfoItem {
     */
     @Column({
         name: "register_visible",
-        type: "boolean"
     })
     registerVisible: boolean;
 
     /* 资料页是否可见，当前端需要用户资料信息时返回给它，目前暂定不可见就不返回 */
     @Column({
         name: "information_visible",
-        type: "boolean"
     })
     informationVisible: boolean;
 
     /* 排序，由前端使用，后端不做验证(不要求一个信息组中信息项排序不可重复等等) */
     @Column({
         name: "order",
-        type: "integer"
     })
     order: number;
 

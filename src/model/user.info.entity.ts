@@ -14,7 +14,6 @@ export class UserInfo {
     /* 信息项的值 */
     @Column({
         name: "value",
-        type: "varchar",
         length: "120"
     })
     value: string;

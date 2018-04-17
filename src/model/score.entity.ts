@@ -7,10 +7,7 @@ import { User } from "./user.entity";
 @Index("scoreTypeId_userId", [ "scoreTypeId", "userId" ])
 export class Score {
 
-    @PrimaryGeneratedColumn({
-        name: "id",
-        type: "integer"
-    })
+    @PrimaryGeneratedColumn()
     id: number;
 
     /* 积分值，要采用定点小数存储，浮点数存储会有误差，小数点后6位，小数点前8位 */

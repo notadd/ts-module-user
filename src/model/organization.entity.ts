@@ -13,7 +13,6 @@ export class Organization {
     /* 组织名称不可重复 */
     @Column({
         name: "name",
-        type: "varchar",
         length: 20,
         unique: true
     })
@@ -31,7 +30,6 @@ export class Organization {
     /* 父组织id，可以不存在父组织，说明为根组织 */
     @Column({
         name: "parentId",
-        type: "integer",
         nullable: true
     })
     parentId: number;

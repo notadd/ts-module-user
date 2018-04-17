@@ -16,7 +16,6 @@ export class Role {
     /* 角色名称，同一个模块下不能重复 */
     @Column({
         name: "name",
-        type: "varchar",
         length: 20
     })
     name: string;
@@ -24,7 +23,6 @@ export class Role {
     /* 角色权限值，前端使用*/
     @Column({
         name: "score",
-        type: "integer"
     })
     score: number;
 

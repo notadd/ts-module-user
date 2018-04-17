@@ -16,7 +16,6 @@ export class Func {
     /* 名称不能重复 */
     @Column({
         name: "name",
-        type: "varchar",
         length: 20
     })
     name: string;
@@ -36,7 +35,9 @@ export class Func {
     permissions: Array<Permission>;
 
     /* 所属模块id */
-    @Column()
+    @Column({
+        length: 100
+    })
     moduleToken: string;
 
     /* 功能所属模块，模块删除时功能会级联删除，但是由于模块下的权限、功能、角色本身之间还有关联关系，所以只能分别删除这三者，再单独删除模块，所以关闭级联 */

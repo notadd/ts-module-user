@@ -18,7 +18,6 @@ export class Permission {
     /* 权限名，不同模块下可以重复 */
     @Column({
         name: "name",
-        type: "varchar",
         length: 20
     })
     name: string;
@@ -26,7 +25,6 @@ export class Permission {
     /* 权限描述 */
     @Column({
         name: "description",
-        type: "varchar",
         length: "50"
     })
     description: string;
@@ -50,7 +48,9 @@ export class Permission {
     reduceUsers: Array<User>;
 
     /* 所属模块id */
-    @Column()
+    @Column({
+        length: 100
+    })
     moduleToken: string;
 
     /* 所属模块 ，当模块删除之前需要单独删除权限，否则数据库外键检查会报错*/

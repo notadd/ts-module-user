@@ -20,7 +20,6 @@ export class User {
     /* 用户名，不能重复 */
     @Column({
         name: "user_name",
-        type: "varchar",
         length: "20",
         unique: true
     })
@@ -29,7 +28,6 @@ export class User {
     /* 用户密码，为加盐密码 */
     @Column({
         name: "password",
-        type: "varchar",
         length: 70
     })
     password: string;
@@ -37,7 +35,6 @@ export class User {
     /* 密码的盐，10位随机字符串 */
     @Column({
         name: "salt",
-        type: "varchar",
         length: 10
     })
     salt: string;
@@ -45,14 +42,12 @@ export class User {
     /* 状态，是否封禁 */
     @Column({
         name: "status",
-        type: "boolean"
     })
     status: boolean;
 
     /* 状态，是否处于回收站 */
     @Column({
         name: "recycle",
-        type: "boolean"
     })
     recycle: boolean;
 
