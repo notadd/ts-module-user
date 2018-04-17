@@ -79,7 +79,13 @@ let UserModule = class UserModule {
     }
     checkPermissionDefinition() {
         return __awaiter(this, void 0, void 0, function* () {
-            const modules = yield this.moduleRepository.find({ relations: ["permissions", "funcs", "roles"] });
+            const modules = yield this.moduleRepository.find({
+                relations: [
+                    "permissions",
+                    "funcs",
+                    "roles",
+                ],
+            });
             for (const [key, value] of this.moduleMap.entries()) {
                 const token = key;
                 const components = [...value.components, ...value.routes];
@@ -168,7 +174,7 @@ let UserModule = class UserModule {
                 necessary: true,
                 registerVisible: true,
                 informationVisible: true,
-                order: 1
+                order: 1,
             });
             const sex = this.infoItemRepository.create({
                 id: 2,
@@ -180,7 +186,7 @@ let UserModule = class UserModule {
                 necessary: true,
                 registerVisible: true,
                 informationVisible: true,
-                order: 2
+                order: 2,
             });
             const age = this.infoItemRepository.create({
                 id: 3,
@@ -192,7 +198,7 @@ let UserModule = class UserModule {
                 necessary: true,
                 registerVisible: true,
                 informationVisible: true,
-                order: 3
+                order: 3,
             });
             const birthday = this.infoItemRepository.create({
                 id: 4,
@@ -204,7 +210,7 @@ let UserModule = class UserModule {
                 necessary: true,
                 registerVisible: true,
                 informationVisible: true,
-                order: 4
+                order: 4,
             });
             const headPortrait = this.infoItemRepository.create({
                 id: 5,
@@ -216,7 +222,7 @@ let UserModule = class UserModule {
                 necessary: true,
                 registerVisible: true,
                 informationVisible: true,
-                order: 5
+                order: 5,
             });
             const sign = this.infoItemRepository.create({
                 id: 6,
@@ -228,7 +234,7 @@ let UserModule = class UserModule {
                 necessary: true,
                 registerVisible: true,
                 informationVisible: true,
-                order: 6
+                order: 6,
             });
             base.items = [nickname, sex, age, birthday, headPortrait, sign];
             yield this.infoGroupRepository.save(base);
@@ -236,7 +242,7 @@ let UserModule = class UserModule {
                 id: 2,
                 name: "authentication",
                 default: true,
-                status: true
+                status: true,
             });
             const email = this.infoItemRepository.create({
                 id: 7,
@@ -248,7 +254,7 @@ let UserModule = class UserModule {
                 necessary: true,
                 registerVisible: true,
                 informationVisible: true,
-                order: 1
+                order: 1,
             });
             const realName = this.infoItemRepository.create({
                 id: 8,
@@ -260,7 +266,7 @@ let UserModule = class UserModule {
                 necessary: true,
                 registerVisible: true,
                 informationVisible: true,
-                order: 2
+                order: 2,
             });
             const idNumber = this.infoItemRepository.create({
                 id: 9,
@@ -272,7 +278,7 @@ let UserModule = class UserModule {
                 necessary: true,
                 registerVisible: true,
                 informationVisible: true,
-                order: 3
+                order: 3,
             });
             const idImage = this.infoItemRepository.create({
                 id: 10,
@@ -284,7 +290,7 @@ let UserModule = class UserModule {
                 necessary: true,
                 registerVisible: true,
                 informationVisible: true,
-                order: 4
+                order: 4,
             });
             const cellPhoneNumber = this.infoItemRepository.create({
                 id: 11,
@@ -296,7 +302,7 @@ let UserModule = class UserModule {
                 necessary: true,
                 registerVisible: true,
                 informationVisible: true,
-                order: 5
+                order: 5,
             });
             authentication.items = [email, realName, idNumber, idImage, cellPhoneNumber];
             yield this.infoGroupRepository.save(authentication);
@@ -309,28 +315,28 @@ let UserModule = class UserModule {
                 name: "积分",
                 type: "int",
                 default: true,
-                description: "积分，用于......"
+                description: "积分，用于......",
             });
             const scoreType2 = this.scoreTypeRepository.create({
                 id: 2,
                 name: "贡献",
                 type: "int",
                 default: true,
-                description: "贡献，用于......"
+                description: "贡献，用于......",
             });
             const scoreType3 = this.scoreTypeRepository.create({
                 id: 3,
                 name: "威望",
                 type: "int",
                 default: true,
-                description: "威望，用于......"
+                description: "威望，用于......",
             });
             const scoreType4 = this.scoreTypeRepository.create({
                 id: 4,
                 name: "余额",
                 type: "float",
                 default: true,
-                description: "余额，用于......"
+                description: "余额，用于......",
             });
             yield this.scoreTypeRepository.save([scoreType1, scoreType2, scoreType3, scoreType4]);
         });
@@ -378,7 +384,7 @@ UserModule = __decorate([
         ],
         exports: [
             user_component_provider_1.UserComponentProvider,
-        ]
+        ],
     }),
     __param(0, common_1.Inject(modules_container_1.ModulesContainer.name)),
     __param(1, typeorm_1.InjectRepository(role_entity_1.Role)),

@@ -29,6 +29,14 @@ export class UserService {
     ) {
     }
 
+    async getUserById(id: number): Promise<{ id: number, userName: string, status: boolean, recycle: boolean } | undefined> {
+        return this.userRepository.findOneById(id, { select: ["id", "userName", "status", "recycle"] });
+    }
+
+    async getUserByName(userName: string): Promise<{ id: number, userName: string, status: boolean, recycle: boolean } | undefined> {
+        return this.userRepository.createQueryBuilder("user").select(["user.id", "user.userName", "user.status", "user.recycle"]).where({ userName }).getOne();
+    }
+
     async getAll(): Promise<Array<User>> {
         return this.userRepository.find({ recycle: false });
     }

@@ -78,7 +78,7 @@ import { FloatUtil } from "./util/float.util";
     ],
     exports: [
         UserComponentProvider,
-    ]
+    ],
 })
 export class UserModule implements OnModuleInit {
 
@@ -92,7 +92,7 @@ export class UserModule implements OnModuleInit {
         @InjectRepository(InfoItem) private readonly infoItemRepository: Repository<InfoItem>,
         @InjectRepository(ScoreType) private readonly scoreTypeRepository: Repository<ScoreType>,
         @InjectRepository(InfoGroup) private readonly infoGroupRepository: Repository<InfoGroup>,
-        @InjectRepository(Permission) private readonly permissionRepository: Repository<Permission>
+        @InjectRepository(Permission) private readonly permissionRepository: Repository<Permission>,
     ) {
         this.metadataScanner = new MetadataScanner();
     }
@@ -116,7 +116,13 @@ export class UserModule implements OnModuleInit {
      */
     async checkPermissionDefinition(): Promise<void> {
         // 获取当前既有模块，关联获取模块具有的权限、功能、角色
-        const modules: Array<ModuleEntity> = await this.moduleRepository.find({ relations: [ "permissions", "funcs", "roles" ] });
+        const modules: Array<ModuleEntity> = await this.moduleRepository.find({
+            relations: [
+                "permissions",
+                "funcs",
+                "roles",
+            ],
+        });
         // 遍历模块token、Module实例
         for (const [ key, value ] of this.moduleMap.entries()) {
             // 模块名称，直接使用nest容器里面存储Module的key，不会重复
@@ -146,7 +152,11 @@ export class UserModule implements OnModuleInit {
                     const prototype = Object.getPrototypeOf(value.instance);
                     this.metadataScanner.scanFromPrototype<any, Array<Permission>>(value.instance, prototype, name => {
                         // 获取到方法名，获取方法上定义的权限
-                        const pers: Array<Permission> = Reflect.getMetadata(PERMISSION_DEFINITION, value.metatype, name);
+                        const pers: Array<Permission> = Reflect.getMetadata(
+                            PERMISSION_DEFINITION,
+                            value.metatype,
+                            name,
+                        );
                         pers && pers.forEach(per => {
                             permissions.set(per.name, per);
                         });
@@ -172,7 +182,7 @@ export class UserModule implements OnModuleInit {
                     // 遍历本次扫描结果
                     for (const per of pers) {
                         // 在既有权限中进行查找
-                        const find: Permission|undefined = module.permissions.find(p => {
+                        const find: Permission | undefined = module.permissions.find(p => {
                             return p.name === per.name;
                         });
                         // 如果本次扫描到权限在既有权限中未找到
@@ -191,7 +201,7 @@ export class UserModule implements OnModuleInit {
                     // 遍历既有权限
                     for (const p of module.permissions) {
                         // 在本次扫描到的权限中查找既有权限
-                        const find: Permission|undefined = pers.find(per => {
+                        const find: Permission | undefined = pers.find(per => {
                             return per.name === p.name;
                         });
                         // 如果未找到，说明这个既有权限被删除了
@@ -242,7 +252,7 @@ export class UserModule implements OnModuleInit {
             necessary: true,
             registerVisible: true,
             informationVisible: true,
-            order: 1
+            order: 1,
         });
         const sex: InfoItem = this.infoItemRepository.create({
             id: 2,
@@ -254,7 +264,7 @@ export class UserModule implements OnModuleInit {
             necessary: true,
             registerVisible: true,
             informationVisible: true,
-            order: 2
+            order: 2,
         });
         const age: InfoItem = this.infoItemRepository.create({
             id: 3,
@@ -266,7 +276,7 @@ export class UserModule implements OnModuleInit {
             necessary: true,
             registerVisible: true,
             informationVisible: true,
-            order: 3
+            order: 3,
         });
         const birthday: InfoItem = this.infoItemRepository.create({
             id: 4,
@@ -278,7 +288,7 @@ export class UserModule implements OnModuleInit {
             necessary: true,
             registerVisible: true,
             informationVisible: true,
-            order: 4
+            order: 4,
         });
         const headPortrait: InfoItem = this.infoItemRepository.create({
             id: 5,
@@ -290,7 +300,7 @@ export class UserModule implements OnModuleInit {
             necessary: true,
             registerVisible: true,
             informationVisible: true,
-            order: 5
+            order: 5,
         });
         const sign: InfoItem = this.infoItemRepository.create({
             id: 6,
@@ -302,7 +312,7 @@ export class UserModule implements OnModuleInit {
             necessary: true,
             registerVisible: true,
             informationVisible: true,
-            order: 6
+            order: 6,
         });
         base.items = [ nickname, sex, age, birthday, headPortrait, sign ];
         await this.infoGroupRepository.save(base);
@@ -310,7 +320,7 @@ export class UserModule implements OnModuleInit {
             id: 2,
             name: "authentication",
             default: true,
-            status: true
+            status: true,
         });
         const email: InfoItem = this.infoItemRepository.create({
             id: 7,
@@ -322,7 +332,7 @@ export class UserModule implements OnModuleInit {
             necessary: true,
             registerVisible: true,
             informationVisible: true,
-            order: 1
+            order: 1,
         });
         const realName: InfoItem = this.infoItemRepository.create({
             id: 8,
@@ -334,7 +344,7 @@ export class UserModule implements OnModuleInit {
             necessary: true,
             registerVisible: true,
             informationVisible: true,
-            order: 2
+            order: 2,
         });
         const idNumber: InfoItem = this.infoItemRepository.create({
             id: 9,
@@ -346,7 +356,7 @@ export class UserModule implements OnModuleInit {
             necessary: true,
             registerVisible: true,
             informationVisible: true,
-            order: 3
+            order: 3,
         });
         const idImage: InfoItem = this.infoItemRepository.create({
             id: 10,
@@ -358,7 +368,7 @@ export class UserModule implements OnModuleInit {
             necessary: true,
             registerVisible: true,
             informationVisible: true,
-            order: 4
+            order: 4,
         });
         const cellPhoneNumber: InfoItem = this.infoItemRepository.create({
             id: 11,
@@ -370,7 +380,7 @@ export class UserModule implements OnModuleInit {
             necessary: true,
             registerVisible: true,
             informationVisible: true,
-            order: 5
+            order: 5,
         });
         authentication.items = [ email, realName, idNumber, idImage, cellPhoneNumber ];
         await this.infoGroupRepository.save(authentication);
@@ -383,28 +393,28 @@ export class UserModule implements OnModuleInit {
             name: "积分",
             type: "int",
             default: true,
-            description: "积分，用于......"
+            description: "积分，用于......",
         });
         const scoreType2: ScoreType = this.scoreTypeRepository.create({
             id: 2,
             name: "贡献",
             type: "int",
             default: true,
-            description: "贡献，用于......"
+            description: "贡献，用于......",
         });
         const scoreType3: ScoreType = this.scoreTypeRepository.create({
             id: 3,
             name: "威望",
             type: "int",
             default: true,
-            description: "威望，用于......"
+            description: "威望，用于......",
         });
         const scoreType4: ScoreType = this.scoreTypeRepository.create({
             id: 4,
             name: "余额",
             type: "float",
             default: true,
-            description: "余额，用于......"
+            description: "余额，用于......",
         });
         await this.scoreTypeRepository.save([ scoreType1, scoreType2, scoreType3, scoreType4 ]);
     }

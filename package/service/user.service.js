@@ -42,6 +42,16 @@ let UserService = class UserService {
         this.permissionRepository = permissionRepository;
         this.organizationRepository = organizationRepository;
     }
+    getUserById(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.userRepository.findOneById(id, { select: ["id", "userName", "status", "recycle"] });
+        });
+    }
+    getUserByName(userName) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.userRepository.createQueryBuilder("user").select(["user.id", "user.userName", "user.status", "user.recycle"]).where({ userName }).getOne();
+        });
+    }
     getAll() {
         return __awaiter(this, void 0, void 0, function* () {
             return this.userRepository.find({ recycle: false });

@@ -21,6 +21,18 @@ export declare class UserService {
     private readonly permissionRepository;
     private readonly organizationRepository;
     constructor(storeComponent: StoreComponent, funcRepository: Repository<Func>, roleRepository: Repository<Role>, userRepository: Repository<User>, userInfoRepository: Repository<UserInfo>, infoGroupRepository: Repository<InfoGroup>, permissionRepository: Repository<Permission>, organizationRepository: Repository<Organization>);
+    getUserById(id: number): Promise<{
+        id: number;
+        userName: string;
+        status: boolean;
+        recycle: boolean;
+    } | undefined>;
+    getUserByName(userName: string): Promise<{
+        id: number;
+        userName: string;
+        status: boolean;
+        recycle: boolean;
+    } | undefined>;
     getAll(): Promise<Array<User>>;
     getFreedomUsers(): Promise<Array<User>>;
     getRecycleUsers(): Promise<Array<User>>;
