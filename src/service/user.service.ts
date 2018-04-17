@@ -25,16 +25,16 @@ export class UserService {
         @InjectRepository(UserInfo) private readonly userInfoRepository: Repository<UserInfo>,
         @InjectRepository(InfoGroup) private readonly infoGroupRepository: Repository<InfoGroup>,
         @InjectRepository(Permission) private readonly permissionRepository: Repository<Permission>,
-        @InjectRepository(Organization) private readonly organizationRepository: Repository<Organization>
+        @InjectRepository(Organization) private readonly organizationRepository: Repository<Organization>,
     ) {
     }
 
     async getUserById(id: number): Promise<{ id: number, userName: string, status: boolean, recycle: boolean } | undefined> {
-        return this.userRepository.findOneById(id, { select: ["id", "userName", "status", "recycle"] });
+        return this.userRepository.findOneById(id, { select: [ "id", "userName", "status", "recycle" ] });
     }
 
-    async getUserByName(userName: string): Promise<{ id: number, userName: string, status: boolean, recycle: boolean } | undefined> {
-        return this.userRepository.createQueryBuilder("user").select(["user.id", "user.userName", "user.status", "user.recycle"]).where({ userName }).getOne();
+    async getUserByName(userName: string): Promise<User | undefined> {
+        return this.userRepository.createQueryBuilder("user").where({ userName }).getOne();
     }
 
     async getAll(): Promise<Array<User>> {
@@ -44,7 +44,9 @@ export class UserService {
     async getFreedomUsers(): Promise<Array<User>> {
         const users: Array<User> = await this.userRepository.find({ relations: [ "organizations" ] });
         return users.filter(user => {
-            return (user.organizations === null || user.organizations === undefined || user.organizations.length === 0) && !user.recycle;
+            return (
+                user.organizations === null || user.organizations === undefined || user.organizations.length === 0
+            ) && !user.recycle;
         });
     }
 
@@ -54,7 +56,7 @@ export class UserService {
 
     /*返回用户信息时，需要提取其InfoItem对象以获取信息名称 */
     async userInfos(id: number): Promise<Array<{ name: string, value: string }>> {
-        const user: User|undefined = await this.userRepository.findOneById(id, { relations: [ "userInfos" ] });
+        const user: User | undefined = await this.userRepository.findOneById(id, { relations: [ "userInfos" ] });
         if (!user) {
             throw new HttpException("指定用户不存在", 406);
         }
@@ -70,7 +72,7 @@ export class UserService {
     }
 
     async roles(id: number): Promise<Array<Role>> {
-        const user: User|undefined = await this.userRepository.findOneById(id, { relations: [ "roles" ] });
+        const user: User | undefined = await this.userRepository.findOneById(id, { relations: [ "roles" ] });
         if (!user) {
             throw new HttpException("指定用户不存在", 406);
         }
@@ -78,7 +80,10 @@ export class UserService {
     }
 
     async permissions(id: number): Promise<Array<Permission>> {
-        const user: User|undefined = await this.userRepository.findOneById(id, { relations: [ "roles", "adds", "reduces" ] });
+        const user: User | undefined = await this.userRepository.findOneById(
+            id,
+            { relations: [ "roles", "adds", "reduces" ] },
+        );
         if (!user) {
             throw new HttpException("指定id=" + id + "用户不存在", 406);
         }
@@ -90,10 +95,16 @@ export class UserService {
         const ids: Set<number> = new Set();
         // 遍历获取所有角色拥有的权限
         for (let i = 0; i < user.roles.length; i++) {
-            const role: Role|undefined = await this.roleRepository.findOneById(user.roles[ i ].id, { relations: [ "funcs" ] });
+            const role: Role | undefined = await this.roleRepository.findOneById(
+                user.roles[ i ].id,
+                { relations: [ "funcs" ] },
+            );
             if (role && role.funcs && role.funcs.length > 0) {
                 for (let j = 0; j < role.funcs.length; j++) {
-                    const func: Func|undefined = await this.funcRepository.findOneById(role.funcs[ i ].id, { relations: [ "permissions" ] });
+                    const func: Func | undefined = await this.funcRepository.findOneById(
+                        role.funcs[ i ].id,
+                        { relations: [ "permissions" ] },
+                    );
                     if (func) {
                         temp = temp.concat(func.permissions);
                     }
@@ -140,7 +151,7 @@ export class UserService {
             }
             organizations.push(organization);
         }
-        const exist: User|undefined = await this.userRepository.findOne({ userName });
+        const exist: User | undefined = await this.userRepository.findOne({ userName });
         if (exist) {
             throw new HttpException("指定userName=" + userName + "用户已存在", 406);
         }
@@ -153,7 +164,7 @@ export class UserService {
                 salt,
                 status: true,
                 recycle: false,
-                organizations
+                organizations,
             });
             await this.userRepository.save(user);
         } catch (err) {
@@ -170,7 +181,7 @@ export class UserService {
             }
             organizations.push(organization);
         }
-        const exist: User|undefined = await this.userRepository.findOne({ userName });
+        const exist: User | undefined = await this.userRepository.findOne({ userName });
         if (exist) {
             throw new HttpException("指定userName=" + userName + "用户已存在", 406);
         }
@@ -184,11 +195,14 @@ export class UserService {
             recycle: false,
             organizations,
             userInfos: [],
-            infoItems: []
+            infoItems: [],
         });
         for (let i = 0; i < groups.length; i++) {
             const { groupId, infos } = groups[ i ];
-            const group: InfoGroup|undefined = await this.infoGroupRepository.findOneById(groupId, { relations: [ "items" ] });
+            const group: InfoGroup | undefined = await this.infoGroupRepository.findOneById(
+                groupId,
+                { relations: [ "items" ] },
+            );
             if (!group) {
                 throw new HttpException("指定信息组id=" + groupId + "不存在", 408);
             }
@@ -202,13 +216,19 @@ export class UserService {
     }
 
     async addUserInfoToUser(req: IncomingMessage, id: number, groups: Array<{ groupId: number, infos: Array<UnionUserInfo> }>): Promise<void> {
-        const user: User|undefined = await this.userRepository.findOneById(id, { relations: [ "userInfos", "infoItems" ] });
+        const user: User | undefined = await this.userRepository.findOneById(
+            id,
+            { relations: [ "userInfos", "infoItems" ] },
+        );
         if (!user) {
             throw new HttpException("指定id=" + id + "用户不存在", 406);
         }
         for (let i = 0; i < groups.length; i++) {
             const { groupId, infos } = groups[ i ];
-            const group: InfoGroup|undefined = await this.infoGroupRepository.findOneById(groupId, { relations: [ "items" ] });
+            const group: InfoGroup | undefined = await this.infoGroupRepository.findOneById(
+                groupId,
+                { relations: [ "items" ] },
+            );
             if (!group) {
                 throw new HttpException("指定信息组id=" + groupId + "不存在", 408);
             }
@@ -233,7 +253,7 @@ export class UserService {
         for (let j = 0; j < infos.length; j++) {
             const { name }: UnionUserInfo = infos[ j ];
             // 查找名称匹配的信息项
-            const match: InfoItem|undefined = items.find(item => {
+            const match: InfoItem | undefined = items.find(item => {
                 return item.name === name;
             });
             // 如果接收到的信息项名称不存在，抛出异常
@@ -275,48 +295,92 @@ export class UserService {
         let result: string;
         // 根据不同类型信息项校验信息类型，顺便转换信息值
         // "单行文本框", "多行文本框", "单选框", "多选框", "复选框", "日期时间选择", "日期时间范围选择", "下拉菜单", "上传图片", "上传文件"
-        if (match.type === "text" || match.type === "textarea" || match.type === "radio" || match.type === "date" || match.type === "number" || match.type === "pulldownmenu") {
-            if (!(info as TextInfo).value) {
+        if (match.type
+            === "text"
+            || match.type
+            === "textarea"
+            || match.type
+            === "radio"
+            || match.type
+            === "date"
+            || match.type
+            === "number"
+            || match.type
+            === "pulldownmenu") {
+            if (!(
+                info as TextInfo
+            ).value) {
                 throw new HttpException("指定名称信息值:" + match.name + "不存在", 410);
             }
-            if (typeof (info as TextInfo).value !== "string") {
+            if (typeof (
+                info as TextInfo
+            ).value !== "string") {
                 throw new HttpException("指定名称信息项name=" + match.name + "必须为字符串", 410);
             }
             // 普字符串类型值只需要删除前后空白
-            result = (info as TextInfo).value.trim();
+            result = (
+                info as TextInfo
+            ).value.trim();
         } else if (match.type === "checkbox") {
-            if (!(info as ArrayInfo).array || (info as ArrayInfo).array.length === 0) {
+            if (!(
+                info as ArrayInfo
+            ).array || (
+                info as ArrayInfo
+            ).array.length === 0) {
                 throw new HttpException("指定名称信息值:" + match.name + "不存在", 410);
             }
-            if (!((info as ArrayInfo).array instanceof Array)) {
+            if (!(
+                (
+                    info as ArrayInfo
+                ).array instanceof Array
+            )) {
                 throw new HttpException("指定名称信息项name=" + match.name + "必须为数组", 410);
             }
             // 数组类型以，连接各个元素为字符串
-            result = (info as ArrayInfo).array.join(",");
+            result = (
+                info as ArrayInfo
+            ).array.join(",");
         } else {
-            if (!(info as FileInfo).base64) {
+            if (!(
+                info as FileInfo
+            ).base64) {
                 throw new HttpException("指定名称信息项name=" + match.name + "必须具有文件base64编码", 410);
             }
-            if (!(info as FileInfo).rawName) {
+            if (!(
+                info as FileInfo
+            ).rawName) {
                 throw new HttpException("指定名称信息项name=" + match.name + "必须具有文件原名", 410);
             }
-            if (!(info as FileInfo).bucketName) {
+            if (!(
+                info as FileInfo
+            ).bucketName) {
                 throw new HttpException("指定名称信息项name=" + match.name + "必须具有文件存储空间名", 410);
             }
             // 文件类型，上传到存储插件，并保存访问url
-            const { bucketName, name, type } = await this.storeComponent.upload((info as FileInfo).bucketName, (info as FileInfo).rawName, (info as FileInfo).base64, undefined);
+            const { bucketName, name, type } = await this.storeComponent.upload(
+                (
+                    info as FileInfo
+                ).bucketName,
+                (
+                    info as FileInfo
+                ).rawName,
+                (
+                    info as FileInfo
+                ).base64,
+                undefined,
+            );
             result = await this.storeComponent.getUrl(req, bucketName, name, type, undefined as any);
         }
         return result;
     }
 
     async updateUser(id: number, userName: string, password: string): Promise<void> {
-        const exist: User|undefined = await this.userRepository.findOneById(id);
+        const exist: User | undefined = await this.userRepository.findOneById(id);
         if (!exist) {
             throw new HttpException("指定id=" + id + "用户不存在", 406);
         }
         if (userName !== exist.userName) {
-            const sameUser: User|undefined = await this.userRepository.findOne({ userName });
+            const sameUser: User | undefined = await this.userRepository.findOne({ userName });
             if (sameUser) {
                 throw new HttpException("指定userName=" + userName + "用户已存在", 406);
             }
@@ -333,7 +397,7 @@ export class UserService {
     }
 
     async bannedUser(id: number): Promise<void> {
-        const exist: User|undefined = await this.userRepository.findOneById(id);
+        const exist: User | undefined = await this.userRepository.findOneById(id);
         if (!exist) {
             throw new HttpException("指定id=" + id + "用户不存在", 406);
         }
@@ -352,7 +416,7 @@ export class UserService {
     }
 
     async unBannedUser(id: number): Promise<void> {
-        const exist: User|undefined = await this.userRepository.findOneById(id);
+        const exist: User | undefined = await this.userRepository.findOneById(id);
         if (!exist) {
             throw new HttpException("指定id=" + id + "用户不存在", 406);
         }
@@ -371,7 +435,7 @@ export class UserService {
     }
 
     async softDeleteUser(id: number): Promise<void> {
-        const exist: User|undefined = await this.userRepository.findOneById(id);
+        const exist: User | undefined = await this.userRepository.findOneById(id);
         if (!exist) {
             throw new HttpException("指定id=" + id + "用户不存在", 406);
         }
@@ -387,7 +451,7 @@ export class UserService {
     }
 
     async restoreUser(id: number): Promise<void> {
-        const exist: User|undefined = await this.userRepository.findOneById(id);
+        const exist: User | undefined = await this.userRepository.findOneById(id);
         if (!exist) {
             throw new HttpException("指定id=" + id + "用户不存在", 406);
         }
@@ -405,7 +469,7 @@ export class UserService {
     async restoreUsers(ids: Array<number>): Promise<void> {
         const users: Array<User> = await this.userRepository.findByIds(ids);
         ids.forEach(id => {
-            const find: User|undefined = users.find(user => {
+            const find: User | undefined = users.find(user => {
                 return user.id === id;
             });
             if (!find) {
@@ -425,7 +489,7 @@ export class UserService {
     }
 
     async deleteUser(id: number): Promise<void> {
-        const exist: User|undefined = await this.userRepository.findOneById(id);
+        const exist: User | undefined = await this.userRepository.findOneById(id);
         if (!exist) {
             throw new HttpException("指定id=" + id + "用户不存在", 406);
         }
@@ -460,7 +524,7 @@ export class UserService {
     }
 
     async setRoles(id: number, roleIds: Array<number>): Promise<void> {
-        const user: User|undefined = await this.userRepository.findOneById(id, { relations: [ "roles" ] });
+        const user: User | undefined = await this.userRepository.findOneById(id, { relations: [ "roles" ] });
         if (!user) {
             throw new HttpException("指定id=" + id + "用户不存在", 406);
         }
@@ -482,7 +546,10 @@ export class UserService {
     }
 
     async setPermissions(id: number, permissionIds: Array<number>): Promise<void> {
-        const user: User|undefined = await this.userRepository.findOneById(id, { relations: [ "roles", "adds", "reduces" ] });
+        const user: User | undefined = await this.userRepository.findOneById(
+            id,
+            { relations: [ "roles", "adds", "reduces" ] },
+        );
         if (!user) {
             throw new HttpException("指定id=" + id + "用户不存在", 406);
         }
@@ -494,10 +561,16 @@ export class UserService {
         const ids: Set<number> = new Set();
         // 遍历获取所有角色拥有的权限
         for (let i = 0; i < user.roles.length; i++) {
-            const role: Role|undefined = await this.roleRepository.findOneById(user.roles[ i ].id, { relations: [ "funcs" ] });
+            const role: Role | undefined = await this.roleRepository.findOneById(
+                user.roles[ i ].id,
+                { relations: [ "funcs" ] },
+            );
             if (role && role.funcs && role.funcs.length > 0) {
                 for (let j = 0; j < role.funcs.length; j++) {
-                    const func: Func|undefined = await this.funcRepository.findOneById(role.funcs[ i ].id, { relations: [ "permissions" ] });
+                    const func: Func | undefined = await this.funcRepository.findOneById(
+                        role.funcs[ i ].id,
+                        { relations: [ "permissions" ] },
+                    );
                     if (func) {
                         temp = temp.concat(func.permissions);
                     }
