@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
-exports.PERMISSION_CONTROLLER_OR = "userpm:permission_controller_or";
-exports.PERMISSION_CONTROLLER_AND = "userpm:permission_controller_and";
+exports.PERMISSION_CONTROLLER_OR = "user:permission_controller_or";
+exports.PERMISSION_CONTROLLER_AND = "user:permission_controller_and";
 function PermissionController(names, mode = "and") {
     return (target, key, descriptor) => {
         if (descriptor) {

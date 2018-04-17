@@ -32,14 +32,14 @@ __decorate([
 __decorate([
     typeorm_1.Column({
         name: "default",
-        type: "smallint"
+        type: "boolean"
     }),
     __metadata("design:type", Boolean)
 ], InfoGroup.prototype, "default", void 0);
 __decorate([
     typeorm_1.Column({
         name: "status",
-        type: "smallint"
+        type: "boolean"
     }),
     __metadata("design:type", Boolean)
 ], InfoGroup.prototype, "status", void 0);

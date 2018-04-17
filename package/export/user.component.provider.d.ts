@@ -10,18 +10,8 @@ export declare class UserComponent {
     constructor(funcRepository: Repository<Func>, roleRepository: Repository<Role>, userRepository: Repository<User>);
     permissions(id: number): Promise<Array<Permission>>;
     login(userName: string, password: string): Promise<boolean | User | undefined>;
-    getUserById(id: number): Promise<{
-        id: number;
-        userName: string;
-        status: boolean;
-        recycle: boolean;
-    } | undefined>;
-    getUserByName(userName: string): Promise<{
-        id: number;
-        userName: string;
-        status: boolean;
-        recycle: boolean;
-    } | undefined>;
+    getUserById(id: number): Promise<User | undefined>;
+    getUserByName(userName: string): Promise<User | undefined>;
     isExist(user: {
         id: number;
         userName: string;

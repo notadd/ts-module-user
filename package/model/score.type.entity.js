@@ -39,7 +39,7 @@ __decorate([
 __decorate([
     typeorm_1.Column({
         name: "default",
-        type: "smallint"
+        type: "boolean"
     }),
     __metadata("design:type", Boolean)
 ], ScoreType.prototype, "default", void 0);

@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
-exports.PERMISSION_DEFINITION = "userpm:permission_definition";
+exports.PERMISSION_DEFINITION = "user:permission_definition";
 function PermissionDefinition(definitions) {
     return (target, key, descriptor) => {
         if (descriptor) {

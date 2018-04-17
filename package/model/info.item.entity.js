@@ -41,7 +41,7 @@ __decorate([
 __decorate([
     typeorm_1.Column({
         name: "default",
-        type: "smallint"
+        type: "boolean"
     }),
     __metadata("design:type", Boolean)
 ], InfoItem.prototype, "default", void 0);
@@ -63,21 +63,21 @@ __decorate([
 __decorate([
     typeorm_1.Column({
         name: "necessary",
-        type: "smallint"
+        type: "boolean"
     }),
     __metadata("design:type", Boolean)
 ], InfoItem.prototype, "necessary", void 0);
 __decorate([
     typeorm_1.Column({
         name: "register_visible",
-        type: "smallint"
+        type: "boolean"
     }),
     __metadata("design:type", Boolean)
 ], InfoItem.prototype, "registerVisible", void 0);
 __decorate([
     typeorm_1.Column({
         name: "information_visible",
-        type: "smallint"
+        type: "boolean"
     }),
     __metadata("design:type", Boolean)
 ], InfoItem.prototype, "informationVisible", void 0);
