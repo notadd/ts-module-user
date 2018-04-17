@@ -9,6 +9,7 @@ type Query{
 
 }
 ```
+```
 type Mutation{
 
     #创建指定名称信息组
@@ -27,6 +28,7 @@ type Mutation{
     removeInfoItem(id:Int!,infoItemId:Int!):Data
 }
 ```
+```
 #所有信息组的返回数据
 type InfoGroupsData{
 
@@ -39,6 +41,7 @@ type InfoGroupsData{
     #信息组数组
     infoGroups:[InfoGroup]
 }
+```
 ```
 #信息组类型
 type InfoGroup{
@@ -56,6 +59,7 @@ type InfoGroup{
     status:Boolean
 }
 ```
+```
 #信息组中信息项的返回数据
 type InfoItemsData{
 
@@ -68,6 +72,7 @@ type InfoItemsData{
     #信息项数组
     infoItems:[InfoItem]
 }
+```
 ```
 #信息项类型
 type InfoItem{
