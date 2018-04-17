@@ -1,11 +1,11 @@
-
-
+```
 type Query{
 
     #获取当前所有的模块，以及包含的权限、功能、角色，只有使用装饰器定义权限的模块会被扫描到
     modules:ModulesData
 }
-
+```
+```
 #所有模块返回数据
 type ModulesData{
 
@@ -18,8 +18,8 @@ type ModulesData{
     #所有模块数组
     modules:[Module]
 }
-
-
+```
+```
 #模块类型
 type Module{
 
@@ -35,7 +35,8 @@ type Module{
     #模块包含的权限
     permissions:[Permission]
 }
-
+```
+```
 #权限类型
 type Permission{
 
@@ -48,7 +49,8 @@ type Permission{
     #权限描述
     description:String
 }
-
+```
+```
 #功能类型
 type Func{
 
@@ -58,7 +60,8 @@ type Func{
     #功能名称
     name:String
 }
-
+```
+```
 #角色类型
 type Role{
 
@@ -71,3 +74,4 @@ type Role{
     #角色权重？目前没有使用
     score:Int
 }
+```

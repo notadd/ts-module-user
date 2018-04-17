@@ -1,4 +1,4 @@
-
+```
 type Mutation{
 
     #创建指定名称、描述、类型、是否必填、排序的信息项
@@ -13,7 +13,8 @@ type Mutation{
     #删除多个信息项
     deleteInfoItems(ids:[Int!]!):Data
 }
-
+```
+```
 #信息项类型枚举，根据类型不同，信息值的输入方式不同
 enum InfoItemType{
 
@@ -44,3 +45,4 @@ enum InfoItemType{
     #带预览的上传图片
     uploadimagewithpreview
 }
+```
