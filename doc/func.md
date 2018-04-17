@@ -1,3 +1,4 @@
+```
 type Mutation{
 
     #创建指定模块下的功能，指定模块token、功能名称
@@ -13,3 +14,4 @@ type Mutation{
     setPermissions(id:Int!,permissionIds:[Int!]!):Data
     
 }
+```
