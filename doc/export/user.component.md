@@ -1,4 +1,10 @@
 ```
+UserComponent是用户模块提供的供其他模块访问的组件，可以通过以下方式注入组件：
+```
+```
+@Inject("UserComponentToken") private readonly userComponent: UserComponent
+```
+```
 permissions(id: number): Promise<Array<Permission>>
 获取指定id用户实际拥有的权限，即角色包含权限与额外加减权限的最终结果
 ```
