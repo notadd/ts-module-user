@@ -9,7 +9,7 @@ UserModule类实现了@nestjs/common中的OnModuleInit接口，实现了接口�
 ```
 ```
 checkPermissionDefinition()
-遍历所有的Controller与Resolver组件，获取其上使用PermissionDefinition定义的权限，与模块关联存储在数据库中
+遍历所有的Controller与Resolver组件，获取其上使用Permissions定义的权限，与模块关联存储在数据库中
 新增模块直接保存，既有模块对原有权限与本次扫描出权限进行差分，相同名称权限id不变，保证既有权限与功能关联不变
 如果原有模块没有在这次遍历中被发现权限，则模块连带权限、功能、角色一起删除
 ```

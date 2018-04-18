@@ -1,18 +1,18 @@
 ```
-PermissionDefinition(definitions: Array<{ name: string, description: string }>)
+Permissions(definitions: Array<{ name: string, description: string }>)
 ```
 ```
 示例：
+@Can(["admin"])
 @Controller("User")
-@PermissionDefinition([
+@Permissions([
     {name:"admin",description:"Permission for Administrator "}
     {name:"CreateUser",description:"Permission for create user"}
 ])
-@PermissionController(["admin"])
 export class UserController{
 
     @Post("create")
-    @PermissionController(["CreateUser"])
+    @Can(["CreateUser"])
     async createUser(){
         ...
     }

@@ -1,14 +1,14 @@
 ```
-PermissionController(names: Array<string>, mode: "or" | "and" = "and")
+Can(names: Array<string>, mode: "or" | "and" = "and")
 ```
 ```
 示例：
+@Can(["admin"])
 @Controller("User")
-@PermissionController(["admin"])
 export class UserController{
 
     @Post("create")
-    @PermissionController(["CreateUser"])
+    @Can(["CreateUser"])
     async createUser(){
         ...
     }

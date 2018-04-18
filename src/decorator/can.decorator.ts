@@ -3,7 +3,7 @@ import "reflect-metadata";
 export const PERMISSION_CONTROLLER_OR = "user:permission_controller_or";
 export const PERMISSION_CONTROLLER_AND = "user:permission_controller_and";
 
-export function PermissionController(names: Array<string>, mode: "or" | "and" = "and") {
+export function Can(names: Array<string>, mode: "or" | "and" = "and") {
     return (target: object, key?, descriptor?) => {
         if (descriptor) {
             const orExist: Array<string> = Reflect.getMetadata(PERMISSION_CONTROLLER_OR, descriptor.value) || [];

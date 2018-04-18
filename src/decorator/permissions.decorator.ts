@@ -2,7 +2,7 @@ import "reflect-metadata";
 
 export const PERMISSION_DEFINITION = "user:permission_definition";
 
-export function PermissionDefinition(definitions: Array<{ name: string, description: string }>) {
+export function Permissions(definitions: Array<{ name: string, description: string }>) {
     return (target: object, key?, descriptor?) => {
         if (descriptor) {
             const exist = Reflect.getMetadata(PERMISSION_DEFINITION, target, key) || [];
