@@ -2,6 +2,19 @@
 PermissionController(names: Array<string>, mode: "or" | "and" = "and")
 ```
 ```
+使用示例：
+@Controller("User")
+@PermissionController(["admin"])
+export class UserController{
+
+    @Post("create")
+    @PermissionController(["CreateUser"])
+    async createUser(){
+        ...
+    }
+}
+```
+```
 装饰器用来控制方法的访问权限，这个装饰器定义的元数据会在PermissionGuard的canActivate方法中被获取，进而判断用户是否具有访问接口的权限
 ```
 ```
