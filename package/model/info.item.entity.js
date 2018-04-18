@@ -15,17 +15,13 @@ const user_info_entity_1 = require("./user.info.entity");
 let InfoItem = class InfoItem {
 };
 __decorate([
-    typeorm_1.PrimaryGeneratedColumn({
-        name: "id",
-        type: "integer"
-    }),
+    typeorm_1.PrimaryGeneratedColumn(),
     __metadata("design:type", Number)
 ], InfoItem.prototype, "id", void 0);
 __decorate([
     typeorm_1.Column({
         name: "name",
-        type: "varchar",
-        length: "20",
+        length: 100,
         unique: true
     }),
     __metadata("design:type", String)
@@ -33,58 +29,51 @@ __decorate([
 __decorate([
     typeorm_1.Column({
         name: "label",
-        type: "varchar",
-        length: "20"
+        length: 100
     }),
     __metadata("design:type", String)
 ], InfoItem.prototype, "label", void 0);
 __decorate([
     typeorm_1.Column({
         name: "default",
-        type: "boolean"
     }),
     __metadata("design:type", Boolean)
 ], InfoItem.prototype, "default", void 0);
 __decorate([
     typeorm_1.Column({
         name: "description",
-        type: "varchar",
-        length: "40"
+        length: 200
     }),
     __metadata("design:type", String)
 ], InfoItem.prototype, "description", void 0);
 __decorate([
     typeorm_1.Column({
         name: "type",
-        type: "varchar"
+        length: 100
     }),
     __metadata("design:type", String)
 ], InfoItem.prototype, "type", void 0);
 __decorate([
     typeorm_1.Column({
         name: "necessary",
-        type: "boolean"
     }),
     __metadata("design:type", Boolean)
 ], InfoItem.prototype, "necessary", void 0);
 __decorate([
     typeorm_1.Column({
         name: "register_visible",
-        type: "boolean"
     }),
     __metadata("design:type", Boolean)
 ], InfoItem.prototype, "registerVisible", void 0);
 __decorate([
     typeorm_1.Column({
         name: "information_visible",
-        type: "boolean"
     }),
     __metadata("design:type", Boolean)
 ], InfoItem.prototype, "informationVisible", void 0);
 __decorate([
     typeorm_1.Column({
         name: "order",
-        type: "integer"
     }),
     __metadata("design:type", Number)
 ], InfoItem.prototype, "order", void 0);

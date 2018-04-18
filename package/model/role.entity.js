@@ -22,7 +22,6 @@ __decorate([
 __decorate([
     typeorm_1.Column({
         name: "name",
-        type: "varchar",
         length: 20
     }),
     __metadata("design:type", String)
@@ -30,7 +29,6 @@ __decorate([
 __decorate([
     typeorm_1.Column({
         name: "score",
-        type: "integer"
     }),
     __metadata("design:type", Number)
 ], Role.prototype, "score", void 0);

@@ -20,7 +20,6 @@ __decorate([
 __decorate([
     typeorm_1.Column({
         name: "name",
-        type: "varchar",
         length: 20,
         unique: true
     }),
@@ -38,7 +37,6 @@ __decorate([
 __decorate([
     typeorm_1.Column({
         name: "parentId",
-        type: "integer",
         nullable: true
     }),
     __metadata("design:type", Number)

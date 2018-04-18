@@ -15,10 +15,7 @@ const user_entity_1 = require("./user.entity");
 let Score = class Score {
 };
 __decorate([
-    typeorm_1.PrimaryGeneratedColumn({
-        name: "id",
-        type: "integer"
-    }),
+    typeorm_1.PrimaryGeneratedColumn(),
     __metadata("design:type", Number)
 ], Score.prototype, "id", void 0);
 __decorate([

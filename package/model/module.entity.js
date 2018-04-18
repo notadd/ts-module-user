@@ -18,7 +18,6 @@ let Module = class Module {
 __decorate([
     typeorm_1.PrimaryColumn({
         name: "token",
-        type: "varchar",
         length: 100
     }),
     __metadata("design:type", String)

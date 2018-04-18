@@ -14,16 +14,12 @@ const info_item_entity_1 = require("./info.item.entity");
 let InfoGroup = class InfoGroup {
 };
 __decorate([
-    typeorm_1.PrimaryGeneratedColumn({
-        name: "id",
-        type: "integer"
-    }),
+    typeorm_1.PrimaryGeneratedColumn(),
     __metadata("design:type", Number)
 ], InfoGroup.prototype, "id", void 0);
 __decorate([
     typeorm_1.Column({
         name: "name",
-        type: "varchar",
         length: "20",
         unique: true
     }),
@@ -32,14 +28,12 @@ __decorate([
 __decorate([
     typeorm_1.Column({
         name: "default",
-        type: "boolean"
     }),
     __metadata("design:type", Boolean)
 ], InfoGroup.prototype, "default", void 0);
 __decorate([
     typeorm_1.Column({
         name: "status",
-        type: "boolean"
     }),
     __metadata("design:type", Boolean)
 ], InfoGroup.prototype, "status", void 0);
