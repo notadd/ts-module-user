@@ -2,7 +2,7 @@
 PermissionController(names: Array<string>, mode: "or" | "and" = "and")
 ```
 ```
-使用示例：
+示例：
 @Controller("User")
 @PermissionController(["admin"])
 export class UserController{

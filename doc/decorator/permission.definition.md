@@ -2,6 +2,23 @@
 PermissionDefinition(definitions: Array<{ name: string, description: string }>)
 ```
 ```
+示例：
+@Controller("User")
+@PermissionDefinition([
+    {name:"admin",description:"Permission for Administrator "}
+    {name:"CreateUser",description:"Permission for create user"}
+])
+@PermissionController(["admin"])
+export class UserController{
+
+    @Post("create")
+    @PermissionController(["CreateUser"])
+    async createUser(){
+        ...
+    }
+}
+```
+```
 为权限定义装饰器，可以定义多个{ name: string, description: string }对象数组，每个对象代表了一个权限
 ```
 ```
