@@ -145,3 +145,5 @@ InfoGroupResolver = __decorate([
     __metadata("design:paramtypes", [info_group_service_1.InfoGroupService])
 ], InfoGroupResolver);
 exports.InfoGroupResolver = InfoGroupResolver;
+
+//# sourceMappingURL=info.group.resolver.js.map

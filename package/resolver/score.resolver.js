@@ -69,3 +69,5 @@ ScoreResolver = __decorate([
     __metadata("design:paramtypes", [score_service_1.ScoreService])
 ], ScoreResolver);
 exports.ScoreResolver = ScoreResolver;
+
+//# sourceMappingURL=score.resolver.js.map

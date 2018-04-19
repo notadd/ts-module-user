@@ -1,0 +1,1 @@
+{"version":3,"sources":["interface/user/recycle.users.data.ts"],"names":[],"mappings":"","file":"recycle.users.data.js","sourcesContent":["export interface RecycleUsersData {\n    code: number;\n\n    message: string;\n\n    recycleUsers: Array<{\n        id: number\n        userName: string\n        status: boolean\n    }>;\n}\n"]}

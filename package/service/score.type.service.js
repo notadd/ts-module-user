@@ -120,3 +120,5 @@ ScoreTypeService = __decorate([
     __metadata("design:paramtypes", [typeorm_2.Repository])
 ], ScoreTypeService);
 exports.ScoreTypeService = ScoreTypeService;
+
+//# sourceMappingURL=score.type.service.js.map

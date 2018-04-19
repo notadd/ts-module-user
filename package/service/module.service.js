@@ -40,3 +40,5 @@ ModuleService = __decorate([
     __metadata("design:paramtypes", [typeorm_2.Repository])
 ], ModuleService);
 exports.ModuleService = ModuleService;
+
+//# sourceMappingURL=module.service.js.map

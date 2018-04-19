@@ -70,3 +70,5 @@ Score = __decorate([
     typeorm_1.Index("scoreTypeId_userId", ["scoreTypeId", "userId"])
 ], Score);
 exports.Score = Score;
+
+//# sourceMappingURL=score.entity.js.map

@@ -1,0 +1,1 @@
+{"version":3,"sources":["interface/user/create.user.body.ts"],"names":[],"mappings":"","file":"create.user.body.js","sourcesContent":["export interface CreateUserBody {\n    organizationId: number;\n\n    userName: string;\n\n    password: string;\n}\n"]}

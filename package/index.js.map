@@ -1,0 +1,1 @@
+{"version":3,"sources":["index.ts"],"names":[],"mappings":";;AAAA,6CAA2C;AAAlC,mCAAA,UAAU,CAAA","file":"index.js","sourcesContent":["export { UserModule } from \"./user.module\";\n"]}

@@ -64,3 +64,5 @@ Func = __decorate([
     typeorm_1.Index("func_name_module_token", ["name", "moduleToken"])
 ], Func);
 exports.Func = Func;
+
+//# sourceMappingURL=func.entity.js.map

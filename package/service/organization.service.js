@@ -250,3 +250,5 @@ OrganizationService = __decorate([
         typeorm_2.Repository])
 ], OrganizationService);
 exports.OrganizationService = OrganizationService;
+
+//# sourceMappingURL=organization.service.js.map

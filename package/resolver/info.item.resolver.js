@@ -101,3 +101,5 @@ InfoItemResolver = __decorate([
     __metadata("design:paramtypes", [info_item_service_1.InfoItemService])
 ], InfoItemResolver);
 exports.InfoItemResolver = InfoItemResolver;
+
+//# sourceMappingURL=info.item.resolver.js.map

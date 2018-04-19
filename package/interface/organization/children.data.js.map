@@ -1,0 +1,1 @@
+{"version":3,"sources":["interface/organization/children.data.ts"],"names":[],"mappings":"","file":"children.data.js","sourcesContent":["export interface ChildrenData {\n    code: number;\n\n    message: string;\n\n    children: Array<{\n        id: number\n        name: string\n    }>;\n}\n"]}

@@ -78,3 +78,5 @@ Role = __decorate([
     typeorm_1.Index("role_name_module_token", ["name", "moduleToken"])
 ], Role);
 exports.Role = Role;
+
+//# sourceMappingURL=role.entity.js.map

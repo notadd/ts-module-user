@@ -1,0 +1,1 @@
+{"version":3,"sources":["interface/organization/organizations.data.ts"],"names":[],"mappings":"","file":"organizations.data.js","sourcesContent":["export interface OrganizationsData {\n    code: number;\n\n    message: string;\n\n    organizations: Array<{\n        id: number\n        name: string\n    }>;\n}\n"]}

@@ -53,3 +53,5 @@ InfoGroup = __decorate([
     typeorm_1.Entity("info_group")
 ], InfoGroup);
 exports.InfoGroup = InfoGroup;
+
+//# sourceMappingURL=info.group.entity.js.map

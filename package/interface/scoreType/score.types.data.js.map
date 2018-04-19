@@ -1,0 +1,1 @@
+{"version":3,"sources":["interface/scoreType/score.types.data.ts"],"names":[],"mappings":"","file":"score.types.data.js","sourcesContent":["export interface ScoreTypesData {\n    code: number;\n\n    message: string;\n\n    scoreTypes: Array<{ id: number, name: string, type: string, default: boolean, description: string }>;\n}\n"]}

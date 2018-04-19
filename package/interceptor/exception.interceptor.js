@@ -30,3 +30,5 @@ ExceptionInterceptor = __decorate([
     common_1.Interceptor()
 ], ExceptionInterceptor);
 exports.ExceptionInterceptor = ExceptionInterceptor;
+
+//# sourceMappingURL=exception.interceptor.js.map

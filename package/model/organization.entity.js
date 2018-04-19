@@ -71,3 +71,5 @@ Organization = Organization_1 = __decorate([
 ], Organization);
 exports.Organization = Organization;
 var Organization_1;
+
+//# sourceMappingURL=organization.entity.js.map

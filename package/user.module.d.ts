@@ -1,11 +1,11 @@
-import { OnModuleInit } from "@nestjs/common";
 import { ModulesContainer } from "@nestjs/core/injector/modules-container";
-import { Repository } from "typeorm";
-import { Func } from "./model/func.entity";
-import { InfoGroup } from "./model/info.group.entity";
-import { InfoItem } from "./model/info.item.entity";
+import { OnModuleInit } from "@nestjs/common";
 import { Module as ModuleEntity } from "./model/module.entity";
 import { Permission } from "./model/permission.entity";
+import { InfoGroup } from "./model/info.group.entity";
+import { Repository } from "typeorm";
+import { Func } from "./model/func.entity";
+import { InfoItem } from "./model/info.item.entity";
 import { Role } from "./model/role.entity";
 import { ScoreType } from "./model/score.type.entity";
 export declare class UserModule implements OnModuleInit {

@@ -20,39 +20,39 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const common_1 = require("@nestjs/common");
 const modules_container_1 = require("@nestjs/core/injector/modules-container");
-const metadata_scanner_1 = require("@nestjs/core/metadata-scanner");
-const typeorm_1 = require("@nestjs/typeorm");
-const typeorm_2 = require("typeorm");
 const permission_definition_1 = require("./decorator/permission.definition");
 const user_component_provider_1 = require("./export/user.component.provider");
-const permission_guard_1 = require("./guard/permission.guard");
-const func_entity_1 = require("./model/func.entity");
-const info_group_entity_1 = require("./model/info.group.entity");
-const info_item_entity_1 = require("./model/info.item.entity");
+const organization_resolver_1 = require("./resolver/organization.resolver");
+const common_1 = require("@nestjs/common");
+const organization_service_1 = require("./service/organization.service");
+const score_type_resolver_1 = require("./resolver/score.type.resolver");
+const info_group_resolver_1 = require("./resolver/info.group.resolver");
+const typeorm_1 = require("@nestjs/typeorm");
+const info_item_resolver_1 = require("./resolver/info.item.resolver");
+const metadata_scanner_1 = require("@nestjs/core/metadata-scanner");
 const module_entity_1 = require("./model/module.entity");
 const organization_entity_1 = require("./model/organization.entity");
+const permission_guard_1 = require("./guard/permission.guard");
 const permission_entity_1 = require("./model/permission.entity");
+const info_group_entity_1 = require("./model/info.group.entity");
+const typeorm_2 = require("typeorm");
+const func_entity_1 = require("./model/func.entity");
+const info_item_entity_1 = require("./model/info.item.entity");
 const role_entity_1 = require("./model/role.entity");
 const score_entity_1 = require("./model/score.entity");
 const score_type_entity_1 = require("./model/score.type.entity");
 const user_entity_1 = require("./model/user.entity");
 const user_info_entity_1 = require("./model/user.info.entity");
 const func_resolver_1 = require("./resolver/func.resolver");
-const info_group_resolver_1 = require("./resolver/info.group.resolver");
-const info_item_resolver_1 = require("./resolver/info.item.resolver");
 const module_resolver_1 = require("./resolver/module.resolver");
-const organization_resolver_1 = require("./resolver/organization.resolver");
 const role_resolver_1 = require("./resolver/role.resolver");
 const score_resolver_1 = require("./resolver/score.resolver");
-const score_type_resolver_1 = require("./resolver/score.type.resolver");
 const user_resolver_1 = require("./resolver/user.resolver");
 const func_service_1 = require("./service/func.service");
 const info_group_service_1 = require("./service/info.group.service");
 const info_item_service_1 = require("./service/info.item.service");
 const module_service_1 = require("./service/module.service");
-const organization_service_1 = require("./service/organization.service");
 const role_service_1 = require("./service/role.service");
 const score_service_1 = require("./service/score.service");
 const score_type_service_1 = require("./service/score.type.service");
@@ -405,3 +405,5 @@ UserModule = __decorate([
         typeorm_2.Repository])
 ], UserModule);
 exports.UserModule = UserModule;
+
+//# sourceMappingURL=user.module.js.map

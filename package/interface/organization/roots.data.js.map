@@ -1,0 +1,1 @@
+{"version":3,"sources":["interface/organization/roots.data.ts"],"names":[],"mappings":"","file":"roots.data.js","sourcesContent":["export interface RootsData {\n    code: number;\n\n    message: string;\n\n    roots: Array<{\n        id: number\n        name: string\n    }>;\n}\n"]}

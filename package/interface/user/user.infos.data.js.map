@@ -1,0 +1,1 @@
+{"version":3,"sources":["interface/user/user.infos.data.ts"],"names":[],"mappings":"","file":"user.infos.data.js","sourcesContent":["export interface UserInfosData {\n    code: number;\n\n    message: string;\n\n    userInfos: Array<{ name: string, value: string }>;\n}\n"]}

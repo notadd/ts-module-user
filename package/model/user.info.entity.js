@@ -74,3 +74,5 @@ UserInfo = __decorate([
     typeorm_1.Index("infoItemId_userId", ["infoItemId", "userId"])
 ], UserInfo);
 exports.UserInfo = UserInfo;
+
+//# sourceMappingURL=user.info.entity.js.map

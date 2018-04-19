@@ -48,3 +48,5 @@ ModuleResolver = __decorate([
     __metadata("design:paramtypes", [module_service_1.ModuleService])
 ], ModuleResolver);
 exports.ModuleResolver = ModuleResolver;
+
+//# sourceMappingURL=module.resolver.js.map

@@ -53,3 +53,5 @@ Module = __decorate([
     typeorm_1.Entity("module")
 ], Module);
 exports.Module = Module;
+
+//# sourceMappingURL=module.entity.js.map

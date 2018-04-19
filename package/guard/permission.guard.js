@@ -89,3 +89,5 @@ PermissionGuard = __decorate([
     __metadata("design:paramtypes", [user_component_provider_1.UserComponent])
 ], PermissionGuard);
 exports.PermissionGuard = PermissionGuard;
+
+//# sourceMappingURL=permission.guard.js.map

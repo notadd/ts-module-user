@@ -165,3 +165,5 @@ InfoGroupService = __decorate([
         typeorm_2.Repository])
 ], InfoGroupService);
 exports.InfoGroupService = InfoGroupService;
+
+//# sourceMappingURL=info.group.service.js.map

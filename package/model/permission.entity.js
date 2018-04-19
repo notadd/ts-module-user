@@ -77,3 +77,5 @@ Permission = __decorate([
     typeorm_1.Index("name_module_token", ["name", "moduleToken"])
 ], Permission);
 exports.Permission = Permission;
+
+//# sourceMappingURL=permission.entity.js.map

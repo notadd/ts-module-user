@@ -1,0 +1,1 @@
+{"version":3,"sources":["interface/infoGroup/info.groups.data.ts"],"names":[],"mappings":"","file":"info.groups.data.js","sourcesContent":["export interface InfoGroupsData {\n    code: number;\n\n    message: string;\n\n    infoGroups: Array<{ id: number, name: string, default: boolean, status: boolean }>;\n}\n"]}

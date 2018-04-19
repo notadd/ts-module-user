@@ -118,3 +118,5 @@ ScoreService = __decorate([
         typeorm_2.Repository])
 ], ScoreService);
 exports.ScoreService = ScoreService;
+
+//# sourceMappingURL=score.service.js.map

@@ -1,0 +1,1 @@
+{"version":3,"sources":["interface/user/roles.data.ts"],"names":[],"mappings":"","file":"roles.data.js","sourcesContent":["export interface RolesData {\n    code: number;\n\n    message: string;\n\n    roles: Array<{ id: number, name: string, score: number }>;\n}\n"]}

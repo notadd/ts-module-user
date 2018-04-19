@@ -1,0 +1,1 @@
+{"version":3,"sources":["interface/user/users.data.ts"],"names":[],"mappings":"","file":"users.data.js","sourcesContent":["export interface UsersData {\n    code: number;\n\n    message: string;\n\n    users: Array<{\n        id: number\n        userName: string\n        status: boolean\n    }>;\n}\n"]}

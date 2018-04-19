@@ -1,0 +1,1 @@
+{"version":3,"sources":["interface/organization/users.in.organization.data.ts"],"names":[],"mappings":"","file":"users.in.organization.data.js","sourcesContent":["export interface UsersInOrganizationData {\n    code: number;\n\n    message: string;\n\n    users: Array<{\n        id: number\n        userName: string\n        status: boolean\n    }>;\n}\n"]}

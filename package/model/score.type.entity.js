@@ -60,3 +60,5 @@ ScoreType = __decorate([
     typeorm_1.Entity("score_type")
 ], ScoreType);
 exports.ScoreType = ScoreType;
+
+//# sourceMappingURL=score.type.entity.js.map

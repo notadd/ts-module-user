@@ -103,3 +103,5 @@ exports.UserComponentProvider = {
     },
     inject: ["FuncRepository", "RoleRepository", "UserRepository"]
 };
+
+//# sourceMappingURL=user.component.provider.js.map

@@ -329,3 +329,5 @@ UserResolver = __decorate([
     __metadata("design:paramtypes", [user_service_1.UserService])
 ], UserResolver);
 exports.UserResolver = UserResolver;
+
+//# sourceMappingURL=user.resolver.js.map

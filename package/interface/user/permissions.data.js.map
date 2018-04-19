@@ -1,0 +1,1 @@
+{"version":3,"sources":["interface/user/permissions.data.ts"],"names":[],"mappings":"","file":"permissions.data.js","sourcesContent":["export interface PermissionsData {\n    code: number;\n\n    message: string;\n\n    permissions: Array<{ id: number, name: string, description: string }>;\n}\n"]}

@@ -1,0 +1,1 @@
+{"version":3,"sources":["interface/user/update.user.body.ts"],"names":[],"mappings":"","file":"update.user.body.js","sourcesContent":["export interface UpdateUserBody {\n    id: number;\n\n    userName: string;\n\n    password: string;\n}\n"]}
