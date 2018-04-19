@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Guard, Inject } from "@nestjs/common";
 import { IncomingMessage } from "http";
-import { PERMISSION_CONTROLLER_AND, PERMISSION_CONTROLLER_OR } from "../decorator/permission.controller";
+import { PERMISSION_CONTROLLER_AND, PERMISSION_CONTROLLER_OR } from "../decorator/can.decorator";
 import { UserComponent } from "../export/user.component.provider";
 import { Permission } from "../model/permission.entity";
 import { User } from "../model/user.entity";

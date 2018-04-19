@@ -1,5 +1,5 @@
 import { ModulesContainer } from "@nestjs/core/injector/modules-container";
-import { PERMISSION_DEFINITION } from "./decorator/permission.definition";
+import { PERMISSION_DEFINITION } from "./decorator/permissions.decorator";
 import { UserComponentProvider } from "./export/user.component.provider";
 import { OrganizationResolver } from "./resolver/organization.resolver";
 import { Global, Inject, Module, OnModuleInit } from "@nestjs/common";
