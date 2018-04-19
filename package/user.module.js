@@ -21,7 +21,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const modules_container_1 = require("@nestjs/core/injector/modules-container");
-const permission_definition_1 = require("./decorator/permission.definition");
+const permissions_decorator_1 = require("./decorator/permissions.decorator");
 const user_component_provider_1 = require("./export/user.component.provider");
 const organization_resolver_1 = require("./resolver/organization.resolver");
 const common_1 = require("@nestjs/common");
@@ -96,13 +96,13 @@ let UserModule = class UserModule {
                     const isController = Reflect.getMetadata("path", value.metatype);
                     if (isResolver || isController) {
                         Reflect.defineMetadata(permission_guard_1.MODULE_TOKEN, token, value.metatype);
-                        const pers = Reflect.getMetadata(permission_definition_1.PERMISSION_DEFINITION, value.metatype);
+                        const pers = Reflect.getMetadata(permissions_decorator_1.PERMISSION_DEFINITION, value.metatype);
                         pers && pers.forEach(per => {
                             permissions.set(per.name, per);
                         });
                         const prototype = Object.getPrototypeOf(value.instance);
                         this.metadataScanner.scanFromPrototype(value.instance, prototype, name => {
-                            const pers = Reflect.getMetadata(permission_definition_1.PERMISSION_DEFINITION, value.metatype, name);
+                            const pers = Reflect.getMetadata(permissions_decorator_1.PERMISSION_DEFINITION, value.metatype, name);
                             pers && pers.forEach(per => {
                                 permissions.set(per.name, per);
                             });

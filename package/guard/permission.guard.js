@@ -21,7 +21,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
-const permission_controller_1 = require("../decorator/permission.controller");
+const can_decorator_1 = require("../decorator/can.decorator");
 const user_component_provider_1 = require("../export/user.component.provider");
 exports.MODULE_TOKEN = "module_token";
 let PermissionGuard = class PermissionGuard {
@@ -46,14 +46,14 @@ let PermissionGuard = class PermissionGuard {
             else {
                 permissions = [];
             }
-            const classOr = Reflect.getMetadata(permission_controller_1.PERMISSION_CONTROLLER_OR, parent) || [];
-            const classAnd = Reflect.getMetadata(permission_controller_1.PERMISSION_CONTROLLER_AND, parent) || [];
+            const classOr = Reflect.getMetadata(can_decorator_1.PERMISSION_CONTROLLER_OR, parent) || [];
+            const classAnd = Reflect.getMetadata(can_decorator_1.PERMISSION_CONTROLLER_AND, parent) || [];
             const token = Reflect.getMetadata(exports.MODULE_TOKEN, parent);
             const classPass = this.checkPermission(permissions, classAnd, classOr, token);
             if (!classPass)
                 return false;
-            const methodOr = Reflect.getMetadata(permission_controller_1.PERMISSION_CONTROLLER_OR, handler) || [];
-            const methodAnd = Reflect.getMetadata(permission_controller_1.PERMISSION_CONTROLLER_AND, handler) || [];
+            const methodOr = Reflect.getMetadata(can_decorator_1.PERMISSION_CONTROLLER_OR, handler) || [];
+            const methodAnd = Reflect.getMetadata(can_decorator_1.PERMISSION_CONTROLLER_AND, handler) || [];
             const methodPass = this.checkPermission(permissions, methodAnd, methodOr, token);
             return methodPass;
         });
