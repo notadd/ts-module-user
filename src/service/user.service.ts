@@ -19,6 +19,7 @@ import { createHash } from "crypto";
 @Component()
 export class UserService {
 
+    /* 其他模块的用户信息管理器组件数组 */
     userInfoManagers: Array<UserInfoManager> = new Array();
 
     constructor(

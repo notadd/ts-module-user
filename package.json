@@ -41,8 +41,7 @@
         "pg": "^7.4.1",
         "reflect-metadata": "^0.1.10",
         "rxjs": "^5.4.0",
-        "typeorm": "^0.1.9",
-        "typescript": "^2.7.1"
+        "typeorm": "^0.1.9"
     },
     "devDependencies": {
         "@notadd/gulp-typescript": "^4.0.2",
@@ -62,7 +61,8 @@
         "nodemon": "^1.12.1",
         "ts-jest": "^22.4.5",
         "ts-node": "^3.3.0",
-        "tslint": "^5.9.1"
+        "tslint": "^5.9.1",
+        "typescript": "^2.8.3"
     },
     "workspaces": [
         "package"
