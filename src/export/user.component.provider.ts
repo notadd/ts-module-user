@@ -1,3 +1,4 @@
+import { getRepositoryToken } from "@nestjs/typeorm/typeorm.utils";
 import { Permission } from "../model/permission.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Func } from "../model/func.entity";
@@ -106,11 +107,13 @@ export class UserComponent {
 
 }
 
+export const UserComponentToken = "UserComponentToken";
+
 export const UserComponentProvider = {
-    provide: "UserComponentToken",
+    provide: UserComponentToken,
     useFactory: (funcRepository: Repository<Func>, roleRepository: Repository<Role>, userRepository: Repository<User>) => {
         return new UserComponent(funcRepository, roleRepository, userRepository);
     },
-    inject: ["FuncRepository", "RoleRepository", "UserRepository"]
+    inject: [getRepositoryToken(Func), getRepositoryToken(Role), getRepositoryToken(User)]
 
 };

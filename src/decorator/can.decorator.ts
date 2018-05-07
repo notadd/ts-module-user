@@ -3,8 +3,8 @@ import "reflect-metadata";
 export const PERMISSION_CONTROLLER_OR = "user:permission_controller_or";
 export const PERMISSION_CONTROLLER_AND = "user:permission_controller_and";
 
-export function Can(names: Array<string>, mode: "or" | "and" = "and") {
-    return (target: object, key?, descriptor?) => {
+export function Can(names: Array<string>, mode: "or" | "and" = "and"): ClassDecorator | MethodDecorator {
+    return (target: any, key?, descriptor?) => {
         if (descriptor) {
             const orExist: Array<string> = Reflect.getMetadata(PERMISSION_CONTROLLER_OR, descriptor.value) || [];
             const andExist: Array<string> = Reflect.getMetadata(PERMISSION_CONTROLLER_AND, descriptor.value) || [];

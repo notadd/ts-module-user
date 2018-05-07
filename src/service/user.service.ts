@@ -1,27 +1,33 @@
-import { Component, HttpException, Inject } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { createHash } from "crypto";
-import { IncomingMessage } from "http";
-import { Repository } from "typeorm";
-import { StoreComponent } from "../interface/store.component";
 import { ArrayInfo, FileInfo, TextInfo, UnionUserInfo } from "../interface/user/union.user.info";
-import { Func } from "../model/func.entity";
-import { InfoGroup } from "../model/info.group.entity";
-import { InfoItem } from "../model/info.item.entity";
+import { UserInfoManager, ModuleUserInfo } from "../interface/user.info.manager";
+import { Component, HttpException, Inject } from "@nestjs/common";
+import { StoreComponent } from "../interface/store.component";
+import { Repository, Connection, QueryRunner } from "typeorm";
 import { Organization } from "../model/organization.entity";
 import { Permission } from "../model/permission.entity";
+import { InfoGroup } from "../model/info.group.entity";
+import { InfoItem } from "../model/info.item.entity";
+import { UserInfo } from "../model/user.info.entity";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Func } from "../model/func.entity";
 import { Role } from "../model/role.entity";
 import { User } from "../model/user.entity";
-import { UserInfo } from "../model/user.info.entity";
+import { IncomingMessage } from "http";
+import { createHash } from "crypto";
+
 
 @Component()
 export class UserService {
 
+    /* 其他模块的用户信息管理器组件数组 */
+    userInfoManagers: Array<UserInfoManager> = new Array();
+
     constructor(
-        @Inject("StoreComponentToken") private readonly storeComponent: StoreComponent,
+        @Inject(Connection) private readonly connection: Connection,
         @InjectRepository(Func) private readonly funcRepository: Repository<Func>,
         @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
         @InjectRepository(User) private readonly userRepository: Repository<User>,
+        @Inject("StoreComponentToken") private readonly storeComponent: StoreComponent,
         @InjectRepository(UserInfo) private readonly userInfoRepository: Repository<UserInfo>,
         @InjectRepository(InfoGroup) private readonly infoGroupRepository: Repository<InfoGroup>,
         @InjectRepository(Permission) private readonly permissionRepository: Repository<Permission>,
@@ -30,7 +36,7 @@ export class UserService {
     }
 
     async getUserById(id: number): Promise<{ id: number, userName: string, status: boolean, recycle: boolean } | undefined> {
-        return this.userRepository.findOneById(id, { select: [ "id", "userName", "status", "recycle" ] });
+        return this.userRepository.findOneById(id, { select: ["id", "userName", "status", "recycle"] });
     }
 
     async getUserByName(userName: string): Promise<User | undefined> {
@@ -42,7 +48,7 @@ export class UserService {
     }
 
     async getFreedomUsers(): Promise<Array<User>> {
-        const users: Array<User> = await this.userRepository.find({ relations: [ "organizations" ] });
+        const users: Array<User> = await this.userRepository.find({ relations: ["organizations"] });
         return users.filter(user => {
             return (
                 user.organizations === null || user.organizations === undefined || user.organizations.length === 0
@@ -56,7 +62,7 @@ export class UserService {
 
     /*返回用户信息时，需要提取其InfoItem对象以获取信息名称 */
     async userInfos(id: number): Promise<Array<{ name: string, value: string }>> {
-        const user: User | undefined = await this.userRepository.findOneById(id, { relations: [ "userInfos" ] });
+        const user: User | undefined = await this.userRepository.findOneById(id, { relations: ["userInfos"] });
         if (!user) {
             throw new HttpException("指定用户不存在", 406);
         }
@@ -72,7 +78,7 @@ export class UserService {
     }
 
     async roles(id: number): Promise<Array<Role>> {
-        const user: User | undefined = await this.userRepository.findOneById(id, { relations: [ "roles" ] });
+        const user: User | undefined = await this.userRepository.findOneById(id, { relations: ["roles"] });
         if (!user) {
             throw new HttpException("指定用户不存在", 406);
         }
@@ -82,7 +88,7 @@ export class UserService {
     async permissions(id: number): Promise<Array<Permission>> {
         const user: User | undefined = await this.userRepository.findOneById(
             id,
-            { relations: [ "roles", "adds", "reduces" ] },
+            { relations: ["roles", "adds", "reduces"] },
         );
         if (!user) {
             throw new HttpException("指定id=" + id + "用户不存在", 406);
@@ -96,14 +102,14 @@ export class UserService {
         // 遍历获取所有角色拥有的权限
         for (let i = 0; i < user.roles.length; i++) {
             const role: Role | undefined = await this.roleRepository.findOneById(
-                user.roles[ i ].id,
-                { relations: [ "funcs" ] },
+                user.roles[i].id,
+                { relations: ["funcs"] },
             );
             if (role && role.funcs && role.funcs.length > 0) {
                 for (let j = 0; j < role.funcs.length; j++) {
                     const func: Func | undefined = await this.funcRepository.findOneById(
-                        role.funcs[ i ].id,
-                        { relations: [ "permissions" ] },
+                        role.funcs[i].id,
+                        { relations: ["permissions"] },
                     );
                     if (func) {
                         temp = temp.concat(func.permissions);
@@ -198,10 +204,10 @@ export class UserService {
             infoItems: [],
         });
         for (let i = 0; i < groups.length; i++) {
-            const { groupId, infos } = groups[ i ];
+            const { groupId, infos } = groups[i];
             const group: InfoGroup | undefined = await this.infoGroupRepository.findOneById(
                 groupId,
-                { relations: [ "items" ] },
+                { relations: ["items"] },
             );
             if (!group) {
                 throw new HttpException("指定信息组id=" + groupId + "不存在", 408);
@@ -218,16 +224,16 @@ export class UserService {
     async addUserInfoToUser(req: IncomingMessage, id: number, groups: Array<{ groupId: number, infos: Array<UnionUserInfo> }>): Promise<void> {
         const user: User | undefined = await this.userRepository.findOneById(
             id,
-            { relations: [ "userInfos", "infoItems" ] },
+            { relations: ["userInfos", "infoItems"] },
         );
         if (!user) {
             throw new HttpException("指定id=" + id + "用户不存在", 406);
         }
         for (let i = 0; i < groups.length; i++) {
-            const { groupId, infos } = groups[ i ];
+            const { groupId, infos } = groups[i];
             const group: InfoGroup | undefined = await this.infoGroupRepository.findOneById(
                 groupId,
-                { relations: [ "items" ] },
+                { relations: ["items"] },
             );
             if (!group) {
                 throw new HttpException("指定信息组id=" + groupId + "不存在", 408);
@@ -251,7 +257,7 @@ export class UserService {
         });
         // 遍历得到的信息
         for (let j = 0; j < infos.length; j++) {
-            const { name }: UnionUserInfo = infos[ j ];
+            const { name }: UnionUserInfo = infos[j];
             // 查找名称匹配的信息项
             const match: InfoItem | undefined = items.find(item => {
                 return item.name === name;
@@ -261,14 +267,14 @@ export class UserService {
                 throw new HttpException("指定名称信息项:" + name + "不存在于信息组id=" + group.id + "中", 409);
             }
             /*获取根据信息项类型转换后的信息值 */
-            const result: string = await this.transfromInfoValue(req, match, infos[ j ]);
+            const result: string = await this.transfromInfoValue(req, match, infos[j]);
             /*如果此时user中已经包含同名信息项，后来的覆盖先前的，因为相同信息项可能存在于多个组当中，而添加时可能出现一次添加多个组信息的情况，所以可能出现同类信息项 */
             const userInfoIndex = user.userInfos.findIndex(userInfo => userInfo.infoItemId === match.id);
             if (userInfoIndex >= 0) {
                 /*如果当前遍历的信息项对应的信息已经存在于用户的信息当中，直接修改其value
                   当创建用户时，出现重复，修改value后就会只保存新的用户信息
                   当添加用户信息时，出现重复，就会修改以前的信息，并且cascaedUpdate*/
-                user.userInfos[ userInfoIndex ].value = result;
+                user.userInfos[userInfoIndex].value = result;
             } else {
                 /*不存在添加新的 */
                 user.userInfos.push(this.userInfoRepository.create({ infoItem: match, value: result }));
@@ -496,11 +502,21 @@ export class UserService {
         if (!exist.recycle) {
             throw new HttpException("指定id=" + id + "用户不存在回收站中", 406);
         }
+        const queryRunner: QueryRunner = this.connection.createQueryRunner("master");
+        await queryRunner.startTransaction();
         try {
-            await this.userRepository.remove(exist);
+            /* 在一个事务中删除用户以及其他模块中用户信息 */
+            await queryRunner.manager.remove(exist);
+            for (let i = 0; i < this.userInfoManagers.length; i++) {
+                await this.userInfoManagers[i].deleteUserInfo(queryRunner.manager, id);
+            }
+            await queryRunner.commitTransaction();
         } catch (err) {
-            throw new HttpException("数据库错误" + err.toString(), 401);
+            await queryRunner.rollbackTransaction();
+        } finally {
+            await queryRunner.release();
         }
+
     }
 
     async deleteUsers(ids: Array<number>): Promise<void> {
@@ -524,7 +540,7 @@ export class UserService {
     }
 
     async setRoles(id: number, roleIds: Array<number>): Promise<void> {
-        const user: User | undefined = await this.userRepository.findOneById(id, { relations: [ "roles" ] });
+        const user: User | undefined = await this.userRepository.findOneById(id, { relations: ["roles"] });
         if (!user) {
             throw new HttpException("指定id=" + id + "用户不存在", 406);
         }
@@ -548,7 +564,7 @@ export class UserService {
     async setPermissions(id: number, permissionIds: Array<number>): Promise<void> {
         const user: User | undefined = await this.userRepository.findOneById(
             id,
-            { relations: [ "roles", "adds", "reduces" ] },
+            { relations: ["roles", "adds", "reduces"] },
         );
         if (!user) {
             throw new HttpException("指定id=" + id + "用户不存在", 406);
@@ -562,14 +578,14 @@ export class UserService {
         // 遍历获取所有角色拥有的权限
         for (let i = 0; i < user.roles.length; i++) {
             const role: Role | undefined = await this.roleRepository.findOneById(
-                user.roles[ i ].id,
-                { relations: [ "funcs" ] },
+                user.roles[i].id,
+                { relations: ["funcs"] },
             );
             if (role && role.funcs && role.funcs.length > 0) {
                 for (let j = 0; j < role.funcs.length; j++) {
                     const func: Func | undefined = await this.funcRepository.findOneById(
-                        role.funcs[ i ].id,
-                        { relations: [ "permissions" ] },
+                        role.funcs[i].id,
+                        { relations: ["permissions"] },
                     );
                     if (func) {
                         temp = temp.concat(func.permissions);

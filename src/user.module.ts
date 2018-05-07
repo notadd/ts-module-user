@@ -1,44 +1,49 @@
+import { Global, Inject, Module as ModuleDecorator, OnModuleInit } from "@nestjs/common";
 import { ModulesContainer } from "@nestjs/core/injector/modules-container";
+import { USER_INFO_MANAGER } from "./decorator/user.info.manager.decorator";
 import { PERMISSION_DEFINITION } from "./decorator/permissions.decorator";
 import { UserComponentProvider } from "./export/user.component.provider";
 import { OrganizationResolver } from "./resolver/organization.resolver";
-import { Global, Inject, Module, OnModuleInit } from "@nestjs/common";
 import { OrganizationService } from "./service/organization.service";
+import { Controller, Injectable } from "@nestjs/common/interfaces";
 import { ScoreTypeResolver } from "./resolver/score.type.resolver";
 import { InfoGroupResolver } from "./resolver/info.group.resolver";
 import { InjectRepository, TypeOrmModule } from "@nestjs/typeorm";
+import { InstanceWrapper } from "@nestjs/core/injector/container";
 import { InfoItemResolver } from "./resolver/info.item.resolver";
-import { MetadataScanner } from "@nestjs/core/metadata-scanner";
-import { Module as ModuleEntity } from "./model/module.entity";
-import { Organization } from "./model/organization.entity";
-import { MODULE_TOKEN } from "./guard/permission.guard";
-import { Permission } from "./model/permission.entity";
-import { InfoGroup } from "./model/info.group.entity";
-import { Repository } from "typeorm";
-import { Func } from "./model/func.entity";
-import { InfoItem } from "./model/info.item.entity";
-import { Role } from "./model/role.entity";
-import { Score } from "./model/score.entity";
-import { ScoreType } from "./model/score.type.entity";
-import { User } from "./model/user.entity";
-import { UserInfo } from "./model/user.info.entity";
-import { FuncResolver } from "./resolver/func.resolver";
-import { ModuleResolver } from "./resolver/module.resolver";
-import { RoleResolver } from "./resolver/role.resolver";
-import { ScoreResolver } from "./resolver/score.resolver";
-import { UserResolver } from "./resolver/user.resolver";
-import { FuncService } from "./service/func.service";
-import { InfoGroupService } from "./service/info.group.service";
-import { InfoItemService } from "./service/info.item.service";
-import { ModuleService } from "./service/module.service";
-import { RoleService } from "./service/role.service";
-import { ScoreService } from "./service/score.service";
 import { ScoreTypeService } from "./service/score.type.service";
+import { MetadataScanner } from "@nestjs/core/metadata-scanner";
+import { InfoGroupService } from "./service/info.group.service";
+import { Module as ModuleEntity } from "./model/module.entity";
+import { InfoItemService } from "./service/info.item.service";
+import { ModuleResolver } from "./resolver/module.resolver";
+import { Organization } from "./model/organization.entity";
+import { ScoreResolver } from "./resolver/score.resolver";
+import { ModuleService } from "./service/module.service";
+import { MODULE_TOKEN } from "./guard/permission.guard";
+import { FuncResolver } from "./resolver/func.resolver";
+import { RoleResolver } from "./resolver/role.resolver";
+import { UserResolver } from "./resolver/user.resolver";
+import { ScoreService } from "./service/score.service";
+import { Permission } from "./model/permission.entity";
+import { Module } from "@nestjs/core/injector/module";
+import { InfoGroup } from "./model/info.group.entity";
+import { ScoreType } from "./model/score.type.entity";
+import { FuncService } from "./service/func.service";
+import { RoleService } from "./service/role.service";
 import { UserService } from "./service/user.service";
+import { UserInfo } from "./model/user.info.entity";
+import { InfoItem } from "./model/info.item.entity";
 import { FloatUtil } from "./util/float.util";
+import { Score } from "./model/score.entity";
+import { Func } from "./model/func.entity";
+import { Role } from "./model/role.entity";
+import { User } from "./model/user.entity";
+import { Repository } from "typeorm";
+
 
 @Global()
-@Module({
+@ModuleDecorator({
     modules: [
         TypeOrmModule.forFeature([
             ModuleEntity,
@@ -84,8 +89,10 @@ import { FloatUtil } from "./util/float.util";
 export class UserModule implements OnModuleInit {
 
     private readonly metadataScanner: MetadataScanner;
+    private modules: Array<ModuleEntity>;
 
     constructor(
+        @Inject(UserService) private readonly userService: UserService,
         @Inject(ModulesContainer.name) private readonly moduleMap: ModulesContainer,
         @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
         @InjectRepository(Func) private readonly funcRepository: Repository<Func>,
@@ -99,8 +106,15 @@ export class UserModule implements OnModuleInit {
     }
 
     async onModuleInit(): Promise<void> {
-        // 遍历模块，检查权限定义
-        await this.checkPermissionDefinition();
+        this.modules = await this.moduleRepository.find({
+            relations: [
+                "permissions",
+                "funcs",
+                "roles",
+            ],
+        });
+        // 遍历模块
+        await this.iterateModule();
         // 确保默认信息组的存在
         await this.addDefaultInfoGroup();
         // 确保默认积分类型的存在
@@ -115,33 +129,31 @@ export class UserModule implements OnModuleInit {
        新增模块直接保存，既有模块对原有权限与本次扫描出权限进行差分，相同名称权限id不变，保证既有权限与功能关联不变
        如果原有模块没有在这次遍历中被发现权限，则模块连带权限、功能、角色一起删除
      */
-    async checkPermissionDefinition(): Promise<void> {
-        // 获取当前既有模块，关联获取模块具有的权限、功能、角色
-        const modules: Array<ModuleEntity> = await this.moduleRepository.find({
-            relations: [
-                "permissions",
-                "funcs",
-                "roles",
-            ],
-        });
-        // 遍历模块token、Module实例
-        for (const [ key, value ] of this.moduleMap.entries()) {
-            // 模块名称，直接使用nest容器里面存储Module的key，不会重复
-            const token = key;
-            // 组件,包含了路由
-            const components = [ ...value.components, ...value.routes ];
-            // 获取到的权限定义，使用map为了name不重复
+    async iterateModule(): Promise<void> {
+        /* 从ModulesContainer,遍历模块token、Module实例 */
+        for (const [key, value] of this.moduleMap.entries()) {
+            /* 模块名称，直接使用nest容器里面存储Module的key，不会重复 */
+            const token: string = key;
+            const module: Module = value;
+            /* 组件、路由 */
+            const components: Map<string, InstanceWrapper<Injectable>> = module.components;
+            const routes: Map<string, InstanceWrapper<Controller>> = module.routes;
+            /* 获取到的权限定义，使用map为了name不重复 */
             const permissions: Map<string, Permission> = new Map();
-            // 遍历组件、路由
-            for (const component of components) {
-                // 名称、实例包装器
-                const [ key, value ] = component;
+            /* 遍历组件、路由 */
+            for (const component of [...components, ...routes]) {
+                /* 名称、实例包装器 */
+                const [key, value] = component;
+                /* 在需要进行权限判断的组件类上定义模块token，用来在guard中判断权限属于哪个模块 */
+                Reflect.defineMetadata(MODULE_TOKEN, token, value.metatype);
+                /* 如果组件为用户信息管理器，将它添加到UserService */
+                if (Reflect.getMetadata(USER_INFO_MANAGER, value.metatype) === true) {
+                    this.userService.userInfoManagers.push(value.instance as any);
+                }
                 // 只有resolver、controller才会被遍历，其他组件上定义权限无效
                 const isResolver = Reflect.getMetadata("graphql:resolver_type", value.metatype);
                 const isController = Reflect.getMetadata("path", value.metatype);
                 if (isResolver || isController) {
-                    // 在需要进行权限判断的组件类上定义模块token，用来在guard中判断权限属于哪个模块
-                    Reflect.defineMetadata(MODULE_TOKEN, token, value.metatype);
                     // 获取组件、控制器类上定义的权限数组
                     const pers: Array<Permission> = Reflect.getMetadata(PERMISSION_DEFINITION, value.metatype);
                     // 这里在同一个模块中重复定义的权限会被覆盖
@@ -173,12 +185,12 @@ export class UserModule implements OnModuleInit {
                     pers.push(value);
                 }
                 // 查找模块是否已经存在
-                const index = modules.findIndex(module => {
+                const index = this.modules.findIndex(module => {
                     return module.token === token;
                 });
                 // 如果模块已经存在
                 if (index >= 0) {
-                    const module = modules[ index ];
+                    const module = this.modules[index];
                     // 对既有权限与本次扫描出权限根据name进行差分
                     // 遍历本次扫描结果
                     for (const per of pers) {
@@ -223,17 +235,17 @@ export class UserModule implements OnModuleInit {
             }
         }
         // 如果既有模块没有全部被扫描到，那么剩余模块被删除，连带权限、功能、角色
-        if (modules.length > 0) {
+        if (this.modules.length > 0) {
             /* 这里如果直接删除模块，因为外键检查会报错
                如果删除模块级联删除角色、功能、权限也会发生错误，因为者三者本身就有多对多关系
                这种情况下，角色-功能、功能-权限、角色-用户、权限-用户等关系都不会被自动解除
                只能单独删除角色、功能、权限，其相应关系也会删除，最后删除模块
             */
-            for (let i = 0; i < modules.length; i++) {
-                await this.roleRepository.remove(modules[ i ].roles);
-                await this.funcRepository.remove(modules[ i ].funcs);
-                await this.permissionRepository.remove(modules[ i ].permissions);
-                await this.moduleRepository.remove(modules[ i ]);
+            for (let i = 0; i < this.modules.length; i++) {
+                await this.roleRepository.remove(this.modules[i].roles);
+                await this.funcRepository.remove(this.modules[i].funcs);
+                await this.permissionRepository.remove(this.modules[i].permissions);
+                await this.moduleRepository.remove(this.modules[i]);
             }
         }
     }
@@ -315,7 +327,7 @@ export class UserModule implements OnModuleInit {
             informationVisible: true,
             order: 6,
         });
-        base.items = [ nickname, sex, age, birthday, headPortrait, sign ];
+        base.items = [nickname, sex, age, birthday, headPortrait, sign];
         await this.infoGroupRepository.save(base);
         const authentication: InfoGroup = this.infoGroupRepository.create({
             id: 2,
@@ -383,7 +395,7 @@ export class UserModule implements OnModuleInit {
             informationVisible: true,
             order: 5,
         });
-        authentication.items = [ email, realName, idNumber, idImage, cellPhoneNumber ];
+        authentication.items = [email, realName, idNumber, idImage, cellPhoneNumber];
         await this.infoGroupRepository.save(authentication);
     }
 
@@ -417,6 +429,6 @@ export class UserModule implements OnModuleInit {
             default: true,
             description: "余额，用于......",
         });
-        await this.scoreTypeRepository.save([ scoreType1, scoreType2, scoreType3, scoreType4 ]);
+        await this.scoreTypeRepository.save([scoreType1, scoreType2, scoreType3, scoreType4]);
     }
 }
