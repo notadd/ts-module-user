@@ -1,29 +1,32 @@
-import { Component, HttpException, Inject } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { createHash } from "crypto";
-import { IncomingMessage } from "http";
-import { Repository } from "typeorm";
-import { StoreComponent } from "../interface/store.component";
 import { ArrayInfo, FileInfo, TextInfo, UnionUserInfo } from "../interface/user/union.user.info";
-import { Func } from "../model/func.entity";
-import { InfoGroup } from "../model/info.group.entity";
-import { InfoItem } from "../model/info.item.entity";
+import { UserInfoManager, ModuleUserInfo } from "../interface/user.info.manager";
+import { Component, HttpException, Inject } from "@nestjs/common";
+import { StoreComponent } from "../interface/store.component";
+import { Repository, Connection, QueryRunner } from "typeorm";
 import { Organization } from "../model/organization.entity";
 import { Permission } from "../model/permission.entity";
+import { InfoGroup } from "../model/info.group.entity";
+import { InfoItem } from "../model/info.item.entity";
+import { UserInfo } from "../model/user.info.entity";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Func } from "../model/func.entity";
 import { Role } from "../model/role.entity";
 import { User } from "../model/user.entity";
-import { UserInfo } from "../model/user.info.entity";
+import { IncomingMessage } from "http";
+import { createHash } from "crypto";
+
 
 @Component()
 export class UserService {
 
-    userInfoManagers: Array<any> = new Array();
+    userInfoManagers: Array<UserInfoManager> = new Array();
 
     constructor(
-        @Inject("StoreComponentToken") private readonly storeComponent: StoreComponent,
+        @Inject(Connection) private readonly connection: Connection,
         @InjectRepository(Func) private readonly funcRepository: Repository<Func>,
         @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
         @InjectRepository(User) private readonly userRepository: Repository<User>,
+        @Inject("StoreComponentToken") private readonly storeComponent: StoreComponent,
         @InjectRepository(UserInfo) private readonly userInfoRepository: Repository<UserInfo>,
         @InjectRepository(InfoGroup) private readonly infoGroupRepository: Repository<InfoGroup>,
         @InjectRepository(Permission) private readonly permissionRepository: Repository<Permission>,
@@ -498,11 +501,21 @@ export class UserService {
         if (!exist.recycle) {
             throw new HttpException("指定id=" + id + "用户不存在回收站中", 406);
         }
+        const queryRunner: QueryRunner = this.connection.createQueryRunner("master");
+        await queryRunner.startTransaction();
         try {
-            await this.userRepository.remove(exist);
+            /* 在一个事务中删除用户以及其他模块中用户信息 */
+            await queryRunner.manager.remove(exist);
+            for (let i = 0; i < this.userInfoManagers.length; i++) {
+                await this.userInfoManagers[i].deleteUserInfo(queryRunner.manager, id);
+            }
+            await queryRunner.commitTransaction();
         } catch (err) {
-            throw new HttpException("数据库错误" + err.toString(), 401);
+            await queryRunner.rollbackTransaction();
+        } finally {
+            await queryRunner.release();
         }
+
     }
 
     async deleteUsers(ids: Array<number>): Promise<void> {

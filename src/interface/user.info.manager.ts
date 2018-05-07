@@ -7,7 +7,7 @@ import { EntityManager } from "typeorm";
 至于更新操作，还不确定
 */
 export interface UserInfoManager {
-    getUserInfo(userId: number): Promise<UserInfo>;
+    getUserInfo(userId: number): Promise<ModuleUserInfo>;
     deleteUserInfo(manager: EntityManager, userId: number): Promise<void>;
 }
 
@@ -15,7 +15,7 @@ export interface UserInfoManager {
 用户中心获取用户信息时，其他模块的返回值类型
 指明了模块token，以及一个信息Map，信息实体类为key，信息对象为value
 */
-export interface UserInfo {
+export interface ModuleUserInfo {
     moduleToken: string;
     userInfos: Map<Function, any>;
 }
