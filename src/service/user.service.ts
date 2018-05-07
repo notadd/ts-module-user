@@ -5,6 +5,7 @@ import { StoreComponent } from "../interface/store.component";
 import { Repository, Connection, QueryRunner } from "typeorm";
 import { Organization } from "../model/organization.entity";
 import { Permission } from "../model/permission.entity";
+import { Injectable } from "@nestjs/common/interfaces";
 import { InfoGroup } from "../model/info.group.entity";
 import { InfoItem } from "../model/info.item.entity";
 import { UserInfo } from "../model/user.info.entity";
@@ -20,7 +21,7 @@ import { createHash } from "crypto";
 export class UserService {
 
     /* 其他模块的用户信息管理器组件数组 */
-    userInfoManagers: Array<UserInfoManager> = new Array();
+    userInfoManagers: Array<UserInfoManager & Injectable> = new Array();
 
     constructor(
         @Inject(Connection) private readonly connection: Connection,
