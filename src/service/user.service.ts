@@ -17,6 +17,8 @@ import { UserInfo } from "../model/user.info.entity";
 @Component()
 export class UserService {
 
+    userInfoManagers: Array<any> = new Array();
+
     constructor(
         @Inject("StoreComponentToken") private readonly storeComponent: StoreComponent,
         @InjectRepository(Func) private readonly funcRepository: Repository<Func>,
@@ -30,7 +32,7 @@ export class UserService {
     }
 
     async getUserById(id: number): Promise<{ id: number, userName: string, status: boolean, recycle: boolean } | undefined> {
-        return this.userRepository.findOneById(id, { select: [ "id", "userName", "status", "recycle" ] });
+        return this.userRepository.findOneById(id, { select: ["id", "userName", "status", "recycle"] });
     }
 
     async getUserByName(userName: string): Promise<User | undefined> {
@@ -42,7 +44,7 @@ export class UserService {
     }
 
     async getFreedomUsers(): Promise<Array<User>> {
-        const users: Array<User> = await this.userRepository.find({ relations: [ "organizations" ] });
+        const users: Array<User> = await this.userRepository.find({ relations: ["organizations"] });
         return users.filter(user => {
             return (
                 user.organizations === null || user.organizations === undefined || user.organizations.length === 0
@@ -56,7 +58,7 @@ export class UserService {
 
     /*返回用户信息时，需要提取其InfoItem对象以获取信息名称 */
     async userInfos(id: number): Promise<Array<{ name: string, value: string }>> {
-        const user: User | undefined = await this.userRepository.findOneById(id, { relations: [ "userInfos" ] });
+        const user: User | undefined = await this.userRepository.findOneById(id, { relations: ["userInfos"] });
         if (!user) {
             throw new HttpException("指定用户不存在", 406);
         }
@@ -72,7 +74,7 @@ export class UserService {
     }
 
     async roles(id: number): Promise<Array<Role>> {
-        const user: User | undefined = await this.userRepository.findOneById(id, { relations: [ "roles" ] });
+        const user: User | undefined = await this.userRepository.findOneById(id, { relations: ["roles"] });
         if (!user) {
             throw new HttpException("指定用户不存在", 406);
         }
@@ -82,7 +84,7 @@ export class UserService {
     async permissions(id: number): Promise<Array<Permission>> {
         const user: User | undefined = await this.userRepository.findOneById(
             id,
-            { relations: [ "roles", "adds", "reduces" ] },
+            { relations: ["roles", "adds", "reduces"] },
         );
         if (!user) {
             throw new HttpException("指定id=" + id + "用户不存在", 406);
@@ -96,14 +98,14 @@ export class UserService {
         // 遍历获取所有角色拥有的权限
         for (let i = 0; i < user.roles.length; i++) {
             const role: Role | undefined = await this.roleRepository.findOneById(
-                user.roles[ i ].id,
-                { relations: [ "funcs" ] },
+                user.roles[i].id,
+                { relations: ["funcs"] },
             );
             if (role && role.funcs && role.funcs.length > 0) {
                 for (let j = 0; j < role.funcs.length; j++) {
                     const func: Func | undefined = await this.funcRepository.findOneById(
-                        role.funcs[ i ].id,
-                        { relations: [ "permissions" ] },
+                        role.funcs[i].id,
+                        { relations: ["permissions"] },
                     );
                     if (func) {
                         temp = temp.concat(func.permissions);
@@ -198,10 +200,10 @@ export class UserService {
             infoItems: [],
         });
         for (let i = 0; i < groups.length; i++) {
-            const { groupId, infos } = groups[ i ];
+            const { groupId, infos } = groups[i];
             const group: InfoGroup | undefined = await this.infoGroupRepository.findOneById(
                 groupId,
-                { relations: [ "items" ] },
+                { relations: ["items"] },
             );
             if (!group) {
                 throw new HttpException("指定信息组id=" + groupId + "不存在", 408);
@@ -218,16 +220,16 @@ export class UserService {
     async addUserInfoToUser(req: IncomingMessage, id: number, groups: Array<{ groupId: number, infos: Array<UnionUserInfo> }>): Promise<void> {
         const user: User | undefined = await this.userRepository.findOneById(
             id,
-            { relations: [ "userInfos", "infoItems" ] },
+            { relations: ["userInfos", "infoItems"] },
         );
         if (!user) {
             throw new HttpException("指定id=" + id + "用户不存在", 406);
         }
         for (let i = 0; i < groups.length; i++) {
-            const { groupId, infos } = groups[ i ];
+            const { groupId, infos } = groups[i];
             const group: InfoGroup | undefined = await this.infoGroupRepository.findOneById(
                 groupId,
-                { relations: [ "items" ] },
+                { relations: ["items"] },
             );
             if (!group) {
                 throw new HttpException("指定信息组id=" + groupId + "不存在", 408);
@@ -251,7 +253,7 @@ export class UserService {
         });
         // 遍历得到的信息
         for (let j = 0; j < infos.length; j++) {
-            const { name }: UnionUserInfo = infos[ j ];
+            const { name }: UnionUserInfo = infos[j];
             // 查找名称匹配的信息项
             const match: InfoItem | undefined = items.find(item => {
                 return item.name === name;
@@ -261,14 +263,14 @@ export class UserService {
                 throw new HttpException("指定名称信息项:" + name + "不存在于信息组id=" + group.id + "中", 409);
             }
             /*获取根据信息项类型转换后的信息值 */
-            const result: string = await this.transfromInfoValue(req, match, infos[ j ]);
+            const result: string = await this.transfromInfoValue(req, match, infos[j]);
             /*如果此时user中已经包含同名信息项，后来的覆盖先前的，因为相同信息项可能存在于多个组当中，而添加时可能出现一次添加多个组信息的情况，所以可能出现同类信息项 */
             const userInfoIndex = user.userInfos.findIndex(userInfo => userInfo.infoItemId === match.id);
             if (userInfoIndex >= 0) {
                 /*如果当前遍历的信息项对应的信息已经存在于用户的信息当中，直接修改其value
                   当创建用户时，出现重复，修改value后就会只保存新的用户信息
                   当添加用户信息时，出现重复，就会修改以前的信息，并且cascaedUpdate*/
-                user.userInfos[ userInfoIndex ].value = result;
+                user.userInfos[userInfoIndex].value = result;
             } else {
                 /*不存在添加新的 */
                 user.userInfos.push(this.userInfoRepository.create({ infoItem: match, value: result }));
@@ -524,7 +526,7 @@ export class UserService {
     }
 
     async setRoles(id: number, roleIds: Array<number>): Promise<void> {
-        const user: User | undefined = await this.userRepository.findOneById(id, { relations: [ "roles" ] });
+        const user: User | undefined = await this.userRepository.findOneById(id, { relations: ["roles"] });
         if (!user) {
             throw new HttpException("指定id=" + id + "用户不存在", 406);
         }
@@ -548,7 +550,7 @@ export class UserService {
     async setPermissions(id: number, permissionIds: Array<number>): Promise<void> {
         const user: User | undefined = await this.userRepository.findOneById(
             id,
-            { relations: [ "roles", "adds", "reduces" ] },
+            { relations: ["roles", "adds", "reduces"] },
         );
         if (!user) {
             throw new HttpException("指定id=" + id + "用户不存在", 406);
@@ -562,14 +564,14 @@ export class UserService {
         // 遍历获取所有角色拥有的权限
         for (let i = 0; i < user.roles.length; i++) {
             const role: Role | undefined = await this.roleRepository.findOneById(
-                user.roles[ i ].id,
-                { relations: [ "funcs" ] },
+                user.roles[i].id,
+                { relations: ["funcs"] },
             );
             if (role && role.funcs && role.funcs.length > 0) {
                 for (let j = 0; j < role.funcs.length; j++) {
                     const func: Func | undefined = await this.funcRepository.findOneById(
-                        role.funcs[ i ].id,
-                        { relations: [ "permissions" ] },
+                        role.funcs[i].id,
+                        { relations: ["permissions"] },
                     );
                     if (func) {
                         temp = temp.concat(func.permissions);
