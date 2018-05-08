@@ -20,46 +20,49 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const common_1 = require("@nestjs/common");
 const modules_container_1 = require("@nestjs/core/injector/modules-container");
+const user_info_manager_decorator_1 = require("./decorator/user.info.manager.decorator");
 const permissions_decorator_1 = require("./decorator/permissions.decorator");
 const user_component_provider_1 = require("./export/user.component.provider");
 const organization_resolver_1 = require("./resolver/organization.resolver");
-const common_1 = require("@nestjs/common");
 const organization_service_1 = require("./service/organization.service");
 const score_type_resolver_1 = require("./resolver/score.type.resolver");
 const info_group_resolver_1 = require("./resolver/info.group.resolver");
 const typeorm_1 = require("@nestjs/typeorm");
 const info_item_resolver_1 = require("./resolver/info.item.resolver");
-const metadata_scanner_1 = require("@nestjs/core/metadata-scanner");
-const module_entity_1 = require("./model/module.entity");
-const organization_entity_1 = require("./model/organization.entity");
-const permission_guard_1 = require("./guard/permission.guard");
-const permission_entity_1 = require("./model/permission.entity");
-const info_group_entity_1 = require("./model/info.group.entity");
-const typeorm_2 = require("typeorm");
-const func_entity_1 = require("./model/func.entity");
-const info_item_entity_1 = require("./model/info.item.entity");
-const role_entity_1 = require("./model/role.entity");
-const score_entity_1 = require("./model/score.entity");
-const score_type_entity_1 = require("./model/score.type.entity");
-const user_entity_1 = require("./model/user.entity");
-const user_info_entity_1 = require("./model/user.info.entity");
-const func_resolver_1 = require("./resolver/func.resolver");
-const module_resolver_1 = require("./resolver/module.resolver");
-const role_resolver_1 = require("./resolver/role.resolver");
-const score_resolver_1 = require("./resolver/score.resolver");
-const user_resolver_1 = require("./resolver/user.resolver");
-const func_service_1 = require("./service/func.service");
-const info_group_service_1 = require("./service/info.group.service");
-const info_item_service_1 = require("./service/info.item.service");
-const module_service_1 = require("./service/module.service");
-const role_service_1 = require("./service/role.service");
-const score_service_1 = require("./service/score.service");
 const score_type_service_1 = require("./service/score.type.service");
+const metadata_scanner_1 = require("@nestjs/core/metadata-scanner");
+const info_group_service_1 = require("./service/info.group.service");
+const module_entity_1 = require("./model/module.entity");
+const info_item_service_1 = require("./service/info.item.service");
+const module_resolver_1 = require("./resolver/module.resolver");
+const organization_entity_1 = require("./model/organization.entity");
+const score_resolver_1 = require("./resolver/score.resolver");
+const module_service_1 = require("./service/module.service");
+const permission_guard_1 = require("./guard/permission.guard");
+const func_resolver_1 = require("./resolver/func.resolver");
+const role_resolver_1 = require("./resolver/role.resolver");
+const user_resolver_1 = require("./resolver/user.resolver");
+const score_service_1 = require("./service/score.service");
+const permission_entity_1 = require("./model/permission.entity");
+const module_1 = require("@nestjs/core/injector/module");
+const info_group_entity_1 = require("./model/info.group.entity");
+const score_type_entity_1 = require("./model/score.type.entity");
+const func_service_1 = require("./service/func.service");
+const role_service_1 = require("./service/role.service");
 const user_service_1 = require("./service/user.service");
+const user_info_entity_1 = require("./model/user.info.entity");
+const info_item_entity_1 = require("./model/info.item.entity");
 const float_util_1 = require("./util/float.util");
+const score_entity_1 = require("./model/score.entity");
+const func_entity_1 = require("./model/func.entity");
+const role_entity_1 = require("./model/role.entity");
+const user_entity_1 = require("./model/user.entity");
+const typeorm_2 = require("typeorm");
 let UserModule = class UserModule {
-    constructor(moduleMap, roleRepository, funcRepository, moduleRepository, infoItemRepository, scoreTypeRepository, infoGroupRepository, permissionRepository) {
+    constructor(userService, moduleMap, roleRepository, funcRepository, moduleRepository, infoItemRepository, scoreTypeRepository, infoGroupRepository, permissionRepository) {
+        this.userService = userService;
         this.moduleMap = moduleMap;
         this.roleRepository = roleRepository;
         this.funcRepository = funcRepository;
@@ -72,30 +75,35 @@ let UserModule = class UserModule {
     }
     onModuleInit() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.checkPermissionDefinition();
-            yield this.addDefaultInfoGroup();
-            yield this.addDefaultScoreType();
-        });
-    }
-    checkPermissionDefinition() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const modules = yield this.moduleRepository.find({
+            this.modules = yield this.moduleRepository.find({
                 relations: [
                     "permissions",
                     "funcs",
                     "roles",
                 ],
             });
+            yield this.iterateModule();
+            yield this.addDefaultInfoGroup();
+            yield this.addDefaultScoreType();
+        });
+    }
+    iterateModule() {
+        return __awaiter(this, void 0, void 0, function* () {
             for (const [key, value] of this.moduleMap.entries()) {
                 const token = key;
-                const components = [...value.components, ...value.routes];
+                const module = value;
+                const components = module.components;
+                const routes = module.routes;
                 const permissions = new Map();
-                for (const component of components) {
+                for (const component of [...components, ...routes]) {
                     const [key, value] = component;
+                    Reflect.defineMetadata(permission_guard_1.MODULE_TOKEN, token, value.metatype);
+                    if (Reflect.getMetadata(user_info_manager_decorator_1.USER_INFO_MANAGER, value.metatype) === true) {
+                        this.userService.userInfoManagers.push(value.instance);
+                    }
                     const isResolver = Reflect.getMetadata("graphql:resolver_type", value.metatype);
                     const isController = Reflect.getMetadata("path", value.metatype);
                     if (isResolver || isController) {
-                        Reflect.defineMetadata(permission_guard_1.MODULE_TOKEN, token, value.metatype);
                         const pers = Reflect.getMetadata(permissions_decorator_1.PERMISSION_DEFINITION, value.metatype);
                         pers && pers.forEach(per => {
                             permissions.set(per.name, per);
@@ -115,11 +123,11 @@ let UserModule = class UserModule {
                     for (const value of permissions.values()) {
                         pers.push(value);
                     }
-                    const index = modules.findIndex(module => {
+                    const index = this.modules.findIndex(module => {
                         return module.token === token;
                     });
                     if (index >= 0) {
-                        const module = modules[index];
+                        const module = this.modules[index];
                         for (const per of pers) {
                             const find = module.permissions.find(p => {
                                 return p.name === per.name;
@@ -141,7 +149,7 @@ let UserModule = class UserModule {
                                 yield this.permissionRepository.remove(p);
                             }
                         }
-                        modules.splice(index, 1);
+                        this.modules.splice(index, 1);
                     }
                     else if (pers.length > 0) {
                         const module = this.moduleRepository.create({ token, permissions: pers });
@@ -151,12 +159,12 @@ let UserModule = class UserModule {
                     }
                 }
             }
-            if (modules.length > 0) {
-                for (let i = 0; i < modules.length; i++) {
-                    yield this.roleRepository.remove(modules[i].roles);
-                    yield this.funcRepository.remove(modules[i].funcs);
-                    yield this.permissionRepository.remove(modules[i].permissions);
-                    yield this.moduleRepository.remove(modules[i]);
+            if (this.modules.length > 0) {
+                for (let i = 0; i < this.modules.length; i++) {
+                    yield this.roleRepository.remove(this.modules[i].roles);
+                    yield this.funcRepository.remove(this.modules[i].funcs);
+                    yield this.permissionRepository.remove(this.modules[i].permissions);
+                    yield this.moduleRepository.remove(this.modules[i]);
                 }
             }
         });
@@ -387,15 +395,17 @@ UserModule = __decorate([
             user_service_1.UserService,
         ],
     }),
-    __param(0, common_1.Inject(modules_container_1.ModulesContainer.name)),
-    __param(1, typeorm_1.InjectRepository(role_entity_1.Role)),
-    __param(2, typeorm_1.InjectRepository(func_entity_1.Func)),
-    __param(3, typeorm_1.InjectRepository(common_1.Module)),
-    __param(4, typeorm_1.InjectRepository(info_item_entity_1.InfoItem)),
-    __param(5, typeorm_1.InjectRepository(score_type_entity_1.ScoreType)),
-    __param(6, typeorm_1.InjectRepository(info_group_entity_1.InfoGroup)),
-    __param(7, typeorm_1.InjectRepository(permission_entity_1.Permission)),
-    __metadata("design:paramtypes", [modules_container_1.ModulesContainer,
+    __param(0, common_1.Inject(user_service_1.UserService)),
+    __param(1, common_1.Inject(modules_container_1.ModulesContainer.name)),
+    __param(2, typeorm_1.InjectRepository(role_entity_1.Role)),
+    __param(3, typeorm_1.InjectRepository(func_entity_1.Func)),
+    __param(4, typeorm_1.InjectRepository(module_1.Module)),
+    __param(5, typeorm_1.InjectRepository(info_item_entity_1.InfoItem)),
+    __param(6, typeorm_1.InjectRepository(score_type_entity_1.ScoreType)),
+    __param(7, typeorm_1.InjectRepository(info_group_entity_1.InfoGroup)),
+    __param(8, typeorm_1.InjectRepository(permission_entity_1.Permission)),
+    __metadata("design:paramtypes", [user_service_1.UserService,
+        modules_container_1.ModulesContainer,
         typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository,

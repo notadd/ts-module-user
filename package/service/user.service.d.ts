@@ -1,26 +1,29 @@
 /// <reference types="node" />
-import { IncomingMessage } from "http";
-import { Repository } from "typeorm";
-import { StoreComponent } from "../interface/store.component";
 import { UnionUserInfo } from "../interface/user/union.user.info";
-import { Func } from "../model/func.entity";
-import { InfoGroup } from "../model/info.group.entity";
-import { InfoItem } from "../model/info.item.entity";
+import { UserInfoManager } from "../interface/user.info.manager";
+import { StoreComponent } from "../interface/store.component";
+import { Repository, Connection } from "typeorm";
 import { Organization } from "../model/organization.entity";
 import { Permission } from "../model/permission.entity";
+import { InfoGroup } from "../model/info.group.entity";
+import { InfoItem } from "../model/info.item.entity";
+import { UserInfo } from "../model/user.info.entity";
+import { Func } from "../model/func.entity";
 import { Role } from "../model/role.entity";
 import { User } from "../model/user.entity";
-import { UserInfo } from "../model/user.info.entity";
+import { IncomingMessage } from "http";
 export declare class UserService {
-    private readonly storeComponent;
+    private readonly connection;
     private readonly funcRepository;
     private readonly roleRepository;
     private readonly userRepository;
+    private readonly storeComponent;
     private readonly userInfoRepository;
     private readonly infoGroupRepository;
     private readonly permissionRepository;
     private readonly organizationRepository;
-    constructor(storeComponent: StoreComponent, funcRepository: Repository<Func>, roleRepository: Repository<Role>, userRepository: Repository<User>, userInfoRepository: Repository<UserInfo>, infoGroupRepository: Repository<InfoGroup>, permissionRepository: Repository<Permission>, organizationRepository: Repository<Organization>);
+    userInfoManagers: Array<UserInfoManager>;
+    constructor(connection: Connection, funcRepository: Repository<Func>, roleRepository: Repository<Role>, userRepository: Repository<User>, storeComponent: StoreComponent, userInfoRepository: Repository<UserInfo>, infoGroupRepository: Repository<InfoGroup>, permissionRepository: Repository<Permission>, organizationRepository: Repository<Organization>);
     getUserById(id: number): Promise<{
         id: number;
         userName: string;
