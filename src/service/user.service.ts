@@ -18,9 +18,6 @@ import { createHash } from "crypto";
 @Component()
 export class UserService {
 
-    /* 其他模块的用户信息管理器组件数组 */
-    userInfoManagers: Array<UserInfoManager> = new Array();
-
     constructor(
         @Inject(Connection) private readonly connection: Connection,
         @InjectRepository(Func) private readonly funcRepository: Repository<Func>,
@@ -501,21 +498,11 @@ export class UserService {
         if (!exist.recycle) {
             throw new HttpException("指定id=" + id + "用户不存在回收站中", 406);
         }
-        const queryRunner: QueryRunner = this.connection.createQueryRunner("master");
-        await queryRunner.startTransaction();
         try {
-            /* 在一个事务中删除用户以及其他模块中用户信息 */
-            await queryRunner.manager.remove(exist);
-            for (let i = 0; i < this.userInfoManagers.length; i++) {
-                await this.userInfoManagers[i].deleteUserInfo(queryRunner.manager, id);
-            }
-            await queryRunner.commitTransaction();
+            await this.userRepository.remove(exist);
         } catch (err) {
-            await queryRunner.rollbackTransaction();
-        } finally {
-            await queryRunner.release();
+            throw new HttpException("数据库错误" + err.toString(), 401);
         }
-
     }
 
     async deleteUsers(ids: Array<number>): Promise<void> {

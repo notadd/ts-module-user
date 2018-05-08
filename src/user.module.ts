@@ -91,7 +91,6 @@ export class UserModule implements OnModuleInit {
     private modules: Array<ModuleEntity>;
 
     constructor(
-        @Inject(UserService) private readonly userService: UserService,
         @Inject(ModulesContainer.name) private readonly moduleMap: ModulesContainer,
         @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
         @InjectRepository(Func) private readonly funcRepository: Repository<Func>,
@@ -145,10 +144,6 @@ export class UserModule implements OnModuleInit {
                 const [key, value] = component;
                 /* 在需要进行权限判断的组件类上定义模块token，用来在guard中判断权限属于哪个模块 */
                 Reflect.defineMetadata(MODULE_TOKEN, token, value.metatype);
-                /* 如果组件为用户信息管理器，将它添加到UserService */
-                if (Reflect.getMetadata(USER_INFO_MANAGER, value.metatype) === true) {
-                    this.userService.userInfoManagers.push(value.instance as any);
-                }
                 // 只有resolver、controller才会被遍历，其他组件上定义权限无效
                 const isResolver = Reflect.getMetadata("graphql:resolver_type", value.metatype);
                 const isController = Reflect.getMetadata("path", value.metatype);
