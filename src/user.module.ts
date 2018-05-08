@@ -223,7 +223,7 @@ export class UserModule implements OnModuleInit {
                         }
                     }
                     // 将已经扫描到的模块从既有模块数组中移除
-                    modules.splice(index, 1);
+                    this.modules.splice(index, 1);
                 } else if (pers.length > 0) {
                     // 模块不存在，直接保存它与相应权限
                     const module: ModuleEntity = this.moduleRepository.create({ token, permissions: pers });

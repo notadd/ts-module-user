@@ -50,8 +50,9 @@ let PermissionGuard = class PermissionGuard {
             const classAnd = Reflect.getMetadata(can_decorator_1.PERMISSION_CONTROLLER_AND, parent) || [];
             const token = Reflect.getMetadata(exports.MODULE_TOKEN, parent);
             const classPass = this.checkPermission(permissions, classAnd, classOr, token);
-            if (!classPass)
+            if (!classPass) {
                 return false;
+            }
             const methodOr = Reflect.getMetadata(can_decorator_1.PERMISSION_CONTROLLER_OR, handler) || [];
             const methodAnd = Reflect.getMetadata(can_decorator_1.PERMISSION_CONTROLLER_AND, handler) || [];
             const methodPass = this.checkPermission(permissions, methodAnd, methodOr, token);

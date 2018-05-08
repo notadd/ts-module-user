@@ -149,7 +149,7 @@ let UserModule = class UserModule {
                                 yield this.permissionRepository.remove(p);
                             }
                         }
-                        modules.splice(index, 1);
+                        this.modules.splice(index, 1);
                     }
                     else if (pers.length > 0) {
                         const module = this.moduleRepository.create({ token, permissions: pers });
