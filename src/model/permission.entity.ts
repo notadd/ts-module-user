@@ -69,4 +69,3 @@ export class Permission {
     })
     module: Module;
 }
-

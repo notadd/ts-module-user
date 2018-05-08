@@ -8,6 +8,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const typeorm_utils_1 = require("@nestjs/typeorm/typeorm.utils");
+const func_entity_1 = require("../model/func.entity");
+const role_entity_1 = require("../model/role.entity");
+const user_entity_1 = require("../model/user.entity");
 const crypto = require("crypto");
 class UserComponent {
     constructor(funcRepository, roleRepository, userRepository) {
@@ -96,12 +100,13 @@ class UserComponent {
     }
 }
 exports.UserComponent = UserComponent;
+exports.UserComponentToken = "UserComponentToken";
 exports.UserComponentProvider = {
-    provide: "UserComponentToken",
+    provide: exports.UserComponentToken,
     useFactory: (funcRepository, roleRepository, userRepository) => {
         return new UserComponent(funcRepository, roleRepository, userRepository);
     },
-    inject: ["FuncRepository", "RoleRepository", "UserRepository"]
+    inject: [typeorm_utils_1.getRepositoryToken(func_entity_1.Func), typeorm_utils_1.getRepositoryToken(role_entity_1.Role), typeorm_utils_1.getRepositoryToken(user_entity_1.User)]
 };
 
 //# sourceMappingURL=user.component.provider.js.map

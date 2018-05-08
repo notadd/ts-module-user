@@ -52,7 +52,7 @@ export class PermissionGuard implements CanActivate {
         const token = Reflect.getMetadata(MODULE_TOKEN, parent);
         // 检查类上控制权限
         const classPass = this.checkPermission(permissions, classAnd, classOr, token);
-        if (!classPass) return false;
+        if (!classPass) { return false; }
         // 获取方法上定义权限
         const methodOr: Array<string> = Reflect.getMetadata(PERMISSION_CONTROLLER_OR, handler) || [];
         const methodAnd: Array<string> = Reflect.getMetadata(PERMISSION_CONTROLLER_AND, handler) || [];

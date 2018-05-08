@@ -21,26 +21,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
-const typeorm_1 = require("@nestjs/typeorm");
-const crypto_1 = require("crypto");
-const typeorm_2 = require("typeorm");
-const func_entity_1 = require("../model/func.entity");
-const info_group_entity_1 = require("../model/info.group.entity");
+const typeorm_1 = require("typeorm");
 const organization_entity_1 = require("../model/organization.entity");
 const permission_entity_1 = require("../model/permission.entity");
+const info_group_entity_1 = require("../model/info.group.entity");
+const user_info_entity_1 = require("../model/user.info.entity");
+const typeorm_2 = require("@nestjs/typeorm");
+const func_entity_1 = require("../model/func.entity");
 const role_entity_1 = require("../model/role.entity");
 const user_entity_1 = require("../model/user.entity");
-const user_info_entity_1 = require("../model/user.info.entity");
+const crypto_1 = require("crypto");
 let UserService = class UserService {
-    constructor(storeComponent, funcRepository, roleRepository, userRepository, userInfoRepository, infoGroupRepository, permissionRepository, organizationRepository) {
-        this.storeComponent = storeComponent;
+    constructor(connection, funcRepository, roleRepository, userRepository, storeComponent, userInfoRepository, infoGroupRepository, permissionRepository, organizationRepository) {
+        this.connection = connection;
         this.funcRepository = funcRepository;
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
+        this.storeComponent = storeComponent;
         this.userInfoRepository = userInfoRepository;
         this.infoGroupRepository = infoGroupRepository;
         this.permissionRepository = permissionRepository;
         this.organizationRepository = organizationRepository;
+        this.userInfoManagers = new Array();
     }
     getUserById(id) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -456,11 +458,20 @@ let UserService = class UserService {
             if (!exist.recycle) {
                 throw new common_1.HttpException("指定id=" + id + "用户不存在回收站中", 406);
             }
+            const queryRunner = this.connection.createQueryRunner("master");
+            yield queryRunner.startTransaction();
             try {
-                yield this.userRepository.remove(exist);
+                yield queryRunner.manager.remove(exist);
+                for (let i = 0; i < this.userInfoManagers.length; i++) {
+                    yield this.userInfoManagers[i].deleteUserInfo(queryRunner.manager, id);
+                }
+                yield queryRunner.commitTransaction();
             }
             catch (err) {
-                throw new common_1.HttpException("数据库错误" + err.toString(), 401);
+                yield queryRunner.rollbackTransaction();
+            }
+            finally {
+                yield queryRunner.release();
             }
         });
     }
@@ -569,21 +580,22 @@ let UserService = class UserService {
 };
 UserService = __decorate([
     common_1.Component(),
-    __param(0, common_1.Inject("StoreComponentToken")),
-    __param(1, typeorm_1.InjectRepository(func_entity_1.Func)),
-    __param(2, typeorm_1.InjectRepository(role_entity_1.Role)),
-    __param(3, typeorm_1.InjectRepository(user_entity_1.User)),
-    __param(4, typeorm_1.InjectRepository(user_info_entity_1.UserInfo)),
-    __param(5, typeorm_1.InjectRepository(info_group_entity_1.InfoGroup)),
-    __param(6, typeorm_1.InjectRepository(permission_entity_1.Permission)),
-    __param(7, typeorm_1.InjectRepository(organization_entity_1.Organization)),
-    __metadata("design:paramtypes", [Object, typeorm_2.Repository,
-        typeorm_2.Repository,
-        typeorm_2.Repository,
-        typeorm_2.Repository,
-        typeorm_2.Repository,
-        typeorm_2.Repository,
-        typeorm_2.Repository])
+    __param(0, common_1.Inject(typeorm_1.Connection)),
+    __param(1, typeorm_2.InjectRepository(func_entity_1.Func)),
+    __param(2, typeorm_2.InjectRepository(role_entity_1.Role)),
+    __param(3, typeorm_2.InjectRepository(user_entity_1.User)),
+    __param(4, common_1.Inject("StoreComponentToken")),
+    __param(5, typeorm_2.InjectRepository(user_info_entity_1.UserInfo)),
+    __param(6, typeorm_2.InjectRepository(info_group_entity_1.InfoGroup)),
+    __param(7, typeorm_2.InjectRepository(permission_entity_1.Permission)),
+    __param(8, typeorm_2.InjectRepository(organization_entity_1.Organization)),
+    __metadata("design:paramtypes", [typeorm_1.Connection,
+        typeorm_1.Repository,
+        typeorm_1.Repository,
+        typeorm_1.Repository, Object, typeorm_1.Repository,
+        typeorm_1.Repository,
+        typeorm_1.Repository,
+        typeorm_1.Repository])
 ], UserService);
 exports.UserService = UserService;
 

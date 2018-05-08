@@ -41,7 +41,6 @@ import { Role } from "./model/role.entity";
 import { User } from "./model/user.entity";
 import { Repository } from "typeorm";
 
-
 @Global()
 @ModuleDecorator({
     modules: [

@@ -19,6 +19,7 @@ export declare class UserComponent {
         recycle: boolean;
     }): Promise<boolean>;
 }
+export declare const UserComponentToken = "UserComponentToken";
 export declare const UserComponentProvider: {
     provide: string;
     useFactory: (funcRepository: Repository<Func>, roleRepository: Repository<Role>, userRepository: Repository<User>) => UserComponent;
