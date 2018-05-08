@@ -1,6 +1,5 @@
 /// <reference types="node" />
 import { UnionUserInfo } from "../interface/user/union.user.info";
-import { UserInfoManager } from "../interface/user.info.manager";
 import { StoreComponent } from "../interface/store.component";
 import { Repository, Connection } from "typeorm";
 import { Organization } from "../model/organization.entity";
@@ -22,7 +21,6 @@ export declare class UserService {
     private readonly infoGroupRepository;
     private readonly permissionRepository;
     private readonly organizationRepository;
-    userInfoManagers: Array<UserInfoManager>;
     constructor(connection: Connection, funcRepository: Repository<Func>, roleRepository: Repository<Role>, userRepository: Repository<User>, storeComponent: StoreComponent, userInfoRepository: Repository<UserInfo>, infoGroupRepository: Repository<InfoGroup>, permissionRepository: Repository<Permission>, organizationRepository: Repository<Organization>);
     getUserById(id: number): Promise<{
         id: number;

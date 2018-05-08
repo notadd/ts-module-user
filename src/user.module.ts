@@ -1,6 +1,5 @@
 import { Global, Inject, Module as ModuleDecorator, OnModuleInit } from "@nestjs/common";
 import { ModulesContainer } from "@nestjs/core/injector/modules-container";
-import { USER_INFO_MANAGER } from "./decorator/user.info.manager.decorator";
 import { PERMISSION_DEFINITION } from "./decorator/permissions.decorator";
 import { UserComponentProvider } from "./export/user.component.provider";
 import { OrganizationResolver } from "./resolver/organization.resolver";

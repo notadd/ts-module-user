@@ -4,13 +4,11 @@ import { Module as ModuleEntity } from "./model/module.entity";
 import { Permission } from "./model/permission.entity";
 import { InfoGroup } from "./model/info.group.entity";
 import { ScoreType } from "./model/score.type.entity";
-import { UserService } from "./service/user.service";
 import { InfoItem } from "./model/info.item.entity";
 import { Func } from "./model/func.entity";
 import { Role } from "./model/role.entity";
 import { Repository } from "typeorm";
 export declare class UserModule implements OnModuleInit {
-    private readonly userService;
     private readonly moduleMap;
     private readonly roleRepository;
     private readonly funcRepository;
@@ -21,7 +19,7 @@ export declare class UserModule implements OnModuleInit {
     private readonly permissionRepository;
     private readonly metadataScanner;
     private modules;
-    constructor(userService: UserService, moduleMap: ModulesContainer, roleRepository: Repository<Role>, funcRepository: Repository<Func>, moduleRepository: Repository<ModuleEntity>, infoItemRepository: Repository<InfoItem>, scoreTypeRepository: Repository<ScoreType>, infoGroupRepository: Repository<InfoGroup>, permissionRepository: Repository<Permission>);
+    constructor(moduleMap: ModulesContainer, roleRepository: Repository<Role>, funcRepository: Repository<Func>, moduleRepository: Repository<ModuleEntity>, infoItemRepository: Repository<InfoItem>, scoreTypeRepository: Repository<ScoreType>, infoGroupRepository: Repository<InfoGroup>, permissionRepository: Repository<Permission>);
     onModuleInit(): Promise<void>;
     iterateModule(): Promise<void>;
     addDefaultInfoGroup(): Promise<void>;

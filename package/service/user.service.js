@@ -42,7 +42,6 @@ let UserService = class UserService {
         this.infoGroupRepository = infoGroupRepository;
         this.permissionRepository = permissionRepository;
         this.organizationRepository = organizationRepository;
-        this.userInfoManagers = new Array();
     }
     getUserById(id) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -458,20 +457,11 @@ let UserService = class UserService {
             if (!exist.recycle) {
                 throw new common_1.HttpException("指定id=" + id + "用户不存在回收站中", 406);
             }
-            const queryRunner = this.connection.createQueryRunner("master");
-            yield queryRunner.startTransaction();
             try {
-                yield queryRunner.manager.remove(exist);
-                for (let i = 0; i < this.userInfoManagers.length; i++) {
-                    yield this.userInfoManagers[i].deleteUserInfo(queryRunner.manager, id);
-                }
-                yield queryRunner.commitTransaction();
+                yield this.userRepository.remove(exist);
             }
             catch (err) {
-                yield queryRunner.rollbackTransaction();
-            }
-            finally {
-                yield queryRunner.release();
+                throw new common_1.HttpException("数据库错误" + err.toString(), 401);
             }
         });
     }

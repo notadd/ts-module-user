@@ -22,7 +22,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
 const modules_container_1 = require("@nestjs/core/injector/modules-container");
-const user_info_manager_decorator_1 = require("./decorator/user.info.manager.decorator");
 const permissions_decorator_1 = require("./decorator/permissions.decorator");
 const user_component_provider_1 = require("./export/user.component.provider");
 const organization_resolver_1 = require("./resolver/organization.resolver");
@@ -61,8 +60,7 @@ const role_entity_1 = require("./model/role.entity");
 const user_entity_1 = require("./model/user.entity");
 const typeorm_2 = require("typeorm");
 let UserModule = class UserModule {
-    constructor(userService, moduleMap, roleRepository, funcRepository, moduleRepository, infoItemRepository, scoreTypeRepository, infoGroupRepository, permissionRepository) {
-        this.userService = userService;
+    constructor(moduleMap, roleRepository, funcRepository, moduleRepository, infoItemRepository, scoreTypeRepository, infoGroupRepository, permissionRepository) {
         this.moduleMap = moduleMap;
         this.roleRepository = roleRepository;
         this.funcRepository = funcRepository;
@@ -98,9 +96,6 @@ let UserModule = class UserModule {
                 for (const component of [...components, ...routes]) {
                     const [key, value] = component;
                     Reflect.defineMetadata(permission_guard_1.MODULE_TOKEN, token, value.metatype);
-                    if (Reflect.getMetadata(user_info_manager_decorator_1.USER_INFO_MANAGER, value.metatype) === true) {
-                        this.userService.userInfoManagers.push(value.instance);
-                    }
                     const isResolver = Reflect.getMetadata("graphql:resolver_type", value.metatype);
                     const isController = Reflect.getMetadata("path", value.metatype);
                     if (isResolver || isController) {
@@ -395,17 +390,15 @@ UserModule = __decorate([
             user_service_1.UserService,
         ],
     }),
-    __param(0, common_1.Inject(user_service_1.UserService)),
-    __param(1, common_1.Inject(modules_container_1.ModulesContainer.name)),
-    __param(2, typeorm_1.InjectRepository(role_entity_1.Role)),
-    __param(3, typeorm_1.InjectRepository(func_entity_1.Func)),
-    __param(4, typeorm_1.InjectRepository(module_1.Module)),
-    __param(5, typeorm_1.InjectRepository(info_item_entity_1.InfoItem)),
-    __param(6, typeorm_1.InjectRepository(score_type_entity_1.ScoreType)),
-    __param(7, typeorm_1.InjectRepository(info_group_entity_1.InfoGroup)),
-    __param(8, typeorm_1.InjectRepository(permission_entity_1.Permission)),
-    __metadata("design:paramtypes", [user_service_1.UserService,
-        modules_container_1.ModulesContainer,
+    __param(0, common_1.Inject(modules_container_1.ModulesContainer.name)),
+    __param(1, typeorm_1.InjectRepository(role_entity_1.Role)),
+    __param(2, typeorm_1.InjectRepository(func_entity_1.Func)),
+    __param(3, typeorm_1.InjectRepository(module_1.Module)),
+    __param(4, typeorm_1.InjectRepository(info_item_entity_1.InfoItem)),
+    __param(5, typeorm_1.InjectRepository(score_type_entity_1.ScoreType)),
+    __param(6, typeorm_1.InjectRepository(info_group_entity_1.InfoGroup)),
+    __param(7, typeorm_1.InjectRepository(permission_entity_1.Permission)),
+    __metadata("design:paramtypes", [modules_container_1.ModulesContainer,
         typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository,

@@ -1,5 +1,4 @@
 import { ArrayInfo, FileInfo, TextInfo, UnionUserInfo } from "../interface/user/union.user.info";
-import { UserInfoManager, ModuleUserInfo } from "../interface/user.info.manager";
 import { Component, HttpException, Inject } from "@nestjs/common";
 import { StoreComponent } from "../interface/store.component";
 import { Repository, Connection, QueryRunner } from "typeorm";
