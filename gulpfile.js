@@ -15,6 +15,7 @@ const source = "src";
 const modules = Object.keys(packages);
 
 gulp.task("default", function () {
+    console.log("进入gulp")
     tasks();
 });
 
