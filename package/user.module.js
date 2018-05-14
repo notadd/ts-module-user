@@ -348,7 +348,7 @@ let UserModule = class UserModule {
 UserModule = __decorate([
     common_1.Global(),
     common_1.Module({
-        modules: [
+        imports: [
             typeorm_1.TypeOrmModule.forFeature([
                 module_entity_1.Module,
                 organization_entity_1.Organization,
@@ -363,7 +363,7 @@ UserModule = __decorate([
                 permission_entity_1.Permission,
             ]),
         ],
-        components: [
+        providers: [
             float_util_1.FloatUtil,
             organization_service_1.OrganizationService,
             organization_resolver_1.OrganizationResolver,

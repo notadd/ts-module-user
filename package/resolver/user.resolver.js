@@ -22,7 +22,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
 const graphql_1 = require("@nestjs/graphql");
-const http_1 = require("http");
 const exception_interceptor_1 = require("../interceptor/exception.interceptor");
 const user_service_1 = require("../service/user.service");
 let UserResolver = class UserResolver {
@@ -229,97 +228,97 @@ __decorate([
 __decorate([
     graphql_1.Query("userInfos"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "userInfos", null);
 __decorate([
     graphql_1.Query("rolesInUser"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "rolesInUser", null);
 __decorate([
     graphql_1.Query("permissionsInUser"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "permissionsInUser", null);
 __decorate([
     graphql_1.Mutation("createUser"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "createUser", null);
 __decorate([
     graphql_1.Mutation("createUserWithUserInfo"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "createUserWithUserInfo", null);
 __decorate([
     graphql_1.Mutation("addUserInfo"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "addUserInfo", null);
 __decorate([
     graphql_1.Mutation("updateUser"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "updateUser", null);
 __decorate([
     graphql_1.Mutation("bannedUser"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "bannedUser", null);
 __decorate([
     graphql_1.Mutation("unBannedUser"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "unBannedUser", null);
 __decorate([
     graphql_1.Mutation("softDeleteUser"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "softDeleteUser", null);
 __decorate([
     graphql_1.Mutation("restoreUser"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "restoreUser", null);
 __decorate([
     graphql_1.Mutation("restoreUsers"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "restoreUsers", null);
 __decorate([
     graphql_1.Mutation("deleteUser"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "deleteUser", null);
 __decorate([
     graphql_1.Mutation("deleteUsers"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "deleteUsers", null);
 __decorate([
     graphql_1.Mutation("setRoles"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "setRoles", null);
 __decorate([
     graphql_1.Mutation("setUserOwnPermissions"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "setUserOwnPermissions", null);
 UserResolver = __decorate([

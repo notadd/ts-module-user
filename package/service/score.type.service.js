@@ -50,7 +50,7 @@ let ScoreTypeService = class ScoreTypeService {
     }
     updateScoreType(id, name, type, description) {
         return __awaiter(this, void 0, void 0, function* () {
-            const original = yield this.scoreTypeRepository.findOneById(id);
+            const original = yield this.scoreTypeRepository.findOne(id);
             if (!original) {
                 throw new common_1.HttpException("指定id=" + id + "积分类型不存在", 425);
             }
@@ -76,7 +76,7 @@ let ScoreTypeService = class ScoreTypeService {
     }
     deleteScoreType(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const exist = yield this.scoreTypeRepository.findOneById(id);
+            const exist = yield this.scoreTypeRepository.findOne(id);
             if (!exist) {
                 throw new common_1.HttpException("指定id=" + id + "积分类型不存在", 425);
             }
@@ -115,7 +115,7 @@ let ScoreTypeService = class ScoreTypeService {
     }
 };
 ScoreTypeService = __decorate([
-    common_1.Component(),
+    common_1.Injectable(),
     __param(0, typeorm_1.InjectRepository(score_type_entity_1.ScoreType)),
     __metadata("design:paramtypes", [typeorm_2.Repository])
 ], ScoreTypeService);

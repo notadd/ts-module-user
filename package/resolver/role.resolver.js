@@ -22,7 +22,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
 const graphql_1 = require("@nestjs/graphql");
-const http_1 = require("http");
 const exception_interceptor_1 = require("../interceptor/exception.interceptor");
 const role_service_1 = require("../service/role.service");
 let RoleResolver = class RoleResolver {
@@ -73,25 +72,25 @@ let RoleResolver = class RoleResolver {
 __decorate([
     graphql_1.Mutation("createRole"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], RoleResolver.prototype, "createRole", null);
 __decorate([
     graphql_1.Mutation("updateRole"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], RoleResolver.prototype, "updateRole", null);
 __decorate([
     graphql_1.Mutation("deleteRole"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], RoleResolver.prototype, "deleteRole", null);
 __decorate([
     graphql_1.Mutation("setFuncs"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], RoleResolver.prototype, "setFuncs", null);
 RoleResolver = __decorate([

@@ -58,8 +58,7 @@ __decorate([
 ], User.prototype, "recycle", void 0);
 __decorate([
     typeorm_1.OneToMany(type => user_info_entity_1.UserInfo, userInfo => userInfo.user, {
-        cascadeInsert: true,
-        cascadeUpdate: true,
+        cascade: ["insert", "update"],
         lazy: false,
         eager: false
     }),
@@ -67,8 +66,7 @@ __decorate([
 ], User.prototype, "userInfos", void 0);
 __decorate([
     typeorm_1.OneToMany(type => score_entity_1.Score, score => score.user, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
+        cascade: ["insert"],
         lazy: false,
         eager: false
     }),
@@ -76,8 +74,7 @@ __decorate([
 ], User.prototype, "scores", void 0);
 __decorate([
     typeorm_1.ManyToMany(type => info_item_entity_1.InfoItem, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
+        cascade: ["insert"],
         lazy: false,
         eager: false
     }),
@@ -88,8 +85,7 @@ __decorate([
 ], User.prototype, "infoItems", void 0);
 __decorate([
     typeorm_1.ManyToMany(type => permission_entity_1.Permission, permission => permission.addUsers, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
+        cascade: ["insert"],
         lazy: false,
         eager: false
     }),
@@ -100,8 +96,7 @@ __decorate([
 ], User.prototype, "adds", void 0);
 __decorate([
     typeorm_1.ManyToMany(type => permission_entity_1.Permission, permission => permission.reduceUsers, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
+        cascade: ["insert"],
         lazy: false,
         eager: false
     }),
@@ -112,8 +107,7 @@ __decorate([
 ], User.prototype, "reduces", void 0);
 __decorate([
     typeorm_1.ManyToMany(type => role_entity_1.Role, role => role.users, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
+        cascade: ["insert"],
         lazy: false,
         eager: false
     }),
@@ -124,8 +118,7 @@ __decorate([
 ], User.prototype, "roles", void 0);
 __decorate([
     typeorm_1.ManyToMany(type => organization_entity_1.Organization, organization => organization.users, {
-        cascadeInsert: true,
-        cascadeUpdate: true,
+        cascade: ["insert"],
         lazy: false,
         eager: false
     }),

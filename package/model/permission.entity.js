@@ -34,8 +34,7 @@ __decorate([
 ], Permission.prototype, "description", void 0);
 __decorate([
     typeorm_1.ManyToMany(type => user_entity_1.User, user => user.adds, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
+        cascade: ["insert"],
         lazy: false,
         eager: false
     }),
@@ -43,8 +42,7 @@ __decorate([
 ], Permission.prototype, "addUsers", void 0);
 __decorate([
     typeorm_1.ManyToMany(type => user_entity_1.User, user => user.reduces, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
+        cascade: ["insert"],
         lazy: false,
         eager: false
     }),
@@ -58,9 +56,7 @@ __decorate([
 ], Permission.prototype, "moduleToken", void 0);
 __decorate([
     typeorm_1.ManyToOne(type => module_entity_1.Module, module => module.permissions, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
-        cascadeRemove: false,
+        cascade: ["insert"],
         onDelete: "RESTRICT",
         nullable: false,
         lazy: false,

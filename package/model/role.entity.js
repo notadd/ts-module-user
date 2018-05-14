@@ -34,8 +34,7 @@ __decorate([
 ], Role.prototype, "score", void 0);
 __decorate([
     typeorm_1.ManyToMany(type => func_entity_1.Func, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
+        cascade: ["insert"],
         lazy: false,
         eager: false
     }),
@@ -50,9 +49,7 @@ __decorate([
 ], Role.prototype, "moduleToken", void 0);
 __decorate([
     typeorm_1.ManyToOne(type => module_entity_1.Module, module => module.roles, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
-        cascadeRemove: false,
+        cascade: ["insert"],
         onDelete: "RESTRICT",
         nullable: false,
         lazy: false,
@@ -66,8 +63,7 @@ __decorate([
 ], Role.prototype, "module", void 0);
 __decorate([
     typeorm_1.ManyToMany(type => user_entity_1.User, user => user.roles, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
+        cascade: ["insert"],
         lazy: false,
         eager: false
     }),

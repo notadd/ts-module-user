@@ -1,31 +1,31 @@
-/// <reference types="node" />
-import { IncomingMessage } from "http";
-import { Data } from "../interface/data";
+/// <reference types="express" />
 import { InfoGroupsData } from "../interface/infoGroup/info.groups.data";
 import { InfoItemsData } from "../interface/infoGroup/info.items.data";
 import { InfoGroupService } from "../service/info.group.service";
+import { Data } from "../interface/data";
+import { Request } from "express";
 export declare class InfoGroupResolver {
     private readonly infoGroupService;
     constructor(infoGroupService: InfoGroupService);
     infoGroups(): Promise<InfoGroupsData>;
-    infoItems(req: IncomingMessage, body: {
+    infoItems(req: Request, body: {
         id: number;
     }): Promise<InfoItemsData>;
-    createInfoGroup(req: IncomingMessage, body: {
+    createInfoGroup(req: Request, body: {
         name: string;
     }): Promise<Data>;
-    updateInfoGroup(req: IncomingMessage, body: {
+    updateInfoGroup(req: Request, body: {
         id: number;
         name: string;
     }): Promise<Data>;
-    deleteInfoGroup(req: IncomingMessage, body: {
+    deleteInfoGroup(req: Request, body: {
         id: number;
     }): Promise<Data>;
-    addInfoItem(req: IncomingMessage, body: {
+    addInfoItem(req: Request, body: {
         id: number;
         infoItemId: number;
     }): Promise<Data>;
-    removeInfoItem(req: IncomingMessage, body: {
+    removeInfoItem(req: Request, body: {
         id: number;
         infoItemId: number;
     }): Promise<Data>;

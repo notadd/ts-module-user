@@ -33,9 +33,7 @@ __decorate([
 ], Score.prototype, "scoreTypeId", void 0);
 __decorate([
     typeorm_1.ManyToOne(type => score_type_entity_1.ScoreType, scoreType => scoreType.scores, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
-        cascadeRemove: false,
+        cascade: ["insert"],
         onDelete: "CASCADE",
         lazy: false,
         eager: false
@@ -52,9 +50,7 @@ __decorate([
 ], Score.prototype, "userId", void 0);
 __decorate([
     typeorm_1.ManyToOne(type => user_entity_1.User, user => user.scores, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
-        cascadeRemove: false,
+        cascade: ["insert"],
         onDelete: "CASCADE",
         lazy: false,
         eager: false

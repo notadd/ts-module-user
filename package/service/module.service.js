@@ -35,7 +35,7 @@ let ModuleService = class ModuleService {
     }
 };
 ModuleService = __decorate([
-    common_1.Component(),
+    common_1.Injectable(),
     __param(0, typeorm_1.InjectRepository(module_entity_1.Module)),
     __metadata("design:paramtypes", [typeorm_2.Repository])
 ], ModuleService);

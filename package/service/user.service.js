@@ -45,7 +45,7 @@ let UserService = class UserService {
     }
     getUserById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.userRepository.findOneById(id, { select: ["id", "userName", "status", "recycle"] });
+            return this.userRepository.findOne(id, { select: ["id", "userName", "status", "recycle"] });
         });
     }
     getUserByName(userName) {
@@ -73,7 +73,7 @@ let UserService = class UserService {
     }
     userInfos(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield this.userRepository.findOneById(id, { relations: ["userInfos"] });
+            const user = yield this.userRepository.findOne(id, { relations: ["userInfos"] });
             if (!user) {
                 throw new common_1.HttpException("指定用户不存在", 406);
             }
@@ -89,7 +89,7 @@ let UserService = class UserService {
     }
     roles(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield this.userRepository.findOneById(id, { relations: ["roles"] });
+            const user = yield this.userRepository.findOne(id, { relations: ["roles"] });
             if (!user) {
                 throw new common_1.HttpException("指定用户不存在", 406);
             }
@@ -98,7 +98,7 @@ let UserService = class UserService {
     }
     permissions(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield this.userRepository.findOneById(id, { relations: ["roles", "adds", "reduces"] });
+            const user = yield this.userRepository.findOne(id, { relations: ["roles", "adds", "reduces"] });
             if (!user) {
                 throw new common_1.HttpException("指定id=" + id + "用户不存在", 406);
             }
@@ -106,10 +106,10 @@ let UserService = class UserService {
             let temp = [];
             const ids = new Set();
             for (let i = 0; i < user.roles.length; i++) {
-                const role = yield this.roleRepository.findOneById(user.roles[i].id, { relations: ["funcs"] });
+                const role = yield this.roleRepository.findOne(user.roles[i].id, { relations: ["funcs"] });
                 if (role && role.funcs && role.funcs.length > 0) {
                     for (let j = 0; j < role.funcs.length; j++) {
-                        const func = yield this.funcRepository.findOneById(role.funcs[i].id, { relations: ["permissions"] });
+                        const func = yield this.funcRepository.findOne(role.funcs[i].id, { relations: ["permissions"] });
                         if (func) {
                             temp = temp.concat(func.permissions);
                         }
@@ -147,7 +147,7 @@ let UserService = class UserService {
         return __awaiter(this, void 0, void 0, function* () {
             const organizations = [];
             if (organizationId) {
-                const organization = yield this.organizationRepository.findOneById(organizationId);
+                const organization = yield this.organizationRepository.findOne(organizationId);
                 if (!organization) {
                     throw new common_1.HttpException("指定id=" + organizationId + "组织不存在", 402);
                 }
@@ -179,7 +179,7 @@ let UserService = class UserService {
         return __awaiter(this, void 0, void 0, function* () {
             const organizations = [];
             if (organizationId) {
-                const organization = yield this.organizationRepository.findOneById(organizationId);
+                const organization = yield this.organizationRepository.findOne(organizationId);
                 if (!organization) {
                     throw new common_1.HttpException("指定id=" + organizationId + "组织不存在", 402);
                 }
@@ -203,7 +203,7 @@ let UserService = class UserService {
             });
             for (let i = 0; i < groups.length; i++) {
                 const { groupId, infos } = groups[i];
-                const group = yield this.infoGroupRepository.findOneById(groupId, { relations: ["items"] });
+                const group = yield this.infoGroupRepository.findOne(groupId, { relations: ["items"] });
                 if (!group) {
                     throw new common_1.HttpException("指定信息组id=" + groupId + "不存在", 408);
                 }
@@ -219,13 +219,13 @@ let UserService = class UserService {
     }
     addUserInfoToUser(req, id, groups) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield this.userRepository.findOneById(id, { relations: ["userInfos", "infoItems"] });
+            const user = yield this.userRepository.findOne(id, { relations: ["userInfos", "infoItems"] });
             if (!user) {
                 throw new common_1.HttpException("指定id=" + id + "用户不存在", 406);
             }
             for (let i = 0; i < groups.length; i++) {
                 const { groupId, infos } = groups[i];
-                const group = yield this.infoGroupRepository.findOneById(groupId, { relations: ["items"] });
+                const group = yield this.infoGroupRepository.findOne(groupId, { relations: ["items"] });
                 if (!group) {
                     throw new common_1.HttpException("指定信息组id=" + groupId + "不存在", 408);
                 }
@@ -325,7 +325,7 @@ let UserService = class UserService {
     }
     updateUser(id, userName, password) {
         return __awaiter(this, void 0, void 0, function* () {
-            const exist = yield this.userRepository.findOneById(id);
+            const exist = yield this.userRepository.findOne(id);
             if (!exist) {
                 throw new common_1.HttpException("指定id=" + id + "用户不存在", 406);
             }
@@ -349,7 +349,7 @@ let UserService = class UserService {
     }
     bannedUser(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const exist = yield this.userRepository.findOneById(id);
+            const exist = yield this.userRepository.findOne(id);
             if (!exist) {
                 throw new common_1.HttpException("指定id=" + id + "用户不存在", 406);
             }
@@ -370,7 +370,7 @@ let UserService = class UserService {
     }
     unBannedUser(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const exist = yield this.userRepository.findOneById(id);
+            const exist = yield this.userRepository.findOne(id);
             if (!exist) {
                 throw new common_1.HttpException("指定id=" + id + "用户不存在", 406);
             }
@@ -391,7 +391,7 @@ let UserService = class UserService {
     }
     softDeleteUser(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const exist = yield this.userRepository.findOneById(id);
+            const exist = yield this.userRepository.findOne(id);
             if (!exist) {
                 throw new common_1.HttpException("指定id=" + id + "用户不存在", 406);
             }
@@ -409,7 +409,7 @@ let UserService = class UserService {
     }
     restoreUser(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const exist = yield this.userRepository.findOneById(id);
+            const exist = yield this.userRepository.findOne(id);
             if (!exist) {
                 throw new common_1.HttpException("指定id=" + id + "用户不存在", 406);
             }
@@ -450,7 +450,7 @@ let UserService = class UserService {
     }
     deleteUser(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const exist = yield this.userRepository.findOneById(id);
+            const exist = yield this.userRepository.findOne(id);
             if (!exist) {
                 throw new common_1.HttpException("指定id=" + id + "用户不存在", 406);
             }
@@ -489,7 +489,7 @@ let UserService = class UserService {
     }
     setRoles(id, roleIds) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield this.userRepository.findOneById(id, { relations: ["roles"] });
+            const user = yield this.userRepository.findOne(id, { relations: ["roles"] });
             if (!user) {
                 throw new common_1.HttpException("指定id=" + id + "用户不存在", 406);
             }
@@ -513,7 +513,7 @@ let UserService = class UserService {
     }
     setPermissions(id, permissionIds) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield this.userRepository.findOneById(id, { relations: ["roles", "adds", "reduces"] });
+            const user = yield this.userRepository.findOne(id, { relations: ["roles", "adds", "reduces"] });
             if (!user) {
                 throw new common_1.HttpException("指定id=" + id + "用户不存在", 406);
             }
@@ -521,10 +521,10 @@ let UserService = class UserService {
             let temp = [];
             const ids = new Set();
             for (let i = 0; i < user.roles.length; i++) {
-                const role = yield this.roleRepository.findOneById(user.roles[i].id, { relations: ["funcs"] });
+                const role = yield this.roleRepository.findOne(user.roles[i].id, { relations: ["funcs"] });
                 if (role && role.funcs && role.funcs.length > 0) {
                     for (let j = 0; j < role.funcs.length; j++) {
-                        const func = yield this.funcRepository.findOneById(role.funcs[i].id, { relations: ["permissions"] });
+                        const func = yield this.funcRepository.findOne(role.funcs[i].id, { relations: ["permissions"] });
                         if (func) {
                             temp = temp.concat(func.permissions);
                         }
@@ -569,7 +569,7 @@ let UserService = class UserService {
     }
 };
 UserService = __decorate([
-    common_1.Component(),
+    common_1.Injectable(),
     __param(0, common_1.Inject(typeorm_1.Connection)),
     __param(1, typeorm_2.InjectRepository(func_entity_1.Func)),
     __param(2, typeorm_2.InjectRepository(role_entity_1.Role)),

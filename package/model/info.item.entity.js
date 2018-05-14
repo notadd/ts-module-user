@@ -79,8 +79,7 @@ __decorate([
 ], InfoItem.prototype, "order", void 0);
 __decorate([
     typeorm_1.OneToMany(type => user_info_entity_1.UserInfo, userInfo => userInfo.infoItem, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
+        cascade: ["insert"],
         lazy: false,
         eager: false
     }),
@@ -88,8 +87,7 @@ __decorate([
 ], InfoItem.prototype, "userInfos", void 0);
 __decorate([
     typeorm_1.ManyToMany(type => info_group_entity_1.InfoGroup, infoGroup => infoGroup.items, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
+        cascade: ["insert"],
         lazy: false,
         eager: false
     }),

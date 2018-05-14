@@ -1,11 +1,11 @@
-/// <reference types="node" />
-import { IncomingMessage } from "http";
-import { Data } from "../interface/data";
+/// <reference types="express" />
 import { InfoItemService } from "../service/info.item.service";
+import { Data } from "../interface/data";
+import { Request } from "express";
 export declare class InfoItemResolver {
     private readonly infoItemService;
     constructor(infoItemService: InfoItemService);
-    createInfoItem(req: IncomingMessage, body: {
+    createInfoItem(req: Request, body: {
         name: string;
         label: string;
         description: string;
@@ -15,7 +15,7 @@ export declare class InfoItemResolver {
         informationVisible: boolean;
         order: number;
     }): Promise<Data>;
-    updateInfoItem(req: IncomingMessage, body: {
+    updateInfoItem(req: Request, body: {
         id: number;
         name: string;
         label: string;
@@ -26,10 +26,10 @@ export declare class InfoItemResolver {
         informationVisible: boolean;
         order: number;
     }): Promise<Data>;
-    deleteInfoItem(req: IncomingMessage, body: {
+    deleteInfoItem(req: Request, body: {
         id: number;
     }): Promise<Data>;
-    deleteInfoItems(req: IncomingMessage, body: {
+    deleteInfoItems(req: Request, body: {
         ids: Array<number>;
     }): Promise<Data>;
 }

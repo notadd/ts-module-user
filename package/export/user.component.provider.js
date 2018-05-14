@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const typeorm_utils_1 = require("@nestjs/typeorm/typeorm.utils");
+const typeorm_1 = require("@nestjs/typeorm");
 const func_entity_1 = require("../model/func.entity");
 const role_entity_1 = require("../model/role.entity");
 const user_entity_1 = require("../model/user.entity");
@@ -21,7 +21,7 @@ class UserComponent {
     }
     permissions(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield this.userRepository.findOneById(id, { relations: ["roles", "adds", "reduces"] });
+            const user = yield this.userRepository.findOne(id, { relations: ["roles", "adds", "reduces"] });
             if (!user) {
                 return [];
             }
@@ -29,10 +29,10 @@ class UserComponent {
             let temp = [];
             const ids = new Set();
             for (let i = 0; i < user.roles.length; i++) {
-                const role = yield this.roleRepository.findOneById(user.roles[i].id, { relations: ["funcs"] });
+                const role = yield this.roleRepository.findOne(user.roles[i].id, { relations: ["funcs"] });
                 if (role && role.funcs && role.funcs.length > 0) {
                     for (let j = 0; j < role.funcs.length; j++) {
-                        const func = yield this.funcRepository.findOneById(role.funcs[i].id, { relations: ["permissions"] });
+                        const func = yield this.funcRepository.findOne(role.funcs[i].id, { relations: ["permissions"] });
                         if (func) {
                             temp = temp.concat(func.permissions);
                         }
@@ -79,12 +79,12 @@ class UserComponent {
             if (passwordWithSalt !== user.password) {
                 return false;
             }
-            return this.userRepository.findOneById(user.id, { select: ["id", "userName", "status", "recycle"] });
+            return this.userRepository.findOne(user.id, { select: ["id", "userName", "status", "recycle"] });
         });
     }
     getUserById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.userRepository.findOneById(id, { select: ["id", "userName", "status", "recycle"] });
+            return this.userRepository.findOne(id, { select: ["id", "userName", "status", "recycle"] });
         });
     }
     getUserByName(userName) {
@@ -106,7 +106,7 @@ exports.UserComponentProvider = {
     useFactory: (funcRepository, roleRepository, userRepository) => {
         return new UserComponent(funcRepository, roleRepository, userRepository);
     },
-    inject: [typeorm_utils_1.getRepositoryToken(func_entity_1.Func), typeorm_utils_1.getRepositoryToken(role_entity_1.Role), typeorm_utils_1.getRepositoryToken(user_entity_1.User)]
+    inject: [typeorm_1.getRepositoryToken(func_entity_1.Func), typeorm_1.getRepositoryToken(role_entity_1.Role), typeorm_1.getRepositoryToken(user_entity_1.User)]
 };
 
 //# sourceMappingURL=user.component.provider.js.map

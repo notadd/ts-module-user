@@ -20,18 +20,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const common_1 = require("@nestjs/common");
 const can_decorator_1 = require("../decorator/can.decorator");
+const common_1 = require("@nestjs/common");
 const user_component_provider_1 = require("../export/user.component.provider");
 exports.MODULE_TOKEN = "module_token";
 let PermissionGuard = class PermissionGuard {
     constructor(userComponent) {
         this.userComponent = userComponent;
     }
-    canActivate(req, context) {
+    canActivate(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { parent, handler } = context;
-            const auth = req.headers.authentication;
+            const parent = context.getClass();
+            const handler = context.getHandler();
+            const auth = context.switchToHttp().getRequest().headers.authentication;
             const user = { id: 1, recycle: false, status: true };
             let permissions;
             if (user) {
@@ -85,7 +86,7 @@ let PermissionGuard = class PermissionGuard {
     }
 };
 PermissionGuard = __decorate([
-    common_1.Guard(),
+    common_1.Injectable(),
     __param(0, common_1.Inject("UserComponentToken")),
     __metadata("design:paramtypes", [user_component_provider_1.UserComponent])
 ], PermissionGuard);

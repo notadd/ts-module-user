@@ -49,8 +49,7 @@ __decorate([
 ], ScoreType.prototype, "description", void 0);
 __decorate([
     typeorm_1.OneToMany(type => score_entity_1.Score, score => score.scoreType, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
+        cascade: ["insert"],
         lazy: false,
         eager: false
     }),

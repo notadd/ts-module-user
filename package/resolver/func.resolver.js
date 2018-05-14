@@ -20,11 +20,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const common_1 = require("@nestjs/common");
-const graphql_1 = require("@nestjs/graphql");
-const http_1 = require("http");
 const exception_interceptor_1 = require("../interceptor/exception.interceptor");
+const common_1 = require("@nestjs/common");
 const func_service_1 = require("../service/func.service");
+const graphql_1 = require("@nestjs/graphql");
 let FuncResolver = class FuncResolver {
     constructor(funcService) {
         this.funcService = funcService;
@@ -73,25 +72,25 @@ let FuncResolver = class FuncResolver {
 __decorate([
     graphql_1.Mutation("createFunc"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], FuncResolver.prototype, "createFunc", null);
 __decorate([
     graphql_1.Mutation("updateFunc"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], FuncResolver.prototype, "updateFunc", null);
 __decorate([
     graphql_1.Mutation("deleteFunc"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], FuncResolver.prototype, "deleteFunc", null);
 __decorate([
     graphql_1.Mutation("setPermissions"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], FuncResolver.prototype, "setPermissions", null);
 FuncResolver = __decorate([

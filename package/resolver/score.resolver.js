@@ -22,7 +22,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
 const graphql_1 = require("@nestjs/graphql");
-const http_1 = require("http");
 const exception_interceptor_1 = require("../interceptor/exception.interceptor");
 const score_service_1 = require("../service/score.service");
 let ScoreResolver = class ScoreResolver {
@@ -53,13 +52,13 @@ let ScoreResolver = class ScoreResolver {
 __decorate([
     graphql_1.Query("getScore"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], ScoreResolver.prototype, "getScore", null);
 __decorate([
     graphql_1.Mutation("setScore"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], ScoreResolver.prototype, "setScore", null);
 ScoreResolver = __decorate([

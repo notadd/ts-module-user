@@ -1,5 +1,5 @@
-/// <reference types="node" />
-import { IncomingMessage } from "http";
+/// <reference types="express" />
+import { Request } from "express";
 import { Data } from "../interface/data";
 import { CreateUserBody } from "../interface/user/create.user.body";
 import { FreedomUsersData } from "../interface/user/freedom.users.data";
@@ -17,56 +17,56 @@ export declare class UserResolver {
     users(): Promise<UsersData>;
     freedomUsers(): Promise<FreedomUsersData>;
     recycleUsers(): Promise<RecycleUsersData>;
-    userInfos(req: IncomingMessage, body: {
+    userInfos(req: Request, body: {
         id: number;
     }): Promise<UserInfosData>;
-    rolesInUser(req: IncomingMessage, body: {
+    rolesInUser(req: Request, body: {
         id: number;
     }): Promise<RolesData>;
-    permissionsInUser(req: IncomingMessage, body: {
+    permissionsInUser(req: Request, body: {
         id: number;
     }): Promise<PermissionsData>;
-    createUser(req: IncomingMessage, body: CreateUserBody): Promise<Data>;
-    createUserWithUserInfo(req: IncomingMessage, body: CreateUserBody & {
+    createUser(req: Request, body: CreateUserBody): Promise<Data>;
+    createUserWithUserInfo(req: Request, body: CreateUserBody & {
         groups: Array<{
             groupId: number;
             infos: Array<UnionUserInfo>;
         }>;
     }): Promise<Data>;
-    addUserInfo(req: IncomingMessage, body: {
+    addUserInfo(req: Request, body: {
         id: number;
         groups: Array<{
             groupId: number;
             infos: Array<UnionUserInfo>;
         }>;
     }): Promise<Data>;
-    updateUser(req: IncomingMessage, body: UpdateUserBody): Promise<Data>;
-    bannedUser(req: IncomingMessage, body: {
+    updateUser(req: Request, body: UpdateUserBody): Promise<Data>;
+    bannedUser(req: Request, body: {
         id: number;
     }): Promise<Data>;
-    unBannedUser(req: IncomingMessage, body: {
+    unBannedUser(req: Request, body: {
         id: number;
     }): Promise<Data>;
-    softDeleteUser(req: IncomingMessage, body: {
+    softDeleteUser(req: Request, body: {
         id: number;
     }): Promise<Data>;
-    restoreUser(req: IncomingMessage, body: {
+    restoreUser(req: Request, body: {
         id: number;
     }): Promise<Data>;
-    restoreUsers(req: IncomingMessage, body: {
+    restoreUsers(req: Request, body: {
         ids: Array<number>;
     }): Promise<Data>;
-    deleteUser(req: IncomingMessage, body: {
+    deleteUser(req: Request, body: {
         id: number;
     }): Promise<Data>;
-    deleteUsers(req: IncomingMessage, body: {
+    deleteUsers(req: Request, body: {
         ids: Array<number>;
     }): Promise<Data>;
-    setRoles(req: IncomingMessage, body: {
+    setRoles(req: Request, body: {
         id: number;
         roleIds: Array<number>;
     }): Promise<Data>;
-    setUserOwnPermissions(req: IncomingMessage, body: {
+    setUserOwnPermissions(req: Request, body: {
         id: number;
         permissionIds: Array<number>;
     }): Promise<Data>;

@@ -20,11 +20,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const common_1 = require("@nestjs/common");
-const graphql_1 = require("@nestjs/graphql");
-const http_1 = require("http");
 const exception_interceptor_1 = require("../interceptor/exception.interceptor");
+const common_1 = require("@nestjs/common");
 const info_group_service_1 = require("../service/info.group.service");
+const graphql_1 = require("@nestjs/graphql");
 let InfoGroupResolver = class InfoGroupResolver {
     constructor(infoGroupService) {
         this.infoGroupService = infoGroupService;
@@ -105,37 +104,37 @@ __decorate([
 __decorate([
     graphql_1.Query("infoItems"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], InfoGroupResolver.prototype, "infoItems", null);
 __decorate([
     graphql_1.Mutation("createInfoGroup"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], InfoGroupResolver.prototype, "createInfoGroup", null);
 __decorate([
     graphql_1.Mutation("updateInfoGroup"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], InfoGroupResolver.prototype, "updateInfoGroup", null);
 __decorate([
     graphql_1.Mutation("deleteInfoGroup"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], InfoGroupResolver.prototype, "deleteInfoGroup", null);
 __decorate([
     graphql_1.Mutation("addInfoItem"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], InfoGroupResolver.prototype, "addInfoItem", null);
 __decorate([
     graphql_1.Mutation("removeInfoItem"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], InfoGroupResolver.prototype, "removeInfoItem", null);
 InfoGroupResolver = __decorate([

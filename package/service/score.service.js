@@ -36,11 +36,11 @@ let ScoreService = class ScoreService {
     }
     getScore(userId, scoreTypeId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const scoreType = yield this.scoreTypeRepository.findOneById(scoreTypeId);
+            const scoreType = yield this.scoreTypeRepository.findOne(scoreTypeId);
             if (!scoreType) {
                 throw new common_1.HttpException("指定id=" + scoreTypeId + "积分类型不存在", 427);
             }
-            const user = yield this.userRepository.findOneById(userId, { relations: ["scores"] });
+            const user = yield this.userRepository.findOne(userId, { relations: ["scores"] });
             if (!user) {
                 throw new common_1.HttpException("指定id=" + userId + "用户不存在", 428);
             }
@@ -69,11 +69,11 @@ let ScoreService = class ScoreService {
     }
     setScore(userId, scoreTypeId, add) {
         return __awaiter(this, void 0, void 0, function* () {
-            const scoreType = yield this.scoreTypeRepository.findOneById(scoreTypeId);
+            const scoreType = yield this.scoreTypeRepository.findOne(scoreTypeId);
             if (!scoreType) {
                 throw new common_1.HttpException("指定id=" + scoreTypeId + "积分类型不存在", 427);
             }
-            const user = yield this.userRepository.findOneById(userId, { relations: ["scores"] });
+            const user = yield this.userRepository.findOne(userId, { relations: ["scores"] });
             if (!user) {
                 throw new common_1.HttpException("指定id=" + userId + "用户不存在", 428);
             }
@@ -107,7 +107,7 @@ let ScoreService = class ScoreService {
     }
 };
 ScoreService = __decorate([
-    common_1.Component(),
+    common_1.Injectable(),
     __param(0, common_1.Inject(float_util_1.FloatUtil)),
     __param(1, typeorm_1.InjectRepository(user_entity_1.User)),
     __param(2, typeorm_1.InjectRepository(score_entity_1.Score)),

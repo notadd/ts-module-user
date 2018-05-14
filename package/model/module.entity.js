@@ -24,8 +24,7 @@ __decorate([
 ], Module.prototype, "token", void 0);
 __decorate([
     typeorm_1.OneToMany(type => permission_entity_1.Permission, permission => permission.module, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
+        cascade: ["insert"],
         lazy: false,
         eager: false
     }),
@@ -33,8 +32,7 @@ __decorate([
 ], Module.prototype, "permissions", void 0);
 __decorate([
     typeorm_1.OneToMany(type => func_entity_1.Func, func => func.module, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
+        cascade: ["insert"],
         lazy: false,
         eager: false
     }),
@@ -42,8 +40,7 @@ __decorate([
 ], Module.prototype, "funcs", void 0);
 __decorate([
     typeorm_1.OneToMany(type => role_entity_1.Role, role => role.module, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
+        cascade: ["insert"],
         lazy: false,
         eager: false
     }),

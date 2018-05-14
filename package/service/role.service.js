@@ -34,7 +34,7 @@ let RoleService = class RoleService {
     }
     createRole(moduleToken, name, score) {
         return __awaiter(this, void 0, void 0, function* () {
-            const module = yield this.moduleRepository.findOneById(moduleToken);
+            const module = yield this.moduleRepository.findOne(moduleToken);
             if (!module) {
                 throw new common_1.HttpException("指定模块token=" + moduleToken + "不存在", 415);
             }
@@ -53,7 +53,7 @@ let RoleService = class RoleService {
     }
     updateRole(id, name, score) {
         return __awaiter(this, void 0, void 0, function* () {
-            const role = yield this.roleRepository.findOneById(id);
+            const role = yield this.roleRepository.findOne(id);
             if (!role) {
                 throw new common_1.HttpException("指定id=" + id + "角色不存在", 421);
             }
@@ -75,7 +75,7 @@ let RoleService = class RoleService {
     }
     deleteRole(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const role = yield this.roleRepository.findOneById(id);
+            const role = yield this.roleRepository.findOne(id);
             if (!role) {
                 throw new common_1.HttpException("指定id=" + id + "角色不存在", 421);
             }
@@ -89,7 +89,7 @@ let RoleService = class RoleService {
     }
     setFuncs(id, funcIds) {
         return __awaiter(this, void 0, void 0, function* () {
-            const role = yield this.roleRepository.findOneById(id);
+            const role = yield this.roleRepository.findOne(id);
             if (!role) {
                 throw new common_1.HttpException("指定id=" + id + "角色不存在", 421);
             }
@@ -116,7 +116,7 @@ let RoleService = class RoleService {
     }
 };
 RoleService = __decorate([
-    common_1.Component(),
+    common_1.Injectable(),
     __param(0, typeorm_1.InjectRepository(func_entity_1.Func)),
     __param(1, typeorm_1.InjectRepository(role_entity_1.Role)),
     __param(2, typeorm_1.InjectRepository(module_entity_1.Module)),

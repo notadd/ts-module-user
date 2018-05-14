@@ -22,7 +22,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
 const graphql_1 = require("@nestjs/graphql");
-const http_1 = require("http");
 const exception_interceptor_1 = require("../interceptor/exception.interceptor");
 const score_type_service_1 = require("../service/score.type.service");
 let ScoreTypeResolver = class ScoreTypeResolver {
@@ -91,25 +90,25 @@ __decorate([
 __decorate([
     graphql_1.Mutation("createScoreType"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], ScoreTypeResolver.prototype, "createScoreType", null);
 __decorate([
     graphql_1.Mutation("updateScoreType"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], ScoreTypeResolver.prototype, "updateScoreType", null);
 __decorate([
     graphql_1.Mutation("deleteScoreType"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], ScoreTypeResolver.prototype, "deleteScoreType", null);
 __decorate([
     graphql_1.Mutation("deleteScoreTypes"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], ScoreTypeResolver.prototype, "deleteScoreTypes", null);
 ScoreTypeResolver = __decorate([

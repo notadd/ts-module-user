@@ -33,9 +33,7 @@ __decorate([
 ], UserInfo.prototype, "userId", void 0);
 __decorate([
     typeorm_1.ManyToOne(type => user_entity_1.User, user => user.userInfos, {
-        cascadeInsert: false,
-        cascadeUpdate: false,
-        cascadeRemove: false,
+        cascade: false,
         nullable: true,
         onDelete: "CASCADE",
         lazy: false,
@@ -55,9 +53,7 @@ __decorate([
 ], UserInfo.prototype, "infoItemId", void 0);
 __decorate([
     typeorm_1.ManyToOne(type => info_item_entity_1.InfoItem, infoItem => infoItem.userInfos, {
-        cascadeInsert: false,
-        cascadeUpdate: false,
-        cascadeRemove: false,
+        cascade: false,
         nullable: true,
         onDelete: "CASCADE",
         lazy: false,

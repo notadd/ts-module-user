@@ -37,7 +37,7 @@ let InfoGroupService = class InfoGroupService {
     }
     getInfoItems(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const infoGroup = yield this.infoGroupRepository.findOneById(id, { relations: ["items"] });
+            const infoGroup = yield this.infoGroupRepository.findOne(id, { relations: ["items"] });
             return infoGroup ? infoGroup.items : undefined;
         });
     }
@@ -58,7 +58,7 @@ let InfoGroupService = class InfoGroupService {
     }
     updateInfoGroup(id, name) {
         return __awaiter(this, void 0, void 0, function* () {
-            const exist = yield this.infoGroupRepository.findOneById(id);
+            const exist = yield this.infoGroupRepository.findOne(id);
             if (!exist) {
                 throw new common_1.HttpException("给定id=" + id + "信息组不存在", 408);
             }
@@ -82,7 +82,7 @@ let InfoGroupService = class InfoGroupService {
     }
     deleteInfoGroup(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const exist = yield this.infoGroupRepository.findOneById(id);
+            const exist = yield this.infoGroupRepository.findOne(id);
             if (!exist) {
                 throw new common_1.HttpException("给定id=" + id + "信息组不存在", 408);
             }
@@ -99,14 +99,14 @@ let InfoGroupService = class InfoGroupService {
     }
     addInfoItem(id, infoItemId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const group = yield this.infoGroupRepository.findOneById(id, { relations: ["items"] });
+            const group = yield this.infoGroupRepository.findOne(id, { relations: ["items"] });
             if (!group) {
                 throw new common_1.HttpException("给定id=" + id + "信息组不存在", 408);
             }
             if (group.default) {
                 throw new common_1.HttpException("默认信息组不可更改", 408);
             }
-            const item = yield this.infoItemRepository.findOneById(infoItemId);
+            const item = yield this.infoItemRepository.findOne(infoItemId);
             if (!item) {
                 throw new common_1.HttpException("指定id=" + infoItemId + "信息项不存在", 409);
             }
@@ -130,14 +130,14 @@ let InfoGroupService = class InfoGroupService {
     }
     removeInfoItem(id, infoItemId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const group = yield this.infoGroupRepository.findOneById(id, { relations: ["items"] });
+            const group = yield this.infoGroupRepository.findOne(id, { relations: ["items"] });
             if (!group) {
                 throw new common_1.HttpException("给定id=" + id + "信息组不存在", 408);
             }
             if (group.default) {
                 throw new common_1.HttpException("默认信息组不可更改", 408);
             }
-            const item = yield this.infoItemRepository.findOneById(infoItemId);
+            const item = yield this.infoItemRepository.findOne(infoItemId);
             if (!item) {
                 throw new common_1.HttpException("指定id=" + infoItemId + "信息项不存在", 409);
             }
@@ -158,7 +158,7 @@ let InfoGroupService = class InfoGroupService {
     }
 };
 InfoGroupService = __decorate([
-    common_1.Component(),
+    common_1.Injectable(),
     __param(0, typeorm_1.InjectRepository(info_item_entity_1.InfoItem)),
     __param(1, typeorm_1.InjectRepository(info_group_entity_1.InfoGroup)),
     __metadata("design:paramtypes", [typeorm_2.Repository,

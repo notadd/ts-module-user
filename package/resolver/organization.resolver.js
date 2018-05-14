@@ -20,11 +20,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const common_1 = require("@nestjs/common");
-const graphql_1 = require("@nestjs/graphql");
-const http_1 = require("http");
 const exception_interceptor_1 = require("../interceptor/exception.interceptor");
+const common_1 = require("@nestjs/common");
 const organization_service_1 = require("../service/organization.service");
+const graphql_1 = require("@nestjs/graphql");
 let OrganizationResolver = class OrganizationResolver {
     constructor(organizationService) {
         this.organizationService = organizationService;
@@ -147,7 +146,7 @@ __decorate([
 __decorate([
     graphql_1.Query("children"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], OrganizationResolver.prototype, "children", null);
 __decorate([
@@ -159,49 +158,49 @@ __decorate([
 __decorate([
     graphql_1.Mutation("createOrganization"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], OrganizationResolver.prototype, "createOrganization", null);
 __decorate([
     graphql_1.Mutation("updateOrganization"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], OrganizationResolver.prototype, "updateOrganization", null);
 __decorate([
     graphql_1.Mutation("deleteOrganization"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], OrganizationResolver.prototype, "deleteOrganization", null);
 __decorate([
     graphql_1.Query("usersInOrganization"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], OrganizationResolver.prototype, "usersInOrganization", null);
 __decorate([
     graphql_1.Mutation("addUserToOrganization"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], OrganizationResolver.prototype, "addUserToOrganization", null);
 __decorate([
     graphql_1.Mutation("addUsersToOrganization"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], OrganizationResolver.prototype, "addUsersToOrganization", null);
 __decorate([
     graphql_1.Mutation("removeUserFromOrganization"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], OrganizationResolver.prototype, "removeUserFromOrganization", null);
 __decorate([
     graphql_1.Mutation("removeUsersFromOrganization"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], OrganizationResolver.prototype, "removeUsersFromOrganization", null);
 OrganizationResolver = __decorate([

@@ -34,7 +34,7 @@ let FuncService = class FuncService {
     }
     createFunc(moduleToken, name) {
         return __awaiter(this, void 0, void 0, function* () {
-            const module = yield this.moduleRepository.findOneById(moduleToken);
+            const module = yield this.moduleRepository.findOne(moduleToken);
             if (!module) {
                 throw new common_1.HttpException("指定模块token=" + moduleToken + "不存在", 415);
             }
@@ -53,7 +53,7 @@ let FuncService = class FuncService {
     }
     updateFunc(id, name) {
         return __awaiter(this, void 0, void 0, function* () {
-            const func = yield this.funcRepository.findOneById(id);
+            const func = yield this.funcRepository.findOne(id);
             if (!func) {
                 throw new common_1.HttpException("指定id=" + id + "功能不存在", 417);
             }
@@ -74,7 +74,7 @@ let FuncService = class FuncService {
     }
     deleteFunc(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const func = yield this.funcRepository.findOneById(id);
+            const func = yield this.funcRepository.findOne(id);
             if (!func) {
                 throw new common_1.HttpException("指定id=" + id + "功能不存在", 417);
             }
@@ -88,7 +88,7 @@ let FuncService = class FuncService {
     }
     setPermissions(id, permissionIds) {
         return __awaiter(this, void 0, void 0, function* () {
-            const func = yield this.funcRepository.findOneById(id, { relations: ["permissions"] });
+            const func = yield this.funcRepository.findOne(id, { relations: ["permissions"] });
             if (!func) {
                 throw new common_1.HttpException("指定id=" + id + "功能不存在", 417);
             }
@@ -115,7 +115,7 @@ let FuncService = class FuncService {
     }
 };
 FuncService = __decorate([
-    common_1.Component(),
+    common_1.Injectable(),
     __param(0, typeorm_1.InjectRepository(func_entity_1.Func)),
     __param(1, typeorm_1.InjectRepository(module_entity_1.Module)),
     __param(2, typeorm_1.InjectRepository(permission_entity_1.Permission)),

@@ -10,8 +10,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("typeorm");
-const module_entity_1 = require("./module.entity");
 const permission_entity_1 = require("./permission.entity");
+const module_entity_1 = require("./module.entity");
 let Func = class Func {
 };
 __decorate([
@@ -27,8 +27,7 @@ __decorate([
 ], Func.prototype, "name", void 0);
 __decorate([
     typeorm_1.ManyToMany(type => permission_entity_1.Permission, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
+        cascade: ["insert"],
         lazy: false,
         eager: false
     }),
@@ -45,9 +44,7 @@ __decorate([
 ], Func.prototype, "moduleToken", void 0);
 __decorate([
     typeorm_1.ManyToOne(type => module_entity_1.Module, module => module.funcs, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
-        cascadeRemove: false,
+        cascade: ["insert"],
         onDelete: "RESTRICT",
         nullable: false,
         lazy: false,

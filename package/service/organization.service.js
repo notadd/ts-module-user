@@ -38,7 +38,7 @@ let OrganizationService = class OrganizationService {
     }
     getChildren(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const o = yield this.organizationRepository.findOneById(id, { relations: ["children"] });
+            const o = yield this.organizationRepository.findOne(id, { relations: ["children"] });
             if (!o) {
                 throw new common_1.HttpException("指定父组织id=" + id + "不存在", 402);
             }
@@ -54,7 +54,7 @@ let OrganizationService = class OrganizationService {
         return __awaiter(this, void 0, void 0, function* () {
             let parent;
             if (parentId !== undefined && parentId !== null) {
-                parent = yield this.organizationRepository.findOneById(parentId);
+                parent = yield this.organizationRepository.findOne(parentId);
                 if (!parent) {
                     throw new common_1.HttpException("指定父组织id=" + parentId + "不存在", 402);
                 }
@@ -74,7 +74,7 @@ let OrganizationService = class OrganizationService {
     }
     updateOrganization(id, name, parentId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const exist = yield this.organizationRepository.findOneById(id);
+            const exist = yield this.organizationRepository.findOne(id);
             if (!exist) {
                 throw new common_1.HttpException("指定id=" + id + "组织不存在", 404);
             }
@@ -86,7 +86,7 @@ let OrganizationService = class OrganizationService {
             }
             let parent;
             if (parentId !== undefined && parentId !== null) {
-                parent = yield this.organizationRepository.findOneById(parentId);
+                parent = yield this.organizationRepository.findOne(parentId);
                 if (!parent) {
                     throw new common_1.HttpException("指定父组织id=" + parentId + "不存在", 402);
                 }
@@ -103,7 +103,7 @@ let OrganizationService = class OrganizationService {
     }
     deleteOrganization(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const exist = yield this.organizationRepository.findOneById(id, { relations: ["children"] });
+            const exist = yield this.organizationRepository.findOne(id, { relations: ["children"] });
             if (!exist) {
                 throw new common_1.HttpException("指定id=" + id + "组织不存在", 404);
             }
@@ -120,7 +120,7 @@ let OrganizationService = class OrganizationService {
     }
     getUsersInOrganization(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const o = yield this.organizationRepository.findOneById(id, { relations: ["users"] });
+            const o = yield this.organizationRepository.findOne(id, { relations: ["users"] });
             if (!o) {
                 throw new common_1.HttpException("指定id=" + id + "父组织不存在", 402);
             }
@@ -131,11 +131,11 @@ let OrganizationService = class OrganizationService {
     }
     addUserToOrganization(id, userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const o = yield this.organizationRepository.findOneById(id, { relations: ["users"] });
+            const o = yield this.organizationRepository.findOne(id, { relations: ["users"] });
             if (!o) {
                 throw new common_1.HttpException("指定id=" + id + "组织不存在", 402);
             }
-            const user = yield this.userRepository.findOneById(userId);
+            const user = yield this.userRepository.findOne(userId);
             if (!user) {
                 throw new common_1.HttpException("指定id=" + userId + "用户不存在", 402);
             }
@@ -156,7 +156,7 @@ let OrganizationService = class OrganizationService {
     }
     addUsersToOrganization(id, userIds) {
         return __awaiter(this, void 0, void 0, function* () {
-            const o = yield this.organizationRepository.findOneById(id, { relations: ["users"] });
+            const o = yield this.organizationRepository.findOne(id, { relations: ["users"] });
             if (!o) {
                 throw new common_1.HttpException("指定id=" + id + "组织不存在", 402);
             }
@@ -188,11 +188,11 @@ let OrganizationService = class OrganizationService {
     }
     removeUserFromOrganization(id, userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const o = yield this.organizationRepository.findOneById(id, { relations: ["users"] });
+            const o = yield this.organizationRepository.findOne(id, { relations: ["users"] });
             if (!o) {
                 throw new common_1.HttpException("指定id=" + id + "组织不存在", 402);
             }
-            const user = yield this.userRepository.findOneById(userId);
+            const user = yield this.userRepository.findOne(userId);
             if (!user) {
                 throw new common_1.HttpException("指定id=" + userId + "用户不存在", 402);
             }
@@ -213,7 +213,7 @@ let OrganizationService = class OrganizationService {
     }
     removeUsersFromOrganization(id, userIds) {
         return __awaiter(this, void 0, void 0, function* () {
-            const o = yield this.organizationRepository.findOneById(id, { relations: ["users"] });
+            const o = yield this.organizationRepository.findOne(id, { relations: ["users"] });
             if (!o) {
                 throw new common_1.HttpException("指定id=" + id + "组织不存在", 402);
             }
@@ -243,7 +243,7 @@ let OrganizationService = class OrganizationService {
     }
 };
 OrganizationService = __decorate([
-    common_1.Component(),
+    common_1.Injectable(),
     __param(0, typeorm_1.InjectRepository(user_entity_1.User)),
     __param(1, typeorm_1.InjectRepository(organization_entity_1.Organization)),
     __metadata("design:paramtypes", [typeorm_2.Repository,

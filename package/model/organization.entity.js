@@ -27,8 +27,7 @@ __decorate([
 ], Organization.prototype, "name", void 0);
 __decorate([
     typeorm_1.ManyToMany(type => user_entity_1.User, user => user.organizations, {
-        cascadeInsert: true,
-        cascadeUpdate: true,
+        cascade: ["insert", "update"],
         lazy: false,
         eager: false
     }),
@@ -43,9 +42,7 @@ __decorate([
 ], Organization.prototype, "parentId", void 0);
 __decorate([
     typeorm_1.ManyToOne(type => Organization_1, orientation => orientation.children, {
-        cascadeInsert: true,
-        cascadeUpdate: true,
-        cascadeRemove: false,
+        cascade: ["insert", "update"],
         nullable: true,
         lazy: false,
         eager: false,
@@ -59,8 +56,7 @@ __decorate([
 ], Organization.prototype, "parent", void 0);
 __decorate([
     typeorm_1.OneToMany(type => Organization_1, orientation => orientation.parent, {
-        cascadeInsert: true,
-        cascadeUpdate: true,
+        cascade: ["insert", "update"],
         lazy: false,
         eager: false
     }),

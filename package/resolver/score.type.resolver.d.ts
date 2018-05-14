@@ -1,5 +1,5 @@
-/// <reference types="node" />
-import { IncomingMessage } from "http";
+/// <reference types="express" />
+import { Request } from "express";
 import { Data } from "../interface/data";
 import { ScoreTypesData } from "../interface/scoreType/score.types.data";
 import { ScoreTypeService } from "../service/score.type.service";
@@ -7,21 +7,21 @@ export declare class ScoreTypeResolver {
     private readonly scoreTypeService;
     constructor(scoreTypeService: ScoreTypeService);
     scoreTypes(): Promise<ScoreTypesData>;
-    createScoreType(req: IncomingMessage, body: {
+    createScoreType(req: Request, body: {
         name: string;
         type: string;
         description: string;
     }): Promise<Data>;
-    updateScoreType(req: IncomingMessage, body: {
+    updateScoreType(req: Request, body: {
         id: number;
         name: string;
         type: string;
         description: string;
     }): Promise<Data>;
-    deleteScoreType(req: IncomingMessage, body: {
+    deleteScoreType(req: Request, body: {
         id: number;
     }): Promise<Data>;
-    deleteScoreTypes(req: IncomingMessage, body: {
+    deleteScoreTypes(req: Request, body: {
         ids: Array<number>;
     }): Promise<Data>;
 }

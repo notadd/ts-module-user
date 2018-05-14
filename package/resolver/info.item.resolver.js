@@ -20,11 +20,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const common_1 = require("@nestjs/common");
-const graphql_1 = require("@nestjs/graphql");
-const http_1 = require("http");
 const exception_interceptor_1 = require("../interceptor/exception.interceptor");
+const common_1 = require("@nestjs/common");
 const info_item_service_1 = require("../service/info.item.service");
+const graphql_1 = require("@nestjs/graphql");
 let InfoItemResolver = class InfoItemResolver {
     constructor(infoItemService) {
         this.infoItemService = infoItemService;
@@ -73,25 +72,25 @@ let InfoItemResolver = class InfoItemResolver {
 __decorate([
     graphql_1.Mutation("createInfoItem"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], InfoItemResolver.prototype, "createInfoItem", null);
 __decorate([
     graphql_1.Mutation("updateInfoItem"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], InfoItemResolver.prototype, "updateInfoItem", null);
 __decorate([
     graphql_1.Mutation("deleteInfoItem"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], InfoItemResolver.prototype, "deleteInfoItem", null);
 __decorate([
     graphql_1.Mutation("deleteInfoItems"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [http_1.IncomingMessage, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], InfoItemResolver.prototype, "deleteInfoItems", null);
 InfoItemResolver = __decorate([

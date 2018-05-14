@@ -39,8 +39,7 @@ __decorate([
 ], InfoGroup.prototype, "status", void 0);
 __decorate([
     typeorm_1.ManyToMany(type => info_item_entity_1.InfoItem, infoItem => infoItem.groups, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
+        cascade: ["insert"],
         lazy: false,
         eager: false
     }),

@@ -49,7 +49,7 @@ let FloatUtil = class FloatUtil {
     }
 };
 FloatUtil = __decorate([
-    common_1.Component()
+    common_1.Injectable()
 ], FloatUtil);
 exports.FloatUtil = FloatUtil;
 

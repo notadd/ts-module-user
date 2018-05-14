@@ -20,10 +20,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const common_1 = require("@nestjs/common");
-const graphql_1 = require("@nestjs/graphql");
 const exception_interceptor_1 = require("../interceptor/exception.interceptor");
 const module_service_1 = require("../service/module.service");
+const common_1 = require("@nestjs/common");
+const graphql_1 = require("@nestjs/graphql");
 let ModuleResolver = class ModuleResolver {
     constructor(moduleService) {
         this.moduleService = moduleService;

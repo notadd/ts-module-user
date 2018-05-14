@@ -58,7 +58,7 @@ let InfoItemService = class InfoItemService {
     }
     updateInfoItem(id, name, label, description, type, necessary, registerVisible, informationVisible, order) {
         return __awaiter(this, void 0, void 0, function* () {
-            const exist = yield this.infoItemRepository.findOneById(id);
+            const exist = yield this.infoItemRepository.findOne(id);
             if (!exist) {
                 throw new common_1.HttpException("指定id=" + id + "信息项不存在", 413);
             }
@@ -92,7 +92,7 @@ let InfoItemService = class InfoItemService {
     }
     deleteInfoItem(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const exist = yield this.infoItemRepository.findOneById(id);
+            const exist = yield this.infoItemRepository.findOne(id);
             if (!exist) {
                 throw new common_1.HttpException("指定id=" + id + "信息项不存在", 413);
             }
@@ -131,7 +131,7 @@ let InfoItemService = class InfoItemService {
     }
 };
 InfoItemService = __decorate([
-    common_1.Component(),
+    common_1.Injectable(),
     __param(0, typeorm_1.InjectRepository(info_item_entity_1.InfoItem)),
     __metadata("design:paramtypes", [typeorm_2.Repository])
 ], InfoItemService);
