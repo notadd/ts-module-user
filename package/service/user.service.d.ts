@@ -1,7 +1,6 @@
-/// <reference types="node" />
+/// <reference types="express" />
 import { UnionUserInfo } from "../interface/user/union.user.info";
 import { StoreComponent } from "../interface/store.component";
-import { Repository, Connection } from "typeorm";
 import { Organization } from "../model/organization.entity";
 import { Permission } from "../model/permission.entity";
 import { InfoGroup } from "../model/info.group.entity";
@@ -10,9 +9,9 @@ import { UserInfo } from "../model/user.info.entity";
 import { Func } from "../model/func.entity";
 import { Role } from "../model/role.entity";
 import { User } from "../model/user.entity";
-import { IncomingMessage } from "http";
+import { Repository } from "typeorm";
+import { Request } from "express";
 export declare class UserService {
-    private readonly connection;
     private readonly funcRepository;
     private readonly roleRepository;
     private readonly userRepository;
@@ -21,7 +20,7 @@ export declare class UserService {
     private readonly infoGroupRepository;
     private readonly permissionRepository;
     private readonly organizationRepository;
-    constructor(connection: Connection, funcRepository: Repository<Func>, roleRepository: Repository<Role>, userRepository: Repository<User>, storeComponent: StoreComponent, userInfoRepository: Repository<UserInfo>, infoGroupRepository: Repository<InfoGroup>, permissionRepository: Repository<Permission>, organizationRepository: Repository<Organization>);
+    constructor(funcRepository: Repository<Func>, roleRepository: Repository<Role>, userRepository: Repository<User>, storeComponent: StoreComponent, userInfoRepository: Repository<UserInfo>, infoGroupRepository: Repository<InfoGroup>, permissionRepository: Repository<Permission>, organizationRepository: Repository<Organization>);
     getUserById(id: number): Promise<{
         id: number;
         userName: string;
@@ -39,16 +38,16 @@ export declare class UserService {
     roles(id: number): Promise<Array<Role>>;
     permissions(id: number): Promise<Array<Permission>>;
     createUser(organizationId: number, userName: string, password: string): Promise<void>;
-    createUserWithUserInfo(req: IncomingMessage, organizationId: number, userName: string, password: string, groups: Array<{
+    createUserWithUserInfo(req: Request, organizationId: number, userName: string, password: string, groups: Array<{
         groupId: number;
         infos: Array<UnionUserInfo>;
     }>): Promise<void>;
-    addUserInfoToUser(req: IncomingMessage, id: number, groups: Array<{
+    addUserInfoToUser(req: Request, id: number, groups: Array<{
         groupId: number;
         infos: Array<UnionUserInfo>;
     }>): Promise<void>;
-    addUserInfosAndInfoItems(req: IncomingMessage, user: User, group: InfoGroup, infos: Array<UnionUserInfo>): Promise<void>;
-    transfromInfoValue(req: IncomingMessage, match: InfoItem, info: UnionUserInfo): Promise<string>;
+    addUserInfosAndInfoItems(req: Request, user: User, group: InfoGroup, infos: Array<UnionUserInfo>): Promise<void>;
+    transfromInfoValue(req: Request, match: InfoItem, info: UnionUserInfo): Promise<string>;
     updateUser(id: number, userName: string, password: string): Promise<void>;
     bannedUser(id: number): Promise<void>;
     unBannedUser(id: number): Promise<void>;

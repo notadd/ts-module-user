@@ -21,19 +21,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
-const typeorm_1 = require("typeorm");
 const organization_entity_1 = require("../model/organization.entity");
 const permission_entity_1 = require("../model/permission.entity");
 const info_group_entity_1 = require("../model/info.group.entity");
 const user_info_entity_1 = require("../model/user.info.entity");
-const typeorm_2 = require("@nestjs/typeorm");
+const typeorm_1 = require("@nestjs/typeorm");
 const func_entity_1 = require("../model/func.entity");
 const role_entity_1 = require("../model/role.entity");
 const user_entity_1 = require("../model/user.entity");
+const typeorm_2 = require("typeorm");
 const crypto_1 = require("crypto");
 let UserService = class UserService {
-    constructor(connection, funcRepository, roleRepository, userRepository, storeComponent, userInfoRepository, infoGroupRepository, permissionRepository, organizationRepository) {
-        this.connection = connection;
+    constructor(funcRepository, roleRepository, userRepository, storeComponent, userInfoRepository, infoGroupRepository, permissionRepository, organizationRepository) {
         this.funcRepository = funcRepository;
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
@@ -570,22 +569,20 @@ let UserService = class UserService {
 };
 UserService = __decorate([
     common_1.Injectable(),
-    __param(0, common_1.Inject(typeorm_1.Connection)),
-    __param(1, typeorm_2.InjectRepository(func_entity_1.Func)),
-    __param(2, typeorm_2.InjectRepository(role_entity_1.Role)),
-    __param(3, typeorm_2.InjectRepository(user_entity_1.User)),
-    __param(4, common_1.Inject("StoreComponentToken")),
-    __param(5, typeorm_2.InjectRepository(user_info_entity_1.UserInfo)),
-    __param(6, typeorm_2.InjectRepository(info_group_entity_1.InfoGroup)),
-    __param(7, typeorm_2.InjectRepository(permission_entity_1.Permission)),
-    __param(8, typeorm_2.InjectRepository(organization_entity_1.Organization)),
-    __metadata("design:paramtypes", [typeorm_1.Connection,
-        typeorm_1.Repository,
-        typeorm_1.Repository,
-        typeorm_1.Repository, Object, typeorm_1.Repository,
-        typeorm_1.Repository,
-        typeorm_1.Repository,
-        typeorm_1.Repository])
+    __param(0, typeorm_1.InjectRepository(func_entity_1.Func)),
+    __param(1, typeorm_1.InjectRepository(role_entity_1.Role)),
+    __param(2, typeorm_1.InjectRepository(user_entity_1.User)),
+    __param(3, common_1.Inject("StoreComponentToken")),
+    __param(4, typeorm_1.InjectRepository(user_info_entity_1.UserInfo)),
+    __param(5, typeorm_1.InjectRepository(info_group_entity_1.InfoGroup)),
+    __param(6, typeorm_1.InjectRepository(permission_entity_1.Permission)),
+    __param(7, typeorm_1.InjectRepository(organization_entity_1.Organization)),
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository,
+        typeorm_2.Repository, Object, typeorm_2.Repository,
+        typeorm_2.Repository,
+        typeorm_2.Repository,
+        typeorm_2.Repository])
 ], UserService);
 exports.UserService = UserService;
 

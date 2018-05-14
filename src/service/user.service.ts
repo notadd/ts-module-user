@@ -1,7 +1,6 @@
 import { ArrayInfo, FileInfo, TextInfo, UnionUserInfo } from "../interface/user/union.user.info";
 import { Injectable, HttpException, Inject } from "@nestjs/common";
 import { StoreComponent } from "../interface/store.component";
-import { Repository, Connection, QueryRunner } from "typeorm";
 import { Organization } from "../model/organization.entity";
 import { Permission } from "../model/permission.entity";
 import { InfoGroup } from "../model/info.group.entity";
@@ -11,14 +10,14 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Func } from "../model/func.entity";
 import { Role } from "../model/role.entity";
 import { User } from "../model/user.entity";
-import { IncomingMessage } from "http";
+import { Repository } from "typeorm";
 import { createHash } from "crypto";
+import { Request } from "express";
 
 @Injectable()
 export class UserService {
 
     constructor(
-        @Inject(Connection) private readonly connection: Connection,
         @InjectRepository(Func) private readonly funcRepository: Repository<Func>,
         @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
         @InjectRepository(User) private readonly userRepository: Repository<User>,
@@ -173,7 +172,7 @@ export class UserService {
         }
     }
 
-    async createUserWithUserInfo(req: IncomingMessage, organizationId: number, userName: string, password: string, groups: Array<{ groupId: number, infos: Array<UnionUserInfo> }>): Promise<void> {
+    async createUserWithUserInfo(req: Request, organizationId: number, userName: string, password: string, groups: Array<{ groupId: number, infos: Array<UnionUserInfo> }>): Promise<void> {
         const organizations: Array<Organization> = [];
         if (organizationId) {
             const organization = await this.organizationRepository.findOne(organizationId);
@@ -216,7 +215,7 @@ export class UserService {
         }
     }
 
-    async addUserInfoToUser(req: IncomingMessage, id: number, groups: Array<{ groupId: number, infos: Array<UnionUserInfo> }>): Promise<void> {
+    async addUserInfoToUser(req: Request, id: number, groups: Array<{ groupId: number, infos: Array<UnionUserInfo> }>): Promise<void> {
         const user: User | undefined = await this.userRepository.findOne(
             id,
             { relations: ["userInfos", "infoItems"] },
@@ -243,7 +242,7 @@ export class UserService {
     }
 
     /* 将指定信息组的信息加入到用户对象中，里面没有数据库更改操作，只是改变了用户的userInfos、infoItems两个属性，当save时新的userInfo会被插入，旧的会被更新，infoItem与user的关系会被建立*/
-    async addUserInfosAndInfoItems(req: IncomingMessage, user: User, group: InfoGroup, infos: Array<UnionUserInfo>): Promise<void> {
+    async addUserInfosAndInfoItems(req: Request, user: User, group: InfoGroup, infos: Array<UnionUserInfo>): Promise<void> {
         // 获取所有信息项
         const items: Array<InfoItem> = group.items || [];
         // 所有必填信息项
@@ -292,7 +291,7 @@ export class UserService {
         }
     }
 
-    async transfromInfoValue(req: IncomingMessage, match: InfoItem, info: UnionUserInfo): Promise<string> {
+    async transfromInfoValue(req: Request, match: InfoItem, info: UnionUserInfo): Promise<string> {
         let result: string;
         // 根据不同类型信息项校验信息类型，顺便转换信息值
         // "单行文本框", "多行文本框", "单选框", "多选框", "复选框", "日期时间选择", "日期时间范围选择", "下拉菜单", "上传图片", "上传文件"
