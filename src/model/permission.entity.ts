@@ -31,8 +31,7 @@ export class Permission {
 
     /*单独添加了权限的用户 */
     @ManyToMany(type => User, user => user.adds, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
+        cascade: ["insert"],
         lazy: false,
         eager: false
     })
@@ -40,8 +39,7 @@ export class Permission {
 
     /*单独减去了权限的用户 */
     @ManyToMany(type => User, user => user.reduces, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
+        cascade: ["insert"],
         lazy: false,
         eager: false
     })
@@ -55,9 +53,7 @@ export class Permission {
 
     /* 所属模块 ，当模块删除之前需要单独删除权限，否则数据库外键检查会报错*/
     @ManyToOne(type => Module, module => module.permissions, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
-        cascadeRemove: false,
+        cascade: ["insert"],
         onDelete: "RESTRICT",
         nullable: false,
         lazy: false,

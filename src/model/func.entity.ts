@@ -1,6 +1,6 @@
 import { Column, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Module } from "./module.entity";
 import { Permission } from "./permission.entity";
+import { Module } from "./module.entity";
 
 /* 功能实体，功能是权限的集合
    功能与权限是多对多关系，但是功能是属于某个模块的，一个功能所包含的权限也都是同一个模块的
@@ -24,8 +24,7 @@ export class Func {
        功能删除时只会解除关系，而不是删除权限
     */
     @ManyToMany(type => Permission, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
+        cascade: ["insert" ],
         lazy: false,
         eager: false
     })
@@ -42,9 +41,7 @@ export class Func {
 
     /* 功能所属模块，模块删除时功能会级联删除，但是由于模块下的权限、功能、角色本身之间还有关联关系，所以只能分别删除这三者，再单独删除模块，所以关闭级联 */
     @ManyToOne(type => Module, module => module.funcs, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
-        cascadeRemove: false,
+        cascade: ["insert" ],
         onDelete: "RESTRICT",
         nullable: false,
         lazy: false,

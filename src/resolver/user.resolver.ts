@@ -1,6 +1,6 @@
 import { HttpException, Inject, UseInterceptors } from "@nestjs/common";
 import { Mutation, Query, Resolver } from "@nestjs/graphql";
-import { IncomingMessage } from "http";
+import { Request } from "express";
 import { ExceptionInterceptor } from "../interceptor/exception.interceptor";
 import { Data } from "../interface/data";
 import { CreateUserBody } from "../interface/user/create.user.body";
@@ -45,7 +45,7 @@ export class UserResolver {
     }
 
     @Query("userInfos")
-    async userInfos(req: IncomingMessage, body: { id: number }): Promise<UserInfosData> {
+    async userInfos(req: Request, body: { id: number }): Promise<UserInfosData> {
         const { id } = body;
         if (!id) {
             throw new HttpException("缺少参数", 400);
@@ -55,7 +55,7 @@ export class UserResolver {
     }
 
     @Query("rolesInUser")
-    async rolesInUser(req: IncomingMessage, body: { id: number }): Promise<RolesData> {
+    async rolesInUser(req: Request, body: { id: number }): Promise<RolesData> {
         const { id } = body;
         if (!id) {
             throw new HttpException("缺少参数", 400);
@@ -65,7 +65,7 @@ export class UserResolver {
     }
 
     @Query("permissionsInUser")
-    async permissionsInUser(req: IncomingMessage, body: { id: number }): Promise<PermissionsData> {
+    async permissionsInUser(req: Request, body: { id: number }): Promise<PermissionsData> {
         const { id } = body;
         if (!id) {
             throw new HttpException("缺少参数", 400);
@@ -78,7 +78,7 @@ export class UserResolver {
        模块创建用户不使用这个接口，因为模块创建用户需要添加特殊信息项
     */
     @Mutation("createUser")
-    async createUser(req: IncomingMessage, body: CreateUserBody): Promise<Data> {
+    async createUser(req: Request, body: CreateUserBody): Promise<Data> {
         const { organizationId, userName, password } = body;
         if (!userName || !password) {
             throw new HttpException("缺少参数", 400);
@@ -91,7 +91,7 @@ export class UserResolver {
        传递信息的方式为groups对象数组，每个对象包含了信息组id，以及信息数组，信息组id用来验证信息是否正确
     */
     @Mutation("createUserWithUserInfo")
-    async createUserWithUserInfo(req: IncomingMessage, body: CreateUserBody & { groups: Array<{ groupId: number, infos: Array<UnionUserInfo> }> }): Promise<Data> {
+    async createUserWithUserInfo(req: Request, body: CreateUserBody & { groups: Array<{ groupId: number, infos: Array<UnionUserInfo> }> }): Promise<Data> {
         const { organizationId, userName, password, groups } = body;
         if (!userName || !password) {
             throw new HttpException("缺少参数", 400);
@@ -101,7 +101,7 @@ export class UserResolver {
     }
 
     @Mutation("addUserInfo")
-    async addUserInfo(req: IncomingMessage, body: { id: number, groups: Array<{ groupId: number, infos: Array<UnionUserInfo> }> }): Promise<Data> {
+    async addUserInfo(req: Request, body: { id: number, groups: Array<{ groupId: number, infos: Array<UnionUserInfo> }> }): Promise<Data> {
         const { id, groups } = body;
         if (!id) {
             throw new HttpException("缺少参数", 400);
@@ -111,7 +111,7 @@ export class UserResolver {
     }
 
     @Mutation("updateUser")
-    async updateUser(req: IncomingMessage, body: UpdateUserBody): Promise<Data> {
+    async updateUser(req: Request, body: UpdateUserBody): Promise<Data> {
         const { id, userName, password } = body;
         if (!id) {
             throw new HttpException("缺少参数", 400);
@@ -121,7 +121,7 @@ export class UserResolver {
     }
 
     @Mutation("bannedUser")
-    async bannedUser(req: IncomingMessage, body: { id: number }): Promise<Data> {
+    async bannedUser(req: Request, body: { id: number }): Promise<Data> {
         const { id } = body;
         if (!id) {
             throw new HttpException("缺少参数", 400);
@@ -131,7 +131,7 @@ export class UserResolver {
     }
 
     @Mutation("unBannedUser")
-    async unBannedUser(req: IncomingMessage, body: { id: number }): Promise<Data> {
+    async unBannedUser(req: Request, body: { id: number }): Promise<Data> {
         const { id } = body;
         if (!id) {
             throw new HttpException("缺少参数", 400);
@@ -142,7 +142,7 @@ export class UserResolver {
 
     /* 软删除指定用户，即将其加入回收站 */
     @Mutation("softDeleteUser")
-    async softDeleteUser(req: IncomingMessage, body: { id: number }): Promise<Data> {
+    async softDeleteUser(req: Request, body: { id: number }): Promise<Data> {
         const { id } = body;
         if (!id) {
             throw new HttpException("缺少参数", 400);
@@ -153,7 +153,7 @@ export class UserResolver {
 
     /* 将指定用户从回收站还原 */
     @Mutation("restoreUser")
-    async restoreUser(req: IncomingMessage, body: { id: number }): Promise<Data> {
+    async restoreUser(req: Request, body: { id: number }): Promise<Data> {
         const { id } = body;
         if (!id) {
             throw new HttpException("缺少参数", 400);
@@ -164,7 +164,7 @@ export class UserResolver {
 
     /* 将指定多个用户从回收站还原 */
     @Mutation("restoreUsers")
-    async restoreUsers(req: IncomingMessage, body: { ids: Array<number> }): Promise<Data> {
+    async restoreUsers(req: Request, body: { ids: Array<number> }): Promise<Data> {
         const { ids } = body;
         if (!ids || ids.length === 0) {
             throw new HttpException("缺少参数", 400);
@@ -174,7 +174,7 @@ export class UserResolver {
     }
 
     @Mutation("deleteUser")
-    async deleteUser(req: IncomingMessage, body: { id: number }): Promise<Data> {
+    async deleteUser(req: Request, body: { id: number }): Promise<Data> {
         const { id } = body;
         if (!id) {
             throw new HttpException("缺少参数", 400);
@@ -184,7 +184,7 @@ export class UserResolver {
     }
 
     @Mutation("deleteUsers")
-    async deleteUsers(req: IncomingMessage, body: { ids: Array<number> }): Promise<Data> {
+    async deleteUsers(req: Request, body: { ids: Array<number> }): Promise<Data> {
         const { ids } = body;
         if (!ids || ids.length === 0) {
             throw new HttpException("缺少参数", 400);
@@ -195,7 +195,7 @@ export class UserResolver {
 
     /* 设置用户角色，设置的角色就是用户以后拥有的所有角色 */
     @Mutation("setRoles")
-    async setRoles(req: IncomingMessage, body: { id: number, roleIds: Array<number> }): Promise<Data> {
+    async setRoles(req: Request, body: { id: number, roleIds: Array<number> }): Promise<Data> {
         const { id, roleIds } = body;
         if (!id) {
             throw new HttpException("缺少参数", 400);
@@ -206,7 +206,7 @@ export class UserResolver {
 
     /* 设置用户权限，设置的权限是最终结果，也就是说按照role、adds、reduces等生成的最终结果，由后端来进行差分运算，计算adds、reduces */
     @Mutation("setUserOwnPermissions")
-    async setUserOwnPermissions(req: IncomingMessage, body: { id: number, permissionIds: Array<number> }): Promise<Data> {
+    async setUserOwnPermissions(req: Request, body: { id: number, permissionIds: Array<number> }): Promise<Data> {
         const { id, permissionIds } = body;
         if (!id) {
             throw new HttpException("缺少参数", 400);

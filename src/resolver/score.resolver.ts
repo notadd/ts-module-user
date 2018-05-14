@@ -1,6 +1,6 @@
 import { HttpException, Inject, UseInterceptors } from "@nestjs/common";
 import { Mutation, Query, Resolver } from "@nestjs/graphql";
-import { IncomingMessage } from "http";
+import { Request } from "express";
 import { ExceptionInterceptor } from "../interceptor/exception.interceptor";
 import { Data } from "../interface/data";
 import { ScoreService } from "../service/score.service";
@@ -15,7 +15,7 @@ export class ScoreResolver {
     }
 
     @Query("getScore")
-    async getScore(req: IncomingMessage, body: { userId: number, scoreTypeId: number }): Promise<Data & { score: number }> {
+    async getScore(req: Request, body: { userId: number, scoreTypeId: number }): Promise<Data & { score: number }> {
         const { userId, scoreTypeId } = body;
         if (!userId || !scoreTypeId) {
             throw new HttpException("缺少参数", 400);
@@ -25,7 +25,7 @@ export class ScoreResolver {
     }
 
     @Mutation("setScore")
-    async setScore(req: IncomingMessage, body: { userId: number, scoreTypeId: number, add: number }): Promise<Data> {
+    async setScore(req: Request, body: { userId: number, scoreTypeId: number, add: number }): Promise<Data> {
         const { userId, scoreTypeId, add } = body;
         if (!userId || !scoreTypeId) {
             throw new HttpException("缺少参数", 400);

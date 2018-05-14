@@ -42,7 +42,7 @@ import { Repository } from "typeorm";
 
 @Global()
 @ModuleDecorator({
-    modules: [
+    imports: [
         TypeOrmModule.forFeature([
             ModuleEntity,
             Organization,
@@ -57,7 +57,7 @@ import { Repository } from "typeorm";
             Permission,
         ]),
     ],
-    components: [
+    providers: [
         FloatUtil,
         OrganizationService,
         OrganizationResolver,

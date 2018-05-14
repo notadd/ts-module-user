@@ -1,13 +1,13 @@
-import { HttpException, Inject, UseInterceptors } from "@nestjs/common";
-import { Mutation, Query, Resolver } from "@nestjs/graphql";
-import { IncomingMessage } from "http";
-import { ExceptionInterceptor } from "../interceptor/exception.interceptor";
-import { Data } from "../interface/data";
-import { ChildrenData } from "../interface/organization/children.data";
-import { OrganizationsData } from "../interface/organization/organizations.data";
-import { RootsData } from "../interface/organization/roots.data";
 import { UsersInOrganizationData } from "../interface/organization/users.in.organization.data";
+import { OrganizationsData } from "../interface/organization/organizations.data";
+import { ExceptionInterceptor } from "../interceptor/exception.interceptor";
+import { HttpException, Inject, UseInterceptors } from "@nestjs/common";
+import { ChildrenData } from "../interface/organization/children.data";
 import { OrganizationService } from "../service/organization.service";
+import { RootsData } from "../interface/organization/roots.data";
+import { Mutation, Query, Resolver } from "@nestjs/graphql";
+import { Data } from "../interface/data";
+import { Request } from "express";
 
 @Resolver("Organization")
 @UseInterceptors(ExceptionInterceptor)
@@ -27,7 +27,7 @@ export class OrganizationResolver {
 
     /* 查找指定组织的所有子组织 */
     @Query("children")
-    async children(req: IncomingMessage, body: { id: number }): Promise<ChildrenData> {
+    async children(req: Request, body: { id: number }): Promise<ChildrenData> {
         const { id } = body;
         if (!id) {
             throw new HttpException("缺少参数", 400);
@@ -45,7 +45,7 @@ export class OrganizationResolver {
 
     /* 创建指定名称组织，可选是否指定父组织id */
     @Mutation("createOrganization")
-    async createOrganization(req: IncomingMessage, body: { name: string, parentId: number }): Promise<Data> {
+    async createOrganization(req: Request, body: { name: string, parentId: number }): Promise<Data> {
         const { name, parentId } = body;
         if (!name) {
             throw new HttpException("缺少参数", 400);
@@ -59,7 +59,7 @@ export class OrganizationResolver {
 
     /* 更新指定id组织，可更新组织名、父组织 */
     @Mutation("updateOrganization")
-    async updateOrganization(req: IncomingMessage, body: { id: number, name: string, parentId: number }): Promise<Data> {
+    async updateOrganization(req: Request, body: { id: number, name: string, parentId: number }): Promise<Data> {
         const { id, name, parentId } = body;
         if (!id || !name) {
             throw new HttpException("缺少参数", 400);
@@ -75,7 +75,7 @@ export class OrganizationResolver {
        可以指定force=true，强制删除组织及其子孙组织
     */
     @Mutation("deleteOrganization")
-    async deleteOrganization(req: IncomingMessage, body: { id: number }): Promise<Data> {
+    async deleteOrganization(req: Request, body: { id: number }): Promise<Data> {
         const { id } = body;
         if (!id) {
             throw new HttpException("缺少参数", 400);
@@ -86,7 +86,7 @@ export class OrganizationResolver {
 
     /* 查找指定组织下所有用户 */
     @Query("usersInOrganization")
-    async usersInOrganization(req: IncomingMessage, body: { id: number }): Promise<UsersInOrganizationData> {
+    async usersInOrganization(req: Request, body: { id: number }): Promise<UsersInOrganizationData> {
         const { id } = body;
         if (!id) {
             throw new HttpException("缺少参数", 400);
@@ -97,7 +97,7 @@ export class OrganizationResolver {
 
     /* 向指定组织添加一个指定用户 */
     @Mutation("addUserToOrganization")
-    async addUserToOrganization(req: IncomingMessage, body: { id: number, userId: number }): Promise<Data> {
+    async addUserToOrganization(req: Request, body: { id: number, userId: number }): Promise<Data> {
         const { id, userId } = body;
         if (!id || !userId) {
             throw new HttpException("缺少参数", 400);
@@ -108,7 +108,7 @@ export class OrganizationResolver {
 
     /* 向指定组织添加多个指定用户 */
     @Mutation("addUsersToOrganization")
-    async addUsersToOrganization(req: IncomingMessage, body: { id: number, userIds: Array<number> }): Promise<Data> {
+    async addUsersToOrganization(req: Request, body: { id: number, userIds: Array<number> }): Promise<Data> {
         const { id, userIds } = body;
         if (!id || !userIds || userIds.length === 0) {
             throw new HttpException("缺少参数", 400);
@@ -119,7 +119,7 @@ export class OrganizationResolver {
 
     /* 将指定用户从组织中移除 */
     @Mutation("removeUserFromOrganization")
-    async removeUserFromOrganization(req: IncomingMessage, body: { id: number, userId: number }): Promise<Data> {
+    async removeUserFromOrganization(req: Request, body: { id: number, userId: number }): Promise<Data> {
         const { id, userId } = body;
         if (!id || !userId) {
             throw new HttpException("缺少参数", 400);
@@ -130,7 +130,7 @@ export class OrganizationResolver {
 
     /* 将指定多个用户从组织中移除 */
     @Mutation("removeUsersFromOrganization")
-    async removeUsersFromOrganization(req: IncomingMessage, body: { id: number, userIds: Array<number> }): Promise<Data> {
+    async removeUsersFromOrganization(req: Request, body: { id: number, userIds: Array<number> }): Promise<Data> {
         const { id, userIds } = body;
         if (!id || !userIds || userIds.length === 0) {
             throw new HttpException("缺少参数", 400);

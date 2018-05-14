@@ -1,6 +1,5 @@
-import { getRepositoryToken } from "@nestjs/typeorm/typeorm.utils";
+import { InjectRepository, getRepositoryToken } from "@nestjs/typeorm";
 import { Permission } from "../model/permission.entity";
-import { InjectRepository } from "@nestjs/typeorm";
 import { Func } from "../model/func.entity";
 import { Role } from "../model/role.entity";
 import { User } from "../model/user.entity";
@@ -18,7 +17,7 @@ export class UserComponent {
     }
 
     async permissions(id: number): Promise<Array<Permission>> {
-        const user: User | undefined = await this.userRepository.findOneById(id, { relations: ["roles", "adds", "reduces"] });
+        const user: User | undefined = await this.userRepository.findOne(id, { relations: ["roles", "adds", "reduces"] });
         if (!user) {
             return [];
         }
@@ -30,10 +29,10 @@ export class UserComponent {
         const ids: Set<number> = new Set();
         // 遍历获取所有角色拥有的权限
         for (let i = 0; i < user.roles.length; i++) {
-            const role: Role | undefined = await this.roleRepository.findOneById(user.roles[i].id, { relations: ["funcs"] });
+            const role: Role | undefined = await this.roleRepository.findOne(user.roles[i].id, { relations: ["funcs"] });
             if (role && role.funcs && role.funcs.length > 0) {
                 for (let j = 0; j < role.funcs.length; j++) {
-                    const func: Func | undefined = await this.funcRepository.findOneById(role.funcs[i].id, { relations: ["permissions"] });
+                    const func: Func | undefined = await this.funcRepository.findOne(role.funcs[i].id, { relations: ["permissions"] });
                     if (func) {
                         temp = temp.concat(func.permissions);
                     }
@@ -88,11 +87,11 @@ export class UserComponent {
         if (passwordWithSalt !== user.password) {
             return false;
         }
-        return this.userRepository.findOneById(user.id, { select: ["id", "userName", "status", "recycle"] });
+        return this.userRepository.findOne(user.id, { select: ["id", "userName", "status", "recycle"] });
     }
 
     async getUserById(id: number): Promise<User | undefined> {
-        return this.userRepository.findOneById(id, { select: ["id", "userName", "status", "recycle"] });
+        return this.userRepository.findOne(id, { select: ["id", "userName", "status", "recycle"] });
     }
 
     async getUserByName(userName: string): Promise<User | undefined> {

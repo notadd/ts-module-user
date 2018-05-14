@@ -1,7 +1,7 @@
-import { Component } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 
 /* 异步操作文件的封装工具类 */
-@Component()
+@Injectable()
 export class FloatUtil {
     /*两个浮点数相加，返回浮点数 */
     async add(a: number, b: number): Promise<number> {

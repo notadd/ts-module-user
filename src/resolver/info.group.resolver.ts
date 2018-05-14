@@ -1,11 +1,11 @@
-import { HttpException, Inject, UseInterceptors } from "@nestjs/common";
-import { Mutation, Query, Resolver } from "@nestjs/graphql";
-import { IncomingMessage } from "http";
 import { ExceptionInterceptor } from "../interceptor/exception.interceptor";
-import { Data } from "../interface/data";
 import { InfoGroupsData } from "../interface/infoGroup/info.groups.data";
+import { HttpException, Inject, UseInterceptors } from "@nestjs/common";
 import { InfoItemsData } from "../interface/infoGroup/info.items.data";
 import { InfoGroupService } from "../service/info.group.service";
+import { Mutation, Query, Resolver } from "@nestjs/graphql";
+import { Data } from "../interface/data";
+import { Request } from "express";
 
 /* 这个几个接口只是写在这，使用上还有很多问题 */
 @Resolver("InfoGroup")
@@ -24,7 +24,7 @@ export class InfoGroupResolver {
     }
 
     @Query("infoItems")
-    async infoItems(req: IncomingMessage, body: { id: number }): Promise<InfoItemsData> {
+    async infoItems(req: Request, body: { id: number }): Promise<InfoItemsData> {
         const { id } = body;
         if (!id) {
             throw new HttpException("缺少参数", 400);
@@ -34,7 +34,7 @@ export class InfoGroupResolver {
     }
 
     @Mutation("createInfoGroup")
-    async createInfoGroup(req: IncomingMessage, body: { name: string }): Promise<Data> {
+    async createInfoGroup(req: Request, body: { name: string }): Promise<Data> {
         const { name } = body;
         if (!name) {
             throw new HttpException("缺少参数", 400);
@@ -44,7 +44,7 @@ export class InfoGroupResolver {
     }
 
     @Mutation("updateInfoGroup")
-    async updateInfoGroup(req: IncomingMessage, body: { id: number, name: string }): Promise<Data> {
+    async updateInfoGroup(req: Request, body: { id: number, name: string }): Promise<Data> {
         const { id, name } = body;
         if (!id || !name) {
             throw new HttpException("缺少参数", 400);
@@ -54,7 +54,7 @@ export class InfoGroupResolver {
     }
 
     @Mutation("deleteInfoGroup")
-    async deleteInfoGroup(req: IncomingMessage, body: { id: number }): Promise<Data> {
+    async deleteInfoGroup(req: Request, body: { id: number }): Promise<Data> {
         const { id } = body;
         if (!id) {
             throw new HttpException("缺少参数", 400);
@@ -64,7 +64,7 @@ export class InfoGroupResolver {
     }
 
     @Mutation("addInfoItem")
-    async addInfoItem(req: IncomingMessage, body: { id: number, infoItemId: number }): Promise<Data> {
+    async addInfoItem(req: Request, body: { id: number, infoItemId: number }): Promise<Data> {
         const { id, infoItemId } = body;
         if (!id || !infoItemId) {
             throw new HttpException("缺少参数", 400);
@@ -74,7 +74,7 @@ export class InfoGroupResolver {
     }
 
     @Mutation("removeInfoItem")
-    async removeInfoItem(req: IncomingMessage, body: { id: number, infoItemId: number }): Promise<Data> {
+    async removeInfoItem(req: Request, body: { id: number, infoItemId: number }): Promise<Data> {
         const { id, infoItemId } = body;
         if (!id || !infoItemId) {
             throw new HttpException("缺少参数", 400);

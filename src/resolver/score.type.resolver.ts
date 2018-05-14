@@ -1,6 +1,6 @@
 import { HttpException, Inject, UseInterceptors } from "@nestjs/common";
 import { Mutation, Query, Resolver } from "@nestjs/graphql";
-import { IncomingMessage } from "http";
+import { Request } from "express";
 import { ExceptionInterceptor } from "../interceptor/exception.interceptor";
 import { Data } from "../interface/data";
 import { ScoreTypesData } from "../interface/scoreType/score.types.data";
@@ -22,7 +22,7 @@ export class ScoreTypeResolver {
     }
 
     @Mutation("createScoreType")
-    async createScoreType(req: IncomingMessage, body: { name: string, type: string, description: string }): Promise<Data> {
+    async createScoreType(req: Request, body: { name: string, type: string, description: string }): Promise<Data> {
         const { name, type, description } = body;
         if (!name || !type) {
             throw new HttpException("缺少参数", 400);
@@ -35,7 +35,7 @@ export class ScoreTypeResolver {
     }
 
     @Mutation("updateScoreType")
-    async updateScoreType(req: IncomingMessage, body: { id: number, name: string, type: string, description: string }): Promise<Data> {
+    async updateScoreType(req: Request, body: { id: number, name: string, type: string, description: string }): Promise<Data> {
         const { id, name, type, description } = body;
         if (!id || !name || !type) {
             throw new HttpException("缺少参数", 400);
@@ -49,7 +49,7 @@ export class ScoreTypeResolver {
 
     /* 删除积分类型时，相关积分会被一起删除 */
     @Mutation("deleteScoreType")
-    async deleteScoreType(req: IncomingMessage, body: { id: number }): Promise<Data> {
+    async deleteScoreType(req: Request, body: { id: number }): Promise<Data> {
         const { id } = body;
         if (!id) {
             throw new HttpException("缺少参数", 400);
@@ -60,7 +60,7 @@ export class ScoreTypeResolver {
 
     /* 批量删除积分类型，删除积分类型时，相关积分会被一起删除 */
     @Mutation("deleteScoreTypes")
-    async deleteScoreTypes(req: IncomingMessage, body: { ids: Array<number> }): Promise<Data> {
+    async deleteScoreTypes(req: Request, body: { ids: Array<number> }): Promise<Data> {
         const { ids } = body;
         if (!ids || ids.length === 0) {
             throw new HttpException("缺少参数", 400);

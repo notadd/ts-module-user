@@ -1,10 +1,10 @@
-import { HttpException, Inject, UseInterceptors } from "@nestjs/common";
-import { Mutation, Resolver } from "@nestjs/graphql";
-import { IncomingMessage } from "http";
 import { ExceptionInterceptor } from "../interceptor/exception.interceptor";
-import { Data } from "../interface/data";
-import { Func } from "../model/func.entity";
+import { HttpException, Inject, UseInterceptors } from "@nestjs/common";
 import { FuncService } from "../service/func.service";
+import { Mutation, Resolver } from "@nestjs/graphql";
+import { Func } from "../model/func.entity";
+import { Data } from "../interface/data";
+import { Request } from "express";
 
 /* 功能是权限的集合，且只能包含一个模块下的权限，所以功能也属于某个模块 */
 @Resolver("Func")
@@ -13,11 +13,10 @@ export class FuncResolver {
 
     constructor(
         @Inject(FuncService) private readonly funcService: FuncService
-    ) {
-    }
+    ) {}
 
     @Mutation("createFunc")
-    async createFunc(req: IncomingMessage, body: { moduleToken: string, name: string }): Promise<Data> {
+    async createFunc(req: Request, body: { moduleToken: string, name: string }): Promise<Data> {
         const { moduleToken, name } = body;
         if (!moduleToken || !name) {
             throw new HttpException("缺少参数", 400);
@@ -27,7 +26,7 @@ export class FuncResolver {
     }
 
     @Mutation("updateFunc")
-    async updateFunc(req: IncomingMessage, body: { id: number, name: string }): Promise<Data> {
+    async updateFunc(req: Request, body: { id: number, name: string }): Promise<Data> {
         const { id, name } = body;
         if (!id || !name) {
             throw new HttpException("缺少参数", 400);
@@ -37,7 +36,7 @@ export class FuncResolver {
     }
 
     @Mutation("deleteFunc")
-    async deleteFunc(req: IncomingMessage, body: { id: number }): Promise<Data> {
+    async deleteFunc(req: Request, body: { id: number }): Promise<Data> {
         const { id } = body;
         if (!id) {
             throw new HttpException("缺少参数", 400);
@@ -47,7 +46,7 @@ export class FuncResolver {
     }
 
     @Mutation("setPermissions")
-    async setPermissions(req: IncomingMessage, body: { id: number, permissionIds: Array<number> }): Promise<Data> {
+    async setPermissions(req: Request, body: { id: number, permissionIds: Array<number> }): Promise<Data> {
         const { id, permissionIds } = body;
         if (!id) {
             throw new HttpException("缺少参数", 400);

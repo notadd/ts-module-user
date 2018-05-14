@@ -1,10 +1,10 @@
-import { Component, HttpException } from "@nestjs/common";
+import { Injectable, HttpException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Organization } from "../model/organization.entity";
 import { User } from "../model/user.entity";
 
-@Component()
+@Injectable()
 export class OrganizationService {
 
     constructor(
@@ -19,7 +19,7 @@ export class OrganizationService {
     }
 
     async getChildren(id: number): Promise<Array<Organization>> {
-        const o: Organization|undefined = await this.organizationRepository.findOneById(id, { relations: [ "children" ] });
+        const o: Organization|undefined = await this.organizationRepository.findOne(id, { relations: [ "children" ] });
         if (!o) {
             throw new HttpException("指定父组织id=" + id + "不存在", 402);
         }
@@ -33,7 +33,7 @@ export class OrganizationService {
     async createOrganization(name: string, parentId: number): Promise<void> {
         let parent: Organization|undefined;
         if (parentId !== undefined && parentId !== null) {
-            parent = await this.organizationRepository.findOneById(parentId);
+            parent = await this.organizationRepository.findOne(parentId);
             if (!parent) {
                 throw new HttpException("指定父组织id=" + parentId + "不存在", 402);
             }
@@ -52,7 +52,7 @@ export class OrganizationService {
     }
 
     async updateOrganization(id: number, name: string, parentId: number): Promise<void> {
-        const exist: Organization|undefined = await this.organizationRepository.findOneById(id);
+        const exist: Organization|undefined = await this.organizationRepository.findOne(id);
         if (!exist) {
             throw new HttpException("指定id=" + id + "组织不存在", 404);
         }
@@ -64,7 +64,7 @@ export class OrganizationService {
         }
         let parent: Organization|undefined ;
         if (parentId !== undefined && parentId !== null) {
-            parent = await this.organizationRepository.findOneById(parentId);
+            parent = await this.organizationRepository.findOne(parentId);
             if (!parent) {
                 throw new HttpException("指定父组织id=" + parentId + "不存在", 402);
             }
@@ -81,7 +81,7 @@ export class OrganizationService {
     }
 
     async deleteOrganization(id: number): Promise<void> {
-        const exist: Organization|undefined = await this.organizationRepository.findOneById(id, { relations: [ "children" ] });
+        const exist: Organization|undefined = await this.organizationRepository.findOne(id, { relations: [ "children" ] });
         if (!exist) {
             throw new HttpException("指定id=" + id + "组织不存在", 404);
         }
@@ -96,7 +96,7 @@ export class OrganizationService {
     }
 
     async getUsersInOrganization(id: number): Promise<Array<User>> {
-        const o: Organization|undefined = await this.organizationRepository.findOneById(id, { relations: [ "users" ] });
+        const o: Organization|undefined = await this.organizationRepository.findOne(id, { relations: [ "users" ] });
         if (!o) {
             throw new HttpException("指定id=" + id + "父组织不存在", 402);
         }
@@ -107,11 +107,11 @@ export class OrganizationService {
     }
 
     async addUserToOrganization(id: number, userId: number): Promise<void> {
-        const o: Organization|undefined = await this.organizationRepository.findOneById(id, { relations: [ "users" ] });
+        const o: Organization|undefined = await this.organizationRepository.findOne(id, { relations: [ "users" ] });
         if (!o) {
             throw new HttpException("指定id=" + id + "组织不存在", 402);
         }
-        const user: User|undefined = await this.userRepository.findOneById(userId);
+        const user: User|undefined = await this.userRepository.findOne(userId);
         if (!user) {
             throw new HttpException("指定id=" + userId + "用户不存在", 402);
         }
@@ -130,7 +130,7 @@ export class OrganizationService {
     }
 
     async addUsersToOrganization(id: number, userIds: Array<number>): Promise<void> {
-        const o: Organization |undefined = await this.organizationRepository.findOneById(id, { relations: [ "users" ] });
+        const o: Organization |undefined = await this.organizationRepository.findOne(id, { relations: [ "users" ] });
         if (!o) {
             throw new HttpException("指定id=" + id + "组织不存在", 402);
         }
@@ -162,11 +162,11 @@ export class OrganizationService {
     }
 
     async removeUserFromOrganization(id: number, userId: number): Promise<void> {
-        const o: Organization|undefined = await this.organizationRepository.findOneById(id, { relations: [ "users" ] });
+        const o: Organization|undefined = await this.organizationRepository.findOne(id, { relations: [ "users" ] });
         if (!o) {
             throw new HttpException("指定id=" + id + "组织不存在", 402);
         }
-        const user: User|undefined = await this.userRepository.findOneById(userId);
+        const user: User|undefined = await this.userRepository.findOne(userId);
         if (!user) {
             throw new HttpException("指定id=" + userId + "用户不存在", 402);
         }
@@ -185,7 +185,7 @@ export class OrganizationService {
     }
 
     async removeUsersFromOrganization(id: number, userIds: Array<number>): Promise<void> {
-        const o: Organization|undefined = await this.organizationRepository.findOneById(id, { relations: [ "users" ] });
+        const o: Organization|undefined = await this.organizationRepository.findOne(id, { relations: [ "users" ] });
         if (!o) {
             throw new HttpException("指定id=" + id + "组织不存在", 402);
         }

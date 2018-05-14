@@ -20,8 +20,7 @@ export class Organization {
 
     /* 组织下包含的用户，这些用户直属这个组织，与子组织无关 */
     @ManyToMany(type => User, user => user.organizations, {
-        cascadeInsert: true,
-        cascadeUpdate: true,
+        cascade: ["insert", "update"],
         lazy: false,
         eager: false
     })
@@ -36,9 +35,7 @@ export class Organization {
 
     /* 父组织 */
     @ManyToOne(type => Organization, orientation => orientation.children, {
-        cascadeInsert: true,
-        cascadeUpdate: true,
-        cascadeRemove: false,
+        cascade: ["insert", "update"],
         nullable: true,
         lazy: false,
         eager: false,
@@ -52,8 +49,7 @@ export class Organization {
 
     /* 子组织，当删除这个组织时，默认如果存在子组织，则报错不删除，如果指定force为true，则强制删除其所有子孙组织 */
     @OneToMany(type => Organization, orientation => orientation.parent, {
-        cascadeInsert: true,
-        cascadeUpdate: true,
+        cascade: ["insert", "update"],
         lazy: false,
         eager: false
     })

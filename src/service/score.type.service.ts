@@ -1,9 +1,9 @@
-import { Component, HttpException } from "@nestjs/common";
+import { Injectable, HttpException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { ScoreType } from "../model/score.type.entity";
 
-@Component()
+@Injectable()
 export class ScoreTypeService {
 
     constructor(
@@ -30,7 +30,7 @@ export class ScoreTypeService {
     }
 
     async updateScoreType(id: number, name: string, type: string, description: string): Promise<void> {
-        const original: ScoreType|undefined = await this.scoreTypeRepository.findOneById(id);
+        const original: ScoreType|undefined = await this.scoreTypeRepository.findOne(id);
         if (!original) {
             throw new HttpException("指定id=" + id + "积分类型不存在", 425);
         }
@@ -54,7 +54,7 @@ export class ScoreTypeService {
     }
 
     async deleteScoreType(id: number): Promise<void> {
-        const exist: ScoreType|undefined = await this.scoreTypeRepository.findOneById(id);
+        const exist: ScoreType|undefined = await this.scoreTypeRepository.findOne(id);
         if (!exist) {
             throw new HttpException("指定id=" + id + "积分类型不存在", 425);
         }

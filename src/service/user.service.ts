@@ -1,5 +1,5 @@
 import { ArrayInfo, FileInfo, TextInfo, UnionUserInfo } from "../interface/user/union.user.info";
-import { Component, HttpException, Inject } from "@nestjs/common";
+import { Injectable, HttpException, Inject } from "@nestjs/common";
 import { StoreComponent } from "../interface/store.component";
 import { Repository, Connection, QueryRunner } from "typeorm";
 import { Organization } from "../model/organization.entity";
@@ -14,7 +14,7 @@ import { User } from "../model/user.entity";
 import { IncomingMessage } from "http";
 import { createHash } from "crypto";
 
-@Component()
+@Injectable()
 export class UserService {
 
     constructor(
@@ -31,7 +31,7 @@ export class UserService {
     }
 
     async getUserById(id: number): Promise<{ id: number, userName: string, status: boolean, recycle: boolean } | undefined> {
-        return this.userRepository.findOneById(id, { select: ["id", "userName", "status", "recycle"] });
+        return this.userRepository.findOne(id, { select: ["id", "userName", "status", "recycle"] });
     }
 
     async getUserByName(userName: string): Promise<User | undefined> {
@@ -57,7 +57,7 @@ export class UserService {
 
     /*返回用户信息时，需要提取其InfoItem对象以获取信息名称 */
     async userInfos(id: number): Promise<Array<{ name: string, value: string }>> {
-        const user: User | undefined = await this.userRepository.findOneById(id, { relations: ["userInfos"] });
+        const user: User | undefined = await this.userRepository.findOne(id, { relations: ["userInfos"] });
         if (!user) {
             throw new HttpException("指定用户不存在", 406);
         }
@@ -73,7 +73,7 @@ export class UserService {
     }
 
     async roles(id: number): Promise<Array<Role>> {
-        const user: User | undefined = await this.userRepository.findOneById(id, { relations: ["roles"] });
+        const user: User | undefined = await this.userRepository.findOne(id, { relations: ["roles"] });
         if (!user) {
             throw new HttpException("指定用户不存在", 406);
         }
@@ -81,7 +81,7 @@ export class UserService {
     }
 
     async permissions(id: number): Promise<Array<Permission>> {
-        const user: User | undefined = await this.userRepository.findOneById(
+        const user: User | undefined = await this.userRepository.findOne(
             id,
             { relations: ["roles", "adds", "reduces"] },
         );
@@ -96,13 +96,13 @@ export class UserService {
         const ids: Set<number> = new Set();
         // 遍历获取所有角色拥有的权限
         for (let i = 0; i < user.roles.length; i++) {
-            const role: Role | undefined = await this.roleRepository.findOneById(
+            const role: Role | undefined = await this.roleRepository.findOne(
                 user.roles[i].id,
                 { relations: ["funcs"] },
             );
             if (role && role.funcs && role.funcs.length > 0) {
                 for (let j = 0; j < role.funcs.length; j++) {
-                    const func: Func | undefined = await this.funcRepository.findOneById(
+                    const func: Func | undefined = await this.funcRepository.findOne(
                         role.funcs[i].id,
                         { relations: ["permissions"] },
                     );
@@ -146,7 +146,7 @@ export class UserService {
     async createUser(organizationId: number, userName: string, password: string): Promise<void> {
         const organizations: Array<Organization> = [];
         if (organizationId) {
-            const organization = await this.organizationRepository.findOneById(organizationId);
+            const organization = await this.organizationRepository.findOne(organizationId);
             if (!organization) {
                 throw new HttpException("指定id=" + organizationId + "组织不存在", 402);
             }
@@ -176,7 +176,7 @@ export class UserService {
     async createUserWithUserInfo(req: IncomingMessage, organizationId: number, userName: string, password: string, groups: Array<{ groupId: number, infos: Array<UnionUserInfo> }>): Promise<void> {
         const organizations: Array<Organization> = [];
         if (organizationId) {
-            const organization = await this.organizationRepository.findOneById(organizationId);
+            const organization = await this.organizationRepository.findOne(organizationId);
             if (!organization) {
                 throw new HttpException("指定id=" + organizationId + "组织不存在", 402);
             }
@@ -200,7 +200,7 @@ export class UserService {
         });
         for (let i = 0; i < groups.length; i++) {
             const { groupId, infos } = groups[i];
-            const group: InfoGroup | undefined = await this.infoGroupRepository.findOneById(
+            const group: InfoGroup | undefined = await this.infoGroupRepository.findOne(
                 groupId,
                 { relations: ["items"] },
             );
@@ -217,7 +217,7 @@ export class UserService {
     }
 
     async addUserInfoToUser(req: IncomingMessage, id: number, groups: Array<{ groupId: number, infos: Array<UnionUserInfo> }>): Promise<void> {
-        const user: User | undefined = await this.userRepository.findOneById(
+        const user: User | undefined = await this.userRepository.findOne(
             id,
             { relations: ["userInfos", "infoItems"] },
         );
@@ -226,7 +226,7 @@ export class UserService {
         }
         for (let i = 0; i < groups.length; i++) {
             const { groupId, infos } = groups[i];
-            const group: InfoGroup | undefined = await this.infoGroupRepository.findOneById(
+            const group: InfoGroup | undefined = await this.infoGroupRepository.findOne(
                 groupId,
                 { relations: ["items"] },
             );
@@ -376,7 +376,7 @@ export class UserService {
     }
 
     async updateUser(id: number, userName: string, password: string): Promise<void> {
-        const exist: User | undefined = await this.userRepository.findOneById(id);
+        const exist: User | undefined = await this.userRepository.findOne(id);
         if (!exist) {
             throw new HttpException("指定id=" + id + "用户不存在", 406);
         }
@@ -398,7 +398,7 @@ export class UserService {
     }
 
     async bannedUser(id: number): Promise<void> {
-        const exist: User | undefined = await this.userRepository.findOneById(id);
+        const exist: User | undefined = await this.userRepository.findOne(id);
         if (!exist) {
             throw new HttpException("指定id=" + id + "用户不存在", 406);
         }
@@ -417,7 +417,7 @@ export class UserService {
     }
 
     async unBannedUser(id: number): Promise<void> {
-        const exist: User | undefined = await this.userRepository.findOneById(id);
+        const exist: User | undefined = await this.userRepository.findOne(id);
         if (!exist) {
             throw new HttpException("指定id=" + id + "用户不存在", 406);
         }
@@ -436,7 +436,7 @@ export class UserService {
     }
 
     async softDeleteUser(id: number): Promise<void> {
-        const exist: User | undefined = await this.userRepository.findOneById(id);
+        const exist: User | undefined = await this.userRepository.findOne(id);
         if (!exist) {
             throw new HttpException("指定id=" + id + "用户不存在", 406);
         }
@@ -452,7 +452,7 @@ export class UserService {
     }
 
     async restoreUser(id: number): Promise<void> {
-        const exist: User | undefined = await this.userRepository.findOneById(id);
+        const exist: User | undefined = await this.userRepository.findOne(id);
         if (!exist) {
             throw new HttpException("指定id=" + id + "用户不存在", 406);
         }
@@ -490,7 +490,7 @@ export class UserService {
     }
 
     async deleteUser(id: number): Promise<void> {
-        const exist: User | undefined = await this.userRepository.findOneById(id);
+        const exist: User | undefined = await this.userRepository.findOne(id);
         if (!exist) {
             throw new HttpException("指定id=" + id + "用户不存在", 406);
         }
@@ -525,7 +525,7 @@ export class UserService {
     }
 
     async setRoles(id: number, roleIds: Array<number>): Promise<void> {
-        const user: User | undefined = await this.userRepository.findOneById(id, { relations: ["roles"] });
+        const user: User | undefined = await this.userRepository.findOne(id, { relations: ["roles"] });
         if (!user) {
             throw new HttpException("指定id=" + id + "用户不存在", 406);
         }
@@ -547,7 +547,7 @@ export class UserService {
     }
 
     async setPermissions(id: number, permissionIds: Array<number>): Promise<void> {
-        const user: User | undefined = await this.userRepository.findOneById(
+        const user: User | undefined = await this.userRepository.findOne(
             id,
             { relations: ["roles", "adds", "reduces"] },
         );
@@ -562,13 +562,13 @@ export class UserService {
         const ids: Set<number> = new Set();
         // 遍历获取所有角色拥有的权限
         for (let i = 0; i < user.roles.length; i++) {
-            const role: Role | undefined = await this.roleRepository.findOneById(
+            const role: Role | undefined = await this.roleRepository.findOne(
                 user.roles[i].id,
                 { relations: ["funcs"] },
             );
             if (role && role.funcs && role.funcs.length > 0) {
                 for (let j = 0; j < role.funcs.length; j++) {
-                    const func: Func | undefined = await this.funcRepository.findOneById(
+                    const func: Func | undefined = await this.funcRepository.findOne(
                         role.funcs[i].id,
                         { relations: ["permissions"] },
                     );

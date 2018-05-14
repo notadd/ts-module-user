@@ -1,11 +1,11 @@
-import { Component, HttpException } from "@nestjs/common";
+import { Injectable, HttpException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Func } from "../model/func.entity";
 import { Module } from "../model/module.entity";
 import { Role } from "../model/role.entity";
 
-@Component()
+@Injectable()
 export class RoleService {
 
     constructor(
@@ -16,7 +16,7 @@ export class RoleService {
     }
 
     async createRole(moduleToken: string, name: string, score: number): Promise<void> {
-        const module: Module|undefined = await this.moduleRepository.findOneById(moduleToken);
+        const module: Module|undefined = await this.moduleRepository.findOne(moduleToken);
         if (!module) {
             throw new HttpException("指定模块token=" + moduleToken + "不存在", 415);
         }
@@ -33,7 +33,7 @@ export class RoleService {
     }
 
     async updateRole(id: number, name: string, score: number): Promise<void> {
-        const role: Role|undefined = await this.roleRepository.findOneById(id);
+        const role: Role|undefined = await this.roleRepository.findOne(id);
         if (!role) {
             throw new HttpException("指定id=" + id + "角色不存在", 421);
         }
@@ -53,7 +53,7 @@ export class RoleService {
     }
 
     async deleteRole(id: number): Promise<void> {
-        const role: Role|undefined = await this.roleRepository.findOneById(id);
+        const role: Role|undefined = await this.roleRepository.findOne(id);
         if (!role) {
             throw new HttpException("指定id=" + id + "角色不存在", 421);
         }
@@ -65,7 +65,7 @@ export class RoleService {
     }
 
     async setFuncs(id: number, funcIds: Array<number>): Promise<void> {
-        const role: Role|undefined = await this.roleRepository.findOneById(id);
+        const role: Role|undefined = await this.roleRepository.findOne(id);
         if (!role) {
             throw new HttpException("指定id=" + id + "角色不存在", 421);
         }

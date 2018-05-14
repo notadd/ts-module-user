@@ -1,10 +1,10 @@
-import { Component, HttpException } from "@nestjs/common";
+import { Injectable, HttpException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { InfoGroup } from "../model/info.group.entity";
 import { InfoItem } from "../model/info.item.entity";
 
-@Component()
+@Injectable()
 export class InfoGroupService {
 
     constructor(
@@ -20,7 +20,7 @@ export class InfoGroupService {
 
     /* 获取指定信息组的信息项，不管信息组状态如何都能获取到 */
     async getInfoItems(id: number): Promise<Array<InfoItem> | undefined> {
-        const infoGroup: InfoGroup | undefined = await this.infoGroupRepository.findOneById(id, { relations: ["items"] });
+        const infoGroup: InfoGroup | undefined = await this.infoGroupRepository.findOne(id, { relations: ["items"] });
         return infoGroup ? infoGroup.items : undefined;
     }
 
@@ -41,7 +41,7 @@ export class InfoGroupService {
 
     /* 更新信息组 */
     async updateInfoGroup(id: number, name: string): Promise<void> {
-        const exist: InfoGroup | undefined = await this.infoGroupRepository.findOneById(id);
+        const exist: InfoGroup | undefined = await this.infoGroupRepository.findOne(id);
         if (!exist) {
             throw new HttpException("给定id=" + id + "信息组不存在", 408);
         }
@@ -66,7 +66,7 @@ export class InfoGroupService {
 
     /* 删除信息组，目前由于信息组与信息项是多对多关系，删除信息组只会解除关系，不会删除信息项 */
     async deleteInfoGroup(id: number): Promise<void> {
-        const exist: InfoGroup | undefined = await this.infoGroupRepository.findOneById(id);
+        const exist: InfoGroup | undefined = await this.infoGroupRepository.findOne(id);
         if (!exist) {
             throw new HttpException("给定id=" + id + "信息组不存在", 408);
         }
@@ -83,7 +83,7 @@ export class InfoGroupService {
 
     /* 向指定信息组添加信息项 */
     async addInfoItem(id: number, infoItemId: number): Promise<void> {
-        const group: InfoGroup | undefined = await this.infoGroupRepository.findOneById(id, { relations: ["items"] });
+        const group: InfoGroup | undefined = await this.infoGroupRepository.findOne(id, { relations: ["items"] });
         if (!group) {
             throw new HttpException("给定id=" + id + "信息组不存在", 408);
         }
@@ -91,7 +91,7 @@ export class InfoGroupService {
         if (group.default) {
             throw new HttpException("默认信息组不可更改", 408);
         }
-        const item: InfoItem | undefined = await this.infoItemRepository.findOneById(infoItemId);
+        const item: InfoItem | undefined = await this.infoItemRepository.findOne(infoItemId);
         if (!item) {
             throw new HttpException("指定id=" + infoItemId + "信息项不存在", 409);
         }
@@ -117,7 +117,7 @@ export class InfoGroupService {
 
     /* 从信息组移除信息项 */
     async removeInfoItem(id: number, infoItemId: number): Promise<void> {
-        const group: InfoGroup | undefined = await this.infoGroupRepository.findOneById(id, { relations: ["items"] });
+        const group: InfoGroup | undefined = await this.infoGroupRepository.findOne(id, { relations: ["items"] });
         if (!group) {
             throw new HttpException("给定id=" + id + "信息组不存在", 408);
         }
@@ -126,7 +126,7 @@ export class InfoGroupService {
             throw new HttpException("默认信息组不可更改", 408);
         }
         // 其他信息组不可能包含默认信息项，因为添加不进去
-        const item: InfoItem | undefined = await this.infoItemRepository.findOneById(infoItemId);
+        const item: InfoItem | undefined = await this.infoItemRepository.findOne(infoItemId);
         if (!item) {
             throw new HttpException("指定id=" + infoItemId + "信息项不存在", 409);
         }

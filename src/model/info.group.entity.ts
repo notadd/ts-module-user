@@ -37,8 +37,7 @@ export class InfoGroup {
     /* 信息项与信息组是多对多关系，当删除信息组时只是解除关联而已，信息组与信息项的删除分别进行
     */
     @ManyToMany(type => InfoItem, infoItem => infoItem.groups, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
+        cascade: ["insert" ],
         lazy: false,
         eager: false
     })

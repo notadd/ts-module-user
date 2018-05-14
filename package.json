@@ -13,7 +13,7 @@
         "test": "jest --config=jest.json --runInBand --forceExit",
         "test:watch": "jest --watchAll --config=jest.json --runInBand --forceExit",
         "test:coverage": "jest --config=jest.json --coverage --runInBand --forceExit",
-        "check": "tslint -p tsconfig.json -c tslint.json ",
+        "check": "tslint -p tsconfig.json -c tslint.json --type-check",
         "fix": "tslint -p tsconfig.json -c tslint.json --fix"
     },
     "repository": {
@@ -40,12 +40,15 @@
         "mysql": "^2.15.0",
         "pg": "^7.4.1",
         "reflect-metadata": "^0.1.10",
-        "rxjs": "^5.4.0",
-        "typeorm": "^0.1.9"
+        "rxjs": "^6.1.0",
+        "rxjs-compat": "^6.1.0",
+        "typeorm": "^0.2.5"
     },
     "devDependencies": {
+        "@notadd/addon-upyun": "^2.0.6",
         "@notadd/gulp-typescript": "^4.0.2",
         "@notadd/user": "^2.3.43",
+        "@types/express": "^4.11.1",
         "@types/jest": "^22.1.4",
         "@types/node": "^10.0.8",
         "gulp": "^3.9.1",

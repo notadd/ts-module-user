@@ -1,6 +1,6 @@
 import { HttpException, Inject, UseInterceptors } from "@nestjs/common";
 import { Mutation, Resolver } from "@nestjs/graphql";
-import { IncomingMessage } from "http";
+import { Request } from "express";
 import { ExceptionInterceptor } from "../interceptor/exception.interceptor";
 import { Data } from "../interface/data";
 import { Role } from "../model/role.entity";
@@ -17,7 +17,7 @@ export class RoleResolver {
     }
 
     @Mutation("createRole")
-    async createRole(req: IncomingMessage, body: { moduleToken: string, name: string, score: number }): Promise<Data> {
+    async createRole(req: Request, body: { moduleToken: string, name: string, score: number }): Promise<Data> {
         const { moduleToken, name, score } = body;
         if (!moduleToken || !name || !score) {
             throw new HttpException("缺少参数", 400);
@@ -27,7 +27,7 @@ export class RoleResolver {
     }
 
     @Mutation("updateRole")
-    async updateRole(req: IncomingMessage, body: { id: number, name: string, score: number }): Promise<Data> {
+    async updateRole(req: Request, body: { id: number, name: string, score: number }): Promise<Data> {
         const { id, name, score } = body;
         if (!id || !name || !score) {
             throw new HttpException("缺少参数", 400);
@@ -37,7 +37,7 @@ export class RoleResolver {
     }
 
     @Mutation("deleteRole")
-    async deleteRole(req: IncomingMessage, body: { id: number }): Promise<Data> {
+    async deleteRole(req: Request, body: { id: number }): Promise<Data> {
         const { id } = body;
         if (!id) {
             throw new HttpException("缺少参数", 400);
@@ -47,7 +47,7 @@ export class RoleResolver {
     }
 
     @Mutation("setFuncs")
-    async setFuncs(req: IncomingMessage, body: { id: number, funcIds: Array<number> }): Promise<Data> {
+    async setFuncs(req: Request, body: { id: number, funcIds: Array<number> }): Promise<Data> {
         const { id, funcIds } = body;
         if (!id) {
             throw new HttpException("缺少参数", 400);

@@ -1,11 +1,11 @@
-import { Component, HttpException } from "@nestjs/common";
+import { Injectable, HttpException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Func } from "../model/func.entity";
 import { Module } from "../model/module.entity";
 import { Permission } from "../model/permission.entity";
 
-@Component()
+@Injectable()
 export class FuncService {
 
     constructor(
@@ -16,7 +16,7 @@ export class FuncService {
     }
 
     async createFunc(moduleToken: string, name: string): Promise<void> {
-        const module: Module|undefined = await this.moduleRepository.findOneById(moduleToken);
+        const module: Module|undefined = await this.moduleRepository.findOne(moduleToken);
         if (!module) {
             throw new HttpException("指定模块token=" + moduleToken + "不存在", 415);
         }
@@ -33,7 +33,7 @@ export class FuncService {
     }
 
     async updateFunc(id: number, name: string): Promise<void> {
-        const func: Func|undefined = await this.funcRepository.findOneById(id);
+        const func: Func|undefined = await this.funcRepository.findOne(id);
         if (!func) {
             throw new HttpException("指定id=" + id + "功能不存在", 417);
         }
@@ -52,7 +52,7 @@ export class FuncService {
     }
 
     async deleteFunc(id: number): Promise<void> {
-        const func: Func|undefined = await this.funcRepository.findOneById(id);
+        const func: Func|undefined = await this.funcRepository.findOne(id);
         if (!func) {
             throw new HttpException("指定id=" + id + "功能不存在", 417);
         }
@@ -64,7 +64,7 @@ export class FuncService {
     }
 
     async setPermissions(id: number, permissionIds: Array<number>): Promise<void> {
-        const func: Func|undefined = await this.funcRepository.findOneById(id, { relations: [ "permissions" ] });
+        const func: Func|undefined = await this.funcRepository.findOne(id, { relations: [ "permissions" ] });
         if (!func) {
             throw new HttpException("指定id=" + id + "功能不存在", 417);
         }

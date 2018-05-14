@@ -39,8 +39,7 @@ export class ScoreType {
 
     /* 这个积分类型下的所有积分值 */
     @OneToMany(type => Score, score => score.scoreType, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
+        cascade:["insert"],
         lazy: false,
         eager: false
     })

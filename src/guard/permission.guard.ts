@@ -1,13 +1,13 @@
-import { CanActivate, ExecutionContext, Guard, Inject } from "@nestjs/common";
-import { IncomingMessage } from "http";
 import { PERMISSION_CONTROLLER_AND, PERMISSION_CONTROLLER_OR } from "../decorator/can.decorator";
+import { CanActivate, Injectable, Inject } from "@nestjs/common";
+import { ExecutionContextHost } from "@nestjs/core/helpers/execution-context.host";
 import { UserComponent } from "../export/user.component.provider";
 import { Permission } from "../model/permission.entity";
 import { User } from "../model/user.entity";
 
 export const MODULE_TOKEN = "module_token";
 
-@Guard()
+@Injectable()
 export class PermissionGuard implements CanActivate {
 
     constructor(
@@ -20,10 +20,11 @@ export class PermissionGuard implements CanActivate {
        在类或者方法上，必须通过所有and权限，且通过or权限之一才可通过，也就是顶层关系为and
        classAnd1&&classAnd2&&(classOr1||classOr2) && method_and1&&method_and2&&(method_or1||method2)
     */
-    async canActivate(req: IncomingMessage, context: ExecutionContext): Promise<boolean> {
-        const { parent, handler } = context;
+    async canActivate(context: ExecutionContextHost): Promise<boolean> {
+        const parent = context.getClass();
+        const handler = context.getHandler();
         // 从头信息中获取token，进而获取到用户id，这部分暂时未接入
-        const auth = req.headers.authentication;
+        const auth = context.switchToHttp().getRequest().headers.authentication;
         // 用户，从token中获得
         const user: User = { id: 1, recycle: false, status: true } as User;
         // 获取用户此时拥有的权限，已经根据角色、增权限、减权限计算出了最终拥有的权限

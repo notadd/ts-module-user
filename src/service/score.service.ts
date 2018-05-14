@@ -1,4 +1,4 @@
-import { Component, HttpException, Inject } from "@nestjs/common";
+import { Injectable, HttpException, Inject } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Score } from "../model/score.entity";
@@ -6,7 +6,7 @@ import { ScoreType } from "../model/score.type.entity";
 import { User } from "../model/user.entity";
 import { FloatUtil } from "../util/float.util";
 
-@Component()
+@Injectable()
 export class ScoreService {
 
     constructor(
@@ -18,11 +18,11 @@ export class ScoreService {
     }
 
     async getScore(userId: number, scoreTypeId: number): Promise<number> {
-        const scoreType: ScoreType | undefined = await this.scoreTypeRepository.findOneById(scoreTypeId);
+        const scoreType: ScoreType | undefined = await this.scoreTypeRepository.findOne(scoreTypeId);
         if (!scoreType) {
             throw new HttpException("指定id=" + scoreTypeId + "积分类型不存在", 427);
         }
-        const user: User | undefined = await this.userRepository.findOneById(userId, { relations: ["scores"] });
+        const user: User | undefined = await this.userRepository.findOne(userId, { relations: ["scores"] });
         if (!user) {
             throw new HttpException("指定id=" + userId + "用户不存在", 428);
         }
@@ -50,11 +50,11 @@ export class ScoreService {
     }
 
     async setScore(userId: number, scoreTypeId: number, add: number): Promise<void> {
-        const scoreType: ScoreType|undefined = await this.scoreTypeRepository.findOneById(scoreTypeId);
+        const scoreType: ScoreType|undefined = await this.scoreTypeRepository.findOne(scoreTypeId);
         if (!scoreType) {
             throw new HttpException("指定id=" + scoreTypeId + "积分类型不存在", 427);
         }
-        const user: User|undefined = await this.userRepository.findOneById(userId, { relations: ["scores"] });
+        const user: User|undefined = await this.userRepository.findOne(userId, { relations: ["scores"] });
         if (!user) {
             throw new HttpException("指定id=" + userId + "用户不存在", 428);
         }

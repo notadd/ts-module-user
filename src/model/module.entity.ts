@@ -19,8 +19,7 @@ export class Module {
 
     /* 模块下存储的权限，级联删除被关闭，删除模块之前需要单独删除权限 */
     @OneToMany(type => Permission, permission => permission.module, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
+        cascade: ["insert"],
         lazy: false,
         eager: false
     })
@@ -28,8 +27,7 @@ export class Module {
 
     /* 模块下的功能，删除模块之前需要单独删除功能，不能级联删除，因为功能被权限引用 */
     @OneToMany(type => Func, func => func.module, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
+        cascade: ["insert"],
         lazy: false,
         eager: false
     })
@@ -37,8 +35,7 @@ export class Module {
 
     /* 模块下的角色，模块删除前需要单独删除角色，不能级联删除，因为角色被功能引用*/
     @OneToMany(type => Role, role => role.module, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
+        cascade: ["insert"],
         lazy: false,
         eager: false
     })

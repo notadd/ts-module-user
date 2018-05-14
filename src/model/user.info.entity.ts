@@ -25,9 +25,7 @@ export class UserInfo {
 
     /* 信息项所属用户 */
     @ManyToOne(type => User, user => user.userInfos, {
-        cascadeInsert: false,
-        cascadeUpdate: false,
-        cascadeRemove: false,
+        cascade: false,
         nullable: true,
         onDelete: "CASCADE",
         lazy: false,
@@ -46,9 +44,7 @@ export class UserInfo {
 
     /* 信息项所属用户 */
     @ManyToOne(type => InfoItem, infoItem => infoItem.userInfos, {
-        cascadeInsert: false,
-        cascadeUpdate: false,
-        cascadeRemove: false,
+        cascade: false,
         nullable: true,
         onDelete: "CASCADE",
         lazy: false,

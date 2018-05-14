@@ -85,8 +85,7 @@ export class InfoItem {
 
     /* 信息项下的用户信息，当信息项删除时用户信息也会删除，用户信息中外键列infoItemId引用了信息项的id，当信息项名称修改后仍能找到其包含的信息 */
     @OneToMany(type => UserInfo, userInfo => userInfo.infoItem, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
+        cascade: ["insert" ],
         lazy: false,
         eager: false
     })
@@ -94,8 +93,7 @@ export class InfoItem {
 
     /* 所属信息组，一个信息项可能属于多个信息组 */
     @ManyToMany(type => InfoGroup, infoGroup => infoGroup.items, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
+        cascade: ["insert" ],
         lazy: false,
         eager: false
     })

@@ -53,8 +53,7 @@ export class User {
 
     /* 用户所包含信息，为调用信息组生成的信息 */
     @OneToMany(type => UserInfo, userInfo => userInfo.user, {
-        cascadeInsert: true,
-        cascadeUpdate: true,
+        cascade: ["insert", "update"],
         lazy: false,
         eager: false
     })
@@ -62,8 +61,7 @@ export class User {
 
     /* 用户的各个积分值 */
     @OneToMany(type => Score, score => score.user, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
+        cascade: ["insert"],
         lazy: false,
         eager: false
     })
@@ -71,8 +69,7 @@ export class User {
 
     /* 用户已经填写的信息项，用户只保存与用户信息以及信息项的关系，不保存与信息组的关系*/
     @ManyToMany(type => InfoItem, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
+        cascade: ["insert"],
         lazy: false,
         eager: false
     })
@@ -83,8 +80,7 @@ export class User {
 
     /* 用户添加的权限 */
     @ManyToMany(type => Permission, permission => permission.addUsers, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
+        cascade: ["insert"],
         lazy: false,
         eager: false
     })
@@ -95,8 +91,7 @@ export class User {
 
     /* 用户减少的权限 */
     @ManyToMany(type => Permission, permission => permission.reduceUsers, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
+        cascade: ["insert"],
         lazy: false,
         eager: false
     })
@@ -107,8 +102,7 @@ export class User {
 
     /* 用户拥有的角色 */
     @ManyToMany(type => Role, role => role.users, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
+        cascade: ["insert"],
         lazy: false,
         eager: false
     })
@@ -119,8 +113,7 @@ export class User {
 
     /* 用户所属组织 */
     @ManyToMany(type => Organization, organization => organization.users, {
-        cascadeInsert: true,
-        cascadeUpdate: true,
+        cascade: ["insert"],
         lazy: false,
         eager: false
     })

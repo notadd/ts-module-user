@@ -27,9 +27,7 @@ export class Score {
       如同用户信息与信息项关联起来
     */
     @ManyToOne(type => ScoreType, scoreType => scoreType.scores, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
-        cascadeRemove: false,
+        cascade: ["insert"],
         onDelete: "CASCADE",
         lazy: false,
         eager: false
@@ -44,9 +42,7 @@ export class Score {
     userId: number;
 
     @ManyToOne(type => User, user => user.scores, {
-        cascadeInsert: true,
-        cascadeUpdate: false,
-        cascadeRemove: false,
+        cascade: ["insert"],
         onDelete: "CASCADE",
         lazy: false,
         eager: false

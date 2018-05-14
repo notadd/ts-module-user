@@ -1,9 +1,9 @@
-import { Component, HttpException } from "@nestjs/common";
+import { Injectable, HttpException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { InfoItem } from "../model/info.item.entity";
 
-@Component()
+@Injectable()
 export class InfoItemService {
 
     constructor(
@@ -40,7 +40,7 @@ export class InfoItemService {
 
     /* 更新信息项 */
     async updateInfoItem(id: number, name: string, label: string, description: string, type: string, necessary: boolean, registerVisible: boolean, informationVisible: boolean, order: number): Promise<void> {
-        const exist: InfoItem|undefined = await this.infoItemRepository.findOneById(id);
+        const exist: InfoItem|undefined = await this.infoItemRepository.findOne(id);
         if (!exist) {
             throw new HttpException("指定id=" + id + "信息项不存在", 413);
         }
@@ -74,7 +74,7 @@ export class InfoItemService {
 
     /* 删除信息项，这里默认的行为是删除信息项时，由它生成的用户信息UserInfo不会删除*/
     async deleteInfoItem(id: number): Promise<void> {
-        const exist: InfoItem|undefined = await this.infoItemRepository.findOneById(id);
+        const exist: InfoItem|undefined = await this.infoItemRepository.findOne(id);
         if (!exist) {
             throw new HttpException("指定id=" + id + "信息项不存在", 413);
         }
