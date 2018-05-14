@@ -15,12 +15,18 @@ const source = "src";
 const modules = Object.keys(packages);
 
 gulp.task("default", function () {
-    console.log("进入gulp")
     tasks();
 });
 
 modules.forEach(module => {
     gulp.task(module, () => {
+        gulp.src([
+            `${source}/**/*.graphql`,
+            `${source}/*.graphql`,
+        ]).pipe(rename(function (path) {
+            path.basename = path.basename.replace(".original", ".types");
+        })).pipe(gulp.dest(`${dist}`));
+
         return packages[module]
             .src()
             .pipe(tslint({
@@ -59,12 +65,6 @@ function watchGraphql(source, module) {
         ]
     ).on("change", function (event) {
         console.log("File " + event.path + " was " + event.type + ", running tasks...");
-        gulp.src([
-            `${source}/**/*.graphql`,
-            `${source}/*.graphql`,
-        ]).pipe(rename(function (path) {
-            path.basename = path.basename.replace(".original", ".types");
-        })).pipe(gulp.dest(`${dist}`));
     });
 }
 
