@@ -1,10 +1,10 @@
 type Mutation{
     #create role with name and score
-    createRole(moduleToken:String!,name:String!,score:Int!):Data
+    createRole(moduleToken:String!,name:String!,score:Int!):UserModuleCommonData
     #update role with name and score
-    updateRole(id:Int!,name:String!,score:Int!):Data
+    updateRole(id:Int!,name:String!,score:Int!):UserModuleCommonData
     #delete role with id
-    deleteRole(id:Int!):Data
+    deleteRole(id:Int!):UserModuleCommonData
     #set role.funcs
-    setFuncs(id:Int!,funcIds:[Int!]!):Data
+    setFuncs(id:Int!,funcIds:[Int!]!):UserModuleCommonData
 }

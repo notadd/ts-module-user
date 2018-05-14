@@ -11,19 +11,19 @@ type Query{
 
 type Mutation{
     #create organization with name , the parentId is optional
-    createOrganization(name:String!,parentId:Int):Data
+    createOrganization(name:String!,parentId:Int):UserModuleCommonData
     #update organization with name , the parentId is optional
-    updateOrganization(id:Int!,name:String!,parentId:Int):Data
+    updateOrganization(id:Int!,name:String!,parentId:Int):UserModuleCommonData
     #delete  specify id organization
-    deleteOrganization(id:Int!):Data
+    deleteOrganization(id:Int!):UserModuleCommonData
     #add user to organization
-    addUserToOrganization(id:Int!,userId:Int!):Data
+    addUserToOrganization(id:Int!,userId:Int!):UserModuleCommonData
     #add users to organization
-    addUsersToOrganization(id:Int!,userIds:[Int!]!):Data
+    addUsersToOrganization(id:Int!,userIds:[Int!]!):UserModuleCommonData
     #remove user from organization
-    removeUserFromOrganization(id:Int!,userId:Int!):Data
+    removeUserFromOrganization(id:Int!,userId:Int!):UserModuleCommonData
     #remove users from organization
-    removeUsersFromOrganization(id:Int!,userIds:[Int!]!):Data
+    removeUsersFromOrganization(id:Int!,userIds:[Int!]!):UserModuleCommonData
 }
 
 #return data

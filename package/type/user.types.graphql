@@ -19,7 +19,7 @@ type Mutation{
         organizationId: Int,
         userName: String!,
         password: String!,
-    ):Data
+    ):UserModuleCommonData
 
     #create user with UserInfo, specify organization
     createUserWithUserInfo(
@@ -27,47 +27,47 @@ type Mutation{
         userName: String!,
         password: String!,
         groups: [UserInfoGroup]
-    ):Data
+    ):UserModuleCommonData
 
     #update user , specify organization
     updateUser(
         id:Int,
         userName: String,
         password: String,
-    ):Data
+    ):UserModuleCommonData
 
     #add userinfo to user , user must exist
     addUserInfo(
         id:Int!,
         groups: [UserInfoGroup]
-    ):Data
+    ):UserModuleCommonData
 
     #banned user,set status false
-    bannedUser(id:Int!):Data
+    bannedUser(id:Int!):UserModuleCommonData
 
     #unbanned user,set status true
-    unBannedUser(id:Int!):Data
+    unBannedUser(id:Int!):UserModuleCommonData
 
     #soft delete user and move it to recycle bin,set recycle true
-    softDeleteUser(id:Int!):Data
+    softDeleteUser(id:Int!):UserModuleCommonData
 
     #restore user from recycle bin
-    restoreUser(id:Int!):Data
+    restoreUser(id:Int!):UserModuleCommonData
 
     #restore users from recycle bin
-    restoreUsers(ids:[Int!]!):Data
+    restoreUsers(ids:[Int!]!):UserModuleCommonData
 
     #delete user and it's user info,hard delete
-    deleteUser(id:Int!):Data
+    deleteUser(id:Int!):UserModuleCommonData
 
     #delete in batches,hard delete
-    deleteUsers(ids:[Int!]!):Data
+    deleteUsers(ids:[Int!]!):UserModuleCommonData
 
     #set roles
-    setRoles(id:Int!,roleIds:[Int!]!):Data
+    setRoles(id:Int!,roleIds:[Int!]!):UserModuleCommonData
 
     #set permission ,that is final result ,generate by role adds reduces
-    setUserOwnPermissions(id:Int!,permissionIds:[Int!]!):Data
+    setUserOwnPermissions(id:Int!,permissionIds:[Int!]!):UserModuleCommonData
 }
 
 #users return Data

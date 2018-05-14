@@ -2,7 +2,7 @@
     "watch": [
         "."
     ],
-    "ext": "ts",
+    "ext": "ts graphql js json",
     "ignore": [
         "./**/*.spec.ts"
     ],

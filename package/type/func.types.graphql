@@ -1,10 +1,10 @@
 type Mutation{
     #create func with name
-    createFunc(moduleToken:String!,name:String!):Data
+    createFunc(moduleToken:String!,name:String!):UserModuleCommonData
     #update func with name
-    updateFunc(id:Int!,name:String!):Data
+    updateFunc(id:Int!,name:String!):UserModuleCommonData
     #delete func with id
-    deleteFunc(id:Int!):Data
+    deleteFunc(id:Int!):UserModuleCommonData
     #set func'permissions
-    setPermissions(id:Int!,permissionIds:[Int!]!):Data
+    setPermissions(id:Int!,permissionIds:[Int!]!):UserModuleCommonData
 }

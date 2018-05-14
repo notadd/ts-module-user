@@ -1,5 +1,5 @@
 #commom return data
-type Data{
+type UserModuleCommonData{
     #error code
     code:Int
     #error message

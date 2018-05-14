@@ -5,13 +5,13 @@ type Query{
 
 type Mutation{
     #create new ScoreType
-    createScoreType(name:String!,type:ScoreValueType!,description:String):Data
+    createScoreType(name:String!,type:ScoreValueType!,description:String):UserModuleCommonData
     #update ScoreType
-    updateScoreType(id:Int!,name:String!,type:ScoreValueType!,description:String!):Data
+    updateScoreType(id:Int!,name:String!,type:ScoreValueType!,description:String!):UserModuleCommonData
     #delete ScoreType
-    deleteScoreType(id:Int!):Data
+    deleteScoreType(id:Int!):UserModuleCommonData
     #batch delete 
-    deleteScoreTypes(ids:[Int!]!):Data
+    deleteScoreTypes(ids:[Int!]!):UserModuleCommonData
 }
 
 

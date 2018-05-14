@@ -7,15 +7,15 @@ type Query{
 
 type Mutation{
     #create InfoGroup
-    createInfoGroup(name:String!):Data
+    createInfoGroup(name:String!):UserModuleCommonData
     #update  InfoGroup
-    updateInfoGroup(id:Int!,name:String!):Data
+    updateInfoGroup(id:Int!,name:String!):UserModuleCommonData
     #delete InfoGroup
-    deleteInfoGroup(id:Int!):Data
+    deleteInfoGroup(id:Int!):UserModuleCommonData
     #add info item to group
-    addInfoItem(id:Int!,infoItemId:Int!):Data
+    addInfoItem(id:Int!,infoItemId:Int!):UserModuleCommonData
     #remove info item from group
-    removeInfoItem(id:Int!,infoItemId:Int!):Data
+    removeInfoItem(id:Int!,infoItemId:Int!):UserModuleCommonData
 }
 
 
