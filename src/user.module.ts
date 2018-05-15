@@ -33,6 +33,7 @@ import { RoleService } from "./service/role.service";
 import { UserService } from "./service/user.service";
 import { UserInfo } from "./model/user.info.entity";
 import { InfoItem } from "./model/info.item.entity";
+import { JwtStrategy } from "./auth/auth.strategy";
 import { AuthService } from "./auth/auth.service";
 import { FloatUtil } from "./util/float.util";
 import { Score } from "./model/score.entity";
