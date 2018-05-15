@@ -19,7 +19,6 @@ export class User {
 
     /* 用户名，不能重复 */
     @Column({
-        name: "user_name",
         length: "20",
         unique: true
     })
@@ -27,7 +26,6 @@ export class User {
 
     /* 用户密码，为加盐密码 */
     @Column({
-        name: "password",
         length: 70
     })
     password: string;
@@ -40,15 +38,11 @@ export class User {
     salt: string;
 
     /* 状态，是否封禁 */
-    @Column({
-        name: "status",
-    })
+    @Column()
     status: boolean;
 
     /* 状态，是否处于回收站 */
-    @Column({
-        name: "recycle",
-    })
+    @Column()
     recycle: boolean;
 
     /* 用户所包含信息，为调用信息组生成的信息 */
