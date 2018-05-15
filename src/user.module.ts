@@ -33,6 +33,7 @@ import { RoleService } from "./service/role.service";
 import { UserService } from "./service/user.service";
 import { UserInfo } from "./model/user.info.entity";
 import { InfoItem } from "./model/info.item.entity";
+import { AuthService } from "./auth/auth.service";
 import { FloatUtil } from "./util/float.util";
 import { Score } from "./model/score.entity";
 import { Func } from "./model/func.entity";
@@ -58,25 +59,17 @@ import { Repository } from "typeorm";
         ]),
     ],
     providers: [
+        AuthService,
         FloatUtil,
-        OrganizationService,
-        OrganizationResolver,
-        ScoreTypeService,
-        ScoreTypeResolver,
-        InfoGroupService,
-        InfoGroupResolver,
-        InfoItemService,
-        InfoItemResolver,
-        ModuleService,
-        ModuleResolver,
-        ScoreService,
-        ScoreResolver,
-        FuncService,
-        FuncResolver,
-        UserService,
-        UserResolver,
-        RoleService,
-        RoleResolver,
+        FuncService, FuncResolver,
+        UserService, UserResolver,
+        RoleService, RoleResolver,
+        ScoreService, ScoreResolver,
+        ModuleService, ModuleResolver,
+        InfoItemService, InfoItemResolver,
+        ScoreTypeService, ScoreTypeResolver,
+        InfoGroupService, InfoGroupResolver,
+        OrganizationService, OrganizationResolver,
         UserComponentProvider,
     ],
     exports: [
