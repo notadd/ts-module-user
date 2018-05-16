@@ -70,26 +70,6 @@ export class UserComponent {
         return result;
     }
 
-    /* 用户登录方法，登录用户要求用户名与密码匹配，用户密码为加盐生成
-       回收站用户不能登录
-       封禁用户可以登录但是没有权限
-    */
-    async login(userName: string, password: string): Promise<boolean | User | undefined> {
-        const user: User | undefined = await this.userRepository.findOne({ userName });
-        if (!user) {
-            return false;
-        }
-        /* 回收站用户不可登录 */
-        if (user.recycle) {
-            return false;
-        }
-        const passwordWithSalt = crypto.createHash("sha256").update(password + user.salt).digest("hex");
-        if (passwordWithSalt !== user.password) {
-            return false;
-        }
-        return this.userRepository.findOne(user.id, { select: ["id", "userName", "status", "recycle"] });
-    }
-
     async getUserById(id: number): Promise<User | undefined> {
         return this.userRepository.findOne(id, { select: ["id", "userName", "status", "recycle"] });
     }

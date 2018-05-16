@@ -17,7 +17,7 @@ export class AuthService {
     ) { }
 
     /* 使用有效载荷(用户对象)，创建jsonwebtoken */
-    async createToken(user: User) {
+    createToken(user: User) {
         /* 默认的密钥 */
         return jwt.sign(user, this.secretKey, { expiresIn: this.expiresIn });
     }

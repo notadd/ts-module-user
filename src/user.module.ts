@@ -13,6 +13,7 @@ import { InfoItemResolver } from "./resolver/info.item.resolver";
 import { ScoreTypeService } from "./service/score.type.service";
 import { MetadataScanner } from "@nestjs/core/metadata-scanner";
 import { InfoGroupService } from "./service/info.group.service";
+import { LoginController } from "./controller/login.controller";
 import { Module as ModuleEntity } from "./model/module.entity";
 import { InfoItemService } from "./service/info.item.service";
 import { ModuleResolver } from "./resolver/module.resolver";
@@ -59,6 +60,7 @@ import { Repository } from "typeorm";
             Permission,
         ]),
     ],
+    controllers: [LoginController],
     providers: [
         AuthService,
         FloatUtil,
