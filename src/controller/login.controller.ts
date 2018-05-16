@@ -9,7 +9,7 @@ import * as crypto from "crypto";
 export class LoginController {
 
     constructor(
-        @Inject(AuthService) private readonly authService: AuthService;
+        @Inject(AuthService) private readonly authService: AuthService,
         @InjectRepository(User) private readonly userRepository: Repository<User>
     ) { }
 
