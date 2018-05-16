@@ -6,7 +6,8 @@ import { User } from "../model/user.entity";
 
 /*
 认证策略，这里使用的是jsonwebtoken
-JwtStrategy继承了PassportStrategy类，这个类构造函数中，保证passport采用这个策略
+JwtStrategy继承了PassportStrategy(Strategy)类，这个类构造函数中，保证passport采用这个策略
+并且将参数赋值给JwtStrategy实例，第一个参数是选项，第二个参数是validate方法
  */
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -25,7 +26,23 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  /* passport直接使用的是这个验证函数，这个验证函数里面调用了AuthService里的验证函数 */
+  /*
+  passport直接使用的是这个验证函数，这个验证函数里面调用了AuthService里的验证函数
+  这个函数被设置到JwtStrategy实例的_verify属性上
+  done方法为，通过done方法，退出JwtStrategy实例的authenticate方法
+  var verified = function (err, user, info) {
+    有错误抛出错误
+    if (err) {
+        return self.error(err);
+    } else if (!user) {
+        有效载荷不存在，抛出信息
+        return self.fail(info);
+    } else {
+        成功时，有效载荷与信息一起抛出
+        return self.success(user, info);
+    }
+};
+  */
   async validate(payload: User, done: Function) {
     /* 调用AuthService里的验证函数 */
     const user = await this.authService.validateUser(payload);
