@@ -77,7 +77,6 @@ import { Repository } from "typeorm";
     ],
     exports: [
         UserComponentProvider,
-        UserService,
     ],
 })
 export class UserModule implements OnModuleInit {

@@ -1,5 +1,6 @@
 import { InjectRepository, getRepositoryToken } from "@nestjs/typeorm";
 import { Permission } from "../model/permission.entity";
+import { UserService } from "../service/user.service";
 import { Func } from "../model/func.entity";
 import { Role } from "../model/role.entity";
 import { User } from "../model/user.entity";
@@ -12,62 +13,13 @@ export class UserComponent {
     constructor(
         private readonly funcRepository: Repository<Func>,
         private readonly roleRepository: Repository<Role>,
-        private readonly userRepository: Repository<User>
-    ) {
-    }
+        private readonly userRepository: Repository<User>,
+        private readonly userService: UserService
+    ) { }
 
+    /* 获取用户拥有权限 */
     async permissions(id: number): Promise<Array<Permission>> {
-        const user: User | undefined = await this.userRepository.findOne(id, { relations: ["roles", "adds", "reduces"] });
-        if (!user) {
-            return [];
-        }
-        // 声明最后的结果
-        const result: Array<Permission> = [];
-        // 声明临时结果，未去重
-        let temp: Array<Permission> = [];
-        // 用来去重的集合
-        const ids: Set<number> = new Set();
-        // 遍历获取所有角色拥有的权限
-        for (let i = 0; i < user.roles.length; i++) {
-            const role: Role | undefined = await this.roleRepository.findOne(user.roles[i].id, { relations: ["funcs"] });
-            if (role && role.funcs && role.funcs.length > 0) {
-                for (let j = 0; j < role.funcs.length; j++) {
-                    const func: Func | undefined = await this.funcRepository.findOne(role.funcs[i].id, { relations: ["permissions"] });
-                    if (func) {
-                        temp = temp.concat(func.permissions);
-                    }
-                }
-            }
-
-        }
-        // 生成去重的集合
-        temp.forEach(per => {
-            if (!ids.has(per.id)) {
-                ids.add(per.id);
-                result.push(per);
-            }
-        });
-        // 遍历添加权限
-        user.adds.forEach(per => {
-            if (!ids.has(per.id)) {
-                ids.add(per.id);
-                result.push(per);
-            }
-        });
-        // 遍历减去权限
-        user.reduces.forEach(per => {
-            if (ids.has(per.id)) {
-                ids.delete(per.id);
-                const index = result.findIndex(p => {
-                    return p.id === per.id;
-                });
-                result.splice(index, 1);
-            }
-        });
-        result.sort((a, b) => {
-            return a.id - b.id;
-        });
-        return result;
+        return this.userService.permissions(id);
     }
 
     async getUserById(id: number): Promise<User | undefined> {
@@ -83,15 +35,30 @@ export class UserComponent {
         return !!exist;
     }
 
+    async createUser(organizationId: number, userName: string, password: string): Promise<void> {
+        await this.userService.createUser(organizationId, userName, password);
+    }
+
+    async updateUser(id: number, userName: string, password: string): Promise<void> {
+        await this.userService.updateUser(id, userName, password);
+    }
+
+    async setRoles(id: number, roleIds: Array<number>): Promise<void> {
+        await this.userService.setRoles(id, roleIds);
+    }
+
+    async setPermissions(id: number, permissionIds: Array<number>): Promise<void> {
+        await this.setPermissions(id, permissionIds);
+    }
 }
 
 export const UserComponentToken = "UserComponentToken";
 
 export const UserComponentProvider = {
     provide: UserComponentToken,
-    useFactory: (funcRepository: Repository<Func>, roleRepository: Repository<Role>, userRepository: Repository<User>) => {
-        return new UserComponent(funcRepository, roleRepository, userRepository);
+    useFactory: (funcRepository: Repository<Func>, roleRepository: Repository<Role>, userRepository: Repository<User>, userService: UserService) => {
+        return new UserComponent(funcRepository, roleRepository, userRepository, userService);
     },
-    inject: [getRepositoryToken(Func), getRepositoryToken(Role), getRepositoryToken(User)]
+    inject: [getRepositoryToken(Func), getRepositoryToken(Role), getRepositoryToken(User), UserService]
 
 };

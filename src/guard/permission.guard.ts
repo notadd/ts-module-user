@@ -23,10 +23,7 @@ export class PermissionGuard implements CanActivate {
     async canActivate(context: ExecutionContextHost): Promise<boolean> {
         const parent = context.getClass();
         const handler = context.getHandler();
-        // 从头信息中获取token，进而获取到用户id，这部分暂时未接入
-        const auth = context.switchToHttp().getRequest().headers.authentication;
-        // 用户，从token中获得
-        const user: User = { id: 1, recycle: false, status: true } as User;
+        const user: User = context.switchToHttp().getRequest().user as User;
         // 获取用户此时拥有的权限，已经根据角色、增权限、减权限计算出了最终拥有的权限
         let permissions: Array<Permission>;
         // 用户存在
@@ -66,7 +63,7 @@ export class PermissionGuard implements CanActivate {
     checkPermission(permissions: Array<Permission>, and: Array<string>, or: Array<string>, token: string): boolean {
         // 遍历类上and权限，如果不存在，则不进入循环
         for (let i = 0; i < and.length; i++) {
-            const name = and[ i ];
+            const name = and[i];
             // 在用户拥有权限中查找
             const find = permissions.find(per => {
                 // 必须名称、token都相同才可以，因为不同模块下权限名可以相同
@@ -79,7 +76,7 @@ export class PermissionGuard implements CanActivate {
         }
         // 遍历类上or权限，如果有一个通过即通过，如果不存在不进入循环
         for (let i = 0; i < or.length; i++) {
-            const name = or[ i ];
+            const name = or[i];
             // 在用户拥有权限中查找
             const find = permissions.find(per => {
                 // 必须名称、token都相同才可以，因为不同模块下权限名可以相同
