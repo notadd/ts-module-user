@@ -33,6 +33,7 @@ const info_item_resolver_1 = require("./resolver/info.item.resolver");
 const score_type_service_1 = require("./service/score.type.service");
 const metadata_scanner_1 = require("@nestjs/core/metadata-scanner");
 const info_group_service_1 = require("./service/info.group.service");
+const login_controller_1 = require("./controller/login.controller");
 const module_entity_1 = require("./model/module.entity");
 const info_item_service_1 = require("./service/info.item.service");
 const module_resolver_1 = require("./resolver/module.resolver");
@@ -53,6 +54,7 @@ const role_service_1 = require("./service/role.service");
 const user_service_1 = require("./service/user.service");
 const user_info_entity_1 = require("./model/user.info.entity");
 const info_item_entity_1 = require("./model/info.item.entity");
+const auth_service_1 = require("./auth/auth.service");
 const float_util_1 = require("./util/float.util");
 const score_entity_1 = require("./model/score.entity");
 const func_entity_1 = require("./model/func.entity");
@@ -363,31 +365,23 @@ UserModule = __decorate([
                 permission_entity_1.Permission,
             ]),
         ],
+        controllers: [login_controller_1.LoginController],
         providers: [
+            auth_service_1.AuthService,
             float_util_1.FloatUtil,
-            organization_service_1.OrganizationService,
-            organization_resolver_1.OrganizationResolver,
-            score_type_service_1.ScoreTypeService,
-            score_type_resolver_1.ScoreTypeResolver,
-            info_group_service_1.InfoGroupService,
-            info_group_resolver_1.InfoGroupResolver,
-            info_item_service_1.InfoItemService,
-            info_item_resolver_1.InfoItemResolver,
-            module_service_1.ModuleService,
-            module_resolver_1.ModuleResolver,
-            score_service_1.ScoreService,
-            score_resolver_1.ScoreResolver,
-            func_service_1.FuncService,
-            func_resolver_1.FuncResolver,
-            user_service_1.UserService,
-            user_resolver_1.UserResolver,
-            role_service_1.RoleService,
-            role_resolver_1.RoleResolver,
+            func_service_1.FuncService, func_resolver_1.FuncResolver,
+            user_service_1.UserService, user_resolver_1.UserResolver,
+            role_service_1.RoleService, role_resolver_1.RoleResolver,
+            score_service_1.ScoreService, score_resolver_1.ScoreResolver,
+            module_service_1.ModuleService, module_resolver_1.ModuleResolver,
+            info_item_service_1.InfoItemService, info_item_resolver_1.InfoItemResolver,
+            score_type_service_1.ScoreTypeService, score_type_resolver_1.ScoreTypeResolver,
+            info_group_service_1.InfoGroupService, info_group_resolver_1.InfoGroupResolver,
+            organization_service_1.OrganizationService, organization_resolver_1.OrganizationResolver,
             user_component_provider_1.UserComponentProvider,
         ],
         exports: [
             user_component_provider_1.UserComponentProvider,
-            user_service_1.UserService,
         ],
     }),
     __param(0, common_1.Inject(modules_container_1.ModulesContainer.name)),

@@ -32,8 +32,7 @@ let PermissionGuard = class PermissionGuard {
         return __awaiter(this, void 0, void 0, function* () {
             const parent = context.getClass();
             const handler = context.getHandler();
-            const auth = context.switchToHttp().getRequest().headers.authentication;
-            const user = { id: 1, recycle: false, status: true };
+            const user = context.switchToHttp().getRequest().user;
             let permissions;
             if (user) {
                 permissions = yield this.userComponent.permissions(user.id);

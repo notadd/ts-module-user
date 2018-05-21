@@ -24,7 +24,6 @@ __decorate([
 ], User.prototype, "id", void 0);
 __decorate([
     typeorm_1.Column({
-        name: "user_name",
         length: "20",
         unique: true
     }),
@@ -32,7 +31,6 @@ __decorate([
 ], User.prototype, "userName", void 0);
 __decorate([
     typeorm_1.Column({
-        name: "password",
         length: 70
     }),
     __metadata("design:type", String)
@@ -45,15 +43,11 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "salt", void 0);
 __decorate([
-    typeorm_1.Column({
-        name: "status",
-    }),
+    typeorm_1.Column(),
     __metadata("design:type", Boolean)
 ], User.prototype, "status", void 0);
 __decorate([
-    typeorm_1.Column({
-        name: "recycle",
-    }),
+    typeorm_1.Column(),
     __metadata("design:type", Boolean)
 ], User.prototype, "recycle", void 0);
 __decorate([

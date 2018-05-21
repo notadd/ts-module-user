@@ -51,6 +51,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       return done(new UnauthorizedException(), false);
     }
     /* 如果存在将认证后的user返回给回调 */
-    done(null, user);
+    done(undefined, user);
   }
 }
