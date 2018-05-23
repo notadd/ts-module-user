@@ -20,11 +20,11 @@ export class ScoreService {
     async getScore(userId: number, scoreTypeId: number): Promise<number> {
         const scoreType: ScoreType | undefined = await this.scoreTypeRepository.findOne(scoreTypeId);
         if (!scoreType) {
-            throw new HttpException("指定id=" + scoreTypeId + "积分类型不存在", 427);
+            throw new HttpException(`指定id=${scoreTypeId}积分类型不存在`, 427);
         }
         const user: User | undefined = await this.userRepository.findOne(userId, { relations: ["scores"] });
         if (!user) {
-            throw new HttpException("指定id=" + userId + "用户不存在", 428);
+            throw new HttpException(`指定id=${userId}用户不存在`, 428);
         }
         const score: Score | undefined = user.scores.find(score => {
             return score.scoreTypeId === scoreType.id;
@@ -43,7 +43,7 @@ export class ScoreService {
             try {
                 await this.scoreRepository.save(score);
             } catch (err) {
-                throw new HttpException("数据库错误" + err.toString(), 401);
+                throw new HttpException(`数据库错误：${err.toString()}`, 401);
             }
             return 0;
         }
@@ -52,11 +52,11 @@ export class ScoreService {
     async setScore(userId: number, scoreTypeId: number, add: number): Promise<void> {
         const scoreType: ScoreType|undefined = await this.scoreTypeRepository.findOne(scoreTypeId);
         if (!scoreType) {
-            throw new HttpException("指定id=" + scoreTypeId + "积分类型不存在", 427);
+            throw new HttpException(`指定id=${scoreTypeId}积分类型不存在`, 427);
         }
         const user: User|undefined = await this.userRepository.findOne(userId, { relations: ["scores"] });
         if (!user) {
-            throw new HttpException("指定id=" + userId + "用户不存在", 428);
+            throw new HttpException(`指定id=${userId}用户不存在`, 428);
         }
         let score: Score|undefined = user.scores.find(score => {
             return score.scoreTypeId === scoreType.id;
@@ -81,7 +81,7 @@ export class ScoreService {
         try {
             await this.scoreRepository.save(score);
         } catch (err) {
-            throw new HttpException("数据库错误" + err.toString(), 401);
+            throw new HttpException(`数据库错误：${err.toString()}`, 401);
         }
     }
 
