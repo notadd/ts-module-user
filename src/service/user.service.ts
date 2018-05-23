@@ -85,7 +85,7 @@ export class UserService {
             { relations: ["roles", "adds", "reduces"] },
         );
         if (!user) {
-            throw new HttpException("指定id=" + id + "用户不存在", 406);
+            throw new HttpException(`指定id=${id}用户不存在`, 406);
         }
         // 声明最后的结果
         const result: Array<Permission> = [];
@@ -147,13 +147,13 @@ export class UserService {
         if (organizationId) {
             const organization = await this.organizationRepository.findOne(organizationId);
             if (!organization) {
-                throw new HttpException("指定id=" + organizationId + "组织不存在", 402);
+                throw new HttpException(`指定id=${organizationId}组织不存在`, 402);
             }
             organizations.push(organization);
         }
         const exist: User | undefined = await this.userRepository.findOne({ userName });
         if (exist) {
-            throw new HttpException("指定userName=" + userName + "用户已存在", 406);
+            throw new HttpException(`指定userName=${userName}用户已存在`, 406);
         }
         try {
             const salt = createHash("sha256").update(new Date().toString()).digest("hex").slice(0, 10);
@@ -168,7 +168,7 @@ export class UserService {
             });
             await this.userRepository.save(user);
         } catch (err) {
-            throw new HttpException("数据库错误" + err.toString(), 401);
+            throw new HttpException(`数据库错误：${err.toString()}`, 401);
         }
     }
 
@@ -177,13 +177,13 @@ export class UserService {
         if (organizationId) {
             const organization = await this.organizationRepository.findOne(organizationId);
             if (!organization) {
-                throw new HttpException("指定id=" + organizationId + "组织不存在", 402);
+                throw new HttpException(`指定id=${organizationId}组织不存在`, 402);
             }
             organizations.push(organization);
         }
         const exist: User | undefined = await this.userRepository.findOne({ userName });
         if (exist) {
-            throw new HttpException("指定userName=" + userName + "用户已存在", 406);
+            throw new HttpException(`指定userName=${userName}用户已存在`, 406);
         }
         const salt = createHash("sha256").update(new Date().toString()).digest("hex").slice(0, 10);
         const passwordWithSalt = createHash("sha256").update(password + salt).digest("hex");
@@ -204,14 +204,14 @@ export class UserService {
                 { relations: ["items"] },
             );
             if (!group) {
-                throw new HttpException("指定信息组id=" + groupId + "不存在", 408);
+                throw new HttpException(`指定信息组id=${groupId}不存在`, 408);
             }
             await this.addUserInfosAndInfoItems(req, user, group, infos);
         }
         try {
             await this.userRepository.save(user);
         } catch (err) {
-            throw new HttpException("数据库错误" + err.toString(), 401);
+            throw new HttpException(`数据库错误：${err.toString()}`, 401);
         }
     }
 
@@ -221,7 +221,7 @@ export class UserService {
             { relations: ["userInfos", "infoItems"] },
         );
         if (!user) {
-            throw new HttpException("指定id=" + id + "用户不存在", 406);
+            throw new HttpException(`指定id=${id}用户不存在`, 406);
         }
         for (let i = 0; i < groups.length; i++) {
             const { groupId, infos } = groups[i];
@@ -230,14 +230,14 @@ export class UserService {
                 { relations: ["items"] },
             );
             if (!group) {
-                throw new HttpException("指定信息组id=" + groupId + "不存在", 408);
+                throw new HttpException(`指定信息组id=${groupId}不存在`, 408);
             }
             await this.addUserInfosAndInfoItems(req, user, group, infos);
         }
         try {
             await this.userRepository.save(user);
         } catch (err) {
-            throw new HttpException("数据库错误" + err.toString(), 401);
+            throw new HttpException(`数据库错误：${err.toString()}`, 401);
         }
     }
 
@@ -258,7 +258,7 @@ export class UserService {
             });
             // 如果接收到的信息项名称不存在，抛出异常
             if (!match) {
-                throw new HttpException("指定名称信息项:" + name + "不存在于信息组id=" + group.id + "中", 409);
+                throw new HttpException(`指定名称信息项:${name}不存在于信息组id=${group.id}中`, 409);
             }
             /*获取根据信息项类型转换后的信息值 */
             const result: string = await this.transfromInfoValue(req, match, infos[j]);
@@ -287,7 +287,7 @@ export class UserService {
         // 如果必填项没有填写，抛出异常
         if (necessary.length !== 0) {
             const names = necessary.map(item => item.name);
-            throw new HttpException("指定信息项:" + names.join(",") + "为必填项", 410);
+            throw new HttpException(`指定信息项:${names.join(",")}为必填项`, 410);
         }
     }
 
@@ -310,12 +310,12 @@ export class UserService {
             if (!(
                 info as TextInfo
             ).value) {
-                throw new HttpException("指定名称信息值:" + match.name + "不存在", 410);
+                throw new HttpException(`指定名称信息值:${match.name}不存在`, 410);
             }
             if (typeof (
                 info as TextInfo
             ).value !== "string") {
-                throw new HttpException("指定名称信息项name=" + match.name + "必须为字符串", 410);
+                throw new HttpException(`指定名称信息项name=${match.name}必须为字符串`, 410);
             }
             // 普字符串类型值只需要删除前后空白
             result = (
@@ -327,14 +327,14 @@ export class UserService {
             ).array || (
                 info as ArrayInfo
             ).array.length === 0) {
-                throw new HttpException("指定名称信息值:" + match.name + "不存在", 410);
+                throw new HttpException(`指定名称信息值:${match.name}不存在`, 410);
             }
             if (!(
                 (
                     info as ArrayInfo
                 ).array instanceof Array
             )) {
-                throw new HttpException("指定名称信息项name=" + match.name + "必须为数组", 410);
+                throw new HttpException(`指定名称信息项name=${match.name}必须为数组`, 410);
             }
             // 数组类型以，连接各个元素为字符串
             result = (
@@ -344,17 +344,17 @@ export class UserService {
             if (!(
                 info as FileInfo
             ).base64) {
-                throw new HttpException("指定名称信息项name=" + match.name + "必须具有文件base64编码", 410);
+                throw new HttpException(`指定名称信息项name=${match.name}必须具有文件base64编码`, 410);
             }
             if (!(
                 info as FileInfo
             ).rawName) {
-                throw new HttpException("指定名称信息项name=" + match.name + "必须具有文件原名", 410);
+                throw new HttpException(`指定名称信息项name=${match.name}必须具有文件原名`, 410);
             }
             if (!(
                 info as FileInfo
             ).bucketName) {
-                throw new HttpException("指定名称信息项name=" + match.name + "必须具有文件存储空间名", 410);
+                throw new HttpException(`指定名称信息项name=${match.name}必须具有文件存储空间名`, 410);
             }
             // 文件类型，上传到存储插件，并保存访问url
             const { bucketName, name, type } = await this.storeComponent.upload(
@@ -377,12 +377,12 @@ export class UserService {
     async updateUser(id: number, userName: string, password: string): Promise<void> {
         const exist: User | undefined = await this.userRepository.findOne(id);
         if (!exist) {
-            throw new HttpException("指定id=" + id + "用户不存在", 406);
+            throw new HttpException(`指定id=${id}用户不存在`, 406);
         }
         if (userName !== exist.userName) {
             const sameUser: User | undefined = await this.userRepository.findOne({ userName });
             if (sameUser) {
-                throw new HttpException("指定userName=" + userName + "用户已存在", 406);
+                throw new HttpException(`指定userName=${userName}用户已存在`, 406);
             }
         }
         try {
@@ -392,77 +392,77 @@ export class UserService {
             exist.password = createHash("sha256").update(password + salt).digest("hex");
             await this.userRepository.save(exist);
         } catch (err) {
-            throw new HttpException("数据库错误" + err.toString(), 401);
+            throw new HttpException(`数据库错误：${err.toString()}`, 401);
         }
     }
 
     async bannedUser(id: number): Promise<void> {
         const exist: User | undefined = await this.userRepository.findOne(id);
         if (!exist) {
-            throw new HttpException("指定id=" + id + "用户不存在", 406);
+            throw new HttpException(`指定id=${id}用户不存在`, 406);
         }
         if (exist.recycle) {
-            throw new HttpException("指定id=" + id + "用户已存在回收站中", 406);
+            throw new HttpException(`指定id=${id}用户已存在回收站中`, 406);
         }
         if (!exist.status) {
-            throw new HttpException("指定id=" + id + "用户已经封禁", 406);
+            throw new HttpException(`指定id=${id}用户已经封禁`, 406);
         }
         try {
             exist.status = false;
             await this.userRepository.save(exist);
         } catch (err) {
-            throw new HttpException("数据库错误" + err.toString(), 401);
+            throw new HttpException(`数据库错误：${err.toString()}`, 401);
         }
     }
 
     async unBannedUser(id: number): Promise<void> {
         const exist: User | undefined = await this.userRepository.findOne(id);
         if (!exist) {
-            throw new HttpException("指定id=" + id + "用户不存在", 406);
+            throw new HttpException(`指定id=${id}用户不存在`, 406);
         }
         if (exist.recycle) {
-            throw new HttpException("指定id=" + id + "用户已存在回收站中", 406);
+            throw new HttpException(`指定id=${id}用户已存在回收站中`, 406);
         }
         if (exist.status) {
-            throw new HttpException("指定id=" + id + "用户不需要解封", 406);
+            throw new HttpException(`指定id=${id}用户不需要解封`, 406);
         }
         try {
             exist.status = true;
             await this.userRepository.save(exist);
         } catch (err) {
-            throw new HttpException("数据库错误" + err.toString(), 401);
+            throw new HttpException(`数据库错误：${err.toString()}`, 401);
         }
     }
 
     async softDeleteUser(id: number): Promise<void> {
         const exist: User | undefined = await this.userRepository.findOne(id);
         if (!exist) {
-            throw new HttpException("指定id=" + id + "用户不存在", 406);
+            throw new HttpException(`指定id=${id}用户不存在`, 406);
         }
         if (exist.recycle) {
-            throw new HttpException("指定id=" + id + "用户已存在回收站中", 406);
+            throw new HttpException(`指定id=${id}用户已存在回收站中`, 406);
         }
         try {
             exist.recycle = true;
             await this.userRepository.save(exist);
         } catch (err) {
-            throw new HttpException("数据库错误" + err.toString(), 401);
+            throw new HttpException(`数据库错误：${err.toString()}`, 401);
         }
     }
 
     async restoreUser(id: number): Promise<void> {
         const exist: User | undefined = await this.userRepository.findOne(id);
         if (!exist) {
-            throw new HttpException("指定id=" + id + "用户不存在", 406);
+            throw new HttpException(`指定id=${id}用户不存在`, 406);
         }
         if (!exist.recycle) {
-            throw new HttpException("指定id=" + id + "用户不存在回收站中", 406);
+            throw new HttpException(`指定id=${id}用户不存在回收站中`, 406);
         }
         try {
             exist.recycle = false;
             await this.userRepository.save(exist);
         } catch (err) {
-            throw new HttpException("数据库错误" + err.toString(), 401);
+            throw new HttpException(`数据库错误：${err.toString()}`, 401);
         }
     }
 
@@ -473,10 +473,10 @@ export class UserService {
                 return user.id === id;
             });
             if (!find) {
-                throw new HttpException("指定id=" + id + "用户不存在", 406);
+                throw new HttpException(`指定id=${id}用户不存在`, 406);
             }
             if (!find.recycle) {
-                throw new HttpException("指定用户id=" + id + "不在回收站中", 406);
+                throw new HttpException(`指定用户id=${id}不在回收站中`, 406);
             }
             find.recycle = false;
         });
@@ -484,22 +484,22 @@ export class UserService {
             await this.userRepository.save(users);
 
         } catch (err) {
-            throw new HttpException("数据库错误" + err.toString(), 401);
+            throw new HttpException(`数据库错误：${err.toString()}`, 401);
         }
     }
 
     async deleteUser(id: number): Promise<void> {
         const exist: User | undefined = await this.userRepository.findOne(id);
         if (!exist) {
-            throw new HttpException("指定id=" + id + "用户不存在", 406);
+            throw new HttpException(`指定id=${id}用户不存在`, 406);
         }
         if (!exist.recycle) {
-            throw new HttpException("指定id=" + id + "用户不存在回收站中", 406);
+            throw new HttpException(`指定id=${id}用户不存在回收站中`, 406);
         }
         try {
             await this.userRepository.remove(exist);
         } catch (err) {
-            throw new HttpException("数据库错误" + err.toString(), 401);
+            throw new HttpException(`数据库错误：${err.toString()}`, 401);
         }
     }
 
@@ -510,23 +510,23 @@ export class UserService {
                 return user.id === id;
             });
             if (!find) {
-                throw new HttpException("指定id=" + id + "用户不存在", 406);
+                throw new HttpException(`指定id=${id}用户不存在`, 406);
             }
             if (!find.recycle) {
-                throw new HttpException("指定id=" + id + "用户不存在于回收站中", 406);
+                throw new HttpException(`指定id=${id}用户不存在于回收站中`, 406);
             }
         });
         try {
             await this.userRepository.remove(users);
         } catch (err) {
-            throw new HttpException("数据库错误" + err.toString(), 401);
+            throw new HttpException(`数据库错误：${err.toString()}`, 401);
         }
     }
 
     async setRoles(id: number, roleIds: Array<number>): Promise<void> {
         const user: User | undefined = await this.userRepository.findOne(id, { relations: ["roles"] });
         if (!user) {
-            throw new HttpException("指定id=" + id + "用户不存在", 406);
+            throw new HttpException(`指定id=${id}用户不存在`, 406);
         }
         const roles: Array<Role> = await this.roleRepository.findByIds(roleIds);
         roleIds.forEach(roleId => {
@@ -534,14 +534,14 @@ export class UserService {
                 return role.id === roleId;
             });
             if (!find) {
-                throw new HttpException("指定id=" + roleId + "角色不存在", 406);
+                throw new HttpException(`指定id=${roleId}角色不存在`, 406);
             }
         });
         user.roles = roles;
         try {
             await this.userRepository.save(user);
         } catch (err) {
-            throw new HttpException("数据库错误" + err.toString(), 401);
+            throw new HttpException(`数据库错误：${err.toString()}`, 401);
         }
     }
 
@@ -551,7 +551,7 @@ export class UserService {
             { relations: ["roles", "adds", "reduces"] },
         );
         if (!user) {
-            throw new HttpException("指定id=" + id + "用户不存在", 406);
+            throw new HttpException(`指定id=${id}用户不存在`, 406);
         }
         // 声明从role获取的权限集合
         const result: Array<Permission> = [];
@@ -615,7 +615,7 @@ export class UserService {
             user.reduces = reduces;
             await this.userRepository.save(user);
         } catch (err) {
-            throw new HttpException("数据库错误" + err.toString(), 401);
+            throw new HttpException(`数据库错误：${err.toString()}`, 401);
         }
     }
 
