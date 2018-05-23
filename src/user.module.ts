@@ -62,7 +62,7 @@ import { Repository } from "typeorm";
     ],
     controllers: [LoginController],
     providers: [
-        AuthService,
+        AuthService, JwtStrategy,
         FloatUtil,
         FuncService, FuncResolver,
         UserService, UserResolver,
@@ -76,7 +76,7 @@ import { Repository } from "typeorm";
         UserComponentProvider,
     ],
     exports: [
-        UserComponentProvider,
+        UserComponentProvider, AuthService
     ],
 })
 export class UserModule implements OnModuleInit {
