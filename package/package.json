@@ -15,7 +15,28 @@
     "author": "notadd",
     "license": "Apache-2.0",
     "dependencies": {
-        "@notadd/injection": "^2.3.23"
+        "@nestjs/common": "^5.0.0",
+        "@nestjs/core": "^5.0.0",
+        "@nestjs/graphql": "^3.0.0",
+        "@nestjs/microservices": "^5.0.0",
+        "@nestjs/passport": "^1.0.10",
+        "@nestjs/testing": "^5.0.0",
+        "@nestjs/typeorm": "^3.0.0",
+        "@nestjs/websockets": "^5.0.0",
+        "@notadd/injection": "^2.3.23",
+        "apollo-server-express": "^1.3.2",
+        "graphql": "^0.11.7",
+        "graphql-tools": "^2.18.0",
+        "jsonwebtoken": "^8.2.1",
+        "mysql": "^2.15.0",
+        "passport": "^0.4.0",
+        "passport-http-bearer": "^1.0.1",
+        "passport-jwt": "^4.0.0",
+        "pg": "^7.4.1",
+        "reflect-metadata": "^0.1.12",
+        "rxjs": "^6.1.0",
+        "rxjs-compat": "^6.1.0",
+        "typeorm": "^0.2.5"
     },
     "bugs": {
         "url": "https://github.com/notadd/ts-module-user/issues"
