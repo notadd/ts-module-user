@@ -36,18 +36,18 @@ let RoleService = class RoleService {
         return __awaiter(this, void 0, void 0, function* () {
             const module = yield this.moduleRepository.findOne(moduleToken);
             if (!module) {
-                throw new common_1.HttpException("指定模块token=" + moduleToken + "不存在", 415);
+                throw new common_1.HttpException(`指定模块token=${moduleToken}不存在`, 415);
             }
             const exist = yield this.roleRepository.findOne({ name, moduleToken });
             if (exist) {
-                throw new common_1.HttpException("指定模块token=" + moduleToken + "下，指定名称name=" + name + "角色已经存在", 420);
+                throw new common_1.HttpException(`指定模块token=${moduleToken}下，指定名称name=${name}角色已经存在`, 420);
             }
             const role = this.roleRepository.create({ name, score, module });
             try {
                 yield this.roleRepository.save(role);
             }
             catch (err) {
-                throw new common_1.HttpException("数据库错误" + err.toString(), 401);
+                throw new common_1.HttpException(`数据库错误：${err.toString()}`, 401);
             }
         });
     }
@@ -55,12 +55,12 @@ let RoleService = class RoleService {
         return __awaiter(this, void 0, void 0, function* () {
             const role = yield this.roleRepository.findOne(id);
             if (!role) {
-                throw new common_1.HttpException("指定id=" + id + "角色不存在", 421);
+                throw new common_1.HttpException(`指定id=${id}角色不存在`, 421);
             }
             if (name !== role.name) {
                 const exist = yield this.roleRepository.findOne({ name, moduleToken: role.moduleToken });
                 if (exist) {
-                    throw new common_1.HttpException("指定模块token=" + role.moduleToken + "下，指定名称name=" + name + "角色已经存在", 420);
+                    throw new common_1.HttpException(`指定模块token=${role.moduleToken}下，指定名称name=${name}角色已经存在`, 420);
                 }
             }
             try {
@@ -69,7 +69,7 @@ let RoleService = class RoleService {
                 yield this.roleRepository.save(role);
             }
             catch (err) {
-                throw new common_1.HttpException("数据库错误" + err.toString(), 401);
+                throw new common_1.HttpException(`数据库错误：${err.toString()}`, 401);
             }
         });
     }
@@ -77,13 +77,13 @@ let RoleService = class RoleService {
         return __awaiter(this, void 0, void 0, function* () {
             const role = yield this.roleRepository.findOne(id);
             if (!role) {
-                throw new common_1.HttpException("指定id=" + id + "角色不存在", 421);
+                throw new common_1.HttpException(`指定id=${id}角色不存在`, 421);
             }
             try {
                 yield this.roleRepository.remove(role);
             }
             catch (err) {
-                throw new common_1.HttpException("数据库错误" + err.toString(), 401);
+                throw new common_1.HttpException(`数据库错误：${err.toString()}`, 401);
             }
         });
     }
@@ -91,7 +91,7 @@ let RoleService = class RoleService {
         return __awaiter(this, void 0, void 0, function* () {
             const role = yield this.roleRepository.findOne(id);
             if (!role) {
-                throw new common_1.HttpException("指定id=" + id + "角色不存在", 421);
+                throw new common_1.HttpException(`指定id=${id}角色不存在`, 421);
             }
             const funcs = yield this.funcRepository.findByIds(funcIds);
             funcIds.forEach(funcId => {
@@ -99,7 +99,7 @@ let RoleService = class RoleService {
                     return func.id === funcId;
                 });
                 if (!find) {
-                    throw new common_1.HttpException("指定id=" + funcId + "功能不存在", 422);
+                    throw new common_1.HttpException(`指定id=${funcId}功能不存在`, 422);
                 }
                 if (find.moduleToken !== role.moduleToken) {
                     throw new common_1.HttpException("指定角色、功能必须属于同一个模块", 423);
@@ -110,7 +110,7 @@ let RoleService = class RoleService {
                 yield this.roleRepository.save(role);
             }
             catch (err) {
-                throw new common_1.HttpException("数据库错误" + err.toString(), 401);
+                throw new common_1.HttpException(`数据库错误：${err.toString()}`, 401);
             }
         });
     }

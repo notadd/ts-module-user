@@ -32,10 +32,10 @@ let InfoItemService = class InfoItemService {
         return __awaiter(this, void 0, void 0, function* () {
             const exist = yield this.infoItemRepository.findOne({ name });
             if (exist) {
-                throw new common_1.HttpException("指定名称信息项已存在：" + name, 412);
+                throw new common_1.HttpException(`指定名称信息项已存在：${name}`, 412);
             }
             if (necessary && !registerVisible) {
-                throw new common_1.HttpException("指定名称name=" + name + "必填信息项，注册时必须可见", 412);
+                throw new common_1.HttpException(`指定名称name=${name}必填信息项，注册时必须可见`, 412);
             }
             const item = this.infoItemRepository.create({
                 name,
@@ -52,7 +52,7 @@ let InfoItemService = class InfoItemService {
                 yield this.infoItemRepository.save(item);
             }
             catch (err) {
-                throw new common_1.HttpException("数据库错误" + err.toString(), 401);
+                throw new common_1.HttpException(`数据库错误：${err.toString()}`, 401);
             }
         });
     }
@@ -60,18 +60,18 @@ let InfoItemService = class InfoItemService {
         return __awaiter(this, void 0, void 0, function* () {
             const exist = yield this.infoItemRepository.findOne(id);
             if (!exist) {
-                throw new common_1.HttpException("指定id=" + id + "信息项不存在", 413);
+                throw new common_1.HttpException(`指定id=${id}信息项不存在`, 413);
             }
             if (exist.default) {
                 throw new common_1.HttpException("默认信息项不允许更新", 413);
             }
             if (necessary && !registerVisible) {
-                throw new common_1.HttpException("指定名称name=" + name + "必填信息项，注册时必须可见", 412);
+                throw new common_1.HttpException(`指定名称name=${name}必填信息项，注册时必须可见`, 412);
             }
             if (name !== exist.name) {
                 const exist1 = yield this.infoItemRepository.findOne({ name });
                 if (exist1) {
-                    throw new common_1.HttpException("指定name=" + name + "信息项已存在", 412);
+                    throw new common_1.HttpException(`指定name=${name}信息项已存在`, 412);
                 }
             }
             exist.name = name;
@@ -86,7 +86,7 @@ let InfoItemService = class InfoItemService {
                 yield this.infoItemRepository.save(exist);
             }
             catch (err) {
-                throw new common_1.HttpException("数据库错误" + err.toString(), 401);
+                throw new common_1.HttpException(`数据库错误：${err.toString()}`, 401);
             }
         });
     }
@@ -94,7 +94,7 @@ let InfoItemService = class InfoItemService {
         return __awaiter(this, void 0, void 0, function* () {
             const exist = yield this.infoItemRepository.findOne(id);
             if (!exist) {
-                throw new common_1.HttpException("指定id=" + id + "信息项不存在", 413);
+                throw new common_1.HttpException(`指定id=${id}信息项不存在`, 413);
             }
             if (exist.default) {
                 throw new common_1.HttpException("默认信息项不允许删除", 413);
@@ -103,7 +103,7 @@ let InfoItemService = class InfoItemService {
                 yield this.infoItemRepository.remove(exist);
             }
             catch (err) {
-                throw new common_1.HttpException("数据库错误" + err.toString(), 401);
+                throw new common_1.HttpException(`数据库错误：${err.toString()}`, 401);
             }
         });
     }
@@ -115,7 +115,7 @@ let InfoItemService = class InfoItemService {
                     return item.id === id;
                 });
                 if (!find) {
-                    throw new common_1.HttpException("指定id=" + id + "信息项不存在", 413);
+                    throw new common_1.HttpException(`指定id=${id}信息项不存在`, 413);
                 }
                 if (find.default) {
                     throw new common_1.HttpException("默认信息项不允许删除", 413);
@@ -125,7 +125,7 @@ let InfoItemService = class InfoItemService {
                 yield this.infoItemRepository.remove(infoItems);
             }
             catch (err) {
-                throw new common_1.HttpException("数据库错误" + err.toString(), 401);
+                throw new common_1.HttpException(`数据库错误：${err.toString()}`, 401);
             }
         });
     }

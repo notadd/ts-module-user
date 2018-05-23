@@ -99,7 +99,7 @@ let UserService = class UserService {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield this.userRepository.findOne(id, { relations: ["roles", "adds", "reduces"] });
             if (!user) {
-                throw new common_1.HttpException("指定id=" + id + "用户不存在", 406);
+                throw new common_1.HttpException(`指定id=${id}用户不存在`, 406);
             }
             const result = [];
             let temp = [];
@@ -148,13 +148,13 @@ let UserService = class UserService {
             if (organizationId) {
                 const organization = yield this.organizationRepository.findOne(organizationId);
                 if (!organization) {
-                    throw new common_1.HttpException("指定id=" + organizationId + "组织不存在", 402);
+                    throw new common_1.HttpException(`指定id=${organizationId}组织不存在`, 402);
                 }
                 organizations.push(organization);
             }
             const exist = yield this.userRepository.findOne({ userName });
             if (exist) {
-                throw new common_1.HttpException("指定userName=" + userName + "用户已存在", 406);
+                throw new common_1.HttpException(`指定userName=${userName}用户已存在`, 406);
             }
             try {
                 const salt = crypto_1.createHash("sha256").update(new Date().toString()).digest("hex").slice(0, 10);
@@ -170,7 +170,7 @@ let UserService = class UserService {
                 yield this.userRepository.save(user);
             }
             catch (err) {
-                throw new common_1.HttpException("数据库错误" + err.toString(), 401);
+                throw new common_1.HttpException(`数据库错误：${err.toString()}`, 401);
             }
         });
     }
@@ -180,13 +180,13 @@ let UserService = class UserService {
             if (organizationId) {
                 const organization = yield this.organizationRepository.findOne(organizationId);
                 if (!organization) {
-                    throw new common_1.HttpException("指定id=" + organizationId + "组织不存在", 402);
+                    throw new common_1.HttpException(`指定id=${organizationId}组织不存在`, 402);
                 }
                 organizations.push(organization);
             }
             const exist = yield this.userRepository.findOne({ userName });
             if (exist) {
-                throw new common_1.HttpException("指定userName=" + userName + "用户已存在", 406);
+                throw new common_1.HttpException(`指定userName=${userName}用户已存在`, 406);
             }
             const salt = crypto_1.createHash("sha256").update(new Date().toString()).digest("hex").slice(0, 10);
             const passwordWithSalt = crypto_1.createHash("sha256").update(password + salt).digest("hex");
@@ -204,7 +204,7 @@ let UserService = class UserService {
                 const { groupId, infos } = groups[i];
                 const group = yield this.infoGroupRepository.findOne(groupId, { relations: ["items"] });
                 if (!group) {
-                    throw new common_1.HttpException("指定信息组id=" + groupId + "不存在", 408);
+                    throw new common_1.HttpException(`指定信息组id=${groupId}不存在`, 408);
                 }
                 yield this.addUserInfosAndInfoItems(req, user, group, infos);
             }
@@ -212,7 +212,7 @@ let UserService = class UserService {
                 yield this.userRepository.save(user);
             }
             catch (err) {
-                throw new common_1.HttpException("数据库错误" + err.toString(), 401);
+                throw new common_1.HttpException(`数据库错误：${err.toString()}`, 401);
             }
         });
     }
@@ -220,13 +220,13 @@ let UserService = class UserService {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield this.userRepository.findOne(id, { relations: ["userInfos", "infoItems"] });
             if (!user) {
-                throw new common_1.HttpException("指定id=" + id + "用户不存在", 406);
+                throw new common_1.HttpException(`指定id=${id}用户不存在`, 406);
             }
             for (let i = 0; i < groups.length; i++) {
                 const { groupId, infos } = groups[i];
                 const group = yield this.infoGroupRepository.findOne(groupId, { relations: ["items"] });
                 if (!group) {
-                    throw new common_1.HttpException("指定信息组id=" + groupId + "不存在", 408);
+                    throw new common_1.HttpException(`指定信息组id=${groupId}不存在`, 408);
                 }
                 yield this.addUserInfosAndInfoItems(req, user, group, infos);
             }
@@ -234,7 +234,7 @@ let UserService = class UserService {
                 yield this.userRepository.save(user);
             }
             catch (err) {
-                throw new common_1.HttpException("数据库错误" + err.toString(), 401);
+                throw new common_1.HttpException(`数据库错误：${err.toString()}`, 401);
             }
         });
     }
@@ -250,7 +250,7 @@ let UserService = class UserService {
                     return item.name === name;
                 });
                 if (!match) {
-                    throw new common_1.HttpException("指定名称信息项:" + name + "不存在于信息组id=" + group.id + "中", 409);
+                    throw new common_1.HttpException(`指定名称信息项:${name}不存在于信息组id=${group.id}中`, 409);
                 }
                 const result = yield this.transfromInfoValue(req, match, infos[j]);
                 const userInfoIndex = user.userInfos.findIndex(userInfo => userInfo.infoItemId === match.id);
@@ -270,7 +270,7 @@ let UserService = class UserService {
             }
             if (necessary.length !== 0) {
                 const names = necessary.map(item => item.name);
-                throw new common_1.HttpException("指定信息项:" + names.join(",") + "为必填项", 410);
+                throw new common_1.HttpException(`指定信息项:${names.join(",")}为必填项`, 410);
             }
         });
     }
@@ -290,31 +290,31 @@ let UserService = class UserService {
                 || match.type
                     === "pulldownmenu") {
                 if (!info.value) {
-                    throw new common_1.HttpException("指定名称信息值:" + match.name + "不存在", 410);
+                    throw new common_1.HttpException(`指定名称信息值:${match.name}不存在`, 410);
                 }
                 if (typeof info.value !== "string") {
-                    throw new common_1.HttpException("指定名称信息项name=" + match.name + "必须为字符串", 410);
+                    throw new common_1.HttpException(`指定名称信息项name=${match.name}必须为字符串`, 410);
                 }
                 result = info.value.trim();
             }
             else if (match.type === "checkbox") {
                 if (!info.array || info.array.length === 0) {
-                    throw new common_1.HttpException("指定名称信息值:" + match.name + "不存在", 410);
+                    throw new common_1.HttpException(`指定名称信息值:${match.name}不存在`, 410);
                 }
                 if (!(info.array instanceof Array)) {
-                    throw new common_1.HttpException("指定名称信息项name=" + match.name + "必须为数组", 410);
+                    throw new common_1.HttpException(`指定名称信息项name=${match.name}必须为数组`, 410);
                 }
                 result = info.array.join(",");
             }
             else {
                 if (!info.base64) {
-                    throw new common_1.HttpException("指定名称信息项name=" + match.name + "必须具有文件base64编码", 410);
+                    throw new common_1.HttpException(`指定名称信息项name=${match.name}必须具有文件base64编码`, 410);
                 }
                 if (!info.rawName) {
-                    throw new common_1.HttpException("指定名称信息项name=" + match.name + "必须具有文件原名", 410);
+                    throw new common_1.HttpException(`指定名称信息项name=${match.name}必须具有文件原名`, 410);
                 }
                 if (!info.bucketName) {
-                    throw new common_1.HttpException("指定名称信息项name=" + match.name + "必须具有文件存储空间名", 410);
+                    throw new common_1.HttpException(`指定名称信息项name=${match.name}必须具有文件存储空间名`, 410);
                 }
                 const { bucketName, name, type } = yield this.storeComponent.upload(info.bucketName, info.rawName, info.base64, undefined);
                 result = yield this.storeComponent.getUrl(req, bucketName, name, type, undefined);
@@ -326,12 +326,12 @@ let UserService = class UserService {
         return __awaiter(this, void 0, void 0, function* () {
             const exist = yield this.userRepository.findOne(id);
             if (!exist) {
-                throw new common_1.HttpException("指定id=" + id + "用户不存在", 406);
+                throw new common_1.HttpException(`指定id=${id}用户不存在`, 406);
             }
             if (userName !== exist.userName) {
                 const sameUser = yield this.userRepository.findOne({ userName });
                 if (sameUser) {
-                    throw new common_1.HttpException("指定userName=" + userName + "用户已存在", 406);
+                    throw new common_1.HttpException(`指定userName=${userName}用户已存在`, 406);
                 }
             }
             try {
@@ -342,7 +342,7 @@ let UserService = class UserService {
                 yield this.userRepository.save(exist);
             }
             catch (err) {
-                throw new common_1.HttpException("数据库错误" + err.toString(), 401);
+                throw new common_1.HttpException(`数据库错误：${err.toString()}`, 401);
             }
         });
     }
@@ -350,20 +350,20 @@ let UserService = class UserService {
         return __awaiter(this, void 0, void 0, function* () {
             const exist = yield this.userRepository.findOne(id);
             if (!exist) {
-                throw new common_1.HttpException("指定id=" + id + "用户不存在", 406);
+                throw new common_1.HttpException(`指定id=${id}用户不存在`, 406);
             }
             if (exist.recycle) {
-                throw new common_1.HttpException("指定id=" + id + "用户已存在回收站中", 406);
+                throw new common_1.HttpException(`指定id=${id}用户已存在回收站中`, 406);
             }
             if (!exist.status) {
-                throw new common_1.HttpException("指定id=" + id + "用户已经封禁", 406);
+                throw new common_1.HttpException(`指定id=${id}用户已经封禁`, 406);
             }
             try {
                 exist.status = false;
                 yield this.userRepository.save(exist);
             }
             catch (err) {
-                throw new common_1.HttpException("数据库错误" + err.toString(), 401);
+                throw new common_1.HttpException(`数据库错误：${err.toString()}`, 401);
             }
         });
     }
@@ -371,20 +371,20 @@ let UserService = class UserService {
         return __awaiter(this, void 0, void 0, function* () {
             const exist = yield this.userRepository.findOne(id);
             if (!exist) {
-                throw new common_1.HttpException("指定id=" + id + "用户不存在", 406);
+                throw new common_1.HttpException(`指定id=${id}用户不存在`, 406);
             }
             if (exist.recycle) {
-                throw new common_1.HttpException("指定id=" + id + "用户已存在回收站中", 406);
+                throw new common_1.HttpException(`指定id=${id}用户已存在回收站中`, 406);
             }
             if (exist.status) {
-                throw new common_1.HttpException("指定id=" + id + "用户不需要解封", 406);
+                throw new common_1.HttpException(`指定id=${id}用户不需要解封`, 406);
             }
             try {
                 exist.status = true;
                 yield this.userRepository.save(exist);
             }
             catch (err) {
-                throw new common_1.HttpException("数据库错误" + err.toString(), 401);
+                throw new common_1.HttpException(`数据库错误：${err.toString()}`, 401);
             }
         });
     }
@@ -392,17 +392,17 @@ let UserService = class UserService {
         return __awaiter(this, void 0, void 0, function* () {
             const exist = yield this.userRepository.findOne(id);
             if (!exist) {
-                throw new common_1.HttpException("指定id=" + id + "用户不存在", 406);
+                throw new common_1.HttpException(`指定id=${id}用户不存在`, 406);
             }
             if (exist.recycle) {
-                throw new common_1.HttpException("指定id=" + id + "用户已存在回收站中", 406);
+                throw new common_1.HttpException(`指定id=${id}用户已存在回收站中`, 406);
             }
             try {
                 exist.recycle = true;
                 yield this.userRepository.save(exist);
             }
             catch (err) {
-                throw new common_1.HttpException("数据库错误" + err.toString(), 401);
+                throw new common_1.HttpException(`数据库错误：${err.toString()}`, 401);
             }
         });
     }
@@ -410,17 +410,17 @@ let UserService = class UserService {
         return __awaiter(this, void 0, void 0, function* () {
             const exist = yield this.userRepository.findOne(id);
             if (!exist) {
-                throw new common_1.HttpException("指定id=" + id + "用户不存在", 406);
+                throw new common_1.HttpException(`指定id=${id}用户不存在`, 406);
             }
             if (!exist.recycle) {
-                throw new common_1.HttpException("指定id=" + id + "用户不存在回收站中", 406);
+                throw new common_1.HttpException(`指定id=${id}用户不存在回收站中`, 406);
             }
             try {
                 exist.recycle = false;
                 yield this.userRepository.save(exist);
             }
             catch (err) {
-                throw new common_1.HttpException("数据库错误" + err.toString(), 401);
+                throw new common_1.HttpException(`数据库错误：${err.toString()}`, 401);
             }
         });
     }
@@ -432,10 +432,10 @@ let UserService = class UserService {
                     return user.id === id;
                 });
                 if (!find) {
-                    throw new common_1.HttpException("指定id=" + id + "用户不存在", 406);
+                    throw new common_1.HttpException(`指定id=${id}用户不存在`, 406);
                 }
                 if (!find.recycle) {
-                    throw new common_1.HttpException("指定用户id=" + id + "不在回收站中", 406);
+                    throw new common_1.HttpException(`指定用户id=${id}不在回收站中`, 406);
                 }
                 find.recycle = false;
             });
@@ -443,7 +443,7 @@ let UserService = class UserService {
                 yield this.userRepository.save(users);
             }
             catch (err) {
-                throw new common_1.HttpException("数据库错误" + err.toString(), 401);
+                throw new common_1.HttpException(`数据库错误：${err.toString()}`, 401);
             }
         });
     }
@@ -451,16 +451,16 @@ let UserService = class UserService {
         return __awaiter(this, void 0, void 0, function* () {
             const exist = yield this.userRepository.findOne(id);
             if (!exist) {
-                throw new common_1.HttpException("指定id=" + id + "用户不存在", 406);
+                throw new common_1.HttpException(`指定id=${id}用户不存在`, 406);
             }
             if (!exist.recycle) {
-                throw new common_1.HttpException("指定id=" + id + "用户不存在回收站中", 406);
+                throw new common_1.HttpException(`指定id=${id}用户不存在回收站中`, 406);
             }
             try {
                 yield this.userRepository.remove(exist);
             }
             catch (err) {
-                throw new common_1.HttpException("数据库错误" + err.toString(), 401);
+                throw new common_1.HttpException(`数据库错误：${err.toString()}`, 401);
             }
         });
     }
@@ -472,17 +472,17 @@ let UserService = class UserService {
                     return user.id === id;
                 });
                 if (!find) {
-                    throw new common_1.HttpException("指定id=" + id + "用户不存在", 406);
+                    throw new common_1.HttpException(`指定id=${id}用户不存在`, 406);
                 }
                 if (!find.recycle) {
-                    throw new common_1.HttpException("指定id=" + id + "用户不存在于回收站中", 406);
+                    throw new common_1.HttpException(`指定id=${id}用户不存在于回收站中`, 406);
                 }
             });
             try {
                 yield this.userRepository.remove(users);
             }
             catch (err) {
-                throw new common_1.HttpException("数据库错误" + err.toString(), 401);
+                throw new common_1.HttpException(`数据库错误：${err.toString()}`, 401);
             }
         });
     }
@@ -490,7 +490,7 @@ let UserService = class UserService {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield this.userRepository.findOne(id, { relations: ["roles"] });
             if (!user) {
-                throw new common_1.HttpException("指定id=" + id + "用户不存在", 406);
+                throw new common_1.HttpException(`指定id=${id}用户不存在`, 406);
             }
             const roles = yield this.roleRepository.findByIds(roleIds);
             roleIds.forEach(roleId => {
@@ -498,7 +498,7 @@ let UserService = class UserService {
                     return role.id === roleId;
                 });
                 if (!find) {
-                    throw new common_1.HttpException("指定id=" + roleId + "角色不存在", 406);
+                    throw new common_1.HttpException(`指定id=${roleId}角色不存在`, 406);
                 }
             });
             user.roles = roles;
@@ -506,7 +506,7 @@ let UserService = class UserService {
                 yield this.userRepository.save(user);
             }
             catch (err) {
-                throw new common_1.HttpException("数据库错误" + err.toString(), 401);
+                throw new common_1.HttpException(`数据库错误：${err.toString()}`, 401);
             }
         });
     }
@@ -514,7 +514,7 @@ let UserService = class UserService {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield this.userRepository.findOne(id, { relations: ["roles", "adds", "reduces"] });
             if (!user) {
-                throw new common_1.HttpException("指定id=" + id + "用户不存在", 406);
+                throw new common_1.HttpException(`指定id=${id}用户不存在`, 406);
             }
             const result = [];
             let temp = [];
@@ -562,7 +562,7 @@ let UserService = class UserService {
                 yield this.userRepository.save(user);
             }
             catch (err) {
-                throw new common_1.HttpException("数据库错误" + err.toString(), 401);
+                throw new common_1.HttpException(`数据库错误：${err.toString()}`, 401);
             }
         });
     }

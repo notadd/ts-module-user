@@ -54,6 +54,7 @@ const role_service_1 = require("./service/role.service");
 const user_service_1 = require("./service/user.service");
 const user_info_entity_1 = require("./model/user.info.entity");
 const info_item_entity_1 = require("./model/info.item.entity");
+const auth_strategy_1 = require("./auth/auth.strategy");
 const auth_service_1 = require("./auth/auth.service");
 const float_util_1 = require("./util/float.util");
 const score_entity_1 = require("./model/score.entity");
@@ -367,7 +368,7 @@ UserModule = __decorate([
         ],
         controllers: [login_controller_1.LoginController],
         providers: [
-            auth_service_1.AuthService,
+            auth_service_1.AuthService, auth_strategy_1.JwtStrategy,
             float_util_1.FloatUtil,
             func_service_1.FuncService, func_resolver_1.FuncResolver,
             user_service_1.UserService, user_resolver_1.UserResolver,
@@ -381,7 +382,7 @@ UserModule = __decorate([
             user_component_provider_1.UserComponentProvider,
         ],
         exports: [
-            user_component_provider_1.UserComponentProvider,
+            user_component_provider_1.UserComponentProvider, auth_service_1.AuthService
         ],
     }),
     __param(0, common_1.Inject(modules_container_1.ModulesContainer.name)),

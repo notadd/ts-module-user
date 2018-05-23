@@ -45,14 +45,14 @@ let InfoGroupService = class InfoGroupService {
         return __awaiter(this, void 0, void 0, function* () {
             const exist = yield this.infoGroupRepository.findOne({ name });
             if (exist) {
-                throw new common_1.HttpException("给定名称name=" + name + "信息组已存在", 407);
+                throw new common_1.HttpException(`给定名称name=${name}信息组已存在`, 407);
             }
             const infoGroup = this.infoGroupRepository.create({ name, default: false, status: true });
             try {
                 yield this.infoGroupRepository.save(infoGroup);
             }
             catch (err) {
-                throw new common_1.HttpException("数据库错误" + err.toString(), 401);
+                throw new common_1.HttpException(`数据库错误：${err.toString()}`, 401);
             }
         });
     }
@@ -60,7 +60,7 @@ let InfoGroupService = class InfoGroupService {
         return __awaiter(this, void 0, void 0, function* () {
             const exist = yield this.infoGroupRepository.findOne(id);
             if (!exist) {
-                throw new common_1.HttpException("给定id=" + id + "信息组不存在", 408);
+                throw new common_1.HttpException(`给定id=${id}信息组不存在`, 408);
             }
             if (exist.default) {
                 throw new common_1.HttpException("默认信息组不可更改", 408);
@@ -68,7 +68,7 @@ let InfoGroupService = class InfoGroupService {
             if (name !== exist.name) {
                 const exist1 = yield this.infoGroupRepository.findOne({ name });
                 if (exist1) {
-                    throw new common_1.HttpException("指定名称信息组已存在：" + name, 408);
+                    throw new common_1.HttpException(`指定名称信息组已存在：${name}`, 408);
                 }
             }
             try {
@@ -76,7 +76,7 @@ let InfoGroupService = class InfoGroupService {
                 yield this.infoGroupRepository.save(exist);
             }
             catch (err) {
-                throw new common_1.HttpException("数据库错误" + err.toString(), 401);
+                throw new common_1.HttpException(`数据库错误：${err.toString()}`, 401);
             }
         });
     }
@@ -84,7 +84,7 @@ let InfoGroupService = class InfoGroupService {
         return __awaiter(this, void 0, void 0, function* () {
             const exist = yield this.infoGroupRepository.findOne(id);
             if (!exist) {
-                throw new common_1.HttpException("给定id=" + id + "信息组不存在", 408);
+                throw new common_1.HttpException(`给定id=${id}信息组不存在`, 408);
             }
             if (exist.default) {
                 throw new common_1.HttpException("默认信息组不可删除", 408);
@@ -93,7 +93,7 @@ let InfoGroupService = class InfoGroupService {
                 yield this.infoGroupRepository.remove(exist);
             }
             catch (err) {
-                throw new common_1.HttpException("数据库错误" + err.toString(), 401);
+                throw new common_1.HttpException(`数据库错误：${err.toString()}`, 401);
             }
         });
     }
@@ -101,14 +101,14 @@ let InfoGroupService = class InfoGroupService {
         return __awaiter(this, void 0, void 0, function* () {
             const group = yield this.infoGroupRepository.findOne(id, { relations: ["items"] });
             if (!group) {
-                throw new common_1.HttpException("给定id=" + id + "信息组不存在", 408);
+                throw new common_1.HttpException(`给定id=${id}信息组不存在`, 408);
             }
             if (group.default) {
                 throw new common_1.HttpException("默认信息组不可更改", 408);
             }
             const item = yield this.infoItemRepository.findOne(infoItemId);
             if (!item) {
-                throw new common_1.HttpException("指定id=" + infoItemId + "信息项不存在", 409);
+                throw new common_1.HttpException(`指定id=${infoItemId}信息项不存在`, 409);
             }
             if (item.default) {
                 throw new common_1.HttpException("默认信息项不可添加", 408);
@@ -117,14 +117,14 @@ let InfoGroupService = class InfoGroupService {
                 return item.id === id;
             });
             if (find) {
-                throw new common_1.HttpException("指定信息项id=" + infoItemId + "已经存在于指定信息组id=" + id + "中", 410);
+                throw new common_1.HttpException(`指定信息项id=${infoItemId}已经存在于指定信息组id=${id}中`, 410);
             }
             try {
                 group.items.push(item);
                 yield this.infoGroupRepository.save(group);
             }
             catch (err) {
-                throw new common_1.HttpException("数据库错误" + err.toString(), 401);
+                throw new common_1.HttpException(`数据库错误：${err.toString()}`, 401);
             }
         });
     }
@@ -132,27 +132,27 @@ let InfoGroupService = class InfoGroupService {
         return __awaiter(this, void 0, void 0, function* () {
             const group = yield this.infoGroupRepository.findOne(id, { relations: ["items"] });
             if (!group) {
-                throw new common_1.HttpException("给定id=" + id + "信息组不存在", 408);
+                throw new common_1.HttpException(`给定id=${id}信息组不存在`, 408);
             }
             if (group.default) {
                 throw new common_1.HttpException("默认信息组不可更改", 408);
             }
             const item = yield this.infoItemRepository.findOne(infoItemId);
             if (!item) {
-                throw new common_1.HttpException("指定id=" + infoItemId + "信息项不存在", 409);
+                throw new common_1.HttpException(`指定id=${infoItemId}信息项不存在`, 409);
             }
             const index = group.items.findIndex(item => {
                 return item.id === id;
             });
             if (index < 0) {
-                throw new common_1.HttpException("指定信息项id=" + infoItemId + "不存在于指定信息组id=" + id + "中", 411);
+                throw new common_1.HttpException(`指定信息项id=${infoItemId}不存在于指定信息组id=${id}中`, 411);
             }
             try {
                 group.items.splice(index, 1);
                 yield this.infoGroupRepository.save(group);
             }
             catch (err) {
-                throw new common_1.HttpException("数据库错误" + err.toString(), 401);
+                throw new common_1.HttpException(`数据库错误：${err.toString()}`, 401);
             }
         });
     }

@@ -37,14 +37,14 @@ let ScoreTypeService = class ScoreTypeService {
         return __awaiter(this, void 0, void 0, function* () {
             const exist = yield this.scoreTypeRepository.findOne({ name });
             if (exist) {
-                throw new common_1.HttpException("指定名称name=" + name + "积分类型已存在", 424);
+                throw new common_1.HttpException(`指定名称name=${name}积分类型已存在`, 424);
             }
             const scoreType = this.scoreTypeRepository.create({ name, type, default: false, description });
             try {
                 yield this.scoreTypeRepository.save(scoreType);
             }
             catch (err) {
-                throw new common_1.HttpException("数据库错误" + err.toString(), 401);
+                throw new common_1.HttpException(`数据库错误：${err.toString()}`, 401);
             }
         });
     }
@@ -52,7 +52,7 @@ let ScoreTypeService = class ScoreTypeService {
         return __awaiter(this, void 0, void 0, function* () {
             const original = yield this.scoreTypeRepository.findOne(id);
             if (!original) {
-                throw new common_1.HttpException("指定id=" + id + "积分类型不存在", 425);
+                throw new common_1.HttpException(`指定id=${id}积分类型不存在`, 425);
             }
             if (original.default) {
                 throw new common_1.HttpException("默认积分类型不允许更改", 426);
@@ -60,7 +60,7 @@ let ScoreTypeService = class ScoreTypeService {
             if (name !== original.name) {
                 const exist = yield this.scoreTypeRepository.findOne({ name });
                 if (exist) {
-                    throw new common_1.HttpException("指定名称name=" + name + "积分类型已存在", 424);
+                    throw new common_1.HttpException(`指定名称name=${name}积分类型已存在`, 424);
                 }
             }
             try {
@@ -70,7 +70,7 @@ let ScoreTypeService = class ScoreTypeService {
                 yield this.scoreTypeRepository.save(original);
             }
             catch (err) {
-                throw new common_1.HttpException("数据库错误" + err.toString(), 401);
+                throw new common_1.HttpException(`数据库错误：${err.toString()}`, 401);
             }
         });
     }
@@ -78,7 +78,7 @@ let ScoreTypeService = class ScoreTypeService {
         return __awaiter(this, void 0, void 0, function* () {
             const exist = yield this.scoreTypeRepository.findOne(id);
             if (!exist) {
-                throw new common_1.HttpException("指定id=" + id + "积分类型不存在", 425);
+                throw new common_1.HttpException(`指定id=${id}积分类型不存在`, 425);
             }
             if (exist.default) {
                 throw new common_1.HttpException("默认积分类型不允许删除", 426);
@@ -87,7 +87,7 @@ let ScoreTypeService = class ScoreTypeService {
                 yield this.scoreTypeRepository.remove(exist);
             }
             catch (err) {
-                throw new common_1.HttpException("数据库错误" + err.toString(), 401);
+                throw new common_1.HttpException(`数据库错误：${err.toString()}`, 401);
             }
         });
     }
@@ -99,7 +99,7 @@ let ScoreTypeService = class ScoreTypeService {
                     return exist.id === id;
                 });
                 if (!find) {
-                    throw new common_1.HttpException("指定id=" + id + "积分类型不存在", 425);
+                    throw new common_1.HttpException(`指定id=${id}积分类型不存在`, 425);
                 }
                 if (find.default) {
                     throw new common_1.HttpException("默认积分类型不允许删除", 426);
@@ -109,7 +109,7 @@ let ScoreTypeService = class ScoreTypeService {
                 yield this.scoreTypeRepository.remove(exists);
             }
             catch (err) {
-                throw new common_1.HttpException("数据库错误" + err.toString(), 401);
+                throw new common_1.HttpException(`数据库错误：${err.toString()}`, 401);
             }
         });
     }

@@ -38,11 +38,11 @@ let ScoreService = class ScoreService {
         return __awaiter(this, void 0, void 0, function* () {
             const scoreType = yield this.scoreTypeRepository.findOne(scoreTypeId);
             if (!scoreType) {
-                throw new common_1.HttpException("指定id=" + scoreTypeId + "积分类型不存在", 427);
+                throw new common_1.HttpException(`指定id=${scoreTypeId}积分类型不存在`, 427);
             }
             const user = yield this.userRepository.findOne(userId, { relations: ["scores"] });
             if (!user) {
-                throw new common_1.HttpException("指定id=" + userId + "用户不存在", 428);
+                throw new common_1.HttpException(`指定id=${userId}用户不存在`, 428);
             }
             const score = user.scores.find(score => {
                 return score.scoreTypeId === scoreType.id;
@@ -61,7 +61,7 @@ let ScoreService = class ScoreService {
                     yield this.scoreRepository.save(score);
                 }
                 catch (err) {
-                    throw new common_1.HttpException("数据库错误" + err.toString(), 401);
+                    throw new common_1.HttpException(`数据库错误：${err.toString()}`, 401);
                 }
                 return 0;
             }
@@ -71,11 +71,11 @@ let ScoreService = class ScoreService {
         return __awaiter(this, void 0, void 0, function* () {
             const scoreType = yield this.scoreTypeRepository.findOne(scoreTypeId);
             if (!scoreType) {
-                throw new common_1.HttpException("指定id=" + scoreTypeId + "积分类型不存在", 427);
+                throw new common_1.HttpException(`指定id=${scoreTypeId}积分类型不存在`, 427);
             }
             const user = yield this.userRepository.findOne(userId, { relations: ["scores"] });
             if (!user) {
-                throw new common_1.HttpException("指定id=" + userId + "用户不存在", 428);
+                throw new common_1.HttpException(`指定id=${userId}用户不存在`, 428);
             }
             let score = user.scores.find(score => {
                 return score.scoreTypeId === scoreType.id;
@@ -101,7 +101,7 @@ let ScoreService = class ScoreService {
                 yield this.scoreRepository.save(score);
             }
             catch (err) {
-                throw new common_1.HttpException("数据库错误" + err.toString(), 401);
+                throw new common_1.HttpException(`数据库错误：${err.toString()}`, 401);
             }
         });
     }
