@@ -5,6 +5,6 @@ export declare class AuthService {
     secretKey: string;
     expiresIn: number;
     constructor(usersRepository: Repository<User>);
-    createToken(user: User): any;
+    createToken(user: User): string;
     validateUser(user: User): Promise<boolean | User>;
 }

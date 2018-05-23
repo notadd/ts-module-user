@@ -2,7 +2,7 @@ import "reflect-metadata";
 
 export const PERMISSION_DEFINITION = "user:permission_definition";
 
-export function Permissions(definitions: Array<{ name: string, description: string }>): ClassDecorator | MethodDecorator {
+export function Permissions(definitions: Array<{ name: string, description: string }>): ClassDecorator & MethodDecorator {
     return (target: any, key?, descriptor?) => {
         if (descriptor) {
             const exist = Reflect.getMetadata(PERMISSION_DEFINITION, target, key) || [];
