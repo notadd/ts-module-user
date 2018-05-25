@@ -102,7 +102,7 @@ export class UserService {
             if (role && role.funcs && role.funcs.length > 0) {
                 for (let j = 0; j < role.funcs.length; j++) {
                     const func: Func | undefined = await this.funcRepository.findOne(
-                        role.funcs[i].id,
+                        role.funcs[j].id,
                         { relations: ["permissions"] },
                     );
                     if (func) {
