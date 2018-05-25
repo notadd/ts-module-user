@@ -108,7 +108,7 @@ let UserService = class UserService {
                 const role = yield this.roleRepository.findOne(user.roles[i].id, { relations: ["funcs"] });
                 if (role && role.funcs && role.funcs.length > 0) {
                     for (let j = 0; j < role.funcs.length; j++) {
-                        const func = yield this.funcRepository.findOne(role.funcs[i].id, { relations: ["permissions"] });
+                        const func = yield this.funcRepository.findOne(role.funcs[j].id, { relations: ["permissions"] });
                         if (func) {
                             temp = temp.concat(func.permissions);
                         }
