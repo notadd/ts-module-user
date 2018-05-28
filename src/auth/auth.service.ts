@@ -29,7 +29,7 @@ export class AuthService {
     async validateUser(user: User): Promise<boolean | User> {
         const exist: User | undefined = await this.usersRepository.findOne(user.id, { select: ["id", "userName", "status", "recycle"] });
         /* 如果指定用户不存在、禁用、在回收站中，则验证不通过 */
-        if (!exist || exist.status || exist.recycle) {
+        if (!exist || !exist.status || exist.recycle) {
             return false;
         }
         return exist;

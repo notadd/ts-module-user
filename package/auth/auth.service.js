@@ -37,7 +37,7 @@ let AuthService = class AuthService {
     validateUser(user) {
         return __awaiter(this, void 0, void 0, function* () {
             const exist = yield this.usersRepository.findOne(user.id, { select: ["id", "userName", "status", "recycle"] });
-            if (!exist || exist.status || exist.recycle) {
+            if (!exist || !exist.status || exist.recycle) {
                 return false;
             }
             return exist;

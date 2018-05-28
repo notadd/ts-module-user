@@ -16,7 +16,9 @@ export class LoginController {
     @Post("login")
     async login(@Body() body: { userName: string, password: string }, @Res() res): Promise<void> {
         const { userName, password } = body;
-        const user: User | undefined = await this.userRepository.findOne({ userName }, { select: ["id", "userName", "status", "recycle"] });
+        const user: User | undefined = await this.userRepository.findOne({ userName }, {
+            select: ["id", "userName", "password", "status", "recycle"]
+        });
         if (!user) {
             res.end({ code: 400, message: "指定用户不存在" });
             return;
@@ -36,8 +38,9 @@ export class LoginController {
             res.end({ code: 400, message: "密码不正确" });
             return;
         }
+        delete user.password;
         const token: string = this.authService.createToken(user);
-        res.end({ code: 200, message: "登录成功", token });
+        res.end({ code: 200, message: "登录成功，返回token", token });
         return;
     }
 

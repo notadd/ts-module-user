@@ -34,7 +34,9 @@ let LoginController = class LoginController {
     login(body, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const { userName, password } = body;
-            const user = yield this.userRepository.findOne({ userName }, { select: ["id", "userName", "status", "recycle"] });
+            const user = yield this.userRepository.findOne({ userName }, {
+                select: ["id", "userName", "password", "status", "recycle"]
+            });
             if (!user) {
                 res.end({ code: 400, message: "指定用户不存在" });
                 return;
@@ -52,8 +54,9 @@ let LoginController = class LoginController {
                 res.end({ code: 400, message: "密码不正确" });
                 return;
             }
+            delete user.password;
             const token = this.authService.createToken(user);
-            res.end({ code: 200, message: "登录成功", token });
+            res.end({ code: 200, message: "登录成功，返回token", token });
             return;
         });
     }
