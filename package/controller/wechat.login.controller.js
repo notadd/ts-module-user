@@ -27,10 +27,12 @@ const auth_service_1 = require("../auth/auth.service");
 const http_util_1 = require("../util/http.util");
 const user_entity_1 = require("../model/user.entity");
 const typeorm_2 = require("typeorm");
+const __1 = require("..");
 let WechatLoginController = class WechatLoginController {
-    constructor(httpUtil, authService, userRepository) {
+    constructor(httpUtil, authService, userComponent, userRepository) {
         this.httpUtil = httpUtil;
         this.authService = authService;
+        this.userComponent = userComponent;
         this.userRepository = userRepository;
         this.oauthUrl = "https://api.weixin.qq.com/sns";
         this.appid = "wx2dd40b5b1c24a960";
@@ -50,6 +52,7 @@ let WechatLoginController = class WechatLoginController {
                 const newUser = this.userRepository.create({ userName: openid, status: true, recycle: false });
                 user = yield this.userRepository.save(newUser);
             }
+            yield this.userComponent.setRoles(user.id, [3]);
             const token = this.authService.createToken(user);
             res.json({ code: 200, message: "微信用户登录成功", openid, token });
             res.end();
@@ -98,9 +101,11 @@ WechatLoginController = __decorate([
     common_1.UseFilters(new http_exception_filter_1.HttpExceptionFilter()),
     __param(0, common_1.Inject(http_util_1.HttpUtil)),
     __param(1, common_1.Inject(auth_service_1.AuthService)),
-    __param(2, typeorm_1.InjectRepository(user_entity_1.User)),
+    __param(2, common_1.Inject("UserComponentToken")),
+    __param(3, typeorm_1.InjectRepository(user_entity_1.User)),
     __metadata("design:paramtypes", [http_util_1.HttpUtil,
         auth_service_1.AuthService,
+        __1.UserComponent,
         typeorm_2.Repository])
 ], WechatLoginController);
 exports.WechatLoginController = WechatLoginController;

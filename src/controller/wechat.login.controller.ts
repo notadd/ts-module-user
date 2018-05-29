@@ -7,6 +7,7 @@ import { HttpUtil } from "../util/http.util";
 import { User } from "../model/user.entity";
 import { get, CoreOptions } from "request";
 import { Repository } from "typeorm";
+import { UserComponent } from "..";
 import * as qs from "qs";
 
 @Controller("user/wechat")
@@ -21,6 +22,7 @@ export class WechatLoginController {
     constructor(
         @Inject(HttpUtil) private readonly httpUtil: HttpUtil,
         @Inject(AuthService) private readonly authService: AuthService,
+        @Inject("UserComponentToken") private readonly userComponent: UserComponent,
         @InjectRepository(User) private readonly userRepository: Repository<User>
     ) { }
 
@@ -37,6 +39,7 @@ export class WechatLoginController {
             const newUser: User = this.userRepository.create({ userName: openid, status: true, recycle: false });
             user = await this.userRepository.save(newUser);
         }
+        await this.userComponent.setRoles(user.id, [3]);
         const token: string = this.authService.createToken(user);
         res.json({ code: 200, message: "微信用户登录成功", openid, token });
         res.end();
