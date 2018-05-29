@@ -13,5 +13,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
                 code: status,
                 message
             });
+        response.end()
     }
 }
