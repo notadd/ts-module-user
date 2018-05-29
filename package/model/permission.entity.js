@@ -21,14 +21,14 @@ __decorate([
 __decorate([
     typeorm_1.Column({
         name: "name",
-        length: 20
+        length: 50
     }),
     __metadata("design:type", String)
 ], Permission.prototype, "name", void 0);
 __decorate([
     typeorm_1.Column({
         name: "description",
-        length: "50"
+        length: "100"
     }),
     __metadata("design:type", String)
 ], Permission.prototype, "description", void 0);

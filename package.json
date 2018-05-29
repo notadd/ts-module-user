@@ -54,7 +54,6 @@
     "devDependencies": {
         "@notadd/addon-local": "^2.1.0",
         "@notadd/gulp-typescript": "^4.0.2",
-        "@notadd/injection": "^2.3.31",
         "@types/express": "^4.11.1",
         "@types/jest": "^22.1.4",
         "@types/jsonwebtoken": "^7.2.7",

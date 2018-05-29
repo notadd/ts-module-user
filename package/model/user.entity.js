@@ -31,14 +31,16 @@ __decorate([
 ], User.prototype, "userName", void 0);
 __decorate([
     typeorm_1.Column({
-        length: 70
+        length: 70,
+        nullable: true
     }),
     __metadata("design:type", String)
 ], User.prototype, "password", void 0);
 __decorate([
     typeorm_1.Column({
         name: "salt",
-        length: 10
+        length: 10,
+        nullable: true
     }),
     __metadata("design:type", String)
 ], User.prototype, "salt", void 0);

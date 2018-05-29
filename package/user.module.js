@@ -21,6 +21,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
+const wechat_login_controller_1 = require("./controller/wechat.login.controller");
 const modules_container_1 = require("@nestjs/core/injector/modules-container");
 const permissions_decorator_1 = require("./decorator/permissions.decorator");
 const user_component_provider_1 = require("./export/user.component.provider");
@@ -57,6 +58,7 @@ const info_item_entity_1 = require("./model/info.item.entity");
 const auth_strategy_1 = require("./auth/auth.strategy");
 const auth_service_1 = require("./auth/auth.service");
 const float_util_1 = require("./util/float.util");
+const http_util_1 = require("./util/http.util");
 const score_entity_1 = require("./model/score.entity");
 const func_entity_1 = require("./model/func.entity");
 const role_entity_1 = require("./model/role.entity");
@@ -366,10 +368,10 @@ UserModule = __decorate([
                 permission_entity_1.Permission,
             ]),
         ],
-        controllers: [login_controller_1.LoginController],
+        controllers: [login_controller_1.LoginController, wechat_login_controller_1.WechatLoginController],
         providers: [
             auth_service_1.AuthService, auth_strategy_1.JwtStrategy,
-            float_util_1.FloatUtil,
+            float_util_1.FloatUtil, http_util_1.HttpUtil,
             func_service_1.FuncService, func_resolver_1.FuncResolver,
             user_service_1.UserService, user_resolver_1.UserResolver,
             role_service_1.RoleService, role_resolver_1.RoleResolver,

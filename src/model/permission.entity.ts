@@ -18,14 +18,14 @@ export class Permission {
     /* 权限名，不同模块下可以重复 */
     @Column({
         name: "name",
-        length: 20
+        length: 50
     })
     name: string;
 
     /* 权限描述 */
     @Column({
         name: "description",
-        length: "50"
+        length: "100"
     })
     description: string;
 

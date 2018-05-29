@@ -27,7 +27,7 @@ export class User {
     /* 用户密码，为加盐密码 */
     @Column({
         length: 70,
-        nullable:true
+        nullable: true
     })
     password: string;
 
@@ -35,7 +35,7 @@ export class User {
     @Column({
         name: "salt",
         length: 10,
-        nullable:true
+        nullable: true
     })
     salt: string;
 

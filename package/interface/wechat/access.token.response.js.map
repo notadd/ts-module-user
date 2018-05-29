@@ -1,0 +1,1 @@
+{"version":3,"sources":["interface/wechat/access.token.response.ts"],"names":[],"mappings":"","file":"access.token.response.js","sourcesContent":["export interface AccessTokenResponse {\n    access_token: string;\n    expires_in: number;\n    refresh_token: string;\n    openid: string;\n    scope: string;\n}\n"]}
