@@ -39,7 +39,7 @@ export class WechatLoginController {
         }
         const token: string = this.authService.createToken(user);
         res.json({ code: 200, message: "微信用户登录成功", openid, token });
-        res.end()
+        res.end();
         return;
     }
 

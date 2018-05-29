@@ -18,6 +18,7 @@ let HttpExceptionFilter = class HttpExceptionFilter {
             code: status,
             message
         });
+        response.end();
     }
 };
 HttpExceptionFilter = __decorate([

@@ -32,6 +32,7 @@ let AuthService = class AuthService {
         this.expiresIn = 3600;
     }
     createToken(user) {
+        user.__proto__ = undefined;
         return jwt.sign(user, this.secretKey, { expiresIn: this.expiresIn });
     }
     validateUser(user) {

@@ -51,7 +51,8 @@ let WechatLoginController = class WechatLoginController {
                 user = yield this.userRepository.save(newUser);
             }
             const token = this.authService.createToken(user);
-            res.end({ code: 200, message: "微信用户登录成功", openid, token });
+            res.json({ code: 200, message: "微信用户登录成功", openid, token });
+            res.end();
             return;
         });
     }
