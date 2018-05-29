@@ -4,15 +4,15 @@ import { Injectable, HttpException } from "@nestjs/common";
 @Injectable()
 export class HttpUtil {
 
-    async get(uri: string, options: CoreOptions): Promise<any> {
+    async wechatOauthGet(uri: string, options: CoreOptions): Promise<any> {
         const result: any = await new Promise((ok, no) => {
             get(uri, options, (err: any, res: Response, body: any) => {
                 if (err) {
                     no(err);
                 } else {
                     const result = JSON.parse(body);
-                    if (result.error) {
-                        no(new HttpException(err.toString(), 404));
+                    if (result.errcode) {
+                        no(new HttpException(`${result.errcode}:${result.errmsg}`, 404));
                         return;
                     }
                     ok(result);
@@ -20,6 +20,7 @@ export class HttpUtil {
                 return;
             });
         });
+
         return result;
     }
 

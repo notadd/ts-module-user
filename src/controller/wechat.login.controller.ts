@@ -10,9 +10,9 @@ import * as qs from "qs";
 
 
 @Controller("user")
-export class LoginController {
+export class WechatLoginController {
 
-    private readonly oauthUrl: string = "https://api.weixin.qq.com/sns/oauth2"
+    private readonly oauthUrl: string = "https://api.weixin.qq.com/sns"
     private appid: string = "wx6926e1be948987ee";
     private secret: string = "dda8c56d735078160ac6724911100497";
     private readonly tokenMap: Map<string, { access_token: string, refresh_token: string }> = new Map();
@@ -25,6 +25,16 @@ export class LoginController {
 
     @Post("wechat/login")
     async wechatLogin( @Body() body: { code: string }, @Res() res): Promise<void> {
+        const { code } = body;
+        if (!code) {
+            res.end({ code: 400, message: "缺少参数" });
+            return;
+        }
+        const { openid, access_token, refresh_token }: AccessTokenResponse = await this.getAccessToken(this.appid, this.secret, code);
+        this.tokenMap.set(openid, { access_token, refresh_token });
+
+        let user: User | undefined = await this.userRepository.findOne({ userName: openid });
+
 
     }
 
@@ -38,7 +48,20 @@ export class LoginController {
                 grant_type: "authorization_code"
             }
         }
-        const result = await this.httpUtil.get("/access_token", options);
+        const result = await this.httpUtil.wechatOauthGet("/oauth2/access_token", options);
+        return result;
+    }
+
+    async getUserInfo(access_token: string, openid: string): Promise<any> {
+        const options: CoreOptions = {
+            baseUrl: this.oauthUrl,
+            qs: {
+                access_token,
+                openid,
+                lang: "zh_CN"
+            }
+        }
+        const result = await this.httpUtil.wechatOauthGet("/userinfo", options);
         return result;
     }
 

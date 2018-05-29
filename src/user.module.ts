@@ -1,4 +1,5 @@
 import { Global, Inject, Module as ModuleDecorator, OnModuleInit } from "@nestjs/common";
+import { WechatLoginController } from "./controller/wechat.login.controller";
 import { ModulesContainer } from "@nestjs/core/injector/modules-container";
 import { PERMISSION_DEFINITION } from "./decorator/permissions.decorator";
 import { UserComponentProvider } from "./export/user.component.provider";
@@ -61,7 +62,7 @@ import { Repository } from "typeorm";
             Permission,
         ]),
     ],
-    controllers: [LoginController],
+    controllers: [LoginController, WechatLoginController],
     providers: [
         AuthService, JwtStrategy,
         FloatUtil, HttpUtil,
