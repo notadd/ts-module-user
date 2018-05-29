@@ -37,6 +37,7 @@ import { InfoItem } from "./model/info.item.entity";
 import { JwtStrategy } from "./auth/auth.strategy";
 import { AuthService } from "./auth/auth.service";
 import { FloatUtil } from "./util/float.util";
+import { HttpUtil } from "./util/http.util";
 import { Score } from "./model/score.entity";
 import { Func } from "./model/func.entity";
 import { Role } from "./model/role.entity";
@@ -63,7 +64,7 @@ import { Repository } from "typeorm";
     controllers: [LoginController],
     providers: [
         AuthService, JwtStrategy,
-        FloatUtil,
+        FloatUtil, HttpUtil,
         FuncService, FuncResolver,
         UserService, UserResolver,
         RoleService, RoleResolver,
