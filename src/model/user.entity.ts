@@ -26,7 +26,8 @@ export class User {
 
     /* 用户密码，为加盐密码 */
     @Column({
-        length: 70
+        length: 70,
+        nullable:true
     })
     password: string;
 
