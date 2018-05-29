@@ -32,10 +32,14 @@ export class WechatLoginController {
         }
         const { openid, access_token, refresh_token }: AccessTokenResponse = await this.getAccessToken(this.appid, this.secret, code);
         this.tokenMap.set(openid, { access_token, refresh_token });
-
-        let user: User | undefined = await this.userRepository.findOne({ userName: openid });
-
-
+        let user: User | undefined = await this.userRepository.findOne({ userName: openid }, { select: ["id", "userName", "status", "recycle"] });
+        if (!user) {
+            const newUser: User = this.userRepository.create({ userName: openid, status: true, recycle: false })
+            user = await this.userRepository.save(newUser);
+        }
+        const token: string = this.authService.createToken(user);
+        res.end({ code: 200, message: "微信用户登录成功", openid, token });
+        return;
     }
 
     async getAccessToken(appid: string, secret: string, code: string): Promise<AccessTokenResponse> {

@@ -34,7 +34,8 @@ export class User {
     /* 密码的盐，10位随机字符串 */
     @Column({
         name: "salt",
-        length: 10
+        length: 10,
+        nullable:true
     })
     salt: string;
 
